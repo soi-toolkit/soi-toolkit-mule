@@ -1,0 +1,37 @@
+#summary Guidelines for developers of the soi-toolkit
+#labels Phase-Implementation
+
+Content
+
+<wiki:toc max_depth="2" />
+
+= Introduction =
+
+Guidelines for developers of the soi-toolkit...
+
+= Release handling =
+
+To release maven based components of soi-toolkit we use mavens release-plugin.
+
+Perform the following steps
+
+ # Check that the code is in synch
+  * Check for updates:
+{{{
+svn update
+}}}
+  * Commit changes
+{{{
+svn commit
+}}}
+ # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
+ # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state.
+{{{
+mvn release:clean release:prepare -DdryRun=true
+}}}
+ Note: Version numbers shall follow the format defined below.
+ # Fix any problems identified by the dryrun then perform a prepare-step
+{{{
+mvn release:clean release:prepare
+}}}
+ # *TO BE DECIDED*: How will we perform the deploy, by the step above or in a separate step
