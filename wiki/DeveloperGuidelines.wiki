@@ -25,13 +25,19 @@ svn update
 svn commit
 }}}
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
- # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state.
+ # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
 {{{
 mvn release:clean release:prepare -DdryRun=true
 }}}
- Note: Version numbers shall follow the format defined below.
  # Fix any problems identified by the dryrun then perform a prepare-step
 {{{
 mvn release:clean release:prepare
 }}}
  # *TO BE DECIDED*: How will we perform the deploy, by the step above or in a separate step
+
+= Naming Conventions =
+
+Version numbers of components:
+ * {{{n.n.n}}} for released components
+ * {{{REL-n.n.n}}} for svn tags for released components
+ * {{{n.n.n-SNAPSHOT}}} for unreleased components during development
