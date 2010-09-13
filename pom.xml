@@ -1,11 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>5</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.commons.poms</groupId>
 	<artifactId>soitoolkit-superpom</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.1-SNAPSHOT</version>
 	<name>soitoolkit-superpom</name>
+    <description>The superpom for soi-toolkit</description>
+    <url>http://maven.apache.org</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
 	<scm>
 		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</connection>
