@@ -22,7 +22,10 @@ The soi-toolkit uses Sonatype OSS Maven Repository to release artifacts to the M
 
 Added to the setup of the development environment required for a user of soi-toolkit a developer must perform the following setup steps to be able to perform releases of soi-toolkit:
 
- # Create an JIRA account at https://issues.sonatype.org/
+ # Create an JIRA account at Sonatype
+{{{
+firefox https://issues.sonatype.org/
+}}}
  # Add the following servers to the maven settings.xml - file:
 {{{
   <servers>
@@ -40,21 +43,21 @@ Added to the setup of the development environment required for a user of soi-too
 }}}
  # Install pgp, create key-pair and distribute public key.
  See http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/ for details.
-  # Install pgp
+  * Install pgp
   If you are a Mac user and have macports installed (you really should!) then simply install pgp with the command:
 {{{
 sudo port install gnupg
 }}}
-  # Create key-pair
+  * Create key-pair
 {{{
 gpg --gen-key
 }}}
-  # List keys
+  * List keys
 {{{
 gpg --list-keys
 gpg --list-secret-keys
 }}}
-  # Distribute public key
+  * Distribute public key
 {{{
 gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
 }}}
@@ -63,7 +66,13 @@ gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
 
 Each component mentioned above has its own release cycle and are released as described below.
 
-To release maven based components of soi-toolkit we use mavens release-plugin.
+To publish a snapshot of a soi-toolkit component do:
+{{{
+mvn clean deploy
+}}}
+
+
+To release components of soi-toolkit we use mavens release-plugin.
 
 Perform the following steps
 
@@ -77,6 +86,9 @@ svn update
 svn commit
 }}}
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
+{{{
+mate pom.xml
+}}}
  # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
 {{{
 mvn release:clean release:prepare -DdryRun=true
@@ -85,7 +97,19 @@ mvn release:clean release:prepare -DdryRun=true
 {{{
 mvn release:clean release:prepare
 }}}
- # *TO BE DECIDED*: How will we perform the deploy to the maven repo?
+ # Deploy to Sonatypes staging repository
+{{{
+mvn release:perform
+}}}
+ # Go to Sonatypes staging repository and release it to synch with maven central repo
+  * Go to: {{{https://oss.sonatype.org}}}
+  * Login to the Nexus UI.
+  * Go to Staging Repositories page.
+  * Select a staging repository.
+  * Click the Close button.
+  * If errors then Click on the Drop button and correct error and redo the process...
+  * If ok click on the Release button.
+  * Artifacts should now be synched with central repo on a hourly bases... 
 
 = Naming Conventions =
 
