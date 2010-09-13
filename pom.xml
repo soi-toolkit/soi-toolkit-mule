@@ -11,13 +11,13 @@
 	<groupId>org.soitoolkit.commons.components</groupId>
 	<artifactId>soitoolkit-commons-schemas</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>soitoolkit-commons-schemas</name>
 
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</url>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/trunk</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/trunk</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/trunk</url>
 	</scm>
 
 	<build>
