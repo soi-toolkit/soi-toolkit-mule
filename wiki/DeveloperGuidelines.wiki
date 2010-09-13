@@ -16,6 +16,30 @@ soi-toolkit is based on the following components:
 || commons-log || commons/components/commons-log/trunk || TBS ||
 || commons-mule || commons/components/commons-mule/trunk || TBS ||
 
+= Initial setup =
+
+The soi-toolkit uses Sonatype OSS Maven Repository to release artifacts to the Maven central repository, see https://docs.sonatype.org/display/repository/sonatype+oss+maven+repository+usage+guide for details.
+
+Added to the setup of the development environment required for a user of soi-toolkit a developer must perform the following setup steps to be able to perform releases of soi-toolkit:
+
+ # Create an JIRA account at https://issues.sonatype.org/
+ # Add the following servers to the maven settings.xml - file:
+{{{
+  <servers>
+    <server>
+      <id>sonatype-nexus-snapshots</id>
+      <username>your-jira-id</username>
+      <password>your-jira-pwd</password>
+    </server>
+    <server>
+      <id>sonatype-nexus-staging</id>
+      <username>your-jira-id</username>
+      <password>your-jira-pwd</password>
+    </server>
+  </servers>
+}}}
+ # Install pgp, create key-pair and distribute public key.
+ See http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/ for details. 
 = Release handling =
 
 Each component mentioned above has its own release cycle and are released as described below.
