@@ -9,7 +9,16 @@ Content
 
 Guidelines for developers of the soi-toolkit...
 
+soi-toolkit is based on the following components:
+|| *Name* || *Svn-path* || *Description* ||
+|| superpom || commons/poms/superpom/trunk || TBS ||
+|| commons-schemas || commons/components/commons-schemas/trunk || TBS ||
+|| commons-log || commons/components/commons-log/trunk || TBS ||
+|| commons-mule || commons/components/commons-mule/trunk || TBS ||
+
 = Release handling =
+
+Each component mentioned above has its own release cycle and are released as described below.
 
 To release maven based components of soi-toolkit we use mavens release-plugin.
 
@@ -29,11 +38,11 @@ svn commit
 {{{
 mvn release:clean release:prepare -DdryRun=true
 }}}
- # Fix any problems identified by the dryrun then perform a prepare-step
+ # Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn:
 {{{
 mvn release:clean release:prepare
 }}}
- # *TO BE DECIDED*: How will we perform the deploy, by the step above or in a separate step
+ # *TO BE DECIDED*: How will we perform the deploy to the maven repo?
 
 = Naming Conventions =
 
