@@ -39,7 +39,15 @@ Added to the setup of the development environment required for a user of soi-too
   </servers>
 }}}
  # Install pgp, create key-pair and distribute public key.
- See http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/ for details. 
+ See http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/ for details.
+  # Install pgp
+  If you are a Mac user and have macports installed (you really should!) then simply install pgp with the command:
+{{{
+sudo port install gnupg
+}}}
+  # Create key-pair
+  # Distribute public key
+ 
 = Release handling =
 
 Each component mentioned above has its own release cycle and are released as described below.
