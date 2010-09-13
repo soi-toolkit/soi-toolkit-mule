@@ -46,7 +46,18 @@ Added to the setup of the development environment required for a user of soi-too
 sudo port install gnupg
 }}}
   # Create key-pair
+{{{
+gpg --gen-key
+}}}
+  # List keys
+{{{
+gpg --list-keys
+gpg --list-secret-keys
+}}}
   # Distribute public key
+{{{
+gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
+}}}
  
 = Release handling =
 
