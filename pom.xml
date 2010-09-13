@@ -13,6 +13,12 @@
 	<version>0.1.0</version>
 	<name>soitoolkit-commons-mule</name>
 
+	<scm>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</url>
+	</scm>
+
 	<properties>
 		<mule-transport-sftp.version>2.2.1-RC3</mule-transport-sftp.version>
 		<mule-transport-jersey.version>1.1.3</mule-transport-jersey.version>
@@ -298,11 +304,4 @@
 		</dependency>
 
 	</dependencies>
-
-
-  <scm>
-    <connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</connection>
-    <developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</developerConnection>
-    <url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</url>
-  </scm>
 </project>
