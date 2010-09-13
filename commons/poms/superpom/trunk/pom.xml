@@ -10,7 +10,7 @@
 	<groupId>org.soitoolkit.commons.poms</groupId>
 	<artifactId>soitoolkit-superpom</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.1</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>soitoolkit-superpom</name>
     <description>The superpom for soi-toolkit</description>
     <url>http://maven.apache.org</url>
@@ -23,9 +23,9 @@
     </licenses>
 
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.1</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.1</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.1</url>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</url>
 	</scm>
 
 	<properties>
