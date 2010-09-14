@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+	name="jaxb.gen.only"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns="urn:jaxb.gen.only" 
+	targetNamespace="urn:jaxb.gen.only">
+
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import schemaLocation="LogEntry.xsd" namespace="urn:org.soitoolkit.commons.logentry.schema:v1"/>
+		</xsd:schema>
+	</wsdl:types>
+
+</wsdl:definitions>
