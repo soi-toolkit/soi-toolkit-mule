@@ -62,14 +62,16 @@ gpg --list-secret-keys
 gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
 }}}
  
-= Release handling =
-
-Each component mentioned above has its own release cycle and are released as described below.
+= Publish snapshots =
 
 To publish a snapshot of a soi-toolkit component do:
 {{{
 mvn clean deploy
 }}}
+
+= Release handling =
+
+Each component mentioned above has its own release cycle and are released as described below.
 
 
 To release components of soi-toolkit we use mavens release-plugin.
