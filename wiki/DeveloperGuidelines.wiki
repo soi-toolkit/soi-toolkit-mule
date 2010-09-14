@@ -78,10 +78,18 @@ To release components of soi-toolkit we use mavens release-plugin.
 
 Perform the following steps
 
+ # Go to the components trunk-folder
+{{{
+cd .../trunk
+}}}
  # Check that the code is in synch
   * Check for updates:
 {{{
 svn update
+}}}
+  * Run tests
+{{{
+mvn test
 }}}
   * Commit changes
 {{{
@@ -95,7 +103,7 @@ mate pom.xml
 {{{
 mvn release:clean release:prepare -DdryRun=true
 }}}
- # Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn:
+ # Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn
 {{{
 mvn release:clean release:prepare
 }}}
