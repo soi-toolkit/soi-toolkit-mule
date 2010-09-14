@@ -10,13 +10,13 @@
 	<groupId>org.soitoolkit.commons.components</groupId>
 	<artifactId>soitoolkit-commons-log</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 	<name>soitoolkit-commons-log</name>
 	
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/trunk</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/trunk</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/trunk</url>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/tags/REL-0.1.1</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/tags/REL-0.1.1</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-log/tags/REL-0.1.1</url>
 	</scm>
 
 	<dependencies>
