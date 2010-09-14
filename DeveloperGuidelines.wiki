@@ -102,7 +102,7 @@ mvn release:clean release:prepare
 mvn release:perform
 }}}
  # Go to Sonatypes staging repository and release it to synch with maven central repo
-  * Go to: {{{https://oss.sonatype.org}}}
+  * Go to: https://oss.sonatype.org
   * Login to the Nexus UI.
   * Go to Staging Repositories page.
   * Select a staging repository.
