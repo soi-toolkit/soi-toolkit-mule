@@ -22,7 +22,7 @@ The soi-toolkit uses Sonatype OSS Maven Repository to release artifacts to the M
 
 Added to the setup of the development environment required for a user of soi-toolkit a developer must perform the following setup steps to be able to perform releases of soi-toolkit:
 
- # Create an JIRA account at Sonatype
+ # Create an JIRA account at Sonatype, https://issues.sonatype.org/
 {{{
 firefox https://issues.sonatype.org/
 }}}
