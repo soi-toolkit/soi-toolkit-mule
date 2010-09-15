@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.soitoolkit.commons.poms</groupId>
 		<artifactId>soitoolkit-superpom</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -59,6 +59,38 @@
 					</execution>
 				</executions>
 			</plugin>      
+
+      <plugin>
+        <!-- Create a schema-artifact only containing wsdl & xsd files, i.e. no JAX-WS/JAXB-generated artifacts, for example for a C# app -->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <!-- Plugin-dependency to our shared assembly-descriptor.
+                Note: We are using a shared assembly-descriptor to avoid the need to generate
+                      a descriptor in every schema-project and leave a footprint.
+            -->
+            <groupId>org.soitoolkit.commons.poms</groupId>
+            <artifactId>soitoolkit-assembly-descriptors</artifactId>
+            <version>0.1.2-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>schema-assembly-descriptor.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 		</plugins>
 	</build>
 </project>
