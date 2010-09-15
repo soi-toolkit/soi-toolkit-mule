@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+        <groupId>org.soitoolkit.commons.poms</groupId>
+		<artifactId>soitoolkit-superpom</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.soitoolkit.commons</groupId>
+	<artifactId>soitoolkit-commons</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>soitoolkit-commons</name>
+
+	<modules>
+	
+		<module>poms/superpom/trunk</module>
+		
+		<module>components/commons-schemas/trunk</module>
+		<module>components/commons-log/trunk</module>
+		<module>components/commons-mule/trunk</module>
+		
+	</modules>
+
+</project>
