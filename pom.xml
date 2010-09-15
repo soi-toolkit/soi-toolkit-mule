@@ -12,19 +12,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.commons</groupId>
-	<artifactId>soitoolkit-commons</artifactId>
+	<artifactId>soitoolkit</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.2-SNAPSHOT</version>
-	<name>soitoolkit-commons</name>
+	<name>soitoolkit</name>
 
 	<modules>
-
-		<module>poms/superpom</module>
-		
-		<module>components/commons-schemas</module>
-		<module>components/commons-log</module>
-		<module>components/commons-mule</module>
-		
+		<module>commons</module>
 	</modules>
 
 </project>
