@@ -60,16 +60,17 @@
 				</executions>
 			</plugin>      
 
+<!-- 
       <plugin>
-        <!-- Create a schema-artifact only containing wsdl & xsd files, i.e. no JAX-WS/JAXB-generated artifacts, for example for a C# app -->
+        <!- - Create a schema-artifact only containing wsdl & xsd files, i.e. no JAX-WS/JAXB-generated artifacts, for example for a C# app - ->
         <artifactId>maven-assembly-plugin</artifactId>
         <version>${maven-assembly-plugin.version}</version>
         <dependencies>
           <dependency>
-            <!-- Plugin-dependency to our shared assembly-descriptor.
+            <!- - Plugin-dependency to our shared assembly-descriptor.
                 Note: We are using a shared assembly-descriptor to avoid the need to generate
                       a descriptor in every schema-project and leave a footprint.
-            -->
+            - ->
             <groupId>org.soitoolkit.commons.poms</groupId>
             <artifactId>soitoolkit-assembly-descriptors</artifactId>
             <version>0.1.2-SNAPSHOT</version>
@@ -90,6 +91,7 @@
           </execution>
         </executions>
       </plugin>
+ -->
 
 		</plugins>
 	</build>
