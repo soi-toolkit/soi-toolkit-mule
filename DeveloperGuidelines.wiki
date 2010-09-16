@@ -101,11 +101,11 @@ mate pom.xml
 }}}
  # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
 {{{
-mvn release:clean release:prepare -DdryRun=true
+mvn release:clean release:prepare -DdryRun=true -Darguments=-Dgpg.passphrase=nnn
 }}}
  # Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn
 {{{
-mvn release:clean release:prepare
+mvn release:clean release:prepare -Darguments=-Dgpg.passphrase=nnn
 }}}
  # Deploy to Sonatypes staging repository
 {{{
