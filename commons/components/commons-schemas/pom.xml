@@ -4,7 +4,10 @@
 	<parent>
 		<groupId>org.soitoolkit.commons.poms</groupId>
 		<artifactId>soitoolkit-superpom</artifactId>
+<!--
 		<version>0.1.2-SNAPSHOT</version>
+-->
+		<version>0.1.1</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
