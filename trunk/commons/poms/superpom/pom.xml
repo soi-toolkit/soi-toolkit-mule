@@ -32,7 +32,7 @@
 			 to its own project-version and not soi-toolkits. 
 			 So we have to specify the soitoolkit-version twice! 
 		-->
-		<soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
+		<soitoolkit.version>0.1.2</soitoolkit.version>
 	</properties>
 	
 	<repositories>
