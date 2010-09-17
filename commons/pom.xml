@@ -5,23 +5,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-        <groupId>org.soitoolkit.commons.poms</groupId>
-		<artifactId>soitoolkit-superpom</artifactId>
-		<version>0.1.1</version>
+        <groupId>org.soitoolkit</groupId>
+		<artifactId>soitoolkit</artifactId>
+		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.commons</groupId>
 	<artifactId>soitoolkit-commons</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.2-SNAPSHOT</version>
 	<name>soitoolkit-commons</name>
 
 	<modules>
 
-<!--
 		<module>poms/superpom</module>
--->
 		<module>poms/assembly-descriptors</module>
 		
 		<module>components/commons-schemas</module>
