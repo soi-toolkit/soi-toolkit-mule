@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -14,7 +11,7 @@
 	<groupId>org.soitoolkit</groupId>
 	<artifactId>soitoolkit</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.2</version>
 	<name>soitoolkit</name>
     <description>SOI-Toolkit</description>
     <url>http://maven.apache.org</url>
@@ -27,9 +24,9 @@
     </licenses>
 
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/trunk</url>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/soitoolkit-0.1.2/trunk</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/soitoolkit-0.1.2/trunk</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/soitoolkit-0.1.2/trunk</url>
 	</scm>
 
 	<properties>

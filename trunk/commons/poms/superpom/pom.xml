@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!--
     This is the default parent-pom for integration components based on
@@ -14,7 +11,7 @@
   <groupId>org.soitoolkit.commons.poms</groupId>
   <artifactId>soitoolkit-superpom</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.1.2</version>
   <name>soitoolkit-superpom</name>
   <description>The default parent pom for integration components</description>
   <url>http://code.google.com/p/soi-toolkit/</url>
