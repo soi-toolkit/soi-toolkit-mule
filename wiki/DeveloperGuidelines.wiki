@@ -89,7 +89,7 @@ svn update
 }}}
   * Run tests
 {{{
-mvn test
+mvn clean test
 }}}
  # Manually update the soi-toolkit version to the release version in {{{trunk/commons/poms/superpom/pom.xml}}}. 
  E.g. change:
