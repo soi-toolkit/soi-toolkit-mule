@@ -91,7 +91,7 @@ svn update
 {{{
 mvn clean test
 }}}
- # Manually update the soi-toolkit version to the release version in {{{trunk/commons/poms/superpom/pom.xml}}}. 
+ # Manually update the soi-toolkit version to the release version in {{{commons/poms/superpom/pom.xml}}}. 
  E.g. change:
 {{{
 <soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
