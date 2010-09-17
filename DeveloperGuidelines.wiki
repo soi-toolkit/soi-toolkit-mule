@@ -91,13 +91,22 @@ svn update
 {{{
 mvn test
 }}}
-  * Commit changes
+ # Manually update the soi-toolkit version to the release version in {{{trunk/commons/poms/superpom/pom.xml}}}. 
+ E.g. change:
 {{{
-svn commit
+<soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
+}}}
+ To:
+{{{
+<soitoolkit.version>0.1.2</soitoolkit.version>
 }}}
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
+}}}
+ # Commit changes
+{{{
+svn commit
 }}}
  # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
 {{{
@@ -120,6 +129,19 @@ mvn release:perform
   * If errors then Click on the Drop button and correct error and redo the process...
   * If ok click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
+ # Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/superpom/pom.xml}}}. 
+ E.g. change:
+{{{
+<soitoolkit.version>0.1.2</soitoolkit.version>
+}}}
+ To:
+{{{
+<soitoolkit.version>0.1.3-SNAPSHOT</soitoolkit.version>
+}}}
+ # Commit the change
+{{{
+svn commit
+}}}
 
 = Naming Conventions =
 
