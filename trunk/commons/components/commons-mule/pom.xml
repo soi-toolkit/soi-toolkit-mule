@@ -1,23 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-        <groupId>org.soitoolkit.commons.poms</groupId>
-		<artifactId>soitoolkit-superpom</artifactId>
-		<version>0.1.1</version>
+        <groupId>org.soitoolkit</groupId>
+		<artifactId>soitoolkit</artifactId>
+		<version>0.1.2-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.commons.components</groupId>
 	<artifactId>soitoolkit-commons-mule</artifactId>
-	<packaging>jar</packaging>
-	<version>0.1.2-SNAPSHOT</version>
 	<name>soitoolkit-commons-mule</name>
-
-	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-mule/trunk</url>
-	</scm>
 
 	<properties>
 		<mule-transport-sftp.version>2.2.1-RC3</mule-transport-sftp.version>
@@ -31,7 +27,7 @@
 		<dependency>
             <groupId>org.soitoolkit.commons.components</groupId>
 			<artifactId>soitoolkit-commons-schemas</artifactId>
-			<version>0.1.1</version>
+			<version>${project.version}</version>
 		</dependency>
 
  		<!-- Required by Mule MMC Agent - - >
