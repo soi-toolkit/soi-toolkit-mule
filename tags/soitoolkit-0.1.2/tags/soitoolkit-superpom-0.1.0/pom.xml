@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.soitoolkit.commons.poms</groupId>
+	<artifactId>soitoolkit-superpom</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1.0</version>
+	<name>soitoolkit-superpom</name>
+
+	<scm>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/poms/superpom/tags/REL-0.1.0</url>
+	</scm>
+
+	<properties>
+        <!-- Define common properties here, i.e. that are referred to in two or more other pom's -->
+
+		<!-- NOTE: Uses the Spring and CXF versions that comes with the used version of Mule ESB -->
+		<spring.version>2.5.6</spring.version>
+        <cxf-gen.version>2.1.9</cxf-gen.version>
+		<mule.version>2.2.5</mule.version>
+		<cxf.version>2.1.9</cxf.version>
+		<jaxb-api.version>2.1</jaxb-api.version>		
+		<jaxb-impl.version>2.1.10</jaxb-impl.version>
+
+<!--
+		<activemq.version>5.3.2</activemq.version>
+-->
+		<activemq.version>5.2.0</activemq.version>
+		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
+        <xbean.version>3.4</xbean.version>
+
+<!-- 
+        Mule ESB CE versions
+		<mule.version>2.2.1</mule.version>
+		<cxf.version>2.1.2</cxf.version>
+ -->
+
+        <!-- Create properties used by the properties-maven-plugin to create a property file that can be used at runtime, e.g. by a monitor-service to provide build-info -->
+		<soitoolkit.buildinfo.group>${groupId}</soitoolkit.buildinfo.group>
+		<soitoolkit.buildinfo.artifact>${artifactId}</soitoolkit.buildinfo.artifact>
+		<soitoolkit.buildinfo.version>${version}</soitoolkit.buildinfo.version>
+        
+        <!-- Properties for generating code from XML Schemas (JAX-WS + JAXB) -->
+        <schema.path>${basedir}/src/main/resources/schemas</schema.path>
+        <schema.gen.src.dir>${project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
+	</properties>
+
+	<repositories>
+<!--
+		<!- - for jaxb-impl - ->
+		<repository>
+			<id>maven-repository.dev.java.net</id>
+			<url>http://download.java.net/maven/1/</url>
+			<layout>legacy</layout>
+		</repository>
+-->
+
+		<!-- for jersey-server -->
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<url>http://download.java.net/maven/2/</url>
+			<layout>default</layout>
+		</repository>
+
+		<!-- for mule-addons such as jersey and restlet transports -->
+		<repository>
+			<id>muleforge</id>
+			<name>MuleForge Repository</name>
+			<url>http://repository.muleforge.org</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<!-- ensure that the compiler uses Java SE 6 syntax -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+
+			<!-- eclipse-plugin 2.8 has removed(!) the goal eclipse:m2eclipse -->
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.7</version>
+                <!--
+                <configuration>
+                  <downloadSources>true</downloadSources>
+                  <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+                -->
+              </plugin>
+
+			<!-- ensure that source jar files are created and installed as well -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+            <!-- create test-jar as well -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--
+				download source jar's for our dependencies whenever possible, but
+				skip javadoc-jar's
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+            <!-- Creates a property file that can be used at runtime, e.g. by a monitor-service to provide build-info, see build-properties in the top of this file -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>write-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>
+                                ${project.build.outputDirectory}/${artifactId}-build.properties
+                            </outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+		</plugins>
+	</build>
+</project>

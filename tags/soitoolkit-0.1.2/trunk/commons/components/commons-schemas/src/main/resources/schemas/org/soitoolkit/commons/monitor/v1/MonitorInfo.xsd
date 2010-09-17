@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="urn:org.soitoolkit.commons.monitor.schema:v1"
+	xmlns:tns="urn:org.soitoolkit.commons.monitor.schema:v1" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	version="1.0">
+
+	<xsd:element name="monitorInfo" type="tns:MonitorInfoType" />
+
+	<!-- 
+		MonitorInfoType
+	  -->
+    <xsd:complexType name="MonitorInfoType">
+    	<xsd:sequence>
+    		<xsd:element name="name"      type="xsd:string"/>
+    		<xsd:element name="version"   type="xsd:string"/>
+			<xsd:element name="timestamp" type="xsd:dateTime"/>
+
+    		<xsd:element name="extraInfo" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="name" type="xsd:string"/>
+    					<xsd:element name="value" type="xsd:string"/>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+</xsd:schema>

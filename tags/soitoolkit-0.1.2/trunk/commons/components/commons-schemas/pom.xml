@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.soitoolkit</groupId>
+		<artifactId>soitoolkit</artifactId>
+		<version>0.1.2</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.soitoolkit.commons.components</groupId>
+	<artifactId>soitoolkit-commons-schemas</artifactId>
+	<name>soitoolkit-commons-schemas</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf-gen.version}</version>
+				<executions>
+					<execution>
+						<id>ws.generate</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<sourceRoot>${schema.gen.src.dir}</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<wsdl>${schema.path}/org/soitoolkit/commons/logentry/v1/jaxb-gen-only.wsdl</wsdl>
+									<extraargs>
+										<extraarg>-validate</extraarg>
+										<extraarg>-p</extraarg>
+										<extraarg>urn:org.soitoolkit.commons.logentry.schema:v1=org.soitoolkit.commons.logentry.schema.v1</extraarg>
+									</extraargs>
+								</wsdlOption>
+
+								<wsdlOption>
+									<wsdl>${schema.path}/org/soitoolkit/commons/monitor/v1/jaxb-gen-only.wsdl</wsdl>
+									<extraargs>
+										<extraarg>-validate</extraarg>
+										<extraarg>-p</extraarg>
+										<extraarg>urn:org.soitoolkit.commons.monitor.schema:v1=org.soitoolkit.commons.monitor.schema.v1</extraarg>
+									</extraargs>
+								</wsdlOption>
+
+							</wsdlOptions>
+						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>      
+
+<!-- 
+      <plugin>
+        <!- - Create a schema-artifact only containing wsdl & xsd files, i.e. no JAX-WS/JAXB-generated artifacts, for example for a C# app - ->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <!- - Plugin-dependency to our shared assembly-descriptor.
+                Note: We are using a shared assembly-descriptor to avoid the need to generate
+                      a descriptor in every schema-project and leave a footprint.
+            - ->
+            <groupId>org.soitoolkit.commons.poms</groupId>
+            <artifactId>soitoolkit-assembly-descriptors</artifactId>
+            <version>0.1.2-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>schema-assembly-descriptor.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+ -->
+
+		</plugins>
+	</build>
+</project>
