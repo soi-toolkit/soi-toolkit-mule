@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.soitoolkit.commons.poms</groupId>
+		<artifactId>soitoolkit-superpom</artifactId>
+		<version>0.1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.soitoolkit.commons.components</groupId>
+	<artifactId>soitoolkit-commons-schemas</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1.0</version>
+	<name>soitoolkit-commons-schemas</name>
+
+	<scm>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/commons/components/commons-schemas/tags/REL-0.1.0</url>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf-gen.version}</version>
+				<executions>
+					<execution>
+						<id>ws.generate</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<sourceRoot>${schema.gen.src.dir}</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<wsdl>${schema.path}/org/soitoolkit/commons/logentry/v1/jaxb-gen-only.wsdl</wsdl>
+									<extraargs>
+										<extraarg>-validate</extraarg>
+										<extraarg>-p</extraarg>
+										<extraarg>urn:org.soitoolkit.commons.logentry.schema:v1=org.soitoolkit.commons.logentry.schema.v1</extraarg>
+									</extraargs>
+								</wsdlOption>
+
+								<wsdlOption>
+									<wsdl>${schema.path}/org/soitoolkit/commons/monitor/v1/jaxb-gen-only.wsdl</wsdl>
+									<extraargs>
+										<extraarg>-validate</extraarg>
+										<extraarg>-p</extraarg>
+										<extraarg>urn:org.soitoolkit.commons.monitor.schema:v1=org.soitoolkit.commons.monitor.schema.v1</extraarg>
+									</extraargs>
+								</wsdlOption>
+
+							</wsdlOptions>
+						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>      
+		</plugins>
+	</build>
+</project>
