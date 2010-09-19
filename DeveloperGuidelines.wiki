@@ -71,10 +71,10 @@ mvn clean deploy
 
 = Release handling =
 
-Each component mentioned above has its own release cycle and are released as described below.
+All components in soi-toolkit (see above) has one and the same release cycle and are released together as described below.
 
 
-To release components of soi-toolkit we use mavens release-plugin.
+To release soi-toolkit we use mavens release-plugin.
 
 Perform the following steps
 
@@ -142,6 +142,11 @@ mvn release:perform
 {{{
 svn commit
 }}}
+ # Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
+{{{
+mvn install
+}}}
+
 
 = Naming Conventions =
 
