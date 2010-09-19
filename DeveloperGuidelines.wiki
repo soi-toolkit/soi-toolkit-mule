@@ -90,7 +90,7 @@ svn update
 {{{
 mvn clean test
 }}}
- # Manually update the soi-toolkit version to the release version in {{{commons/poms/superpom/pom.xml}}}. 
+ # Manually update the soi-toolkit version to the release version in {{{commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
 {{{
 <soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
@@ -99,6 +99,7 @@ mvn clean test
 {{{
 <soitoolkit.version>0.1.2</soitoolkit.version>
 }}}
+*NOTE*: Same for generator method: org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl.getSoitoolkitVersion()
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
@@ -128,7 +129,7 @@ mvn release:perform
   * If errors then Click on the Drop button and correct error and redo the process...
   * If ok click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
- # Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/superpom/pom.xml}}}. 
+ # Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
 {{{
 <soitoolkit.version>0.1.2</soitoolkit.version>
@@ -137,6 +138,7 @@ mvn release:perform
 {{{
 <soitoolkit.version>0.1.3-SNAPSHOT</soitoolkit.version>
 }}}
+*NOTE*: Same for generator method: org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl.getSoitoolkitVersion()
  # Commit the change
 {{{
 svn commit
