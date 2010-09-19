@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd 
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<spring:beans>
+		<spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml" />
+	</spring:beans>
+
+	<!--
+		<jms:activemq-connector name="soitoolkit-jms-connector"
+		brokerURL="tcp://localhost:61616"
+		disableTemporaryReplyToDestinations="true" persistentDelivery="true"
+		/>
+	-->
+
+	<spring:bean name="soitoolkit-jms-connection-factory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<spring:property name="brokerURL" value="failover:(tcp://localhost:61616)" />
+<!-- 
+		<spring:property name="brokerURL" value="tcp://localhost:61616" />
+ -->
+		<spring:property name="redeliveryPolicy">
+			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
+				<spring:property name="maximumRedeliveries" value="0" />
+				<spring:property name="initialRedeliveryDelay" value="0" />			
+			</spring:bean>
+		</spring:property>
+	</spring:bean>
+
+	<jms:connector name="soitoolkit-jms-connector"
+		connectionFactory-ref="soitoolkit-jms-connection-factory"
+		disableTemporaryReplyToDestinations="true" 
+		persistentDelivery="true"
+		numberOfConsumers="2"
+		specification="1.1"
+		maxRedelivery="10">
+
+<!-- 
+ 		<spring:property name="retryPolicyTemplate" ref="threadingPolicyTemplate" />
+ -->
+		
+		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+		
+<!-- 
+        <default-connector-exception-strategy>
+            <outbound-endpoint address="file://./mule-connector-errors">
+            	<jms:transaction action="JOIN_IF_POSSIBLE" />
+            </outbound-endpoint>
+        </default-connector-exception-strategy>
+
+
+ -->
+        		
+	</jms:connector>
+
+	<spring:bean id="threadingPolicyTemplate"
+		class="org.mule.modules.common.retry.policies.AdaptiveRetryPolicyTemplateWrapper">
+		<spring:property name="delegate" ref="exhaustingRetryPolicyTemplate" />
+	</spring:bean>
+
+	<spring:bean id="exhaustingRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ExhaustingRetryPolicyTemplate">
+	    <spring:property name="sleepTime" value="1000"/>
+	    <spring:property name="retryLimit" value="2"/>
+	</spring:bean>
+
+<!-- 
+	<spring:bean id="foreverRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ForeverRetryPolicyTemplate" />
+
+	<jms:activemq-connector name="soitoolkit-jms-connector"
+		brokerURL="failover:(tcp://localhost:61616)"
+		disableTemporaryReplyToDestinations="true" persistentDelivery="true"
+		numberOfConsumers="2" specification="1.1">
+		<spring:property name="retryPolicyTemplate" ref="ThreadingPolicyTemplate" />
+	</jms:activemq-connector>
+ -->
+
+</mule>
