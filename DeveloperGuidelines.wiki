@@ -16,6 +16,8 @@ soi-toolkit is based on the following components:
 || commons-log || commons/components/commons-log/trunk || TBS ||
 || commons-mule || commons/components/commons-mule/trunk || TBS ||
 
+All components in soi-toolkit has one and the same release cycle (i.e. cm scope) and are released together as described below.
+
 = Initial setup =
 
 The soi-toolkit uses Sonatype OSS Maven Repository to release artifacts to the Maven central repository, see https://docs.sonatype.org/display/repository/sonatype+oss+maven+repository+usage+guide for details.
@@ -64,19 +66,16 @@ gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
  
 = Publish snapshots =
 
-To publish a snapshot of a soi-toolkit component do:
+To publish a snapshot of soi-toolkit do:
 {{{
 mvn clean deploy
 }}}
 
 = Release handling =
 
-All components in soi-toolkit (see above) has one and the same release cycle and are released together as described below.
+To release a new version of soi-toolkit we use mavens release-plugin.
 
-
-To release soi-toolkit we use mavens release-plugin.
-
-Perform the following steps
+Perform the following steps:
 
  # Go to the components trunk-folder
 {{{
