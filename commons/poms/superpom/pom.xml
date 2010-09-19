@@ -111,6 +111,19 @@
 				</executions>
 			</plugin>
 
+            <!-- create test-jar as well -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!--
 				download source jar's for our dependencies whenever possible, but
 				skip javadoc-jar's
