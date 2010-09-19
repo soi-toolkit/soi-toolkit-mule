@@ -52,7 +52,15 @@
 		<mule.version>2.2.1</mule.version>
 		<cxf.version>2.1.2</cxf.version>
  -->
-        <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
+ 
+        <!--
+          Note: version 2.0 is tagging at the wrong level in SVN
+          (project level instead of trunk-level) due to bug:
+          http://jira.codehaus.org/browse/MRELEASE-526
+
+          <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
+        -->
+        <maven-assembly-plugin.version>2.0-beta-9</maven-assembly-plugin.version>
 
 
         <!-- Create properties used by the properties-maven-plugin to create a property file that can be used at runtime, e.g. by a monitor-service to provide build-info -->
