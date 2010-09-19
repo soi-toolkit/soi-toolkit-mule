@@ -15,7 +15,7 @@
 
 	<modules>
 
-		<module>poms/superpom</module>
+		<module>poms/default-parent</module>
 		<module>poms/assembly-descriptors</module>
 		
 		<module>components/commons-schemas</module>
