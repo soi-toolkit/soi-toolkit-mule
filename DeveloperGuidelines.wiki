@@ -151,5 +151,5 @@ mvn clean install
 
 Version numbers:
  * {{{n.n.n}}} for releases
- * {{{soitoolkit-n.n.n}}} for svn tags for releases
+ * {{{soitoolkit-n.n.n}}} for svn tags of releases
  * {{{n.n.n-SNAPSHOT}}} for unreleased snapshots used during development
