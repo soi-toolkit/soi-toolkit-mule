@@ -143,13 +143,13 @@ svn commit
 }}}
  # Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
-mvn install
+mvn clean install
 }}}
 
 
 = Naming Conventions =
 
-Version numbers of components:
- * {{{n.n.n}}} for released components
- * {{{REL-n.n.n}}} for svn tags for released components
- * {{{n.n.n-SNAPSHOT}}} for unreleased components during development
+Version numbers:
+ * {{{n.n.n}}} for releases
+ * {{{soitoolkit-n.n.n}}} for svn tags for releases
+ * {{{n.n.n-SNAPSHOT}}} for unreleased snapshots used during development
