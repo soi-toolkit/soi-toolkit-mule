@@ -1,0 +1,308 @@
+package org.soitoolkit.tools.generator.plugin.createcomponent;
+
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.SD_SCHEMA_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
+import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.IPageChangingListener;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.dialogs.PageChangingEvent;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardContainer;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
+import org.soitoolkit.tools.generator.plugin.generator.IntegrationComponentGenerator;
+import org.soitoolkit.tools.generator.plugin.generator.SchemaComponentGenerator;
+import org.soitoolkit.tools.generator.plugin.model.IModel;
+import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.util.StatusPage;
+import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
+
+/**
+ * This is a sample new wizard. Its role is to create a new file 
+ * resource in the provided container. If the container resource
+ * (a folder or a project) is selected in the workspace 
+ * when the wizard is opened, it will accept it as the target
+ * container. The wizard creates one file with the extension
+ * "mpe". If a sample multi-page editor (also available
+ * as a template) is registered for the same extension, it will
+ * be able to open it.
+ */
+
+public class CreateComponentWizard extends Wizard implements INewWizard {
+	private CreateComponentStartPage  page;
+	private CreateIntegrationComponentPage page2;
+	private StatusPage page3;
+	private ISelection selection;
+
+	/**
+	 * Helper method for inter-page communication
+	 * TODO: Is this the right way to go???
+	 * 
+	 * @return
+	 */
+	CreateIntegrationComponentPage getCreateIntegrationComponentPage() {
+		return page2;
+	}
+	
+	/**
+	 * Constructor for CreateComponentWizard.
+	 */
+	public CreateComponentWizard() {
+		super();
+		setNeedsProgressMonitor(true);
+	}
+	
+	
+	@Override
+	public void setContainer(IWizardContainer wizardContainer) {
+		super.setContainer(wizardContainer);
+		
+		registerChangePageListener();		
+	}
+
+	/**
+	 * Adding the page to the wizard.
+	 */
+
+	public void addPages() {
+		page = new CreateComponentStartPage(selection);
+		addPage(page);
+		page2 = new CreateIntegrationComponentPage(selection);
+		addPage(page2);
+		page3 = new StatusPage(selection);
+		addPage(page3);
+	}
+
+	private void registerChangePageListener() {
+		WizardDialog wd = (WizardDialog)getContainer();
+		
+		if (wd == null) return;
+
+		IPageChangingListener pageChaninglistener = new IPageChangingListener() {
+			@Override
+			public void handlePageChanging(PageChangingEvent event) {
+				Object p = (event == null) ? null : event.getTargetPage();
+				boolean isPage2 = (p != null && p == page2);
+				if (isPage2) page2.setMustBeDisplayed(false);
+			}
+		};
+		((WizardDialog)getContainer()).addPageChangingListener(pageChaninglistener);
+		
+		IPageChangedListener pageChanedlistener = new IPageChangedListener() {
+			@Override
+			public void pageChanged(PageChangedEvent event) {
+				Object p = (event == null) ? null : event.getSelectedPage();
+				boolean isPage3 = (p != null && p == page3);
+				if (isPage3) {
+					System.err.println("### Displaying PAGE3, start code generation");
+				}
+			}
+		};
+		((WizardDialog)getContainer()).addPageChangedListener(pageChanedlistener);
+		
+	}
+
+	/**
+	 * This method is called when 'Finish' button is pressed in
+	 * the wizard. We will create an operation and run it
+	 * using wizard as execution context.
+	 */
+	public boolean performFinish() {
+//		final String containerName = page.getContainerName();
+		final int componentType = page.getComponentType();
+		final String artifactId = page.getArtifactId();
+		final String groupId = page.getGroupId();
+		final String version = page.getVersion();
+		final String folderName = page.getRootFolder();
+		
+		final List<TransportEnum> transports = (componentType == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
+
+		IRunnableWithProgress op = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException {
+				try {
+					doFinish(componentType, artifactId, groupId, version, transports, folderName, monitor);
+				} catch (CoreException e) {
+					e.printStackTrace();
+					throw new InvocationTargetException(e);
+				} catch (Throwable e) {
+					e.printStackTrace();
+					throw new InvocationTargetException(e);
+				} finally {
+					monitor.done();
+				}
+			}
+		};
+		try {
+			getContainer().run(true, false, op);
+		} catch (InterruptedException e) {
+			return false;
+		} catch (InvocationTargetException e) {
+			Throwable realException = e.getTargetException();
+			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * The worker method. It will find the container, create the
+	 * file if missing or just replace its contents, and open
+	 * the editor on the newly created file.
+	 * @param folderName2 
+	 * @param componentType 
+	 * @param transports 
+	 */
+
+	private void doFinish(final int componentType, final String artifactId, final String groupId, final String version, final List<TransportEnum> transports, final String folderName, IProgressMonitor monitor) throws CoreException {
+
+		// create a sample folder
+		monitor.beginTask("Starting the generator...", 3);
+
+		final PrintStream ps = new PrintStream(new OutputStream() {
+
+			StringBuffer sb = new StringBuffer();
+			@Override
+			public void write(int b) throws IOException {
+				if (b == '\n') {
+					String str = sb.toString();
+					sb.delete(0, sb.length());
+					if (page3 != null) page3.writeLine(str);
+					
+				} else {
+					sb.append(Character.toString((char) b));
+				}
+			}
+		});
+
+		// Show status page
+		getContainer().getShell().getDisplay().syncExec(
+			new Runnable() {
+				public void run() {
+					getContainer().showPage(page3);
+				}
+			});
+		
+		monitor.worked(1);
+		monitor.setTaskName("Generating files to folder: " + folderName);
+
+		try {
+			
+			switch (componentType) {
+			case INTEGRATION_COMPONENT:
+				new IntegrationComponentGenerator(ps, groupId, artifactId, version, transports, folderName).startGenerator();
+				break;
+
+			case SD_SCHEMA_COMPONENT:
+				
+				String schemaName = artifactId;
+				List<String> operations = null;
+				new SchemaComponentGenerator(ps, groupId, artifactId, version, schemaName, operations, folderName).startGenerator();								
+				break;
+
+			default:
+				break;
+			}
+			
+			String componentProjectName = getComponentProjectName(componentType, groupId, artifactId);
+			final String path = folderName + "/" + componentProjectName;
+			
+			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
+			
+			monitor.worked(1);
+			monitor.setTaskName("Execute command: " + BUILD_COMMAND);
+			SystemUtil.executeCommand(BUILD_COMMAND, path + "/trunk", ps);
+			
+			monitor.worked(1);
+			monitor.setTaskName("Open project(s): " + BUILD_COMMAND);
+
+			
+			switch (componentType) {
+			case INTEGRATION_COMPONENT:
+				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null);
+				openProject(path + "/trunk/" + m.getServiceProject() + "/.project");
+				openProject(path + "/trunk/" + m.getWebProject() + "/.project");
+				openProject(path + "/trunk/" + m.getTeststubWebProject() + "/.project");
+				break;
+
+			case SD_SCHEMA_COMPONENT:
+				openProject(path + "/trunk/.project");
+				break;
+
+			default:
+				break;
+			}
+
+
+		} catch (IOException ioe) {
+			throwCoreException("Failed to create a new component", ioe);
+		}
+		
+		
+//		getShell().getDisplay().asyncExec(new Runnable() {
+//			public void run() {
+//				IWorkbenchPage page =
+//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//				try {
+//					IDE.openEditor(page, file, true);
+//				} catch (PartInitException e) {
+//				}
+//			}
+//		});
+		monitor.worked(1);
+	}
+
+	private void openProject(String path) throws CoreException {
+		IProjectDescription description = ResourcesPlugin.getWorkspace().loadProjectDescription(new Path(path));
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(description.getName());
+		project.create(description, null);
+		project.open(null);
+	}
+
+	
+	private void throwCoreException(String message) throws CoreException {
+		IStatus status =
+			new Status(IStatus.ERROR, "soi_toolkit_generator_plugin", IStatus.OK, message, null);
+		throw new CoreException(status);
+	}
+
+	private void throwCoreException(String message, Throwable exception) throws CoreException {
+		IStatus status =
+			new Status(IStatus.ERROR, "soi_toolkit_generator_plugin", message, exception);
+		throw new CoreException(status);
+	}
+
+	/**
+	 * We will accept the selection in the workbench to see if
+	 * we can initialize from it.
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.selection = selection;
+	}
+}

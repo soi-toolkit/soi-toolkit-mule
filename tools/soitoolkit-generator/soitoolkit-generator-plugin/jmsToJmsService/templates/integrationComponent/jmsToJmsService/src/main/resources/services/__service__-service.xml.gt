@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<!-- TODO: Add service specific definitions here -->
+    <custom-transformer name="${service}Transformer" class="${javaPackage}.${lowercaseService}.${capitalizedService}Transformer"/>
+
+	<model name="${service}-model">
+	
+        <service name="${service}-service">
+            <inbound>
+                <inbound-endpoint address="jms://${uppercaseService}_IN_QUEUE" transformer-refs="logMsgIn jmsToStr">
+					<jms:transaction action="ALWAYS_BEGIN" />
+				</inbound-endpoint>
+            </inbound>
+
+			<outbound>
+				<pass-through-router>
+                    <outbound-endpoint address="jms://${uppercaseService}_OUT_QUEUE" transformer-refs="${service}Transformer strToJms logMsgOut">
+						<jms:transaction action="ALWAYS_JOIN" />
+					</outbound-endpoint>
+				</pass-through-router>
+			</outbound>
+
+        </service>
+
+	</model>
+
+</mule>

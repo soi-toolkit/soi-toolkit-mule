@@ -1,0 +1,9 @@
+
+# TODO: Add connector and service properties here...
+SERVICE_TIMEOUT_MS=8000
+
+<% if (sftp) { %>
+# TODO: Update to reflect your settings
+SOITOOLKIT_SFTP_IDENTITYFILE=/Users/xxx/.ssh/id_dsa
+SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=xxx
+<% } %>  

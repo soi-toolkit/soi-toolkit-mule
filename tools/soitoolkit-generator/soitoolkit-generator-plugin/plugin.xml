@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="SOI Toolkit Code Generator"
+            id="soi_toolkit_generator_plugin">
+      </category>
+      <wizard
+            name="Create a new component"
+            icon="icons/component.png"
+            category="soi_toolkit_generator_plugin"
+            class="org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentWizard"
+            id="soi_toolkit_generator_plugin.wizards.CreateComponentWizard">
+      </wizard>
+      <wizard
+            name="Create a new service"
+            icon="icons/service.png"
+            category="soi_toolkit_generator_plugin"
+            class="org.soitoolkit.tools.generator.plugin.createservice.CreateServiceWizard"
+            id="soi_toolkit_generator_plugin.wizards.CreateServiceWizard">
+      </wizard>
+   </extension>
+
+</plugin>

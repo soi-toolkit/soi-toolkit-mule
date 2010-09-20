@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<!-- TODO: Add teststub-service specific definitions here -->
+
+	<model name="${service}-teststub-model">
+	
+        <service name="${service}-teststub-service">
+            <inbound>
+                <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${uppercaseService}_OUT_QUEUE" transformer-refs="jmsToStr"/>
+            </inbound>
+
+            <component class="${javaPackage}.${lowercaseService}.${capitalizedService}TestReceiver"/>
+
+        </service>
+
+	</model>
+
+</mule>
