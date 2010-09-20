@@ -140,13 +140,14 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		final String groupId = page.getGroupId();
 		final String version = page.getVersion();
 		final String folderName = page.getRootFolder();
+		final String mavenHome = page.getMavenHome();
 		
 		final List<TransportEnum> transports = (componentType == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(componentType, artifactId, groupId, version, transports, folderName, monitor);
+					doFinish(mavenHome, componentType, artifactId, groupId, version, transports, folderName, monitor);
 				} catch (CoreException e) {
 					e.printStackTrace();
 					throw new InvocationTargetException(e);
@@ -179,7 +180,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	 * @param transports 
 	 */
 
-	private void doFinish(final int componentType, final String artifactId, final String groupId, final String version, final List<TransportEnum> transports, final String folderName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String mavenHome, int componentType, String artifactId, String groupId, String version, List<TransportEnum> transports, String folderName, IProgressMonitor monitor) throws CoreException {
 
 		// create a sample folder
 		monitor.beginTask("Starting the generator...", 3);
@@ -236,10 +237,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			monitor.worked(1);
 			monitor.setTaskName("Execute command: " + BUILD_COMMAND);
-			SystemUtil.executeCommand(BUILD_COMMAND, path + "/trunk", ps);
+			SystemUtil.executeCommand(mavenHome + "/bin/" + BUILD_COMMAND, path + "/trunk", ps);
 			
 			monitor.worked(1);
-			monitor.setTaskName("Open project(s): " + BUILD_COMMAND);
+			monitor.setTaskName("Open project(s) in " + path + "/trunk");
 
 			
 			switch (componentType) {
