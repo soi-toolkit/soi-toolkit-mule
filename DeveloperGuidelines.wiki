@@ -99,7 +99,7 @@ mvn clean test
 {{{
 <soitoolkit.version>0.1.2</soitoolkit.version>
 }}}
-*NOTE*: Same for generator method: org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl.getSoitoolkitVersion()
+*NOTE*: Same for generator method: {{{getSoitoolkitVersion()}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
@@ -138,7 +138,7 @@ mvn release:perform
 {{{
 <soitoolkit.version>0.1.3-SNAPSHOT</soitoolkit.version>
 }}}
-*NOTE*: Same for generator method: org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl.getSoitoolkitVersion()
+*NOTE*: Same for generator method: {{{getSoitoolkitVersion()}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
  # Commit the change
 {{{
 svn commit
