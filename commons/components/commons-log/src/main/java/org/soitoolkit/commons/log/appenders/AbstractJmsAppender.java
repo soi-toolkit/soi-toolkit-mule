@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -51,18 +52,20 @@ public abstract class AbstractJmsAppender extends AppenderSkeleton {
 	public static final String DEFAULT_LOG_INFO_QUEUE = "SOITOOLKIT.LOG.INFO";
 	public static final String DEFAULT_LOG_ERROR_QUEUE = "SOITOOLKIT.LOG.ERROR";
 
-	private static InetAddress HOST;
-	private static String HOST_NAME;
-	private static String HOST_IP;
+	private static InetAddress HOST = null;
+	private static String HOST_NAME = "UNKNOWN";
+	private static String HOST_IP = "UNKNOWN";
+	private static String PROCESS_ID = "UNKNOWN";
 
 	{
 		try {
-			HOST = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
+			// Let's give it a try, fail silently...
+			HOST       = InetAddress.getLocalHost();
+			HOST_NAME  = HOST.getCanonicalHostName();
+			HOST_IP    = HOST.getHostAddress();
+			PROCESS_ID = ManagementFactory.getRuntimeMXBean().getName();
+		} catch (Throwable ex) {
 		}
-		HOST_NAME = HOST.getCanonicalHostName();
-		HOST_IP   = HOST.getHostAddress();
 	}
 
 	public AbstractJmsAppender() {
@@ -230,8 +233,9 @@ public abstract class AbstractJmsAppender extends AppenderSkeleton {
 		lri.setTimestamp(convertDateTimeToXMLGregorianCalendar(null));
 		lri.setHostName(HOST_NAME);
 		lri.setHostIp(HOST_IP);
-		lri.setServerId("");
-		lri.setThread(event.getThreadName());
+		lri.setProcessId(PROCESS_ID);
+		lri.setComponentId("");
+		lri.setThreadId(event.getThreadName());
 		
 		
 		// Setup basic metadata information for the log entry
@@ -296,6 +300,8 @@ BusinessContextId=
 ** log.event.end *************************************************************
 */
 			
+			// FIXME: Get rid of this reverse engineering of a log message!!!
+			// TODO: Align log-events with the structure of the LogEvent-xsd!
 			BufferedReader br = null;
 			try {
 				br = new BufferedReader(new StringReader(message));
@@ -306,7 +312,7 @@ BusinessContextId=
 				lm.setMessage(getNextValue(br));                        // Consume Action...
 				lmi.setServiceImplementation(getNextValue(br));         // Consume ResourceId...
 				br.readLine();                                          // Consume Host...
-				lri.setServerId(getNextValue(br));						// Consume Server...
+				lri.setComponentId(getNextValue(br));					// Consume Server...
 				lmi.setEndpoint(getNextValue(br));                      // Consume Endpoint...
 				lri.setMessageId(getNextValue(br));                     // Consume MessageId...
 				lri.setBusinessCorrelationId(getNextValue(br));         // Consume BusinessCorrelationId...

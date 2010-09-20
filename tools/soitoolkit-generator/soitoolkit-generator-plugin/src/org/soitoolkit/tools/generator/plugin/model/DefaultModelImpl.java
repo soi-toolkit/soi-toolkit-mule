@@ -153,7 +153,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSoitoolkitVersion()
 	 */
 	public String getSoitoolkitVersion() {
-		return "0.1.4";
+		return "0.1.5";
 	}
 
 	/* (non-Javadoc)

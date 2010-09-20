@@ -29,6 +29,20 @@
     		<xsd:element name="messageInfo"  type="tns:LogMessageType"/>
     		<xsd:element name="payload"      type="xsd:string" minOccurs="0"/>
 
+    		<xsd:element name="extraInfo" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                	<xsd:documentation>
+                		Any extra information regarding the log entry that the current metadata doesn't support...
+                	</xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="name" type="xsd:string"/>
+    					<xsd:element name="value" type="xsd:string"/>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+
     		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     	</xsd:sequence>
     </xsd:complexType>
@@ -125,17 +139,15 @@
 	            </xsd:annotation>
     		</xsd:element>
 
-    		<xsd:element name="serverId" type="xsd:string">
+    		<xsd:element name="processId" type="xsd:string">
 	            <xsd:annotation>
 	                <xsd:documentation>
-	                	Identity of the server-process on the host
-	                	TODO: Should this element specify the process instead?
-	                	I.e. one server (e.g. orderMgm-server) could runt in several instances (processes) for HA or scalability reasons on one and the same machine...
+	                	Identity of the process on the host, i.e. a PID
 	                </xsd:documentation>
 	            </xsd:annotation>
     		</xsd:element>
 
-    		<xsd:element name="thread" type="xsd:string">
+    		<xsd:element name="threadId" type="xsd:string">
 	            <xsd:annotation>
 	                <xsd:documentation>
 		                Identity of the thread
@@ -143,10 +155,18 @@
 	            </xsd:annotation>
     		</xsd:element>
 
+    		<xsd:element name="componentId" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                	Identity of the software component in the process on the host, i.e. OrderMgmServices
+	                </xsd:documentation>
+	            </xsd:annotation>
+    		</xsd:element>
+
     		<xsd:element name="messageId" type="xsd:string">
 	            <xsd:annotation>
 	                <xsd:documentation>
-	                    Message Id
+		                Identity of the message
 	                </xsd:documentation>
 	            </xsd:annotation>
     		</xsd:element>
