@@ -1,5 +1,9 @@
 package org.soitoolkit.tools.generator.plugin.util;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -36,7 +40,33 @@ public class StatusPage extends WizardPage {
 		this.selection = selection;
 	}
 
-	public void writeLine(final String line) {
+	/**
+	 * Returns a new PrinstStream that can be used to update the status-text-area on this page.
+	 * 
+	 * @return
+	 */
+	public PrintStream createStatusPrintStream() {
+		return new PrintStream(new OutputStream() {
+			StringBuffer sb = new StringBuffer();
+			@Override
+			public void write(int b) throws IOException {
+				if (b == '\n') {
+					String str = sb.toString();
+					sb.delete(0, sb.length());
+					writeLine(str);
+				} else {
+					sb.append(Character.toString((char) b));
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Writes a line to the status-text-area in the GUI-thread
+	 * 
+	 * @param line
+	 */
+	protected void writeLine(final String line) {
 		getContainer().getShell().getDisplay().syncExec(
 			new Runnable() {
 				public void run() {
@@ -46,7 +76,8 @@ public class StatusPage extends WizardPage {
 						// statusTextArea.setCaretOffset(statusTextArea.getCharCount());
 					}
 				}
-			});
+			}
+		);
 	}
 	
 	/**

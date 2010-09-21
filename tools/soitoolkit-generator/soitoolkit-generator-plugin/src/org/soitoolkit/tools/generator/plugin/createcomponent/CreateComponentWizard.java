@@ -185,22 +185,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		// create a sample folder
 		monitor.beginTask("Starting the generator...", 3);
 
-		final PrintStream ps = new PrintStream(new OutputStream() {
-
-			StringBuffer sb = new StringBuffer();
-			@Override
-			public void write(int b) throws IOException {
-				if (b == '\n') {
-					String str = sb.toString();
-					sb.delete(0, sb.length());
-					if (page3 != null) page3.writeLine(str);
-					
-				} else {
-					sb.append(Character.toString((char) b));
-				}
-			}
-		});
-
+		// Create two print-streams one for each out and err (is written to in separated threads so we better create one stream per thread...)
+		PrintStream out = page3.createStatusPrintStream();
+		PrintStream err = page3.createStatusPrintStream();
+		
 		// Show status page
 		getContainer().getShell().getDisplay().syncExec(
 			new Runnable() {
@@ -216,20 +204,20 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			switch (componentType) {
 			case INTEGRATION_COMPONENT:
-				new IntegrationComponentGenerator(ps, groupId, artifactId, version, transports, folderName).startGenerator();
+				new IntegrationComponentGenerator(out, groupId, artifactId, version, transports, folderName).startGenerator();
 				break;
 
 			case SD_SCHEMA_COMPONENT:
 				
 				String schemaName = artifactId;
 				List<String> operations = null;
-				new SchemaComponentGenerator(ps, groupId, artifactId, version, schemaName, operations, folderName).startGenerator();								
+				new SchemaComponentGenerator(out, groupId, artifactId, version, schemaName, operations, folderName).startGenerator();								
 				break;
 
 			default:
 				break;
 			}
-			
+
 			String componentProjectName = getComponentProjectName(componentType, groupId, artifactId);
 			final String path = folderName + "/" + componentProjectName;
 			
@@ -237,7 +225,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			monitor.worked(1);
 			monitor.setTaskName("Execute command: " + BUILD_COMMAND);
-			SystemUtil.executeCommand(mavenHome + "/bin/" + BUILD_COMMAND, path + "/trunk", ps);
+			SystemUtil.executeCommand(mavenHome + "/bin/" + BUILD_COMMAND, path + "/trunk", out, err);
 			
 			monitor.worked(1);
 			monitor.setTaskName("Open project(s) in " + path + "/trunk");

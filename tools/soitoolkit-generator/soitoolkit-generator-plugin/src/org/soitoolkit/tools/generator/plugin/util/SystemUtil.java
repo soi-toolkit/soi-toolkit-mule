@@ -3,6 +3,7 @@ package org.soitoolkit.tools.generator.plugin.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
@@ -14,6 +15,32 @@ public class SystemUtil {
 //	public static final String BUILD_COMMAND = "mvn -version";
 //	public static final String BUILD_COMMAND = "mvn install eclipse:m2eclipse";
 //	public static final String BUILD_COMMAND = "mvn -o eclipse:m2eclipse ";
+
+	static class ThreadedStreamReader extends Thread {
+	    InputStream in;
+	    PrintStream out;
+	    String type;
+	    
+	    ThreadedStreamReader(InputStream in, PrintStream out, String type) {
+	        this.in = in;
+	        this.out = out;
+	        this.type = type;
+	    }
+	    
+	    public void run() {
+	        try {
+	            InputStreamReader isr = new InputStreamReader(in);
+	            BufferedReader br = new BufferedReader(isr);
+	            String line = null;
+	            while ((line = br.readLine()) != null) {
+	                out.println(type + line);    
+	            }
+	            System.err.println("### ThreadedStreamReader terminates for type: " + type);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();  
+            }
+	    }
+	}
 
 	/**
      * Hidden constructor.
@@ -40,28 +67,25 @@ public class SystemUtil {
 	}
 
 	public static void executeCommand(String command, String workingDirectory) throws IOException {
-		executeCommand(command, workingDirectory, System.out);
+		executeCommand(command, workingDirectory, System.out, System.err);
 	}
 
-	public static void executeCommand(String command, String workingDirectory, PrintStream out) throws IOException {
-		BufferedReader input = null;
-		try {
-			Process p = Runtime.getRuntime().exec(command, null, new File(workingDirectory));
-			input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line;
-			while ((line = input.readLine()) != null) {
-				out.println(line);
-			}
+	public static void executeCommand(String command, String workingDirectory, PrintStream out, PrintStream err) throws IOException {
+		Process p = Runtime.getRuntime().exec(command, null, new File(workingDirectory));
 
-			try {p.waitFor();} catch (InterruptedException e) {}
-			
-			int retStatus = p.exitValue();
-			if (retStatus != 0) {
-				throw new IOException("Failed to execute command: [" + command + "]: ret-status = " + retStatus);
-			}
+		ThreadedStreamReader outputReader = new ThreadedStreamReader(p.getErrorStream(), err, "");            
+		ThreadedStreamReader errorReader  = new ThreadedStreamReader(p.getInputStream(), out, "");            
+		    
+		// Start reader threads
+		// TODO: How do we stop them? Will they die when 
+		outputReader.start();
+		errorReader.start();
+		   
+		try {p.waitFor();} catch (InterruptedException e) {}
 		
-		} finally {
-			if (input != null) try {input.close();} catch (IOException e) {}
+		int retStatus = p.exitValue();
+		if (retStatus != 0) {
+			throw new IOException("Failed to execute command: [" + command + "]: ret-status = " + retStatus);
 		}
 	}
 
