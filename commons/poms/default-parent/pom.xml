@@ -20,7 +20,7 @@
   <version>0.1.7-SNAPSHOT</version>
   <name>soitoolkit-default-parent</name>
   <description>The default parent pom for components that use soi-toolkit, e.g. integration and schema components</description>
-  <url>http://code.google.com/p/soi-toolkit/</url>
+  <url>http://soi-toolkit.org</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>

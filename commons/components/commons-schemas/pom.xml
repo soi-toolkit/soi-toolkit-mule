@@ -11,6 +11,7 @@
 	<groupId>org.soitoolkit.commons.components</groupId>
 	<artifactId>soitoolkit-commons-schemas</artifactId>
 	<name>soitoolkit-commons-schemas</name>
+    <url>http://soi-toolkit.org</url>
 
 	<build>
 		<plugins>

@@ -11,4 +11,6 @@
   <groupId>org.soitoolkit.commons.poms</groupId>
   <artifactId>soitoolkit-assembly-descriptors</artifactId>
   <name>soitoolkit-assembly-descriptors</name>
+  <url>http://soi-toolkit.org</url>
+
 </project>

@@ -12,6 +12,7 @@
 	<artifactId>soitoolkit-commons</artifactId>
 	<packaging>pom</packaging>
 	<name>soitoolkit-commons</name>
+    <url>http://soi-toolkit.org</url>
 
 	<modules>
 

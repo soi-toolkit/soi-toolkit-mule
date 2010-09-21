@@ -11,6 +11,7 @@
 	<groupId>org.soitoolkit.commons.components</groupId>
 	<artifactId>soitoolkit-commons-mule</artifactId>
 	<name>soitoolkit-commons-mule</name>
+	<url>http://soi-toolkit.org</url>
 
 	<properties>
 		<mule-transport-sftp.version>2.2.1-RC3</mule-transport-sftp.version>
