@@ -65,7 +65,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	
 	private Combo muleVersionCombo;
 	private Button genServiceButton;
-	private Button genSchemaButton;
+//	private Button genSchemaButton;
 	private Button genWarButton;
 	private Button jmsButton;
 	private Button sftpButton;
@@ -166,10 +166,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		genServiceButton.setSelection(true);
 		genServiceButton.setEnabled(false);
 
-		// TODO: Make genSchemaButton selectable
-		genSchemaButton = SwtUtil.createCheckboxButton(container, null,-1, "Schema module");
-		genSchemaButton.setSelection(false);
-		genSchemaButton.setEnabled(false);
+//		// TODO: Make genSchemaButton selectable
+//		genSchemaButton = SwtUtil.createCheckboxButton(container, null,-1, "Schema module");
+//		genSchemaButton.setSelection(false);
+//		genSchemaButton.setEnabled(false);
 
 		// TODO: Make genWarButton selectable
 		genWarButton = SwtUtil.createCheckboxButton(container, null,-1, "War and Teststub War");
@@ -281,9 +281,9 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //		return containerText.getText();
 //	}
 
-	public boolean isGenSchemaSelected() {
-		return genSchemaButton.getSelection();
-	}
+//	public boolean isGenSchemaSelected() {
+//		return genSchemaButton.getSelection();
+//	}
 
 	public boolean isGenWarSelected() {
 		return genWarButton.getSelection();
