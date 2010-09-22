@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
 
+import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
+
 public class SftpToSftpServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
@@ -52,7 +54,7 @@ public class SftpToSftpServiceGenerator implements Generator {
 		try {
 			String propFile = gu.getOutputFolder() + "/" + gu.getOutputRootFolder() + "/src/environment/" + gu.getModel().getArtifactId() + ".properties";
 			String service = gu.getModel().getUppercaseService();
-			
+			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
 			// TODO: Replace with sl4j!
 			System.err.println("UPDATE FILE: " + propFile);
 			
@@ -60,10 +62,10 @@ public class SftpToSftpServiceGenerator implements Generator {
 		    out.write("\n");
 		    out.write("# Properties for sftp-service " + gu.getModel().getService() + "\n");
 		    out.write("# TODO: Update to reflect your settings\n");
-		    out.write(service + "_SENDER_SFTP_ADDRESS=muletest1@localhost/~/sftp/" + gu.getModel().getLowercaseService() + "/sender\n");
+		    out.write(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/sender\n");
 		    out.write(service + "_SENDER_POLLING_MS=1000\n");
 		    out.write(service + "_SENDER_SIZECHECK_MS=500\n");
-		    out.write(service + "_RECEIVER_SFTP_ADDRESS=muletest1@localhost/~/sftp/" + gu.getModel().getLowercaseService() + "/receiver\n");
+		    out.write(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/receiver\n");
 		    out.write(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive\n");
 		    out.write(service + "_ARCHIVE_RESTART_POLLING_MS=1000\n");
 

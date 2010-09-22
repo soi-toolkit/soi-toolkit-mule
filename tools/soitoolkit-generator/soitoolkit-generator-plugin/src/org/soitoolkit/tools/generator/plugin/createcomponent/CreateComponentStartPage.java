@@ -37,6 +37,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.dialogs.FileSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 
 /**
@@ -80,12 +81,6 @@ public class CreateComponentStartPage extends WizardPage {
 	public CreateComponentStartPage(ISelection selection) {
 		super("wizardPage");
 
-		System.err.println("### M2_HOME = " + System.getenv("M2_HOME"));
-		Map<String, String> env = System.getenv();
-		Set<String> keys = env.keySet();
-		for (String key : keys) {
-			System.err.println(key + " = " + env.get(key));
-		}
 		setTitle("SOI Toolkit - Create a new component");
 		setDescription("This code generator creates a new component");
 		setImageDescriptor(ImageDescriptor.createFromFile(this.getClass(), "component-large.png"));
@@ -240,8 +235,8 @@ public class CreateComponentStartPage extends WizardPage {
 		artifactIdText.setText("sample1");
 		groupIdText.setText("org.sample");
 		versionText.setText("1.0-SNAPSHOT");
-		rootFolderText.setText(System.getProperty("user.home") + "/temp");
-		mavenHomeText.setText(System.getProperty("user.home") + "/Applications/apache-maven-2.2.1");
+		rootFolderText.setText(PreferencesUtil.getDefaultRootFolder());
+		mavenHomeText.setText(PreferencesUtil.getMavenHome());
 	}
 
 	/**
@@ -350,6 +345,8 @@ public class CreateComponentStartPage extends WizardPage {
 				return;
 			}
 		}
+		
+		// TODO: Also assert that a project with the selected name doesn't already exist in the workspace
 
 		File mvnHome = new File(getMavenHome());
 		if (!mvnHome.isDirectory()) {

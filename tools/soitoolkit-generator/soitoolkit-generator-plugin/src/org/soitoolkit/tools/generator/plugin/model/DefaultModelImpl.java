@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -216,8 +217,6 @@ public class DefaultModelImpl implements IModel {
 		return getArtifactId() + "-teststub-web";
 	}
 
-
-	
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getJavaPackage()
 	 */
@@ -232,6 +231,14 @@ public class DefaultModelImpl implements IModel {
 		return getJavaPackage().replace('.', '/');
 	}
 
+    public String getDefaultSftpIdentityFile() {
+    	return PreferencesUtil.getDefaultSftpIdentityFile();
+    }
+    public String getDefaultSftpIdentityPassphrase() {
+    	return PreferencesUtil.getDefaultSftpIdentityPassphrase();
+    }
+
+	
 	@Override
 	public boolean isSftp() {
 		return isTransportSelected(TransportEnum.SFTP);

@@ -2,7 +2,6 @@ package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
-import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.TEST_OUT_FOLDER;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,15 +13,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
 
 public class JmsToJmsServiceGeneratorTest {
 
-	private static List<TransportEnum> transports = new ArrayList<TransportEnum>();
+	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
+	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
+	private static final String PROJECT = "ordermgm";	
+	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
+	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		transports.add(TransportEnum.JMS);
+		TRANSPORTS.add(TransportEnum.JMS);
 	}
 
 	@AfterClass
@@ -31,10 +35,10 @@ public class JmsToJmsServiceGeneratorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		SystemUtil.delDirs(TEST_OUT_FOLDER + "/ordermgm");
-		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/ordermgm"));
-		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "ordermgm", "1.0-SNAPSHOT", transports, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 59, SystemUtil.countFiles(TEST_OUT_FOLDER + "/ordermgm"));
+		SystemUtil.delDirs(PROJECT_FOLDER);
+		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
+		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", 59, SystemUtil.countFiles(PROJECT_FOLDER));
 	}
 
 	@After
@@ -44,11 +48,11 @@ public class JmsToJmsServiceGeneratorTest {
 	@Test
 	public void testGenerateOrderMgm() throws IOException {
 
-		int noOfFilesBefore = SystemUtil.countFiles(TEST_OUT_FOLDER + "/ordermgm");
+		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
 		
-		new JmsToJmsServiceGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "ordermgm", "processOrder", TEST_OUT_FOLDER + "/ordermgm/trunk").startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(TEST_OUT_FOLDER + "/ordermgm") - noOfFilesBefore);
+		new JmsToJmsServiceGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "processOrder", PROJECT_FOLDER + "/trunk").startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/ordermgm/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 }

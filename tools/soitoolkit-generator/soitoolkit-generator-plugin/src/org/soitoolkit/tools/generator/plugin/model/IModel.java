@@ -2,6 +2,8 @@ package org.soitoolkit.tools.generator.plugin.model;
 
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
+
 public interface IModel {
 
 	public Object resolveParameter(String parameterName);
@@ -56,7 +58,11 @@ public interface IModel {
 
 	public String getJavaPackageFilepath();
 	
-	public boolean isJms();
+    public String getDefaultSftpIdentityFile();
+
+    public String getDefaultSftpIdentityPassphrase();
+
+    public boolean isJms();
 	public boolean isSftp();
 	public boolean isServlet();
 }
