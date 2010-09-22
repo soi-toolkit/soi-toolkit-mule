@@ -20,6 +20,22 @@ All components in soi-toolkit has one and the same release cycle (i.e. cm scope)
 
 = Initial setup =
 
+== Setup for Mule ==
+
+TBS: Ways to get Mule 2.2.x > 2.2.1 in your local maven repo...
+
+== Setup for generator-plugin ==
+
+ # on mac for 32bit Eclipse specify -d32 om launch command...
+
+ # jvm minimum paramenters on launch command
+
+ # specify your environment in the propertyfile, {{{src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+
+ # how to create pki keys for sftp
+
+== Setup for Sonatype OSS Maven Repository ==
+
 The soi-toolkit uses Sonatype OSS Maven Repository to release artifacts to the Maven central repository, see https://docs.sonatype.org/display/repository/sonatype+oss+maven+repository+usage+guide for details.
 
 Added to the setup of the development environment required for a user of soi-toolkit a developer must perform the following setup steps to be able to perform releases of soi-toolkit:
