@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>${groupId}</groupId>
+		<artifactId>${parentPom}</artifactId>
+		<version>${version}</version>
+	</parent>
+	
+	<artifactId>${serviceProject}</artifactId>
+	<packaging>jar</packaging>
+	<name>${serviceProject}</name>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-mule</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+		</dependency>
+
+		<dependency>
+            <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-log</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+		</dependency>
+
+	</dependencies> 
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${dollarSymbol}{basedir}/src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>${dollarSymbol}{basedir}/src/environment</directory>
+            </testResource>
+        </testResources>
+    </build>
+
+</project>
