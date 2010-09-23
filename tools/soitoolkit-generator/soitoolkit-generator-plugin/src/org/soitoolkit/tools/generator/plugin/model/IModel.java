@@ -47,15 +47,18 @@ public interface IModel {
 	public String getIntegrationComponentProject();
 
 	public String getServiceProject();
+	public String getServiceProjectFilepath();
 
 	public String getSchemaProject();
+	public String getSchemaProjectFilepath();
 
 	public String getWebProject();
+	public String getWebProjectFilepath();
 
 	public String getTeststubWebProject();
+	public String getTeststubWebProjectFilepath();
 
 	public String getJavaPackage();
-
 	public String getJavaPackageFilepath();
 	
     public String getDefaultSftpIdentityFile();

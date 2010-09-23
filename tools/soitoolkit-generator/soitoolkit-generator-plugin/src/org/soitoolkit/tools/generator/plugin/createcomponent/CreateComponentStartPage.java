@@ -1,18 +1,17 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.*;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.IM_SCHEMA_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.SD_SCHEMA_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.UTILITY_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Set;
+import java.net.URL;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -26,16 +25,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.dialogs.FileSelectionDialog;
-import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
@@ -70,6 +63,7 @@ public class CreateComponentStartPage extends WizardPage {
 	private Text versionText;
 	private Text rootFolderText;
 	private Text mavenHomeText;
+	private Text customGroovyModelImplText;
 
 	private ISelection selection;
 
@@ -191,6 +185,14 @@ public class CreateComponentStartPage extends WizardPage {
 			}
 		});
 
+		// FIXME. Looks like crap :-)
+		Label shadow_sep_1 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
+		shadow_sep_1.setBounds(50,80,100,50);
+		Label shadow_sep_2 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
+		shadow_sep_2.setBounds(50,80,100,50);
+		Label shadow_sep_3 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
+		shadow_sep_3.setBounds(50,80,200,50);
+		
 		// Maven home folder (label, text, browse-button)
 		label = new Label(container, SWT.NULL);
 		label.setText("&Maven home Folder:");
@@ -208,7 +210,15 @@ public class CreateComponentStartPage extends WizardPage {
 				handleBrowseMavenHome();
 			}
 		});
+		
+		// Groowy model impl (label, text)		
+		label = new Label(container, SWT.NULL);
+		label.setText("&Groovy IModel impl.:");
 
+		customGroovyModelImplText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		customGroovyModelImplText.setLayoutData(gd);
+		customGroovyModelImplText.addModifyListener(modifyListener);
 	}
 
 	
@@ -237,6 +247,7 @@ public class CreateComponentStartPage extends WizardPage {
 		versionText.setText("1.0-SNAPSHOT");
 		rootFolderText.setText(PreferencesUtil.getDefaultRootFolder());
 		mavenHomeText.setText(PreferencesUtil.getMavenHome());
+		customGroovyModelImplText.setText(PreferencesUtil.getCustomGroovyModelImpl());
 	}
 
 	/**
@@ -360,6 +371,22 @@ public class CreateComponentStartPage extends WizardPage {
 			return;
 		}
 		
+		// Validate custom model by setting it on the model-factory-class
+		String groovyClass = getCustomGroovyModelImpl();
+		if (groovyClass == null || groovyClass.trim().length() == 0) {
+			System.err.println("### Empty groovy-classname, reset model");
+			ModelFactory.resetModelClass();
+		} else {
+			try {
+				System.err.println("### Setting groovy-classname: " + groovyClass);
+				ModelFactory.setModelGroovyClass(new URL(groovyClass));
+			} catch (Throwable ex) {
+				ModelFactory.resetModelClass();
+				updateStatus("Invalid Groovy class for a custom model, error: " + ex);
+				return;
+			}
+		}
+
 		updateStatus(null);
 	}
 
@@ -378,6 +405,10 @@ public class CreateComponentStartPage extends WizardPage {
 
 	public String getMavenHome() {
 		return mavenHomeText.getText();
+	}
+
+	public String getCustomGroovyModelImpl() {
+		return customGroovyModelImplText.getText();
 	}
 
 	public int getComponentType() {

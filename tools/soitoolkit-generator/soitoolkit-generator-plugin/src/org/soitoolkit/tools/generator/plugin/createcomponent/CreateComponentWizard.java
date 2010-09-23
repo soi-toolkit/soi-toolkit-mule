@@ -6,8 +6,6 @@ import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateCompon
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -31,7 +29,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -234,9 +231,9 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			switch (componentType) {
 			case INTEGRATION_COMPONENT:
 				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null);
-				openProject(path + "/trunk/" + m.getServiceProject() + "/.project");
-				openProject(path + "/trunk/" + m.getWebProject() + "/.project");
-				openProject(path + "/trunk/" + m.getTeststubWebProject() + "/.project");
+				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");
+				openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
+				openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");
 				break;
 
 			case SD_SCHEMA_COMPONENT:

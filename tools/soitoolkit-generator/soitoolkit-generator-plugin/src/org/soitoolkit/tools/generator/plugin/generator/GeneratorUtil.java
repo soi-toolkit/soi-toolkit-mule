@@ -42,6 +42,23 @@ public class GeneratorUtil {
 	private IModel model;
 	private Map<String, Object> modelMap;
 	
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder) {
+		// ???
+	}
+
+	/**
+	 * @deprecated ...
+	 * 
+	 * @param ps
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param service
+	 * @param transports
+	 * @param templateFolder
+	 * @param outputFolder
+	 * @param outputRootFolderModelExpression
+	 */
 	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder, String outputRootFolderModelExpression) {
 
 		model = ModelFactory.newModel(groupId, artifactId, version, service, transports);
@@ -52,6 +69,21 @@ public class GeneratorUtil {
 
 	}
 
+	/**
+	 * @deprecated ...
+	 * 
+	 * @param ps
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param service
+	 * @param transports
+	 * @param schemaName
+	 * @param operations
+	 * @param templateFolder
+	 * @param outputFolder
+	 * @param outputRootFolderModelExpression
+	 */
 	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder, String outputRootFolderModelExpression) {
 		model = ModelFactory.newModel(groupId, artifactId, version, service, transports, schemaName, operations);
 

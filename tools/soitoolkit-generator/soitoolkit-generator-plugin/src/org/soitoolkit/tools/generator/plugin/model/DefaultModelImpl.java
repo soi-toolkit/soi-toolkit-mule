@@ -12,6 +12,8 @@ import groovy.lang.GroovyShell;
 
 public class DefaultModelImpl implements IModel {
 
+	private static final String SOITOOLKIT_VERSION = "0.1.7-SNAPSHOT";
+
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -154,7 +156,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSoitoolkitVersion()
 	 */
 	public String getSoitoolkitVersion() {
-		return "0.1.7-SNAPSHOT";
+		return SOITOOLKIT_VERSION;
 	}
 
 	/* (non-Javadoc)
@@ -199,11 +201,26 @@ public class DefaultModelImpl implements IModel {
 		return getArtifactId();
 	}
 	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getServiceProjectFilePath()
+	 */
+	@Override
+	public String getServiceProjectFilepath() {
+		return getServiceProject();
+	}
+
+	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSchemaProject()
 	 */
 	public String getSchemaProject() {
 		return getArtifactId() + "-schemas";
 	}
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSchemaProject()
+	 */
+	public String getSchemaProjectFilepath() {
+		return getSchemaProject();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getWebProject()
 	 */
@@ -211,10 +228,24 @@ public class DefaultModelImpl implements IModel {
 		return getArtifactId() + "-web";
 	}
 	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getWebProjectFilepath()
+	 */
+	@Override
+	public String getWebProjectFilepath() {
+		return getWebProject();
+	}
+	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getTeststubWebProject()
 	 */
 	public String getTeststubWebProject() {
 		return getArtifactId() + "-teststub-web";
+	}
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getTeststubWebProjectFilepath()
+	 */
+	@Override
+	public String getTeststubWebProjectFilepath() {
+		return getTeststubWebProject();
 	}
 
 	/* (non-Javadoc)

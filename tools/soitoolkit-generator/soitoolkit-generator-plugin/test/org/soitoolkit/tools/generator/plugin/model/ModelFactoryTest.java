@@ -1,7 +1,18 @@
 package org.soitoolkit.tools.generator.plugin.model;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+import groovy.lang.GroovyClassLoader;
+
+import org.codehaus.groovy.control.CompilationFailedException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +51,20 @@ public class ModelFactoryTest {
 		assertEquals("artifactId-intsvc", model.getServiceProject());
 		assertEquals("artifactId-web", model.getWebProject());
 	}
+	
+	@Test
+	public void testGroovyModelImpl() throws CompilationFailedException, IOException {
+		
+		URL url = new URL("file:test/org/soitoolkit/tools/generator/plugin/model/GroovyModelImpl.groovy");	
+		assertNotNull("Groovy class not found", url);
+
+		ModelFactory.setModelGroovyClass(url);
+		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+		assertEquals("artifactId-svc", model.getServiceProject());
+		assertEquals("composites/artifactId-svc", model.getServiceProjectFilepath());
+		assertEquals("modules/artifactId-web", model.getWebProjectFilepath());
+		assertEquals("modules/artifactId-teststub-web", model.getTeststubWebProjectFilepath());
+	}
 
 	@Test
 	public void testCustomModelImpl_error() throws InstantiationException, IllegalAccessException {
@@ -49,6 +74,5 @@ public class ModelFactoryTest {
 		} catch (IllegalArgumentException e) {
 			// Expected exception catched!
 		}
-	}
-
+	}	
 }

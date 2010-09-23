@@ -38,9 +38,9 @@
     </distributionManagement>
 
 	<modules>
-		<module>${serviceProject}</module>
-		<module>${webProject}</module>
-		<module>${teststubWebProject}</module>		
+		<module>${serviceProjectFilepath}</module>
+		<module>${webProjectFilepath}</module>
+		<module>${teststubWebProjectFilepath}</module>		
 	</modules>
 
 </project>

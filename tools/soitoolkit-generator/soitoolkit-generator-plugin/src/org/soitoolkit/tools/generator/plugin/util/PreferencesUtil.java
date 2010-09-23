@@ -21,6 +21,10 @@ public class PreferencesUtil {
     	return get("maven_home", System.getProperty("user.home"));
     }
     
+	static public String getCustomGroovyModelImpl() {
+    	return get("custom_groovy_model_impl", "");
+	}
+
     static public String getDefaultSftpRootFolder() {
     	return get("sftp_root_folder", "muletest1@localhost/~/sftp");
     }
@@ -33,6 +37,8 @@ public class PreferencesUtil {
     	return get("sftp_identity_passphrase", System.getProperty("user.home") + "nnn");
     }
 
+	// -----------------
+	
     static private ResourceBundle defaultPreferences = null;
     
     static private ResourceBundle getDefaultPreferences() {
