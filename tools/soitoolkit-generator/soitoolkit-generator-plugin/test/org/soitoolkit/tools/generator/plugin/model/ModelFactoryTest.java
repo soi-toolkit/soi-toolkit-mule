@@ -46,24 +46,33 @@ public class ModelFactoryTest {
 
 	@Test
 	public void testCustomModelImpl() throws InstantiationException, IllegalAccessException {
-		ModelFactory.setModelClass(CustomizedModelImpl.class);
-		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
-		assertEquals("artifactId-intsvc", model.getServiceProject());
-		assertEquals("artifactId-web", model.getWebProject());
+		try {
+			ModelFactory.setModelClass(CustomizedModelImpl.class);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+			assertEquals("artifactId-intsvc", model.getServiceProject());
+			assertEquals("artifactId-web", model.getWebProject());
+		} finally {
+			ModelFactory.resetModelClass();
+		}
 	}
 	
 	@Test
 	public void testGroovyModelImpl() throws CompilationFailedException, IOException {
-		
-		URL url = new URL("file:test/org/soitoolkit/tools/generator/plugin/model/GroovyModelImpl.groovy");	
-		assertNotNull("Groovy class not found", url);
 
-		ModelFactory.setModelGroovyClass(url);
-		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
-		assertEquals("artifactId-svc", model.getServiceProject());
-		assertEquals("composites/artifactId-svc", model.getServiceProjectFilepath());
-		assertEquals("modules/artifactId-web", model.getWebProjectFilepath());
-		assertEquals("modules/artifactId-teststub-web", model.getTeststubWebProjectFilepath());
+		try {
+//			URL url = new URL("http://soi-toolkit.googlecode.com/svn/trunk/tools/soitoolkit-generator/soitoolkit-generator-plugin/test/org/soitoolkit/tools/generator/plugin/model/GroovyModelImpl.groovy");
+			URL url = new URL("file:test/org/soitoolkit/tools/generator/plugin/model/GroovyModelImpl.groovy");	
+			assertNotNull("Groovy class not found", url);
+
+			ModelFactory.setModelGroovyClass(url);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+			assertEquals("artifactId-svc", model.getServiceProject());
+			assertEquals("composites/artifactId-svc", model.getServiceProjectFilepath());
+			assertEquals("modules/artifactId-web", model.getWebProjectFilepath());
+			assertEquals("modules/artifactId-teststub-web", model.getTeststubWebProjectFilepath());
+		} finally {
+			ModelFactory.resetModelClass();
+		}
 	}
 
 	@Test
