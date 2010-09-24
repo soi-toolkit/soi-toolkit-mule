@@ -11,10 +11,12 @@ Guidelines for developers of the soi-toolkit...
 
 soi-toolkit is based on the following components:
 || *Name* || *Svn-path* || *Description* ||
-|| superpom || commons/poms/superpom/trunk || TBS ||
-|| commons-schemas || commons/components/commons-schemas/trunk || TBS ||
-|| commons-log || commons/components/commons-log/trunk || TBS ||
-|| commons-mule || commons/components/commons-mule/trunk || TBS ||
+|| commons-schemas || trunk/commons/components/commons-schemas || TBS ||
+|| commons-log || trunk/commons/components/commons-log || TBS ||
+|| commons-mule || trunk/commons/components/commons-mule || TBS ||
+|| default-parent || trunk/commons/poms/default-parent || TBS ||
+|| assembly-descriptors || trunk/commons/poms/assembly-descriptors || TBS ||
+|| soitoolkit-generator-plugin || trunk/tools/soitoolkit-generator || TBS ||
 
 All components in soi-toolkit has one and the same release cycle (i.e. cm scope) and are released together as described below.
 
@@ -80,6 +82,23 @@ gpg --list-secret-keys
 gpg --keyserver hkp://pgp.mit.edu --send-keys nnnnnnnn
 }}}
  
+= Running tests =
+
+== Maven based tests ==
+
+{{{
+cd .../trunk
+mvn clean install
+}}}
+
+*Note:* {{{mvn clean test}}} is actually sufficient but since the generator tests (see below) need the latest binaries in the local maven repository to run successfully {{{mvn clean install}}} is required anyhow.
+
+== Generator tests ==
+
+The generator is for now both tested and built manually using the built in support in Eclipse for building Eclipse-plugins.
+
+Use Eclipse to run all tests in the project {{{soitoolkit-generator-plugin}}}.
+
 = Publish snapshots =
 
 To publish a snapshot of soi-toolkit do:
