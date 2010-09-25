@@ -137,7 +137,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		String artifactId = m.getArtifactId();
 		String projectFolderName = resource.getLocation().toOSString();
 		File projectFolder = new File(projectFolderName);
-		String rootFolderName = projectFolder.getParent().toString();
+		String rootFolderName = projectFolder.toString();
 		
 //		IContainer container = (IContainer) resource;
 //		final IFile file = container.getFile(new Path(serviceName));

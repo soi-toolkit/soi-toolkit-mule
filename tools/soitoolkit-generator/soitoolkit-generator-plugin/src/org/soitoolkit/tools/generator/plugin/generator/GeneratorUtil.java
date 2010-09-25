@@ -9,19 +9,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.ModelReadOnlyMap;
@@ -37,17 +34,12 @@ public class GeneratorUtil {
 	private PrintStream ps;
 	private String templateFolder; // Without trailing "/" or "\"
 	private String outputFolder; // Without trailing "/" or "\"
-	private String outputRootFolder;
 
 	private IModel model;
 	private Map<String, Object> modelMap;
 	
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder) {
-		// ???
-	}
 
 	/**
-	 * @deprecated ...
 	 * 
 	 * @param ps
 	 * @param groupId
@@ -57,20 +49,19 @@ public class GeneratorUtil {
 	 * @param transports
 	 * @param templateFolder
 	 * @param outputFolder
-	 * @param outputRootFolderModelExpression
+//	 * @param outputRootFolderModelExpression
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder, String outputRootFolderModelExpression) {
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder) {
 
 		model = ModelFactory.newModel(groupId, artifactId, version, service, transports);
 
-		init(ps, templateFolder, outputFolder, outputRootFolderModelExpression);			
+		init(ps, templateFolder, outputFolder); // , outputRootFolderModelExpression);			
 		
 		logInfo("Generate files from templateFolder: " + templateFolder);
 
 	}
 
 	/**
-	 * @deprecated ...
 	 * 
 	 * @param ps
 	 * @param groupId
@@ -82,19 +73,19 @@ public class GeneratorUtil {
 	 * @param operations
 	 * @param templateFolder
 	 * @param outputFolder
-	 * @param outputRootFolderModelExpression
+//	 * @param outputRootFolderModelExpression
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder, String outputRootFolderModelExpression) {
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder) {
 		model = ModelFactory.newModel(groupId, artifactId, version, service, transports, schemaName, operations);
 
-		init(ps, templateFolder, outputFolder, outputRootFolderModelExpression);			
+		init(ps, templateFolder, outputFolder);			
 	}
 	
-	private void init(PrintStream ps, String templateFolder, String outputFolder, String outputRootFolderModelExpression) {
+	private void init(PrintStream ps, String templateFolder, String outputFolder) {
 		this.ps               = ps;
 		this.templateFolder   = removeTrailingFolderSeparator(templateFolder); 
 		this.outputFolder     = removeTrailingFolderSeparator(outputFolder);
-		this.outputRootFolder = (String)model.resolveParameter(outputRootFolderModelExpression);
+		this.outputFolder     = resolveVariables(this.outputFolder);
 
 		modelMap = new ModelReadOnlyMap(model);
 	}
@@ -118,10 +109,6 @@ public class GeneratorUtil {
 
 	public String getOutputFolder() {
 		return outputFolder;
-	}
-
-	public String getOutputRootFolder() {
-		return outputRootFolder;
 	}
 
 	public IModel getModel() {
@@ -148,10 +135,6 @@ public class GeneratorUtil {
 			return template.make(modelMap).toString();
 		} catch (Exception e) {
 			ps.println("### ERROR: Failed generate templatefile: " + templateFile);
-//			Set<String> keys = modelMap.keySet();
-//			for (String key : keys) {
-//				System.err.println("- " + key + " = " + modelMap.get(key));
-//			}
 			e.printStackTrace(ps);
 			return null;
 		}
@@ -235,7 +218,7 @@ public class GeneratorUtil {
 	 * @return
 	 */
 	private String getFolderAndCreateIfMissing(String inFolder) {
-		String folder = outputFolder + "/" + outputRootFolder;
+		String folder = outputFolder;
 		if (inFolder != null) {
 			folder += "/" + inFolder;
 		}
@@ -247,8 +230,6 @@ public class GeneratorUtil {
 		boolean success = (new File(folder)).mkdirs();
 	    if (success) {
 	      logInfo("Created directory: " + folder);
-//	    } else {
-//		      .err.println("Directory: " + folder + " NOT created, already exists?");
 	    }
 	}
 
