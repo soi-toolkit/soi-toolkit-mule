@@ -12,6 +12,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.soitoolkit.tools.generator.plugin.model.IModel;
+import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
@@ -19,9 +21,11 @@ import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
 public class SftpToSftpServiceGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
-	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
+	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";	
+	private static final String GROUP_ID = "org.soitoolkit.refapps.dealernetwork";	
 	private static final String PROJECT = "ordermgm";	
 	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
+	private static final String VERSION = "1.0-SNAPSHOT";
 	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	@BeforeClass
@@ -38,7 +42,7 @@ public class SftpToSftpServiceGeneratorTest {
 	public void setUp() throws Exception {
 		SystemUtil.delDirs(PROJECT_FOLDER);
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
-		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, GROUP_ID, PROJECT, VERSION, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 59, SystemUtil.countFiles(PROJECT_FOLDER));
 	}
 
@@ -51,9 +55,12 @@ public class SftpToSftpServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
 		
-		new SftpToSftpServiceGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "ordermgm", "processOrder", PROJECT_FOLDER + "/trunk").startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
+		String service = "processOrder";
 		
+		IModel model = ModelFactory.newModel(GROUP_ID, PROJECT, VERSION, service, null);
+		new SftpToSftpServiceGenerator(System.out, GROUP_ID, PROJECT, service, PROJECT_FOLDER + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
+
 		// FIXME: Update to reflect my environment!
 		// SOITOOLKIT_SFTP_IDENTITYFILE=/Users/xxx/.ssh/id_dsa
 		// SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=xxx

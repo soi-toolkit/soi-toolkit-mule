@@ -13,7 +13,7 @@ public class SftpToSftpServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	
 	public SftpToSftpServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, "/templates/integrationComponent/sftpToSftpService", folderName, "serviceProject");
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, "/templates/integrationComponent/sftpToSftpService", folderName);
 	}
 		
     public void startGenerator() {
@@ -52,7 +52,7 @@ public class SftpToSftpServiceGenerator implements Generator {
 	private void updatePropertyFile() {
 		Writer out = null;
 		try {
-			String propFile = gu.getOutputFolder() + "/" + gu.getOutputRootFolder() + "/src/environment/" + gu.getModel().getArtifactId() + ".properties";
+			String propFile = gu.getOutputFolder() + "/src/environment/" + gu.getModel().getArtifactId() + ".properties";
 			String service = gu.getModel().getUppercaseService();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
 			// TODO: Replace with sl4j!

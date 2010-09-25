@@ -7,7 +7,7 @@ public class JmsToJmsServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	
 	public JmsToJmsServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, "/templates/integrationComponent/jmsToJmsService", folderName, "serviceProject");
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, "/templates/integrationComponent/jmsToJmsService", folderName);
 	}
 		
     public void startGenerator() {

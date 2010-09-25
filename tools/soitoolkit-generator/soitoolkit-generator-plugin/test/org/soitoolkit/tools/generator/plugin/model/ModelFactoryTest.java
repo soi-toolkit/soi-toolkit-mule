@@ -1,16 +1,11 @@
 package org.soitoolkit.tools.generator.plugin.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-
-import groovy.lang.GroovyClassLoader;
 
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.junit.After;
@@ -66,10 +61,10 @@ public class ModelFactoryTest {
 
 			ModelFactory.setModelGroovyClass(url);
 			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
-			assertEquals("artifactId-svc", model.getServiceProject());
-			assertEquals("composites/artifactId-svc", model.getServiceProjectFilepath());
-			assertEquals("modules/artifactId-web", model.getWebProjectFilepath());
-			assertEquals("modules/artifactId-teststub-web", model.getTeststubWebProjectFilepath());
+			assertEquals("artifactId-module-intsvc", model.getServiceProject());
+			assertEquals("modules/intsvc", model.getServiceProjectFilepath());
+			assertEquals("applications/integrations", model.getWebProjectFilepath());
+			assertEquals("applications/integration-teststubs", model.getTeststubWebProjectFilepath());
 		} finally {
 			ModelFactory.resetModelClass();
 		}

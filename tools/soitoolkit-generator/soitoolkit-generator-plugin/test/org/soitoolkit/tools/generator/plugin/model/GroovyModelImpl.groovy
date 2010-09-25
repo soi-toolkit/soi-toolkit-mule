@@ -2,28 +2,27 @@ package org.soitoolkit.tools.generator.plugin.model;
 
 public class GroovyModelImpl extends DefaultModelImpl implements IModel {
 
-	public GroovyModelImpl() {
-		System.err.println("Groovy at your service :-)");
-	
-	}
-	
-	@Override
 	public String getServiceProject() {
-		return getArtifactId() + "-svc";
+		return getArtifactId() + "-module-intsvc";
 	}
 
-	@Override
 	public String getServiceProjectFilepath() {
-		return "composites/" + getServiceProject();
+		return "modules/intsvc";
 	}
 
-	@Override
+	public String getWebProject() {
+		return getArtifactId() + "-app-integrations";
+	}
+
 	public String getWebProjectFilepath() {
-		return "modules/" + getWebProject();
+		return "applications/integrations";
+	}
+
+	public String getTeststubWebProject() {
+		return getArtifactId() + "-app-integration-teststubs";
 	}
 
 	public String getTeststubWebProjectFilepath() {
-		return "modules/" + getTeststubWebProject();
+		return "applications/integration-teststubs";
 	}
-	
 }

@@ -12,7 +12,7 @@ public class IntegrationComponentGenerator implements Generator {
 	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, List<TransportEnum> transports, String folderName) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, transports, "/templates/integrationComponent/newProject", folderName, "integrationComponentProject");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
 	}
 		
     public void startGenerator() {
