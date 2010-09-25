@@ -6,6 +6,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -54,6 +56,39 @@ public class SwtUtil {
 		return button;
 	}
 	
+	public static void addRadioButtons (String[] choices, String labelText, final ValueHolder<Integer> selection, Composite parent, final Listener selectionChangedListener) {
+
+		final Composite container = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		container.setLayout(layout);
+		layout.numColumns = 1;
+//		layout.verticalSpacing = 9;
+
+		Listener listener = new Listener () {
+			public void handleEvent (Event e) {
+				selection.value = (Integer)e.widget.getData();
+
+				Control [] children = container.getChildren ();
+				for (int i=0; i<children.length; i++) {
+					Control child = children [i];
+					if (e.widget != child && child instanceof Button && (child.getStyle () & SWT.RADIO) != 0) {
+						((Button) child).setSelection (false);
+					}
+				}
+				((Button) e.widget).setSelection (true);
+				
+				selectionChangedListener.handleEvent(e);
+			}
+		};
+		Label label = new Label(container, SWT.NULL);
+		label.setText(labelText);
+
+		for (int i = 0; i < choices.length; i++) {
+			Button b = SwtUtil.createRadioButton(container, listener, i, choices[i]);
+			b.setSelection(i == selection.value);
+		}
+	}
+
 	public static Composite createGridContainer(Composite parent, int numColumns) {
 		return createGridContainer(parent, numColumns, -1);
 	}

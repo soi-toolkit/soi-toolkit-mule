@@ -1,7 +1,6 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.INTEGRATION_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.SD_SCHEMA_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.*;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 
@@ -36,8 +35,11 @@ import org.soitoolkit.tools.generator.plugin.generator.IntegrationComponentGener
 import org.soitoolkit.tools.generator.plugin.generator.SchemaComponentGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.StatusPage;
+import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
 
 /**
@@ -138,13 +140,16 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		final String version = page.getVersion();
 		final String folderName = page.getRootFolder();
 		final String mavenHome = page.getMavenHome();
+		final int mavenEclipseGoalType = page.getMavenEclipseGoalType();
 		
-		final List<TransportEnum> transports = (componentType == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
+		
+		ComponentEnum compEnum = ComponentEnum.get(componentType);
+		final List<TransportEnum> transports = (compEnum == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(mavenHome, componentType, artifactId, groupId, version, transports, folderName, monitor);
+					doFinish(mavenHome, mavenEclipseGoalType, componentType, artifactId, groupId, version, transports, folderName, monitor);
 				} catch (CoreException e) {
 					e.printStackTrace();
 					throw new InvocationTargetException(e);
@@ -177,7 +182,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	 * @param transports 
 	 */
 
-	private void doFinish(String mavenHome, int componentType, String artifactId, String groupId, String version, List<TransportEnum> transports, String folderName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String mavenHome, int mavenEclipseGoalType, int componentType, String artifactId, String groupId, String version, List<TransportEnum> transports, String folderName, IProgressMonitor monitor) throws CoreException {
 
 		// create a sample folder
 		monitor.beginTask("Starting the generator...", 3);
@@ -197,9 +202,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 		monitor.setTaskName("Generating files to folder: " + folderName);
 
+		ComponentEnum compEnum = ComponentEnum.get(componentType);
 		try {
 			
-			switch (componentType) {
+			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
 				new IntegrationComponentGenerator(out, groupId, artifactId, version, transports, folderName).startGenerator();
 				break;
@@ -212,7 +218,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 				break;
 
 			default:
-				break;
+				throw new RuntimeException("Unsupported component type: " + componentType);
 			}
 
 			String componentProjectName = getComponentProjectName(componentType, groupId, artifactId);
@@ -221,14 +227,16 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
 			
 			monitor.worked(1);
-			monitor.setTaskName("Execute command: " + BUILD_COMMAND);
-			SystemUtil.executeCommand(mavenHome + "/bin/" + BUILD_COMMAND, path + "/trunk", out, err);
+			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
+
+			monitor.setTaskName("Execute command: " + buildCommand);
+			SystemUtil.executeCommand(mavenHome + "/bin/" + buildCommand, path + "/trunk", out, err);
 			
 			monitor.worked(1);
 			monitor.setTaskName("Open project(s) in " + path + "/trunk");
 
 			
-			switch (componentType) {
+			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
 				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null);
 				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");

@@ -1,10 +1,9 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.IM_SCHEMA_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.INTEGRATION_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.SD_SCHEMA_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.UTILITY_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.*;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum.*;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
+import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import java.io.File;
 import java.net.URL;
@@ -23,15 +22,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
+import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
+import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -45,7 +47,8 @@ public class CreateComponentStartPage extends WizardPage {
 	public IWizardPage getNextPage() {
 		// TODO: Needs to be cleaned up, this design is tied to a two page design and can't handle a third page, e.g. used for some other component type...
 		WizardPage p = (WizardPage)super.getNextPage();
-		p = (componentType != INTEGRATION_COMPONENT) ? null : p;	
+		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
+		p = (compEnum != INTEGRATION_COMPONENT) ? null : p;	
 //		System.err.println("getNextPage() returns: " + ((p == null)? "NULL" : p.getTitle()));
 		return p;
 	}
@@ -57,7 +60,9 @@ public class CreateComponentStartPage extends WizardPage {
 //		return p;
 //	}
 	
-	private int componentType = INTEGRATION_COMPONENT;
+	private ValueHolder<Integer> componentType = new ValueHolder<Integer>(INTEGRATION_COMPONENT.ordinal());
+	private ValueHolder<Integer> mavenEclipseGoalType = new ValueHolder<Integer>(ECLIPSE_M2ECLIPSE.ordinal());
+	
 	private Text artifactIdText;
 	private Text groupIdText;
 	private Text versionText;
@@ -103,49 +108,23 @@ public class CreateComponentStartPage extends WizardPage {
 //			}
 //		});
 
-		addRadioButtons(container);
+		addRadioButtons(EnumUtil.getLabels(ComponentEnum.values()), "&Type of component:", componentType, container, new Listener () {
+			public void handleEvent (Event e) {
+				dialogChanged();
+			}
+		});
 
 		addTextFields(container);
 		
+		addRadioButtons(EnumUtil.getLabels(MavenEclipseGoalEnum.values()), "&Maven Eclipse goal:", mavenEclipseGoalType, container, new Listener () {
+			public void handleEvent (Event e) {
+				dialogChanged();
+			}
+		});
+
 		initialize();
 		dialogChanged();
 		setControl(container);
-	}
-
-	public void addRadioButtons (final Composite parent) {
-
-		final Composite container = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		container.setLayout(layout);
-		layout.numColumns = 1;
-//		layout.verticalSpacing = 9;
-
-		Listener listener = new Listener () {
-			public void handleEvent (Event e) {
-				componentType = (Integer)e.widget.getData();
-//				System.err.println("### Set selected component type to: " + componentType);
-
-				Control [] children = container.getChildren ();
-				for (int i=0; i<children.length; i++) {
-					Control child = children [i];
-					if (e.widget != child && child instanceof Button && (child.getStyle () & SWT.RADIO) != 0) {
-						((Button) child).setSelection (false);
-					}
-				}
-				((Button) e.widget).setSelection (true);
-				
-				dialogChanged();
-			}
-		};
-		Label label = new Label(container, SWT.NULL);
-		label.setText("&Type of component:");
-
-		Button b = SwtUtil.createRadioButton(container, listener, INTEGRATION_COMPONENT, "Integration Component");
-		b = SwtUtil.createRadioButton(container, listener, UTILITY_COMPONENT,     "Utility Component");
-		b.setEnabled(false);
-		b = SwtUtil.createRadioButton(container, listener, SD_SCHEMA_COMPONENT,   "Service Description Component");
-		b = SwtUtil.createRadioButton(container, listener, IM_SCHEMA_COMPONENT,   "Information Model Component");
-		b.setEnabled(false);
 	}
 
 	private void addTextFields(Composite parent) {
@@ -313,8 +292,9 @@ public class CreateComponentStartPage extends WizardPage {
 		// TODO: Needs to be cleaned up, this design is tied to a two page design and can't handle a third page, e.g. used for some other component type...
 
 		// If creating an integration component then force viewing page #2 otherwise mark it as completed
+		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
 		CreateIntegrationComponentPage p = ((CreateComponentWizard)getWizard()).getCreateIntegrationComponentPage();
-		p.setMustBeDisplayed(componentType == INTEGRATION_COMPONENT);
+		p.setMustBeDisplayed(compEnum == INTEGRATION_COMPONENT);
 		getContainer().updateButtons();
 
 		
@@ -346,7 +326,7 @@ public class CreateComponentStartPage extends WizardPage {
 			return;
 		}
 		
-		String projectFolderName = getComponentProjectName(componentType, getGroupId(), getArtifactId());
+		String projectFolderName = getComponentProjectName(componentType.value, getGroupId(), getArtifactId());
 		
 		System.err.println("comp-type: " + componentType + ", proj-namn: " + projectFolderName);
 		if (projectFolderName != null) {
@@ -412,7 +392,11 @@ public class CreateComponentStartPage extends WizardPage {
 	}
 
 	public int getComponentType() {
-		return componentType;
+		return componentType.value;
+	}
+
+	public int getMavenEclipseGoalType() {
+		return mavenEclipseGoalType.value;
 	}
 
 	public String getArtifactId() {
