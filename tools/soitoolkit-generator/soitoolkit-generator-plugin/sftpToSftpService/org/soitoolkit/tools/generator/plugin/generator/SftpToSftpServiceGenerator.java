@@ -1,9 +1,11 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
+import static org.soitoolkit.tools.generator.plugin.util.PropertyFileUtil.openPropertyFileForAppend;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
@@ -28,51 +30,41 @@ public class SftpToSftpServiceGenerator implements Generator {
 		updatePropertyFile();
 		
 		/*
-
 		TODO: Lägg på följande i propertfil:
-		
-		
-		
+
 		xxx-common.xml:
 		
 			<spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
-   	<notifications dynamic="true">
-		<notification event="COMPONENT-MESSAGE"/>
-		<notification event="ENDPOINT-MESSAGE"/>
-		<notification event="CUSTOM"/>
-		<notification-listener ref="sftpTransportNotificationLogger"/>
-	</notifications>
-
-		
+			<notifications dynamic="true">
+				<notification event="COMPONENT-MESSAGE"/>
+				<notification event="ENDPOINT-MESSAGE"/>
+				<notification event="CUSTOM"/>
+				<notification-listener ref="sftpTransportNotificationLogger"/>
+			</notifications>
 		*/
-
-		
     }
 
 	private void updatePropertyFile() {
-		Writer out = null;
+		PrintWriter out = null;
 		try {
-			String propFile = gu.getOutputFolder() + "/src/environment/" + gu.getModel().getArtifactId() + ".properties";
+			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getArtifactId());
 			String service = gu.getModel().getUppercaseService();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
-			// TODO: Replace with sl4j!
-			System.err.println("UPDATE FILE: " + propFile);
 			
-		    out = new BufferedWriter(new FileWriter(propFile, true));
-		    out.write("\n");
-		    out.write("# Properties for sftp-service " + gu.getModel().getService() + "\n");
-		    out.write("# TODO: Update to reflect your settings\n");
-		    out.write(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/sender\n");
-		    out.write(service + "_SENDER_POLLING_MS=1000\n");
-		    out.write(service + "_SENDER_SIZECHECK_MS=500\n");
-		    out.write(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/receiver\n");
-		    out.write(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive\n");
-		    out.write(service + "_ARCHIVE_RESTART_POLLING_MS=1000\n");
+		    out.println("");
+		    out.println("# Properties for sftp-service " + gu.getModel().getService());
+		    out.println("# TODO: Update to reflect your settings");
+		    out.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/sender");
+		    out.println(service + "_SENDER_POLLING_MS=1000");
+		    out.println(service + "_SENDER_SIZECHECK_MS=500");
+		    out.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/receiver");
+		    out.println(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive");
+		    out.println(service + "_ARCHIVE_RESTART_POLLING_MS=1000");
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (out != null) try {out.close();} catch (IOException e) {}
+			if (out != null) {out.close();}
 		}
 	}
 }
