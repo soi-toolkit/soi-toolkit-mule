@@ -2,7 +2,7 @@ package ${javaPackage};
 
 import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
 
-public class ${capitalizedArtifactId}MuleServer {
+public class ${capitalizedJavaArtifactId}MuleServer {
 
 	public static final String MULE_SERVER_ID   = "${artifactId}";
 	public static final int    HTTP_PORT        = 8080;
