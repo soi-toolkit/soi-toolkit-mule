@@ -52,32 +52,29 @@ public class IntegrationComponentGeneratorTest {
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
-/*
 	@Test
 	public void testGenerateShipping() throws IOException {
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/shipping");
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
-		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "shipping", "1.0-SNAPSHOT", transports, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "shipping", "1.0-SNAPSHOT", TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 59, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/shipping/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/shipping/trunk");
 	}
 
 	@Test
 	public void testGenerateVgrPicsara2melior() throws IOException {
 		String grp = "se.vgregion.pilot";
 		String name = "picsara2melior-sas-003";
-		// TODO Don't fix '-' right now...
-		name = "picsara2melior_sas_003";
 		
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", transports, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 57, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}
 
 	@Test
@@ -88,10 +85,9 @@ public class IntegrationComponentGeneratorTest {
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", transports, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 59, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}
-*/	
 }

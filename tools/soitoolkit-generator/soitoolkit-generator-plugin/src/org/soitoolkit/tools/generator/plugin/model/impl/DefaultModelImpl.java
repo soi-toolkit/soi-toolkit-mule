@@ -207,7 +207,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getServiceProject()
 	 */
 	public String getServiceProject() {
-		return getArtifactId();
+		return getArtifactId() + "-services";
 	}
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getServiceProjectFilePath()
@@ -278,6 +278,25 @@ public class DefaultModelImpl implements IModel {
     	return PreferencesUtil.getDefaultSftpIdentityPassphrase();
     }
 
+    // JMS Naming...
+
+    public String getJmsInQueue() {
+    	return getJavaArtifactId().toUpperCase() + "." + getService().toUpperCase() + ".IN.QUEUE"; 
+    }
+    public String getJmsOutQueue() {
+    	return getJavaArtifactId().toUpperCase() + "." + getService().toUpperCase() + ".OUT.QUEUE"; 
+    }
+    public String getJmsDLQueue() {
+    	return "DLQ." + getJmsInQueue(); 
+    }
+    public String getJmsLogInfoQueue() {
+    	return "SOITOOLKIT.LOG.INFO"; 
+    }
+    public String getJmsLogErrorQueue() {
+    	return "SOITOOLKIT.LOG.ERROR"; 
+    }
+
+    // Transports
 	
 	@Override
 	public boolean isSftp() {
@@ -294,12 +313,23 @@ public class DefaultModelImpl implements IModel {
 		return isTransportSelected(TransportEnum.SERVLET);
 	}	
 
+
+    // Property files
+    public String getConfigPropertyFile() {
+//    	return getArtifactId() + "-config";
+    	return getArtifactId() + "";
+    }
+	public String getSecurityPropertyFile() {
+    	return getArtifactId() + "-security";
+    }
+
+
 	// --------------------	
-	
+
 	private boolean isTransportSelected(TransportEnum selectedTransport) {
-		
+
 		if (transports == null) return false;
-		
+
 		for (TransportEnum transport : transports) {
 			if (transport == selectedTransport) return true;
 		}

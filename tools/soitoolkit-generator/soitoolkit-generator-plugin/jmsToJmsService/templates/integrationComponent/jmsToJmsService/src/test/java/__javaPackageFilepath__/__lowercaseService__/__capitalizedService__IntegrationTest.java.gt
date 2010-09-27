@@ -3,6 +3,7 @@ package ${javaPackage}.${lowercaseService};
 import static org.mule.context.notification.EndpointMessageNotification.MESSAGE_RECEIVED;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -16,10 +17,11 @@ import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 
 public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
 	
-	private static final String IN_QUEUE         = "${uppercaseService}_IN_QUEUE";
-	private static final String OUT_QUEUE        = "${uppercaseService}_OUT_QUEUE";
-	private static final String DEADLETTER_QUEUE = "DLQ.${uppercaseService}_IN_QUEUE";
-	private static final String ERROR_LOG_QUEUE  = "SOITOOLKIT.LOG.ERROR";
+	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
+	private static final String OUT_QUEUE        = rb.getString("${uppercaseService}_OUT_QUEUE");
+	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
+	private static final String ERROR_LOG_QUEUE  = "${jmsLogErrorQueue}";
 	
 	private AbstractJmsTestUtil jmsUtil = null;
 	

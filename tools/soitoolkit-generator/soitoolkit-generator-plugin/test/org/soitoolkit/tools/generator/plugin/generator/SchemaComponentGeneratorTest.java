@@ -63,13 +63,11 @@ public class SchemaComponentGeneratorTest {
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
-/*
+
 	@Test
 	public void testGenerateSchemaVgrPicsara2melior() throws IOException {
 		String grp = "se.vgregion.pilot";
 		String name = "picsara2melior-sas-003";
-		// TODO Don't fix '-' right now...
-		name = "picsara2melior_sas_003";
 
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name + "-schemas");
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
@@ -77,7 +75,7 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", name, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
 	}
 
 	@Test
@@ -94,8 +92,6 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", schema, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
 	}
-*/
-	
 }

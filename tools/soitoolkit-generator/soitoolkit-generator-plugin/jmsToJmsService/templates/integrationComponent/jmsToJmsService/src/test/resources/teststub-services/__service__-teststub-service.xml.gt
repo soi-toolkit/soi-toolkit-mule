@@ -16,7 +16,7 @@
 	
         <service name="${service}-teststub-service">
             <inbound>
-                <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${uppercaseService}_OUT_QUEUE" transformer-refs="jmsToStr"/>
+                <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
             </inbound>
 
             <component class="${javaPackage}.${lowercaseService}.${capitalizedService}TestReceiver"/>

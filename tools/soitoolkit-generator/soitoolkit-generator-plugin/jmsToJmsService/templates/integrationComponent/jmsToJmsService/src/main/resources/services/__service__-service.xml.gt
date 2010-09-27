@@ -17,14 +17,14 @@
 	
         <service name="${service}-service">
             <inbound>
-                <inbound-endpoint address="jms://${uppercaseService}_IN_QUEUE" transformer-refs="logMsgIn jmsToStr">
+                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
 					<jms:transaction action="ALWAYS_BEGIN" />
 				</inbound-endpoint>
             </inbound>
 
 			<outbound>
 				<pass-through-router>
-                    <outbound-endpoint address="jms://${uppercaseService}_OUT_QUEUE" transformer-refs="${service}Transformer strToJms logMsgOut">
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="${service}Transformer strToJms logMsgOut">
 						<jms:transaction action="ALWAYS_JOIN" />
 					</outbound-endpoint>
 				</pass-through-router>

@@ -35,9 +35,9 @@ public class JmsToJmsServiceGenerator implements Generator {
 		    out.println("");
 		    out.println("# Properties for jms-service " + gu.getModel().getService());
 		    out.println("# TODO: Update to reflect your settings");
-		    out.println(service + "_IN_QUEUE="  + service + "_IN_QUEUE");
-		    out.println(service + "_OUT_QUEUE=" + service + "_OUT_QUEUE");
-		    out.println(service + "_DL_QUEUE="  + service + "_DL_QUEUE");
+		    out.println(service + "_IN_QUEUE="  + gu.getModel().getJmsInQueue());
+		    out.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());
+		    out.println(service + "_DL_QUEUE="  + gu.getModel().getJmsDLQueue());
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -45,5 +45,4 @@ public class JmsToJmsServiceGenerator implements Generator {
 			if (out != null) {out.close();}
 		}
 	}
-
 }

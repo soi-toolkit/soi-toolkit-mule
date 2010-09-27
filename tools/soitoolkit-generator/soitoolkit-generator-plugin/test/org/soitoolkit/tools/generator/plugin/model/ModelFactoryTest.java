@@ -35,7 +35,7 @@ public class ModelFactoryTest {
 	@Test
 	public void testDefaultModelImpl() {
 		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
-		assertEquals("artifactId", model.getServiceProject());
+		assertEquals("artifactId-services", model.getServiceProject());
 		assertEquals("artifactId-web", model.getWebProject());
 	}
 
