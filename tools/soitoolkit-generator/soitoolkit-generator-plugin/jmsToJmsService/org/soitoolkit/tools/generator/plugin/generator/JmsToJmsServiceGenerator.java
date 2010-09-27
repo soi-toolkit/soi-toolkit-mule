@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
-
 public class JmsToJmsServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
@@ -33,7 +31,6 @@ public class JmsToJmsServiceGenerator implements Generator {
 		try {
 			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getArtifactId());
 			String service = gu.getModel().getUppercaseService();
-			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
 			
 		    out.println("");
 		    out.println("# Properties for jms-service " + gu.getModel().getService());
