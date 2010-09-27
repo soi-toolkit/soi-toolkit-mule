@@ -24,6 +24,8 @@ public interface IModel {
 
 	public String getLowercaseArtifactId();
 
+	public String getCapitalizedJavaArtifactId();
+	
 	public String getVersion();
 
 	public String getService();

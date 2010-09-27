@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.model.impl.DefaultModelImpl;
 
 public class ModelFactory {
 

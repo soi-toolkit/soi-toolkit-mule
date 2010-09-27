@@ -1,5 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.model;
 
+import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +28,20 @@ public class ServiceDescriptorModel {
 		return serviceDescriptor + "Service";
 	}
 	public String getWsdlNamespace() {
-		String namespace = "urn:" + model.getJavaPackage() + "." + getSchema() + ".wsdl:v1";
+		String namespace = "urn:" + getPathPrefix() + ".wsdl:v1";
 		return namespace.toLowerCase();
 	}
+
 	public String getSchemaNamespace() {
-		String namespace = "urn:" + model.getJavaPackage() + "." + getSchema() + ".schema:v1";
+		String namespace = "urn:" + getPathPrefix() + ".schema:v1";
 		return namespace.toLowerCase();
 	}
 	public String getWsdlJavaPackage() {
-		String javaPackage = model.getJavaPackage() + "." + getSchema() + ".wsdl.v1";
+		String javaPackage = getPathPrefix() + ".wsdl.v1";
 		return javaPackage.toLowerCase();
 	}
 	public String getSchemaJavaPackage() {
-		String javaPackage = model.getJavaPackage() + "." + getSchema() + ".schema.v1";
+		String javaPackage = getPathPrefix() + ".schema.v1";
 		return javaPackage.toLowerCase();
 	}
 	public String getWsdlPortType() {
@@ -58,6 +61,8 @@ public class ServiceDescriptorModel {
 		return operations;
 	}
 
+	// -----------------
+
 	private void initOperations(IModel model, String serviceDescriptor, List<String> operations) {
 
 		// If no operations are supplied then use the serviceDescriptor-name as the name of the single operation
@@ -69,4 +74,9 @@ public class ServiceDescriptorModel {
 			}
 		}
 	}
+
+	private String getPathPrefix() {
+		return model.getJavaPackage() + "." + makeJavaName(getSchema());
+	}
+	
 }

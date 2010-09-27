@@ -21,8 +21,8 @@ import javax.script.ScriptException;
 
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.ModelReadOnlyMap;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.model.impl.ModelReadOnlyMap;
 
 public class GeneratorUtil {
 

@@ -32,9 +32,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.soitoolkit.tools.generator.plugin.generator.JmsToJmsServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.generator.SftpToSftpServiceGenerator;
-import org.soitoolkit.tools.generator.plugin.model.DefaultModelImpl;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.impl.DefaultModelImpl;
 import org.w3c.dom.Document;
 
 
