@@ -1,5 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.model;
 
+import org.soitoolkit.tools.generator.plugin.model.impl.DefaultModelImpl;
+
 public class GroovyModelImpl extends DefaultModelImpl implements IModel {
 
 	public String getServiceProject() {
