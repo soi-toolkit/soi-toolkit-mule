@@ -49,7 +49,17 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
         <schema.gen.src.dir>${dollarSymbol}{project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
 	</properties>
 
-	<build>
+  <dependencies>
+    <dependency>
+      <groupId>org.soitoolkit.commons.poms</groupId>
+      <artifactId>soitoolkit-schemas-jax-ws-dependencies</artifactId>
+      <version>${dollarSymbol}{soitoolkit.version}</version>
+      <type>pom</type>
+      <scope>optional</scope>
+    </dependency>
+  </dependencies>
+ 
+ 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
