@@ -14,8 +14,8 @@ public class PropertyFileUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
-	static public PrintWriter openPropertyFileForAppend(String outputFolder, String artifactId) throws IOException {
-		String propFile = outputFolder + "/src/environment/" + artifactId + ".properties";
+	static public PrintWriter openPropertyFileForAppend(String outputFolder, String propertyFile) throws IOException {
+		String propFile = outputFolder + "/src/environment/" + propertyFile + ".properties";
 
 		// TODO: Replace with sl4j!
 		System.err.println("Appending to property file: " + propFile);

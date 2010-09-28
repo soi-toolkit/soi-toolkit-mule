@@ -1,12 +1,10 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.soitoolkit.tools.generator.plugin.util.PropertyFileUtil.openPropertyFileForAppend;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 
@@ -47,12 +45,12 @@ public class SftpToSftpServiceGenerator implements Generator {
 	private void updatePropertyFile() {
 		PrintWriter out = null;
 		try {
-			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getArtifactId());
+			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
 			String service = gu.getModel().getUppercaseService();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
 			
 		    out.println("");
-		    out.println("# Properties for sftp-service " + gu.getModel().getService());
+		    out.println("# Properties for sftp-service \"" + gu.getModel().getService() + "\"");
 		    out.println("# TODO: Update to reflect your settings");
 		    out.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/sender");
 		    out.println(service + "_SENDER_POLLING_MS=1000");

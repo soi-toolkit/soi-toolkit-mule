@@ -3,6 +3,7 @@ package org.soitoolkit.tools.generator.plugin.model.impl;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ServiceDescriptorModel;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
+import org.soitoolkit.tools.generator.plugin.util.XmlUtil;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -95,6 +97,13 @@ public class DefaultModelImpl implements IModel {
 	 */
 	public String getDollarSymbol() {
 		return "$";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getXmlTimestamp()
+	 */
+	public String getXmlTimestamp() {
+		return XmlUtil.convertDateToXmlDate(new Date()).toString();
 	}
 
 	/* (non-Javadoc)
@@ -316,8 +325,7 @@ public class DefaultModelImpl implements IModel {
 
     // Property files
     public String getConfigPropertyFile() {
-//    	return getArtifactId() + "-config";
-    	return getArtifactId() + "";
+    	return getArtifactId() + "-config";
     }
 	public String getSecurityPropertyFile() {
     	return getArtifactId() + "-security";

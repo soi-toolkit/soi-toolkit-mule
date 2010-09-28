@@ -13,6 +13,8 @@ public interface IModel {
 	public Map<String, Object> getExt();
 
 	public String getDollarSymbol();
+	
+	public String getXmlTimestamp();
 
 	public String getGroupId();
 

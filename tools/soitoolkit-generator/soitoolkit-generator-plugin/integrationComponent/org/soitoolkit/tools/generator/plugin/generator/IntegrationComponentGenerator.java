@@ -34,7 +34,8 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/test/resources/teststub-services");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/log4j.dtd.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/log4j.xml.gt");
-		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/__artifactId__.properties.gt");
+		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/__securityPropertyFile__.properties.gt");
+		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/__configPropertyFile__.properties.gt");
 
 		// TODO: Refactor to reusable schema-project?
 		

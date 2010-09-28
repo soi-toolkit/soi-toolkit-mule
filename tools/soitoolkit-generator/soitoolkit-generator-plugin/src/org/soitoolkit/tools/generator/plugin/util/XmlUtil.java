@@ -2,11 +2,18 @@ package org.soitoolkit.tools.generator.plugin.util;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +24,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class XmlUtil {
@@ -69,6 +77,22 @@ public class XmlUtil {
 		}
 	}
 
+	static public String getDocumentComment(Document doc) {
+		String docComment = null;
+		try {
+			NodeList childs = doc.getChildNodes();
+			for (int i = 0; i < childs.getLength(); i++) {
+				Node child = childs.item(i);
+				if (child.getNodeType() == Node.COMMENT_NODE) {
+					docComment = child.getNodeValue();
+				}
+			}
+			return docComment;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	static public NodeList getXPathResult(Document doc, String namespacePrefix, String namespaceURI, String expression) {
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put(namespacePrefix, namespaceURI);
@@ -102,5 +126,32 @@ public class XmlUtil {
 			values.add(nodes.item(i).getNodeValue());
 		}
 		return values;
+	}
+
+    public static XMLGregorianCalendar convertDateToXmlDate(Date date) {
+		try {
+			GregorianCalendar fromDate = new GregorianCalendar();
+			fromDate.setTime(date);
+			return DatatypeFactory.newInstance().newXMLGregorianCalendar(fromDate);
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+	}
+    
+    /**
+     * Search for patterns [key=value] and returns the value given the key.
+     * 
+     * @param key
+     * @param string
+     * @return
+     */
+	public static String lookupParameterValue(String key, String string) {
+		Pattern p = Pattern.compile("\\[" + key + "=[^\\]]*\\]");
+		Matcher m = p.matcher(string);
+		m.find();
+    	String f = m.group();
+    	int p1 = f.indexOf('=');
+    	int p2 = f.indexOf(']');
+    	return f.substring(p1+1, p2);
 	}
 }

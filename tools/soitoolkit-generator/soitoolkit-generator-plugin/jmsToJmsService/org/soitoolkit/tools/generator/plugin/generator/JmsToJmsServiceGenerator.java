@@ -29,11 +29,11 @@ public class JmsToJmsServiceGenerator implements Generator {
 	private void updatePropertyFile() {
 		PrintWriter out = null;
 		try {
-			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getArtifactId());
+			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
 			String service = gu.getModel().getUppercaseService();
 			
 		    out.println("");
-		    out.println("# Properties for jms-service " + gu.getModel().getService());
+		    out.println("# Properties for jms-service \"" + gu.getModel().getService() + "\"");
 		    out.println("# TODO: Update to reflect your settings");
 		    out.println(service + "_IN_QUEUE="  + gu.getModel().getJmsInQueue());
 		    out.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());

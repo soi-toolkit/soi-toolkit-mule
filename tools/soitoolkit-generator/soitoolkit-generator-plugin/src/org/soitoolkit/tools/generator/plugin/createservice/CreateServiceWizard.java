@@ -1,10 +1,11 @@
 package org.soitoolkit.tools.generator.plugin.createservice;
 
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
+import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getDocumentComment;
+import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.lookupParameterValue;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getFirstValue;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,6 @@ import org.soitoolkit.tools.generator.plugin.generator.JmsToJmsServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.generator.SftpToSftpServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.impl.DefaultModelImpl;
 import org.w3c.dom.Document;
 
 
@@ -215,27 +215,15 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		String nsURI = "http://maven.apache.org/POM/4.0.0";
 		Document doc = createDocument(content);
 
-		// XPath Query for showing all nodes value
+		String docComment = getDocumentComment(doc);
+		// TODO: Extract as constant...
+		String artifactId = lookupParameterValue("soi-toolkit.gen.artifactId", docComment);
 
-		String parentGroupId    = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:parent/ns:groupId/text()"));
-		String artifactId = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:artifactId/text()"));
-		String groupId    = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
-
+		String parentGroupId = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:parent/ns:groupId/text()"));
+		String groupId       = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
 		if (groupId == null) groupId = parentGroupId;
 		
 		return ModelFactory.newModel(groupId, artifactId, null, null, null);
-	}
-
-	
-
-	/**
-	 * We will initialize file contents with a sample text.
-	 */
-
-	private InputStream openContentStream() {
-		String contents =
-			"This is the initial file contents for *.mpe file that should be word-sorted in the Preview page of the multi-page editor";
-		return new ByteArrayInputStream(contents.getBytes());
 	}
 
 	private void throwCoreException(String message) throws CoreException {

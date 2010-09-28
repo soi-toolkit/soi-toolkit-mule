@@ -22,10 +22,12 @@
 		<spring:property name="locations">
 			<spring:list>
 				<!-- Only available in development env, e.g. Eclipse -->
-				<spring:value>classpath:${artifactId}.properties</spring:value>
+				<spring:value>classpath:${securityPropertyFile}.properties</spring:value>
+				<spring:value>classpath:${configPropertyFile}.properties</spring:value>
 				
 				<!-- Only available when deployed to a servlet container -->
-				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${artifactId}.properties</spring:value>
+				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${securityPropertyFile}.properties</spring:value>
+				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${configPropertyFile}.properties</spring:value>
 			</spring:list>
 		</spring:property>
 	</spring:bean>
