@@ -10,9 +10,6 @@
     <spring:beans>
     	<!-- TODO: Add import of connector specific configuration files here as required -->
         <spring:import resource="classpath:soitoolkit-mule-jms-connector-activemq-external.xml"/>
-<% if (sftp) { %>
-        <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
-<% } %>  
 
         <spring:import resource="classpath:${artifactId}-common.xml"/>
         <spring:import resource="classpath:services/*-service.xml"/>

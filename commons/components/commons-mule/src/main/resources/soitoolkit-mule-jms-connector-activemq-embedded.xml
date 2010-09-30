@@ -30,7 +30,9 @@
 				</amq:policyMap>
 			</amq:destinationPolicy>
 			<amq:transportConnectors>
+<!-- 
 	            <amq:transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+ -->
 				<amq:transportConnector uri="vm://localhost" />
 			</amq:transportConnectors>
 		</amq:broker>

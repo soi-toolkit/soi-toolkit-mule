@@ -19,10 +19,6 @@
 		</layout>
 	</appender>
 
-	<appender name="JMS-AMQ" class="org.soitoolkit.commons.log.appenders.JmsActiveMqAppender">
-		<param name="brokerURL" value="failover:(tcp://localhost:61616)" />
-	</appender>
-
 	<!--
 		Loglevels: {OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL} See:
 		http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/Level.html
@@ -65,7 +61,6 @@
 	<!-- Message logging -->
 	<logger name="org.soitoolkit.commons.mule.messageLogger">
 		<level value="DEBUG" />
-		<appender-ref ref="JMS-AMQ" />
 	</logger>
 	
 	<root>

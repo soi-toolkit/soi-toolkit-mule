@@ -24,7 +24,6 @@ public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
 
 	protected String getConfigResources() {
 		return "soitoolkit-mule-jms-connector-activemq-embedded.xml," +
-			"soitoolkit-mule-sftp-connector.xml," +
 			"${artifactId}-common.xml," +
 			"services/${service}-service.xml," +
 			"teststub-services/${service}-teststub-service.xml";

@@ -1,4 +1,9 @@
 
 # TODO: Add connector and service properties here...
 
+# Default queue names for info end error log-events
+SOITOOLKIT_LOG_INFO_QUEUE=SOITOOLKIT.LOG.INFO
+SOITOOLKIT_LOG_ERROR_QUEUE=SOITOOLKIT.LOG.ERROR
+
+# Default timeout for synchronous services
 SERVICE_TIMEOUT_MS=8000

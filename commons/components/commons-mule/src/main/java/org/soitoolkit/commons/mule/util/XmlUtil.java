@@ -56,15 +56,17 @@ public class XmlUtil extends org.mule.util.XMLUtils {
 	}
 
     /**
-     * Converts a java.util.Date to a javax.xml.datatype.XMLGregorianCalendar;
+     * Converts a java.util.Date to a javax.xml.datatype.XMLGregorianCalendar, uses current time if specified date is null;
      * 
-     * @param date
+     * @param date, uses current time if specified date is null
      * @return a corresponding XMLGregorianCalendar object
      */
     public static XMLGregorianCalendar convertDateToXmlDate(Date date) {
 		try {
 			GregorianCalendar fromDate = new GregorianCalendar();
-			fromDate.setTime(date);
+			if (date != null) {
+				fromDate.setTime(date);
+			}
 			return DatatypeFactory.newInstance().newXMLGregorianCalendar(fromDate);
 		} catch (DatatypeConfigurationException e) {
 			throw new RuntimeException(e);

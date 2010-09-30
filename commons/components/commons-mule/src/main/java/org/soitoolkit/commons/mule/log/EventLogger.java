@@ -1,25 +1,31 @@
 package org.soitoolkit.commons.mule.log;
 
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.Session;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.mule.DefaultMuleMessage;
 import org.mule.MuleServer;
 import org.mule.RequestContext;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
+import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleConfiguration;
 import org.mule.api.endpoint.EndpointURI;
@@ -30,7 +36,16 @@ import org.mule.transport.jms.JmsMessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
+import org.soitoolkit.commons.logentry.schema.v1.LogEntryType;
+import org.soitoolkit.commons.logentry.schema.v1.LogEvent;
+import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
+import org.soitoolkit.commons.logentry.schema.v1.LogMessageExceptionType;
+import org.soitoolkit.commons.logentry.schema.v1.LogMessageType;
+import org.soitoolkit.commons.logentry.schema.v1.LogMetadataInfoType;
+import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType;
+import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType.BusinessContextId;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
+import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.commons.mule.util.XmlUtil;
 
 /**
@@ -43,17 +58,22 @@ public class EventLogger {
 	
 	private static final Logger messageLogger = LoggerFactory.getLogger("org.soitoolkit.commons.mule.messageLogger");
 
+	// Creating JaxbUtil objects (i.e. JaxbContext objects)  are costly, so we only keep one instance.
+	// According to https://jaxb.dev.java.net/faq/index.html#threadSafety this should be fins since they are thread safe!
+	private static final JaxbUtil JAXB_UTIL = new JaxbUtil(LogEvent.class);
+
 	private static final String MSG_ID = "soi-toolkit.log";
 	private static final String LOG_EVENT_INFO = "logEvent-info";
 	private static final String LOG_EVENT_ERROR = "logEvent-error";
 	private static final String LOG_STRING = MSG_ID + 
 		"\n** {}.start ***********************************************************" +
-		"\nIntegrationScenario={}\nContractId={}\nAction={}\nService={}\nHost={} ({})\nServer={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}" + 
+		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}" + 
 		"\n** {}.end *************************************************************";
 
-	private static InetAddress HOST;
-	private static String HOST_NAME;
-	private static String HOST_IP;
+	private static InetAddress HOST = null;
+	private static String HOST_NAME = "UNKNOWN";
+	private static String HOST_IP = "UNKNOWN";
+	private static String PROCESS_ID = "UNKNOWN";
 
 	private String serverId = null; // Can't read this one at class initialization because it is not set at that time. Can also be different for different loggers in the same JVM (e.g. multiple wars in one servlet container with shared classes?))
 
@@ -62,12 +82,13 @@ public class EventLogger {
 
 	{
 		try {
-			HOST = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
+			// Let's give it a try, fail silently...
+			HOST       = InetAddress.getLocalHost();
+			HOST_NAME  = HOST.getCanonicalHostName();
+			HOST_IP    = HOST.getHostAddress();
+			PROCESS_ID = ManagementFactory.getRuntimeMXBean().getName();
+		} catch (Throwable ex) {
 		}
-		HOST_NAME = HOST.getCanonicalHostName();
-		HOST_IP   = HOST.getHostAddress();
 	}
 
 	public EventLogger() {
@@ -79,11 +100,18 @@ public class EventLogger {
 
 	public void logInfoEvent (
 		MuleMessage message,
-		String      action,
+		String      logMessage,
 		Map<String, String> businessContextId) {
 
 		if (messageLogger.isInfoEnabled()) {
-			messageLogger.info(formatLogMessage(LOG_EVENT_INFO, message, action, businessContextId, message.getPayload()));
+			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, businessContextId, message.getPayload(), null);
+			
+			String xmlString = JAXB_UTIL.marshal(logEvent);
+			dispatchInfoEvent(xmlString);
+//			System.err.println("## SKIP DISPATCH TO soitoolkit-info-log-endpoint");
+
+			String logMsg = formatLogMessage(LOG_EVENT_INFO, logEvent);
+			messageLogger.info(logMsg);
 		}
 	}
 
@@ -91,63 +119,92 @@ public class EventLogger {
 		Throwable   error,
 		MuleMessage message) {
 
-		messageLogger.error(formatLogMessage(LOG_EVENT_ERROR, message, error.toString(), null, message.getPayload()), error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), null, message.getPayload(), error);
+		
+		String xmlString = JAXB_UTIL.marshal(logEvent);
+		dispatchErrorEvent(xmlString);
+//		System.err.println("## SKIP DISPATCH TO soitoolkit-error-log-endpoint");
+
+		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
+		messageLogger.error(logMsg);
 	}
 
 	public void logErrorEvent (
 		Throwable   error,
 		Object      payload) {
 
-		messageLogger.error(formatLogMessage(LOG_EVENT_ERROR, null, error.toString(), null, payload), error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), null, payload, error);
+
+		String xmlString = JAXB_UTIL.marshal(logEvent);
+		dispatchErrorEvent(xmlString);
+//		System.err.println("## SKIP DISPATCH TO soitoolkit-error-log-endpoint");
+
+		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
+		messageLogger.error(logMsg);
 	}
 
-	private String formatLogMessage(
-		String logEventName,
-		MuleMessage message, 
-		String action,
-		Map<String, String> businessContextId,
-		Object payload) {
+	//----------------
+	
+	private void dispatchInfoEvent(String msg) {
+		dispatchEvent("soitoolkit-info-log-endpoint", msg);
+	}
 
-		// TODO: Will event-context always be null when an error is reported?
-		// If so then its probably better to move this code to the info-logger method.
-	    String           serviceName = "";
-		String           endpoint    = "";
-        MuleEventContext event       = RequestContext.getEventContext();
-        if (event != null) {
-	        Service          service     = event.getService();
-		    EndpointURI      endpointURI = event.getEndpointURI();
-		    serviceName = (service == null)? "" : service.getName();
-			endpoint    = (endpointURI == null)? "" : endpointURI.toString();
-        }
-		
-		String messageId                  = "";
-		String integrationScenario        = ""; 
-		String contractId                 = ""; 
-		String correlationId              = "";
-		String businessContextIdString    = "";
+	private void dispatchErrorEvent(String msg) {
+		dispatchEvent("soitoolkit-error-log-endpoint", msg);
+	}
 
-		if (message != null) {
-			messageId           = message.getUniqueId();
-			contractId          = message.getStringProperty(SOITOOLKIT_CONTRACT_ID, "");
-			correlationId       = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "");
-			integrationScenario = message.getStringProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
-		}
-		businessContextIdString = businessContextIdToString(businessContextId);
+	private void dispatchEvent(String endpointName, String msg) {
+		Session s = null;
+		try {
+            MuleMessage logMessage = new DefaultMuleMessage(msg);
+            MuleEventContext eventCtx = RequestContext.getEventContext();
+			eventCtx.dispatchEvent(logMessage, endpointName);
 
-		// Only extract payload if debug is enabled!
-	    String payloadASstring = (messageLogger.isDebugEnabled())? getPayloadAsString(payload) : "";
-		
-		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenario, contractId, action, serviceName, HOST_NAME, HOST_IP, getServerId(), endpoint, messageId, correlationId, payloadASstring, businessContextIdString, logEventName});
+/*			
+			EndpointBuilder eb = MuleServer.getMuleContext().getRegistry().lookupEndpointBuilder(endpointName);
+			OutboundEndpoint oe = eb.buildOutboundEndpoint();
+			System.err.println("### OutboundEndpoint: " + oe.getClass().getName());
+			System.err.println("### JMS-Connector: " + oe.getConnector().getClass().getName());
+			JmsConnector jmsConn = (JmsConnector)oe.getConnector();
+			Connection c = jmsConn.getConnection();
+			s = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			System.err.println("### JMS-Session created!");
+*/			
+		} catch (MuleException e) {
+			throw new RuntimeException(e);
+//		} catch (JMSException e) {
+//			throw new RuntimeException(e);
+		} finally {
+			if (s != null) try {s.close();} catch (JMSException e) {}
+		}		
 	}
 	
-	private String businessContextIdToString(Map<String, String> businessContextId) {
+	private String formatLogMessage(String logEventName, LogEvent logEvent) {
+		LogMessageType      messageInfo  = logEvent.getLogEntry().getMessageInfo();
+		LogMetadataInfoType metadataInfo = logEvent.getLogEntry().getMetadataInfo();
+		LogRuntimeInfoType  runtimeInfo  = logEvent.getLogEntry().getRuntimeInfo();
+
+		String integrationScenarioId = metadataInfo.getIntegrationScenarioId();
+		String contractId = metadataInfo.getContractId();
+		String logMessage = messageInfo.getMessage();
+		String serviceImplementation = metadataInfo.getServiceImplementation();
+		String componentId = runtimeInfo.getComponentId();
+		String endpoint = metadataInfo.getEndpoint();
+		String messageId = runtimeInfo.getMessageId();
+		String businessCorrelationId = runtimeInfo.getBusinessCorrelationId();
+		String payload = logEvent.getLogEntry().getPayload();
+		String businessContextIdString = businessContextIdToString(runtimeInfo.getBusinessContextId());
 		
-		if (businessContextId == null) return "";
+		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, logEventName});
+	}
+	
+	private String businessContextIdToString(List<BusinessContextId> businessContextIds) {
+		
+		if (businessContextIds == null) return "";
 		
 		StringBuffer businessContextIdString = new StringBuffer();
-		for (String key : businessContextId.keySet()) {
-			String value = businessContextId.get(key);
-			businessContextIdString.append("\n-").append(key).append(" = ").append(value);
+		for (BusinessContextId bci : businessContextIds) {
+			businessContextIdString.append("\n-").append(bci.getName()).append(" = ").append(bci.getValue());
 		}
 		return businessContextIdString.toString();
 	}
@@ -245,7 +302,7 @@ public class EventLogger {
 		return payload.getClass().isAnnotationPresent(XmlType.class);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String getJaxbContentAsString(Object jaxbObject, String outputEncoding) {
 		String content;
 		if (jaxb2xml == null) {
@@ -282,4 +339,127 @@ public class EventLogger {
 		return elementName;
 	}
 
+	private LogEvent createLogEntry(
+			LogLevelType logLevel,
+			MuleMessage message, 
+			String logMessage,
+			Map<String, String> businessContextId,
+			Object payload,
+			Throwable exception) {
+
+		// --------------------------
+		//
+		// 1. Process input variables
+		//
+		// --------------------------
+
+		// TODO: Will event-context always be null when an error is reported?
+		// If so then its probably better to move this code to the info-logger method.
+	    String           serviceImplementation = "";
+		String           endpoint    = "";
+        MuleEventContext event       = RequestContext.getEventContext();
+        if (event != null) {
+	        Service          service     = event.getService();
+		    EndpointURI      endpointURI = event.getEndpointURI();
+		    serviceImplementation = (service == null)? "" : service.getName();
+			endpoint    = (endpointURI == null)? "" : endpointURI.toString();
+        }
+		
+		String messageId                  = "";
+		String integrationScenarioId        = ""; 
+		String contractId                 = ""; 
+		String businessCorrelationId              = "";
+
+		if (message != null) {
+			messageId           = message.getUniqueId();
+			contractId          = message.getStringProperty(SOITOOLKIT_CONTRACT_ID, "");
+			businessCorrelationId       = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "");
+			integrationScenarioId = message.getStringProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
+		}
+
+		String componentId = getServerId();
+
+		// Only extract payload if debug is enabled!
+	    String payloadASstring = (messageLogger.isDebugEnabled())? getPayloadAsString(payload) : "";
+		
+
+	    // -------------------------
+	    //
+	    // 2. Create LogEvent object
+	    //
+	    // -------------------------
+		
+		// Setup basic runtime information for the log entry
+		LogRuntimeInfoType lri = new LogRuntimeInfoType();
+		lri.setTimestamp(XmlUtil.convertDateToXmlDate(null));
+		lri.setHostName(HOST_NAME);
+		lri.setHostIp(HOST_IP);
+		lri.setProcessId(PROCESS_ID);
+		lri.setThreadId(Thread.currentThread().getName());
+		lri.setComponentId(componentId);
+		lri.setMessageId(messageId);
+		lri.setBusinessCorrelationId(businessCorrelationId); 
+		
+		// Add any business contexts
+		if (businessContextId != null) {
+			Set<String> names = businessContextId.keySet();
+			for (String name : names) {
+				String value = businessContextId.get(name);
+
+				BusinessContextId bxid = new BusinessContextId();
+				bxid.setName(name);
+				bxid.setValue(value);
+				lri.getBusinessContextId().add(bxid);
+			}
+		}
+		
+
+		// Setup basic metadata information for the log entry
+		LogMetadataInfoType lmi = new LogMetadataInfoType();
+		lmi.setLoggerName(messageLogger.getName());
+		lmi.setIntegrationScenarioId(integrationScenarioId);
+		lmi.setContractId(contractId);
+		lmi.setServiceImplementation(serviceImplementation);
+		lmi.setEndpoint(endpoint);
+
+		
+		// Setup basic information of the log message for the log entry
+		LogMessageType lm = new LogMessageType();
+		lm.setLevel(logLevel);
+		lm.setMessage(logMessage);
+		
+		
+		// Setup exception information if present
+		if (exception != null) {
+			LogMessageExceptionType lme = new LogMessageExceptionType();
+			
+			lme.setExceptionClass(exception.getClass().getName());
+			StackTraceElement[] stArr = exception.getStackTrace();
+			List<String> stList = new ArrayList<String>();
+			for (int i = 0; i < stArr.length; i++) {
+				stList.add(stArr[i].toString());
+			}
+			lme.getStackTrace().addAll(stList);
+			
+			lm.setException(lme);
+		}
+
+
+		// Create the log entry object
+		LogEntryType logEntry = new LogEntryType();
+		logEntry.setMetadataInfo(lmi);
+		logEntry.setRuntimeInfo(lri);
+		logEntry.setMessageInfo(lm);
+		logEntry.setPayload(payloadASstring);
+
+		
+		// Create the final log event object
+		LogEvent logEvent = new LogEvent();
+		logEvent.setLogEntry(logEntry);
+		
+		
+		// We are actually done :-)
+		return logEvent;
+	}
+	
 }

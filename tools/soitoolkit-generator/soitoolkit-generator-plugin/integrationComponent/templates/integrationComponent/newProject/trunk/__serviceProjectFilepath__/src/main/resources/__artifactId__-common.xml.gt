@@ -4,6 +4,7 @@
 	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
 <% if (servlet) { %>
 	xmlns:servlet="http://www.mulesource.org/schema/mule/servlet/2.2"
 <% } %>  
@@ -11,6 +12,7 @@
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.mulesource.org/schema/mule/core/2.2       http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2        http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd
 <% if (servlet) { %>
 		http://www.mulesource.org/schema/mule/servlet/2.2    http://www.mulesource.org/schema/mule/servlet/2.2/mule-servlet.xsd
 <% } %>  
@@ -48,9 +50,22 @@
 		<notification event="ENDPOINT-MESSAGE"/>
 	</notifications>
 
+    <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
 <% if (servlet) { %>
 	<servlet:connector name="servletConnector" />
 <% } %>  
+	<endpoint name="soitoolkit-info-log-endpoint" address="vm://soitoolkit-info-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+	<endpoint name="soitoolkit-error-log-endpoint" address="vm://soitoolkit-error-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+    <spring:beans>
+<% if (sftp) { %>
+        <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
+<% } %>  
+	    <spring:import resource="classpath:soitoolkit-log-service.xml"/>
+    </spring:beans>
 
 	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>
 
