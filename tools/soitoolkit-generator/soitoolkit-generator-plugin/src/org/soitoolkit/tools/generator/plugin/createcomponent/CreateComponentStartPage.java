@@ -1,14 +1,19 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.*;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum.*;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
+import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
+import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_DEFAULT_ROOT_FOLDER;
+import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_ECLIPSE_GOAL;
+import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_GROOVY_MODEL;
+import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_MAVEN_HOME;
 
 import java.io.File;
 import java.net.URL;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -31,9 +36,10 @@ import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
-import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
+
+import soi_toolkit_generator_plugin.Activator;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -49,17 +55,9 @@ public class CreateComponentStartPage extends WizardPage {
 		WizardPage p = (WizardPage)super.getNextPage();
 		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
 		p = (compEnum != INTEGRATION_COMPONENT) ? null : p;	
-//		System.err.println("getNextPage() returns: " + ((p == null)? "NULL" : p.getTitle()));
 		return p;
 	}
 
-//	@Override
-//	public IWizardPage getPreviousPage() {
-//		IWizardPage p = super.getPreviousPage();
-//		System.err.println("getPreviousPage() returns: " + ((p == null)? "NULL" : p.getTitle()));
-//		return p;
-//	}
-	
 	private ValueHolder<Integer> componentType = new ValueHolder<Integer>(INTEGRATION_COMPONENT.ordinal());
 	private ValueHolder<Integer> mavenEclipseGoalType = new ValueHolder<Integer>(ECLIPSE_M2ECLIPSE.ordinal());
 	
@@ -69,7 +67,9 @@ public class CreateComponentStartPage extends WizardPage {
 	private Text rootFolderText;
 	private Text mavenHomeText;
 	private Text customGroovyModelImplText;
+	private Text mavenEclipseGoalText;
 
+	@SuppressWarnings("unused")
 	private ISelection selection;
 
 	/**
@@ -96,18 +96,6 @@ public class CreateComponentStartPage extends WizardPage {
 		layout.numColumns = 1;
 		layout.verticalSpacing = 9;
 		
-//		Label label = new Label(container, SWT.NULL);
-//		label.setText("&Container:");
-//
-//		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
-//		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-//		containerText.setLayoutData(gd);
-//		containerText.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				dialogChanged();
-//			}
-//		});
-
 		addRadioButtons(EnumUtil.getLabels(ComponentEnum.values()), "&Type of component:", componentType, container, new Listener () {
 			public void handleEvent (Event e) {
 				dialogChanged();
@@ -116,12 +104,6 @@ public class CreateComponentStartPage extends WizardPage {
 
 		addTextFields(container);
 		
-		addRadioButtons(EnumUtil.getLabels(MavenEclipseGoalEnum.values()), "&Maven Eclipse goal:", mavenEclipseGoalType, container, new Listener () {
-			public void handleEvent (Event e) {
-				dialogChanged();
-			}
-		});
-
 		initialize();
 		dialogChanged();
 		setControl(container);
@@ -164,40 +146,42 @@ public class CreateComponentStartPage extends WizardPage {
 			}
 		});
 
-		// FIXME. Looks like crap :-)
-		Label shadow_sep_1 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
-		shadow_sep_1.setBounds(50,80,100,50);
-		Label shadow_sep_2 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
-		shadow_sep_2.setBounds(50,80,100,50);
-		Label shadow_sep_3 = new Label(container, SWT.SEPARATOR | SWT.SHADOW_OUT | SWT.HORIZONTAL);
-		shadow_sep_3.setBounds(50,80,200,50);
+		label = new Label(container, SWT.NULL);
+		label.setText("Preferences:");
+		label = new Label(container, SWT.NULL);
+		label.setText("(read-only here, updated in the Preferences-page)");
+		new Label(container, SWT.NULL); // FIXME Stupid filler...
 		
 		// Maven home folder (label, text, browse-button)
 		label = new Label(container, SWT.NULL);
 		label.setText("&Maven home Folder:");
 
 		mavenHomeText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		mavenHomeText.setEditable(false);
+		mavenHomeText.setEnabled(false);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		mavenHomeText.setLayoutData(gd);
-		mavenHomeText.addModifyListener(modifyListener);
-
-		button = new Button(container, SWT.PUSH);
-		button.setText("Browse...");
-		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				handleBrowseMavenHome();
-			}
-		});
+		new Label(container, SWT.NULL); // FIXME Stupid filler...
 		
-		// Groowy model impl (label, text)		
+		// Groovy model impl (label, text)		
 		label = new Label(container, SWT.NULL);
-		label.setText("&Groovy IModel impl.:");
+		label.setText("Custom Groovy model:");
 
 		customGroovyModelImplText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		customGroovyModelImplText.setEnabled(false);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		customGroovyModelImplText.setLayoutData(gd);
-		customGroovyModelImplText.addModifyListener(modifyListener);
+		new Label(container, SWT.NULL); // FIXME Stupid filler...
+		
+		// Maven eclispe goal (label, text)		
+		label = new Label(container, SWT.NULL);
+		label.setText("Maven Eclipse goal:");
+
+		mavenEclipseGoalText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		mavenEclipseGoalText.setEnabled(false);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		mavenEclipseGoalText.setLayoutData(gd);
+//		mavenEclipseGoalText(modifyListener);
+		new Label(container, SWT.NULL); // FIXME Stupid filler...
 	}
 
 	
@@ -206,27 +190,21 @@ public class CreateComponentStartPage extends WizardPage {
 	 */
 
 	private void initialize() {
-//		if (selection != null && selection.isEmpty() == false
-//				&& selection instanceof IStructuredSelection) {
-//			IStructuredSelection ssel = (IStructuredSelection) selection;
-//			if (ssel.size() > 1)
-//				return;
-//			Object obj = ssel.getFirstElement();
-//			if (obj instanceof IResource) {
-//				IContainer container;
-//				if (obj instanceof IContainer)
-//					container = (IContainer) obj;
-//				else
-//					container = ((IResource) obj).getParent();
-//				containerText.setText(container.getFullPath().toString());
-//			}
-//		}
+		// TODO: Add preferences for a+g+v + parent-a+g+v!
+		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
 		artifactIdText.setText("sample1");
 		groupIdText.setText("org.sample");
 		versionText.setText("1.0-SNAPSHOT");
-		rootFolderText.setText(PreferencesUtil.getDefaultRootFolder());
-		mavenHomeText.setText(PreferencesUtil.getMavenHome());
-		customGroovyModelImplText.setText(PreferencesUtil.getCustomGroovyModelImpl());
+		rootFolderText.setText(prefs.getString(P_DEFAULT_ROOT_FOLDER));
+		mavenHomeText.setText(prefs.getString(P_MAVEN_HOME));
+		customGroovyModelImplText.setText(prefs.getString(P_GROOVY_MODEL));
+		String eclipseGoal = prefs.getString(P_ECLIPSE_GOAL);
+		mavenEclipseGoalText.setText(eclipseGoal);
+		if (eclipseGoal.equals("eclipse:m2eclipse")) {
+			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE.ordinal();
+		} else {
+			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_ECLIPSE.ordinal();
+		}
 	}
 
 	/**
@@ -239,40 +217,11 @@ public class CreateComponentStartPage extends WizardPage {
 		String platform = SWT.getPlatform();
 		dialog.setFilterPath (platform.equals("win32") || platform.equals("wpf") ? "c:\\" : "/");
 
-//		FileDialog dialog = new FileDialog (getShell(), SWT.SAVE);
-//		FileSelectionDialog dialog = 
-//			new FileSelectionDialog(getShell(), null, "Select ML-folder");
-//		dialog.setInitialSelections();
 		String foldername = dialog.open();
 		System.err.println("RESULT ROOT_FOLDER = " + foldername);
 		rootFolderText.setText(foldername);		
-		
-/*		
-		Display display = new Display ();
-		Shell shell = new Shell (display);
-		shell.open ();
-		FileDialog dialog = new FileDialog (shell, SWT.SAVE);
-		String [] filterNames = new String [] {"Image Files", "All Files (*)"};
-		String [] filterExtensions = new String [] {"*.gif;*.png;*.xpm;*.jpg;*.jpeg;*.tiff", "*"};
-		String filterPath = "/";
-		String platform = SWT.getPlatform();
-		if (platform.equals("win32") || platform.equals("wpf")) {
-			filterNames = new String [] {"Image Files", "All Files (*.*)"};
-			filterExtensions = new String [] {"*.gif;*.png;*.bmp;*.jpg;*.jpeg;*.tiff", "*.*"};
-			filterPath = "c:\\";
-		}
-		dialog.setFilterNames (filterNames);
-		dialog.setFilterExtensions (filterExtensions);
-		dialog.setFilterPath (filterPath);
-		dialog.setFileName ("myfile");
-		String filename = dialog.open ();
-		while (!shell.isDisposed ()) {
-			if (!display.readAndDispatch ()) display.sleep ();
-		}
-		display.dispose ();
-		containerText.setText(filename);
-*/
 	}
+
 	public void handleBrowseMavenHome() {
 		DirectoryDialog dialog = new DirectoryDialog (getShell());
 		dialog.setFilterPath (SwtUtil.isWindows() ? "c:\\" : "/");
@@ -288,7 +237,6 @@ public class CreateComponentStartPage extends WizardPage {
 
 	private void dialogChanged() {
 		
-//		System.err.println("### UPDATE BUTTONS!!!");
 		// TODO: Needs to be cleaned up, this design is tied to a two page design and can't handle a third page, e.g. used for some other component type...
 
 		// If creating an integration component then force viewing page #2 otherwise mark it as completed
@@ -297,24 +245,8 @@ public class CreateComponentStartPage extends WizardPage {
 		p.setMustBeDisplayed(compEnum == INTEGRATION_COMPONENT);
 		getContainer().updateButtons();
 
-		
-//		IResource container = ResourcesPlugin.getWorkspace().getRoot()
-//				.findMember(new Path(getContainerName()));
 		String rootFolderName = getRootFolder();
 
-//		if (getContainerName().length() == 0) {
-//			updateStatus("File container must be specified");
-//			return;
-//		}
-//		if (container == null
-//				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
-//			updateStatus("File container must exist");
-//			return;
-//		}
-//		if (!container.isAccessible()) {
-//			updateStatus("Project must be writable");
-//			return;
-//		}
 		if (rootFolderName.length() == 0) {
 			updateStatus("The root folder must be specified");
 			return;
@@ -341,13 +273,13 @@ public class CreateComponentStartPage extends WizardPage {
 
 		File mvnHome = new File(getMavenHome());
 		if (!mvnHome.isDirectory()) {
-			updateStatus("The maven home folder must be an existing folder");
+			updateStatus("The maven home folder must be an existing folder, update in the soi-toolkit preferences page");
 			return;
 		}
 		
 		File mvn = new File(getMavenHome() + "/bin/mvn" + (SwtUtil.isWindows() ? ".bat" : ""));
 		if (!mvn.isFile()) {
-			updateStatus("The maven executable can't be found at: " + mvn.getAbsolutePath());
+			updateStatus("The maven executable can't be found at: " + mvn.getAbsolutePath() + ", update in the soi-toolkit preferences page");
 			return;
 		}
 		
@@ -362,7 +294,7 @@ public class CreateComponentStartPage extends WizardPage {
 				ModelFactory.setModelGroovyClass(new URL(groovyClass));
 			} catch (Throwable ex) {
 				ModelFactory.resetModelClass();
-				updateStatus("Invalid Groovy class for a custom model, error: " + ex);
+				updateStatus("Invalid Groovy class for a custom model (update in the soi-toolkit preferences page), error: " + ex);
 				return;
 			}
 		}
@@ -374,10 +306,6 @@ public class CreateComponentStartPage extends WizardPage {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
-
-//	public String getContainerName() {
-//		return containerText.getText();
-//	}
 
 	public String getRootFolder() {
 		return rootFolderText.getText();

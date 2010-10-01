@@ -23,5 +23,19 @@
             id="soi_toolkit_generator_plugin.wizards.CreateServiceWizard">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="soi_toolkit_generator_plugin.preferences.SoiToolkiGeneratorPreferencePage"
+            id="soi_toolkit_generator_plugin.preferences.SoiToolkiGeneratorPreferencePage"
+            name="SOI-Toolkit Generator">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="soi_toolkit_generator_plugin.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
