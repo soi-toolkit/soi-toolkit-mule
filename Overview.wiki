@@ -1,6 +1,21 @@
 #summary Overview of soi-toolkit
 
+= !!! Under construction !!! =
+
 = Introduction =
+
+
+Soi-toolkit helps you getting started with Mule ESB in no time using Eclipse and Maven.
+
+The project is based on experiences from earlier projects using Mule ESB and provides setups of source code structures and usage of tools that already has been proven to be working efficiently in other projects.
+
+Soi-toolkit provides a source code generator (as a Eclipse plugin) that can generate:
+ * Skeleton projects for you with a structure and content that supports an efficient development process based on Maven
+ * Skeleton services and integrations by selecting a basic integration pattern (request/response, oneway or publish/subscribe) and then selecting protocols for inbound and outbound messages.
+
+Soi-toolkit also provides you with some runtime components, reference applications and documentation to further help you to get started quickly.
+
+== Creation of skeleton projects ==
 
  * No other installations required in the development environment to get started
  Everything needed is downloaded as Maven dependencies (e.g. Mule, Spring, CXF, ActiveMQ...)
@@ -18,6 +33,8 @@
  * Preoprties for configurable infromation
  * Log
  * A Main class that can be used to quickly start a Mule server based on the configuration in the project.
+
+== Creation of skeleton services and integrations ==
 
 The source code generator can also generate skeleton code for specific serviceas and integrations by selecting a basic integration pattern and then selecting protocols for inbound and outbound messages. The generator creates:
  * A mule config file with a service for the selected pattern supportting the selected protocols
