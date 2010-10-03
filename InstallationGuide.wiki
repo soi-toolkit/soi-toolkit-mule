@@ -7,16 +7,36 @@ To get started with soi-toolkit and Mule ESB you only need to install Java SE, E
 
 Depending on your needs you also might want to install some optional tools in your development environment such as Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installations Optional installations] for instructions on how to install and configure these optional tools.
 
+The installation guides below assumes your on a 32 bit Microsoft Windows PC.
+
 ==Required installations==
 
 The following versions (or newer) are recommended:
-||*Tool*||*Version*||
+|| *Tool* || *Version* ||
 ||Java SE||6 Update 21||
 ||Eclipse EE||3.6 (Helios)||
 ||Maven||2.2.1||
 ||Maven plugin for Eclipse||0.10.0||
 
 ===Java SE===
+Install Java SE according to:
+
+ # Download JDK for Java SE from http://java.sun.com/javase/downloads/widget/jdk6.jsp
+ A file named {{{jdk-6u21-windows-i586.exe}}} is downloaded to your PC.
+ 
+ # Execute the downloaded installation program and use default values for the installation of both the JDK and the JRE.
+ .
+ # Create an environment variable, JAVA_HOME, in Windows that points to the installation directory. 
+ E.g. {{{JAVA_HOME=C:\Program Files\Java\jdk1.6.0_21}}}
+
+4.	Lägg på JDK’ts bin-folder i Windows PATH-variabel.
+T ex PATH=...;C:\Program Files\Java\jdk1.6.0_20\bin
+
+5.	Verifiera installationen i ett kommandofönster med kommandona 
+”java –version”,  ”javac –version” och ”set JAVA_HOME”, 
+det skall ge ett resultat liknande:
+
+ * http://www.oracle.com/technetwork/java/javase/documentation/install-windows-152927.html
 
 ===Eclipse===
 
