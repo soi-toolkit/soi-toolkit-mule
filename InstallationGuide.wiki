@@ -1,5 +1,7 @@
 #summary One-sentence summary of this page.
 
+<wiki:toc max_depth="2" />
+
 = !!! Under construction !!! =
 = Introduction =
 
@@ -34,7 +36,7 @@ Install Java SE according to:
 
  * Verify the installation in a command window with the commands {{{java –version}}},  {{{javac –version}}} och {{{set JAVA_HOME}}}. The result should be similar to: 
 
- [InstallationGuide/JavaSeVerifyInstallation.png]
+ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/JavaSeVerifyInstallation.png
 
  * For full installation instructions see [http://www.oracle.com/technetwork/java/javase/documentation/install-windows-152927.html Microsoft Windows Installation (32-bit)]
 
