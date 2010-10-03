@@ -19,6 +19,7 @@ The following versions (or newer) are recommended:
 ||Eclipse EE||3.6 (Helios)||
 ||Maven||2.2.1||
 ||Maven plugin for Eclipse||0.10.0||
+||Soi-toolkit plugin for Eclipse||0.1.7||
 
 ===Java SE===
 Install Java SE according to:
