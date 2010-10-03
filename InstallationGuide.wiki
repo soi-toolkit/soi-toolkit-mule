@@ -3,12 +3,6 @@
 = !!! Under construction !!! =
 = Introduction =
 
-Add your content here.
+To get started with soi-toolkit and Mule ESB you only need to install Java SE, Eclipse, Maven and the soi-toolkit Eclipse plugin. See section 
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Depending on your needs you also might 
