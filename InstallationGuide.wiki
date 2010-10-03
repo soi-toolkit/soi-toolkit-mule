@@ -21,21 +21,22 @@ The following versions (or newer) are recommended:
 ===Java SE===
 Install Java SE according to:
 
- # Download JDK for Java SE from http://java.sun.com/javase/downloads/widget/jdk6.jsp
+ * Download JDK for Java SE from http://java.sun.com/javase/downloads/widget/jdk6.jsp
  A file named {{{jdk-6u21-windows-i586.exe}}} is downloaded to your PC.
- # Execute the downloaded installation program and use default values for the installation of both the JDK and the JRE.
- .
- # Create an environment variable, JAVA_HOME, in Windows that points to the installation directory. 
+
+ * Execute the downloaded installation program and use default values for the installation of both the JDK and the JRE.
+
+ * Create an environment variable, JAVA_HOME, in Windows that points to the installation directory. 
  E.g. {{{JAVA_HOME=C:\Program Files\Java\jdk1.6.0_21}}}
 
-4.	Lägg på JDK’ts bin-folder i Windows PATH-variabel.
-T ex PATH=...;C:\Program Files\Java\jdk1.6.0_20\bin
+ * Add the bin-folder of the JDK to the Windows PATH-environment variable.
+ E.g. {{{PATH=...;C:\Program Files\Java\jdk1.6.0_21\bin}}}
 
-5.	Verifiera installationen i ett kommandofönster med kommandona 
-”java –version”,  ”javac –version” och ”set JAVA_HOME”, 
-det skall ge ett resultat liknande:
+ * Verify the installation in a command window with the commands {{{java –version}}},  {{{javac –version}}} och {{{set JAVA_HOME}}}. The result should be similar to: 
 
- * http://www.oracle.com/technetwork/java/javase/documentation/install-windows-152927.html
+ [InstallationGuide/JavaSeVerifyInstallation.png]
+
+ * For full installation instructions see [http://www.oracle.com/technetwork/java/javase/documentation/install-windows-152927.html Microsoft Windows Installation (32-bit)]
 
 ===Eclipse===
 
