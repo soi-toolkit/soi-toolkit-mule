@@ -183,6 +183,10 @@ svn commit
 mvn clean install
 }}}
 
+== Handling other mule version deps ==
+
+mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.xml 
+
 == Releasing the eclipse plugin ==
 Is currently done manually :-(
 
