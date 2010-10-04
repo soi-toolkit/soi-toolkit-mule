@@ -28,6 +28,7 @@ public class XmlUtilTest {
 	private final String docComment=" \n"+
 "DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!\n"+
 "[soi-toolkit.gen.version=0.1.7-SNAPSHOT]\n"+
+"[soi-toolkit.gen.type=services]\n"+
 "[soi-toolkit.gen.createDate=2010-09-28T17:48:20.465+02:00]\n"+
 "[soi-toolkit.gen.artifactId=sample1]\n";
 	
