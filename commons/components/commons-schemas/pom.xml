@@ -13,7 +13,17 @@
 	<name>soitoolkit-commons-schemas</name>
     <url>http://soi-toolkit.org</url>
 
-	<build>
+  <dependencies>
+    <dependency>
+      <groupId>org.soitoolkit.commons.poms</groupId>
+      <artifactId>soitoolkit-schemas-jax-ws-dependencies</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+	  </dependency>
+  </dependencies>
+  
+  	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
