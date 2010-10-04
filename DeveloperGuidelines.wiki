@@ -183,6 +183,21 @@ svn commit
 mvn clean install
 }}}
 
+== Releasing the eclipse plugin ==
+Is currently done manually :-(
+
+ * Verify/update version numbers
+  * DefaultModelImpl.java
+  * plugin/MANIFEST.MF
+  * feature/feature.xml
+  * update/site.xml
+  * Commit any changed files
+
+ * Ensure that the update-project is fully reverted, i.e. no runtime files exists in the project
+ * Perform a "build all" in the update-project (click on the "Build All" button
+ * Copy updated runtime files from the update project to svn/eclipse-update-site
+ * Commit changes in svn/eclipse-update-site
+ * Revert the update project to get rid of the runtime files
 
 = Naming Conventions =
 
