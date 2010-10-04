@@ -22,7 +22,7 @@ The following versions (or newer) are recommended:
 ||Soi-toolkit plugin for Eclipse||0.1.7||
 
 ===Java SE===
-Install Java SE in accordance with the following instruction:
+Install Java SE according to the following instructions:
 
  * Download JDK for Java SE from http://java.sun.com/javase/downloads/widget/jdk6.jsp
  A file named {{{jdk-6u21-windows-i586.exe}}} is downloaded to your PC.
@@ -43,7 +43,7 @@ Install Java SE in accordance with the following instruction:
 
 ===Eclipse===
 
-Install Eclipse in accordance with the following instruction:
+Install Eclipse according to the following instructions:
 
  * Download  {{{Eclipse IDE for Java EE Developers}}} from http://eclipse.org/downloads/.
  The file named similar to {{{eclipse-jee-helios-SR1-win32.zip}}} shall be downloaded to your computer.
@@ -58,6 +58,26 @@ Install Eclipse in accordance with the following instruction:
  http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/EclipseVerifyInstallation.png
 
 ===Maven===
+
+Install Maven according to the following instructions:
+
+ * Download Maven from http://maven.apache.org/download.html
+ A file with a name similar to the {{{apache-maven-2.2.1-bin.zip}}} shall be downloaded to your computer.
+
+ * Unzip the zip file to the desired installation folder, eg {{{C:\opt}}}.
+
+ * Create an environment variable, {{{M2_HOME}}}, in Windows pointing out the installation.
+For example: {{{M2_HOME=C:\opt\apache-maven-2.2.1}}}
+
+ * Add Maven's bin folder to the Windows {{{PATH}}} variable.
+For example: {{{PATH=...;C:\opt\apache-maven-2.2.1\bin}}}
+
+ * Verifying the installation of a command window with the command "mvn-v",
+it must produce a result like:
+
+ 
+
+6th For full installation instructions see http://maven.apache.org/download.html # Installation
 
 ===Maven Eclipse plugin===
 
