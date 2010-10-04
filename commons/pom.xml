@@ -19,6 +19,7 @@
 		<module>poms/default-parent</module>
 		<module>poms/assembly-descriptors</module>
 		<module>poms/schemas-jax-ws-dependencies</module>
+        <module>poms/mule-dependencies/mule-dependencies-2.2.5</module>
 		
 		<module>components/commons-schemas</module>
 		<module>components/commons-log</module>

@@ -30,28 +30,14 @@
 	</scm>
 
 	<properties>
-        <!-- Define common properties here, i.e. that are referred to in two or more other pom's -->
-
-		<!-- NOTE: Uses the Spring and CXF versions that comes with the used version of Mule ESB -->
-		<spring.version>2.5.6</spring.version>
+        <!-- TODO: props really needed here??? -->
         <cxf-gen.version>2.1.9</cxf-gen.version>
-		<mule.version>2.2.5</mule.version>
-		<cxf.version>2.1.9</cxf.version>
-		<jaxb-api.version>2.1</jaxb-api.version>		
-		<jaxb-impl.version>2.1.10</jaxb-impl.version>
-
 <!--
 		<activemq.version>5.3.2</activemq.version>
 -->
 		<activemq.version>5.2.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
         <xbean.version>3.4</xbean.version>
-
-<!-- 
-        Mule ESB CE versions
-		<mule.version>2.2.1</mule.version>
-		<cxf.version>2.1.2</cxf.version>
- -->
  
         <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
 

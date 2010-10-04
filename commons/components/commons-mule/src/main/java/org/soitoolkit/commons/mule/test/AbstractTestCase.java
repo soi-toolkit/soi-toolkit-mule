@@ -3,6 +3,8 @@ package org.soitoolkit.commons.mule.test;
 import static org.mule.context.notification.ComponentMessageNotification.COMPONENT_POST_INVOKE;
 import static org.mule.context.notification.ExceptionNotification.EXCEPTION_ACTION;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +78,21 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
         logger.info("Setting test timeout to (seconds): " + seconds);
         String strSeconds = String.valueOf(seconds);
         System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, strSeconds);
-        initTestTimeoutSecs();
+
+    
+        // initTestTimeoutSecs();
+        Method initTimeoutMethod = null;
+        try {
+        	initTimeoutMethod = getClass().getMethod("initTestTimeoutSecs", null);
+        	initTimeoutMethod.invoke(this, null);
+		} catch (NoSuchMethodException e) {
+			// mule version < 2.2.2, do nothing
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	
     }
 
 	/**
