@@ -16,13 +16,13 @@ The installation guides below assumes your on a 32 bit Microsoft Windows PC.
 The following versions (or newer) are recommended:
 || *Tool* || *Version* ||
 ||Java SE||6 Update 21||
-||Eclipse EE||3.6 (Helios)||
+||Eclipse EE||3.6.1 (Helios)||
 ||Maven||2.2.1||
 ||Maven plugin for Eclipse||0.10.0||
 ||Soi-toolkit plugin for Eclipse||0.1.7||
 
 ===Java SE===
-Install Java SE according to:
+Install Java SE in accordance with the following instruction:
 
  * Download JDK for Java SE from http://java.sun.com/javase/downloads/widget/jdk6.jsp
  A file named {{{jdk-6u21-windows-i586.exe}}} is downloaded to your PC.
@@ -42,6 +42,20 @@ Install Java SE according to:
  * For full installation instructions see [http://www.oracle.com/technetwork/java/javase/documentation/install-windows-152927.html Microsoft Windows Installation (32-bit)]
 
 ===Eclipse===
+
+Install Eclipse in accordance with the following instruction:
+
+ * Download  {{{Eclipse IDE for Java EE Developers}}} from http://eclipse.org/downloads/.
+ The file named similar to {{{eclipse-jee-helios-SR1-win32.zip}}} shall be downloaded to your computer.
+
+ * Unzip the zip file to the desired installation folder, eg C:\opt.
+
+ * Create a shortcut to the file {{{eclipse.exe}}} (eg {{{C:\opt\eclipse\eclipse.exe}}}) in the installation folder to the desktop.
+
+ * Verify the installation, start Eclipse through the desktop shortcut.
+ Enter the desired workspace folder where requested and click on the "Workbench" icon (top right) when the welcome screen is presented. The the Eclipse workbench should be displayed and look like:
+
+ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/EclipseVerifyInstallation.png
 
 ===Maven===
 
