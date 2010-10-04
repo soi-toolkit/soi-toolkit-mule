@@ -20,6 +20,7 @@
       <artifactId>soitoolkit-mule-dependencies-2.2.5</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
+      <scope>provided</scope>      
     </dependency>
   
 		<!-- For the MonitorRestService -->
