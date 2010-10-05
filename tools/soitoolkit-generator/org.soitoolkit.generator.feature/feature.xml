@@ -2,7 +2,7 @@
 <feature
       id="org.soitoolkit.generator.feature"
       label="soi-toolkit generator feature"
-      version="0.1.7">
+      version="0.1.8">
 
    <description url="http://soi-toolkit.org">
       [Enter Feature Description here.]
@@ -17,7 +17,7 @@
    </license>
 
    <url>
-      <update label="soi-toolkit update site" url="http://soi-toolkit.merikan.com/update"/>
+      <update label="soi-toolkit update site" url="http://soi-toolkit.googlecode.com/svn/eclipse-update-site"/>
    </url>
 
    <requires>

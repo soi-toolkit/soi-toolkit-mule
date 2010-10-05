@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="soi-toolkit update site" url="http://soi-toolkit.merikan.com/update">
+   <description name="soi-toolkit update site" url="http://soi-toolkit.googlecode.com/svn/eclipse-update-site">
       soi-toolkit update site
    </description>
-   <feature url="features/org.soitoolkit.generator.feature_0.1.7.jar" id="org.soitoolkit.generator.feature" version="0.1.7">
+   <feature url="features/org.soitoolkit.generator.feature_0.1.8.jar" id="org.soitoolkit.generator.feature" version="0.1.8">
       <category name="soitoolkit.generator"/>
    </feature>
    <category-def name="soitoolkit.generator" label="soi-toolkit generator"/>
