@@ -18,7 +18,6 @@
       <groupId>org.soitoolkit.commons.poms</groupId>
       <artifactId>soitoolkit-schemas-jax-ws-dependencies</artifactId>
       <version>${project.version}</version>
-      <type>pom</type>
       <scope>provided</scope>
 	  </dependency>
   </dependencies>
