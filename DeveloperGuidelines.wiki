@@ -224,16 +224,16 @@ mvn release:perform
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
 
- * Commit the change
-{{{
-svn commit
-}}}
-
  * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
 mvn clean install
 mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.xml 
 mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-3.0.0/pom.xml 
+}}}
+
+ * Commit the change
+{{{
+svn commit
 }}}
 
 == Handling other mule version deps ==
