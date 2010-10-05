@@ -11,7 +11,6 @@
     
 	<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
 	<artifactId>soitoolkit-mule-dependencies-2.2.1</artifactId>
-	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 
 	<properties>

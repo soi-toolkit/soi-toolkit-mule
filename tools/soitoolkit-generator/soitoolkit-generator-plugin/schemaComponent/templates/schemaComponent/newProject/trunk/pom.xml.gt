@@ -55,7 +55,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
       <groupId>org.soitoolkit.commons.poms</groupId>
       <artifactId>soitoolkit-schemas-jax-ws-dependencies</artifactId>
       <version>${dollarSymbol}{soitoolkit.version}</version>
-      <type>pom</type>
       <scope>provided</scope>
     </dependency>
   </dependencies>

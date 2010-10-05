@@ -19,7 +19,6 @@
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
       <artifactId>soitoolkit-mule-dependencies-2.2.5</artifactId>
       <version>${project.version}</version>
-      <type>pom</type>
       <scope>provided</scope>      
     </dependency>
   

@@ -40,7 +40,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
 			<artifactId>soitoolkit-mule-dependencies-${muleVersion}</artifactId>
 			<version>${dollarSymbol}{soitoolkit.version}</version>
-			<type>pom</type>
 		</dependency>
 	</dependencies> 
 
