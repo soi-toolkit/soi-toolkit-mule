@@ -11,7 +11,7 @@
 	<groupId>org.soitoolkit</groupId>
 	<artifactId>soitoolkit</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.7</version>
+	<version>0.1.7-SNAPSHOT</version>
 	<name>soitoolkit</name>
     <description>SOI-Toolkit</description>
     <url>http://soi-toolkit.org</url>
@@ -24,9 +24,9 @@
     </licenses>
 
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/tags/soitoolkit-0.1.7</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/tags/soitoolkit-0.1.7</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/tags/soitoolkit-0.1.7</url>
+		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/trunk</developerConnection>
+		<url>https://soi-toolkit.googlecode.com/svn/trunk</url>
 	</scm>
 
 	<properties>
