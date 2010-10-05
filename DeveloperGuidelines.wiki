@@ -112,20 +112,23 @@ To release a new version of soi-toolkit we use mavens release-plugin.
 
 Perform the following steps:
 
- # Go to the components trunk-folder
+ * Go to the components trunk-folder
 {{{
 cd .../trunk
 }}}
- # Check that the code is in synch
+
+ * Check that the code is in synch
   * Check for updates:
 {{{
 svn update
 }}}
+
   * Run tests
 {{{
 mvn clean test
 }}}
- # Manually update the soi-toolkit version to the release version in {{{commons/poms/default-parent/pom.xml}}}. 
+
+ * Manually update the soi-toolkit version to the release version in {{{commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
  {{{
  <soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
@@ -141,35 +144,40 @@ mvn clean test
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
- # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
+ 
+ * Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
 }}}
- # Commit changes
+
+ * Commit changes
 {{{
 svn commit
 }}}
- # Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
+
+ * Perform a dryrun to verify that everything is ok, i.e. a release build will be successful and not fail in the middle leaving the release build in an inconsistent state. *Note:* Version numbers shall follow the format defined below.
 {{{
 mvn release:clean release:prepare -DdryRun=true -Darguments=-Dgpg.passphrase=nnn
 }}}
- # Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn
+
+ * Fix any problems identified by the dryrun then perform a prepare-step to create the tag in svn
 {{{
 mvn release:clean release:prepare -Darguments=-Dgpg.passphrase=nnn
 }}}
- # Deploy to Sonatypes staging repository
+
+ * Deploy to Sonatypes staging repository
 {{{
 mvn release:perform
 }}}
 
- # Deploy other mule-version-dependency files to staging repository
+ * Deploy other mule-version-dependency files to staging repository
  {{{
  cd .../tags/soitoolkit-n.n.n
  mvn deploy -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.xml -Psonatype-oss-release
  mvn deploy -f commons/poms/mule-dependencies/mule-dependencies-3.0.0/pom.xml -Psonatype-oss-release
  }}}
 
- # Go to Sonatypes staging repository and release it to synch with maven central repo
+ * Go to Sonatypes staging repository and release it to synch with maven central repo
   * Go to: https://oss.sonatype.org
   * Login to the Nexus UI.
   * Go to Staging Repositories page.
@@ -177,7 +185,7 @@ mvn release:perform
   * Click the Close button.
   * If errors then Click on the Drop button and correct error and redo the process...
 
- # Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
+ * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
  Useful repo for tests against staging-repo:
  {{{
 	<repositories> 
@@ -194,10 +202,12 @@ mvn release:perform
 		</repository> 
 	</repositories> 
 }}}
- # Publish to central repo
+
+ * Publish to central repo
   * If ok click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
- # Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
+
+ * Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
 {{{
 <soitoolkit.version>0.1.2</soitoolkit.version>
@@ -213,14 +223,17 @@ mvn release:perform
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
- # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
- # Commit the change
+
+ * Commit the change
 {{{
 svn commit
 }}}
- # Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
+
+ * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
 mvn clean install
+mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.xml 
+mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-3.0.0/pom.xml 
 }}}
 
 == Handling other mule version deps ==
@@ -240,6 +253,7 @@ Is currently done manually :-(
  * Ensure that the update-project is fully reverted, i.e. no runtime files exists in the project
  * Perform a "build all" in the update-project (click on the "Build All" button
  * Copy updated runtime files from the update project to svn/eclipse-update-site
+   NOTE: Do not copy folders, then .svn files will be removed from eclipse-update-site folders!!!
  * Commit changes in svn/eclipse-update-site
  * Revert the update project to get rid of the runtime files
 
