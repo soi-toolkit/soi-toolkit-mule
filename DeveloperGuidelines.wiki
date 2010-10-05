@@ -136,7 +136,6 @@ mvn clean test
  }}}
  NOTE: Same for:
   * Constant {{{SOITOOLKIT_VERSION}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
-  * Constant {{{docComment}}} in {{{ttools/soitoolkit-generator/soitoolkit-generator-plugin/test/org/soitoolkit/tools/generator/plugin/util/XmlUtilTest.java}}}
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
@@ -180,7 +179,6 @@ mvn release:perform
 }}}
  NOTE: Same for:
   * Constant {{{SOITOOLKIT_VERSION}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
-  * Constant {{{docComment}}} in {{{ttools/soitoolkit-generator/soitoolkit-generator-plugin/test/org/soitoolkit/tools/generator/plugin/util/XmlUtilTest.java}}}
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
