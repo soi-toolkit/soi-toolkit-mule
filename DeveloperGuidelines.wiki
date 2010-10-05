@@ -127,14 +127,14 @@ mvn clean test
 }}}
  # Manually update the soi-toolkit version to the release version in {{{commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
-{{{
-<soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
-}}}
+ {{{
+ <soitoolkit.version>0.1.2-SNAPSHOT</soitoolkit.version>
+ }}}
  To:
-{{{
-<soitoolkit.version>0.1.2</soitoolkit.version>
-}}}
-*NOTE*: Same for generator method: {{{getSoitoolkitVersion()}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
+ {{{
+ <soitoolkit.version>0.1.2</soitoolkit.version>
+ }}}
+ NOTE: Same for generator method: {{{getSoitoolkitVersion()}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/DefaultModelImpl.java}}}
  # Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
