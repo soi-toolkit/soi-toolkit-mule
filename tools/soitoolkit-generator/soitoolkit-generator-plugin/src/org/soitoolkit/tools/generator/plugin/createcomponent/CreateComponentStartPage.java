@@ -2,6 +2,7 @@ package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
 import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.UTILITY_COMPONENT;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_DEFAULT_ROOT_FOLDER;
@@ -238,6 +239,11 @@ public class CreateComponentStartPage extends WizardPage {
 	private void dialogChanged() {
 		
 		// TODO: Needs to be cleaned up, this design is tied to a two page design and can't handle a third page, e.g. used for some other component type...
+
+		if (componentType.value == UTILITY_COMPONENT.ordinal()) {
+			updateStatus("Utility components are not yet supported");
+			return;
+		}
 
 		// If creating an integration component then force viewing page #2 otherwise mark it as completed
 		ComponentEnum compEnum = ComponentEnum.get(componentType.value);

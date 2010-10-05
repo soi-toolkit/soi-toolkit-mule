@@ -264,10 +264,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //			return;
 //		}
 		
-		if (muleVersion != MULE_2_2_5) {
-			updateStatus("Only supported Mule version for now is: " + MULE_2_2_5.getLabel());
-			return;
-		}
+//		if (muleVersion != MULE_2_2_5) {
+//			updateStatus("Only supported Mule version for now is: " + MULE_2_2_5.getLabel());
+//			return;
+//		}
 
 		updateStatus(null);
 	}
@@ -284,6 +284,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //	public boolean isGenSchemaSelected() {
 //		return genSchemaButton.getSelection();
 //	}
+
+	public MuleVersionEnum getMuleVersion() {
+		return muleVersion;
+	}
 
 	public boolean isGenWarSelected() {
 		return genWarButton.getSelection();

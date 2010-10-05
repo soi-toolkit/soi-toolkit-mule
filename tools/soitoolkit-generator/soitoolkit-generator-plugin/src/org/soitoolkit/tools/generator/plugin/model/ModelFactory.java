@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.model.impl.DefaultModelImpl;
 
@@ -74,8 +75,8 @@ public class ModelFactory {
 	 * @param service
      * @return the new model instance
 	 */
-    public static IModel newModel(String groupId, String artifactId, String version, String service, List<TransportEnum> transports) {
-		return newModel(groupId, artifactId, version, service, transports, null, null);
+    public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports) {
+		return newModel(groupId, artifactId, version, service, muleVersion, transports, null, null);
 	}
 
 	/**
@@ -89,10 +90,10 @@ public class ModelFactory {
 	 * @param operations
      * @return the new model instance
      */
-    public static IModel newModel(String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
+    public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
 		try {
 	    	DefaultModelImpl m = (DefaultModelImpl)modelClass.newInstance();
-	    	m.initModel(groupId, artifactId, version, service, transports, serviceDescriptor, operations);
+	    	m.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
 	    	System.err.println("### New model-class: " + m.getClass().getName());
 	    	return m;
 		} catch (Exception e) {

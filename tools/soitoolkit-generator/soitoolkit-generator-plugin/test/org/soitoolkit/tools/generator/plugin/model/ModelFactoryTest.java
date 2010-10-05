@@ -34,7 +34,7 @@ public class ModelFactoryTest {
 	
 	@Test
 	public void testDefaultModelImpl() {
-		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null);
 		assertEquals("artifactId-services", model.getServiceProject());
 		assertEquals("artifactId-web", model.getWebProject());
 	}
@@ -43,7 +43,7 @@ public class ModelFactoryTest {
 	public void testCustomModelImpl() throws InstantiationException, IllegalAccessException {
 		try {
 			ModelFactory.setModelClass(CustomizedModelImpl.class);
-			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null);
 			assertEquals("artifactId-intsvc", model.getServiceProject());
 			assertEquals("artifactId-web", model.getWebProject());
 		} finally {
@@ -60,7 +60,7 @@ public class ModelFactoryTest {
 			assertNotNull("Groovy class not found", url);
 
 			ModelFactory.setModelGroovyClass(url);
-			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null);
 			assertEquals("artifactId-module-intsvc", model.getServiceProject());
 			assertEquals("modules/intsvc", model.getServiceProjectFilepath());
 			assertEquals("applications/integrations", model.getWebProjectFilepath());

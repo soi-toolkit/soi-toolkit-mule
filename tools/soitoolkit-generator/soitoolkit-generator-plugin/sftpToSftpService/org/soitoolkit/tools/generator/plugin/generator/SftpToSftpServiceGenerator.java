@@ -13,7 +13,7 @@ public class SftpToSftpServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	
 	public SftpToSftpServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, "/templates/integrationComponent/sftpToSftpService", folderName);
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, null, "/templates/integrationComponent/sftpToSftpService", folderName);
 	}
 		
     public void startGenerator() {

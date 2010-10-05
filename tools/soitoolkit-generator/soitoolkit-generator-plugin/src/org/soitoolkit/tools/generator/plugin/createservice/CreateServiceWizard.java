@@ -223,7 +223,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		String groupId       = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
 		if (groupId == null) groupId = parentGroupId;
 		
-		return ModelFactory.newModel(groupId, artifactId, null, null, null);
+		return ModelFactory.newModel(groupId, artifactId, null, null, null, null);
 	}
 
 	private void throwCoreException(String message) throws CoreException {

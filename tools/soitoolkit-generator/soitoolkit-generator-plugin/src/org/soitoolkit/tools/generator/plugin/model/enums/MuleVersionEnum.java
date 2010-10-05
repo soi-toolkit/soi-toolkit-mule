@@ -1,7 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.model.enums;
 
 public enum MuleVersionEnum implements ILabeledEnum { 
-	MULE_2_2_1("v2.2.1"), MULE_2_2_5("v2.2.5"), MULE_3_0_0("v3.0.0"); 
+	MULE_2_2_1("2.2.1"), MULE_2_2_5("2.2.5"), MULE_3_0_0("3.0.0"); 
 	
 	public static MuleVersionEnum get(int ordinal) {
 		return values()[ordinal];
@@ -11,6 +11,12 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	private MuleVersionEnum(String label) {
 		this.label = label;
 	}
-	public String getLabel() {return label;}
+
+	// For display in the wizard
+	public String getLabel() {return "v" + label;}
+
+	// For generators to point out the right pom-file...
+	public String getPomSuffix() {return label;}
+
 }
 

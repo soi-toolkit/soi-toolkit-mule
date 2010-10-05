@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ServiceDescriptorModel;
+import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.XmlUtil;
@@ -27,6 +28,7 @@ public class DefaultModelImpl implements IModel {
 
 	private String service;
 
+	private MuleVersionEnum     muleVersion;
 	private List<TransportEnum> transports;
 	
 	private ServiceDescriptorModel serviceDescriptorModel;
@@ -44,12 +46,13 @@ public class DefaultModelImpl implements IModel {
 	 * @param serviceDescriptor
 	 * @param operations
 	 */
-	public void initModel(String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
+	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
 
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
 		this.service = service;
+		this.muleVersion = muleVersion;
 		this.transports = transports;
 
 		serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
@@ -305,8 +308,12 @@ public class DefaultModelImpl implements IModel {
     	return "SOITOOLKIT.LOG.ERROR"; 
     }
 
+    // Mule version
+    public String getMuleVersion() {
+    	return muleVersion.getPomSuffix();
+    }
+
     // Transports
-	
 	@Override
 	public boolean isSftp() {
 		return isTransportSelected(TransportEnum.SFTP);

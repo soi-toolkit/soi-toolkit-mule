@@ -74,6 +74,9 @@ public interface IModel {
     public String getJmsLogInfoQueue();
     public String getJmsLogErrorQueue();
 
+    // Mule version
+    public String getMuleVersion();
+
     // Transports
     public boolean isJms();
 	public boolean isSftp();

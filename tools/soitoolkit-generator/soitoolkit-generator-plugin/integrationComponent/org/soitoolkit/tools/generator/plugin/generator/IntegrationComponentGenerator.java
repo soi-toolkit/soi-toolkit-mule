@@ -3,16 +3,17 @@ package org.soitoolkit.tools.generator.plugin.generator;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 
 public class IntegrationComponentGenerator implements Generator {
 
 	GeneratorUtil gu;
 	
-	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, List<TransportEnum> transports, String folderName) {
+	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, String folderName) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
 	}
 		
     public void startGenerator() {

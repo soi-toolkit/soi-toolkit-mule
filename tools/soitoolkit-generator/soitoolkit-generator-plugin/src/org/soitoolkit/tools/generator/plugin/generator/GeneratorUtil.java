@@ -21,6 +21,7 @@ import javax.script.ScriptException;
 
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.model.impl.ModelReadOnlyMap;
 
@@ -51,9 +52,9 @@ public class GeneratorUtil {
 	 * @param outputFolder
 //	 * @param outputRootFolderModelExpression
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String templateFolder, String outputFolder) {
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String templateFolder, String outputFolder) {
 
-		model = ModelFactory.newModel(groupId, artifactId, version, service, transports);
+		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, transports);
 
 		init(ps, templateFolder, outputFolder); // , outputRootFolderModelExpression);			
 		
@@ -75,8 +76,8 @@ public class GeneratorUtil {
 	 * @param outputFolder
 //	 * @param outputRootFolderModelExpression
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder) {
-		model = ModelFactory.newModel(groupId, artifactId, version, service, transports, schemaName, operations);
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder) {
+		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, transports, schemaName, operations);
 
 		init(ps, templateFolder, outputFolder);			
 	}
