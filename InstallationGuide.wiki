@@ -72,8 +72,8 @@ Install Maven according to the following instructions:
  * Add Maven's bin folder to the Windows {{{PATH}}} variable.
  For example: {{{PATH=...;C:\opt\apache-maven-2.2.1\bin}}}
 
- * Verifying the installation of a command window with the command {{{mvn-v}}},
-it should produce a result like:
+ * Verifying the installation of a command window with the command {{{mvn -v}}},
+ it should produce a result like:
 
  http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/MavenVerifyInstallation.png
 
