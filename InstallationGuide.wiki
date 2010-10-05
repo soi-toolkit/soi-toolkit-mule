@@ -84,14 +84,15 @@ Install Maven according to the following instructions:
 Install the Maven plugin for Eclipse according to the following instructions:
 
  * The installation is performed using the Eclipse "Update Site"-mechanism.
- The Update Site is: http://m2eclipse.sonatype.org/sites/m2e
- See the following instructions http://m2eclipse.sonatype.org/installing-m2eclipse.html for full instructions.
+ The Update Site is: http://m2eclipse.sonatype.org/sites/m2e.
+ 
+ For full installation instructions see http://m2eclipse.sonatype.org/installing-m2eclipse.html.
 
  Notes:
   * If the installation asks for approval of certificates, so be sure to select the available certificate before the next step in the installation.
   * Restart the workspace when so requested.
 
- * To avoid the error message {{{"The Maven Integration requires that Eclipse be running in a JDK, because a number of Maven core plugins are using jars from the JDK. (...)"}}} follow the instructions on the following page: [http://tech.karolzielinski.com/m2eclipse-eclipse-is-running-in-a-jre-but-a-jdk-is-required Eclipse is running in a JRE, but a JDK is required]
+ * To avoid the error message {{{"The Maven Integration requires that Eclipse be running in a JDK, because a number of Maven core plugins are using jars from the JDK. (...)"}}} follow the instructions on the following page [http://tech.karolzielinski.com/m2eclipse-eclipse-is-running-in-a-jre-but-a-jdk-is-required Eclipse is running in a JRE, but a JDK is required]
 
 ===Soi-toolkit Eclipse plugin===
 
