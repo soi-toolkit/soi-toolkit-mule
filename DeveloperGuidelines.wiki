@@ -168,7 +168,22 @@ mvn release:perform
   * If errors then Click on the Drop button and correct error and redo the process...
 
  # Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
-
+ Useful repo for tests against staging-repo:
+ {{{
+	<repositories> 
+		<repository> 
+			<id>sonatype-nexus-staging</id> 
+			<name>Sonatype Nexus Staging</name> 
+			<url>https://oss.sonatype.org/content/repositories/staging</url> 
+			<releases> 
+				<enabled>true</enabled> 
+			</releases> 
+			<snapshots> 
+				<enabled>false</enabled> 
+			</snapshots> 
+		</repository> 
+	</repositories> 
+}}}
  # Publish to central repo
   * If ok click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
