@@ -27,7 +27,7 @@ public class XmlUtilTest {
 	private final String nsURI = "http://maven.apache.org/POM/4.0.0";
 	private final String docComment=" \n"+
 "DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!\n"+
-"[soi-toolkit.gen.version=0.1.7]\n"+
+"[soi-toolkit.gen.version=n.n.n]\n"+
 "[soi-toolkit.gen.type=services]\n"+
 "[soi-toolkit.gen.createDate=2010-09-28T17:48:20.465+02:00]\n"+
 "[soi-toolkit.gen.artifactId=sample1]\n";
@@ -66,7 +66,7 @@ public class XmlUtilTest {
 	@Test
 	public void testDocCommentProperties() {
 		String comment = getDocumentComment(pomDoc);
-		assertEquals("0.1.7-SNAPSHOT", lookupParameterValue("soi-toolkit.gen.version", comment));
+		assertEquals("n.n.n", lookupParameterValue("soi-toolkit.gen.version", comment));
 	}
 
 	@Test
