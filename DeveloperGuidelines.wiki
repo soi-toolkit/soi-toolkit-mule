@@ -166,6 +166,10 @@ mvn release:perform
   * Select a staging repository.
   * Click the Close button.
   * If errors then Click on the Drop button and correct error and redo the process...
+
+ # Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
+
+ # Publish to central repo
   * If ok click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
  # Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
