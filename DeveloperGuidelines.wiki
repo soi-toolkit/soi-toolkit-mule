@@ -145,7 +145,10 @@ mvn clean test
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
  
- * Review build command constant in tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java, e.g. if "-o" is used during development to speed up tests...
+ * Revert any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+ Note: Save them in some safe place so that you easily can re-apply them after the release is done!
+
+ * Review build command constant in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java}}}, e.g. remove "-o" if it is used during development to speed up tests...
 
  * Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
@@ -225,6 +228,10 @@ mvn release:perform
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
+
+ * Re-apply any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+
+ * Review build command constant in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java}}}, e.g. add back "-o" if it is used during development to speed up tests...
 
  * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
