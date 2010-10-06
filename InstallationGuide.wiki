@@ -21,6 +21,8 @@ The following versions (or newer) are recommended:
 ||Maven plugin for Eclipse||0.10.0||
 ||Soi-toolkit plugin for Eclipse||0.1.7||
 
+*Note:* Older version such as Java SE 5 and Eclipse 3.4, 3.5 should work without any problem (even though we don't test against these versions), but we strongly recommend using Maven 2.2.1 or newer since some older versions of Maven are known to produce incorrect GPG signatures and checksums .
+
 ===Java SE===
 Install Java SE according to the following instructions:
 
@@ -96,10 +98,47 @@ Install the Maven plugin for Eclipse according to the following instructions:
 
 ===Soi-toolkit Eclipse plugin===
 
+ * Select in the Eclipse menu "Help --> Install New Software..."
+
+pic 1
+
+ * Click on the "Add..." button to add the soi-toolkit update site
+  * Enter "Soi-toolkit update site" in the name-field
+  * Enter "http://soi-toolkit.googlecode.com/svn/eclipse-update-site/" in the location field
+  * Click on the "Ok" button
+
+pic 2
+
+ * Allow Eclipse to process the update site
+
+ * Expand the available selection "soi-toolkit generator" and select the "soi-toolkit generator feature"
+
+pic 3
+
+ * Click on the "Next >" button
+ * Click on the "Next >" button again
+
+pic 4
+
+ * Accept the terms of the license agreement and press the "Finish" button
+  * The plugin is now downloaded and installed.
+
+ * Click on the "Ok" button when asked to accept unsigned content
+
+pic 5
+
+ * Click on the "Restart Now" button when asked to restart Eclipse
+
+pic 6
+
+ * Configure the plugin by open Eclipse Preference page in the menu and select the "SOI-Toolkit Generator"
+  * Specify the folder where you have Mule installed in the field "Maven home folder"
+  * Specify the default folder where the generator should create files in the field "DEfault root folder"
+  * You can leave the rest of the fields as they are.
+  * Click on the "OK" button to conclude the configuration.
+
+pic 7
+
 ==Optional installation==
-
-===Subversive plugin for Eclipse===
-
-===soapUI===
 
 ===Setup of PKI keys for the SFTP transport===
