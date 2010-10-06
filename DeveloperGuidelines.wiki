@@ -177,11 +177,12 @@ mvn release:perform
 
  * Deploy other mule-version-dependency files to staging repository
  {{{
- cd .../tags
+ cd ../tags
  svn update
  cd soitoolkit-n.n.n
  mvn deploy -f commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml -Psonatype-oss-release
  mvn deploy -f commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml -Psonatype-oss-release
+ cd ../../trunk
  }}}
 
  * Go to Sonatypes staging repository and release it to synch with maven central repo
