@@ -137,6 +137,12 @@ mvn clean test
  {{{
  <soitoolkit.version>0.1.2</soitoolkit.version>
  }}}
+
+ NOTE: DO NOT CHANGE THE FOLLOWING LINE, JUST THE LINE ABOVE!!!
+ {{{
+  <version>0.1.2-SNAPSHOT</version>
+ }}}
+
  NOTE: Same for:
   * Parent version for {{{commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml}}} 
   * Parent version for {{{commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml}}} 
