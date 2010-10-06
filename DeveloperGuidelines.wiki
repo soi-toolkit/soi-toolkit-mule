@@ -196,8 +196,8 @@ mvn release:perform
   * Login to the Nexus UI.
   * Go to Staging Repositories page.
   * Select a staging repository.
+  * Select the soi-toolkit release
   * Click the Close button.
-  * If errors then Click on the Drop button and correct error and redo the process...
 
  * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
  Useful repo for tests against staging-repo:
@@ -217,8 +217,19 @@ mvn release:perform
 	</repositories> 
 }}}
 
+ * If errors then Click on the Drop button and correct error and redo the process...
+ If something is wrong you can fix it on the release-tag in svn and perform av redeploy to the staging repo from the tag-folder using:
+{{{
+ mvn deploy -Psonatype-oss-release
+ mvn deploy -f commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml -Psonatype-oss-release
+ mvn deploy -f commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml -Psonatype-oss-release
+}}}
+
+ NOTE: Don't forget to apply the relevant changes to trunk as well...
+
  * Publish to central repo
-  * If ok click on the Release button.
+  * If ok go back to the Sonatype staing repository web-app
+  * Select the soi-toolkit release again and click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
 
  * Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
