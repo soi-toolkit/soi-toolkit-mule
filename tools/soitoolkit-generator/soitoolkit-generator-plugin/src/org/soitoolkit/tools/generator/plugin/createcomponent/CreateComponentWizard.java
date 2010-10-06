@@ -231,7 +231,8 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
 			
 			monitor.worked(1);
-			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
+			// TODO: Remove -o once we have stable versions to build against :-)
+			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel() + " -o";
 
 			monitor.setTaskName("Execute command: " + buildCommand);
 			SystemUtil.executeCommand(mavenHome + "/bin/" + buildCommand, path + "/trunk", out, err);

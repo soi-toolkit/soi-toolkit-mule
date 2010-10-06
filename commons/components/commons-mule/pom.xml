@@ -17,7 +17,7 @@
     <!-- The SOI-toolkit default Mule-version with dependencies -->
     <dependency>
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-      <artifactId>soitoolkit-mule-dependencies-2.2.5</artifactId>
+      <artifactId>soitoolkit-mule-2.2.5-dependencies</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>      
     </dependency>
