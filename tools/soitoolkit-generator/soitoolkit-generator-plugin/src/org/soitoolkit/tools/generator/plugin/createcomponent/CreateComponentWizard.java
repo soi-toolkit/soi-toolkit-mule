@@ -233,6 +233,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			monitor.worked(1);
 			// TODO: Remove -o once we have stable versions to build against :-)
 			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel() + " -o";
+//			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
 			monitor.setTaskName("Execute command: " + buildCommand);
 			SystemUtil.executeCommand(mavenHome + "/bin/" + buildCommand, path + "/trunk", out, err);

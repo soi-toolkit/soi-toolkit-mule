@@ -20,7 +20,7 @@ import groovy.lang.GroovyShell;
 
 public class DefaultModelImpl implements IModel {
 
-	private static final String SOITOOLKIT_VERSION = "0.1.8";
+	private static final String SOITOOLKIT_VERSION = "0.1.9-SNAPSHOT";
 
 	private String groupId;
 	private String artifactId;
