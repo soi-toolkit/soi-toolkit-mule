@@ -10,6 +10,6 @@
  * [TutorialCreateServiceDescriptionComponent Service Description Component]
 
 ==Other documents==
- * [InstallationGuide Installation Guide] 
  * [ReferenceGuide Reference Guide (TBS)]
  * [Roadmap Roadmap (TBS)]
+ * [InstallationGuide Installation Guide]
