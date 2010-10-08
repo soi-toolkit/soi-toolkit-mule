@@ -4,12 +4,70 @@
 
 = Introduction =
 
-Add your content here.
+=Create Integration component=
+ * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
+ * Select the code generator "Create a new component"
+
+ pic 1
+
+ * Click on the "Next >" button
+ * The wizard "SOI Toolkit - Create a new Component" opens up
+  * Select the component type "Intergation Component" in the radio button control named "Type of component"
+  * Specify a proper name of the component in the field "Artifact Id"
+  * Specify a proper group name in the field "Group Id"
+  * Select where you want the files to be created in the field "Root folder"
+  Note: The pre-selected root folder is picked up from the preference page you filled in during the installation of the soi-toolkit plugin.
+
+pic 2
+
+ * Click on the "Next >" button
+  * The wizard now displays a new page where you can perform some initial configuration of the new integration component
+   * In the drop down box called "Mule version" you can select what version of Mule you want the integration component to use.
+   NOTE: Only v2.2.1 and v3.0.0 are available through public Maven repositories so if you choose another version you have to assure that the selected version is available in your organizations local maven repository!
+   * Select when transports you want initial support for
+    The generator will add connectors for these transports
+
+pic 3
+
+ * Click on the "Finish" button
+  * The wizard now starts to execute and logs its output to a text area.
+
+pic 4
+
+ * The following work is performed by the wizard:
+  * Created folders and files according to the input on the previous page.
+  * Launch maven to do a initial build and also create eclipse files
+  * Opens the project in the current Eclipse workspace
+
+ * When the wizard is done you can find your new schema component in the Eclipse Package Explorer
+
+pic 5
+
+HIT KOPM JAG!!!
+
+ * Files of interest:
+  * Source folder {{{src/main/resources}}}
+  Skeleton wsdl and xml schema files 
+  Created with some defaut method and some request and reply elements for you to fill in :-)
+  
+  * Source folder {{{target/generated-sources/cxf}}}
+  Generated jax-ws and jaxb Java classes according to the wsdl and xml schema in the 
+  These files are automatically created by maven when it builds the component.
+   
+  * Target folder {{{target}}}
+  The runtime files for this component:
+  {{{mySample-schemas-1.0-SNAPSHOT.jar}}} contains the wsdl and xml schema files and the class files for the corresponding generated java source files, typically used by Java based consumers and providers of these service descriptions.
+  {{{mySample-schemas-1.0-SNAPSHOT-schemas.zip}}} contains only the wsdl and xml schema files, typically used by non Java based consumers and providers of these service descriptions, such as Microsoft .Net based consumers and providers of these service descriptions.
+
+ * In the filesystem the following folder structure is created for you under the selected root folder:
+
+ pic 6
+
+ * After updating the wsdl and/or the xml schemas you can create new Java files and runtime files by opening a command window in the projects trunk-folder and enter the command 
+ {{{mvn clean install}}}.
+ 
+ If everything goes well the build ends with a {{{BUILD SUCCESSFUL}}} - message
+
+ pic 7
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
