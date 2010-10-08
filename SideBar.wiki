@@ -3,7 +3,7 @@
 ===Documentation===
 
 
-====Tutorials on creating====
+====Tutorials on creating a====
  * [TutorialCreateIntegrationComponent Integration Component]
  * [TutorialCreateJmsToJmsService JMS to JMS service]
  * [TutorialCreateSftpToSftpService  SFTP to SFTP service]
