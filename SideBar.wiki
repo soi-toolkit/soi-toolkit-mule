@@ -1,15 +1,15 @@
 #summary side bar
 
-=Documentation=
+===Documentation===
 
 
-==Tutorials on creating==
+====Tutorials on creating====
  * [TutorialCreateIntegrationComponent Integration Component]
  * [TutorialCreateJmsToJmsService JMS to JMS service]
  * [TutorialCreateSftpToSftpService  SFTP to SFTP service]
  * [TutorialCreateServiceDescriptionComponent Service Description Component]
 
-==Other documents==
+====Other documents====
  * [ReferenceGuide Reference Guide (TBS)]
  * [Roadmap Roadmap (TBS)]
  * [InstallationGuide Installation Guide]
