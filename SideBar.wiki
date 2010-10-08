@@ -11,12 +11,11 @@
 
 ====Other documents====
  * [InstallationGuide Installation Guide]
+ * [Overview Overview]
  * [ReferenceGuide Reference Guide (TBS)]
  * [Roadmap Roadmap (TBS)]
 
-
 ==Collaboration==
-
  * [http://groups.google.com/group/soi-toolkit-user soi-toolkit-user]
  * [http://groups.google.com/group/soi-toolkit-dev soi-toolkit-dev]
 
