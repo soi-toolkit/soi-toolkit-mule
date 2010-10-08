@@ -4,6 +4,10 @@
 
 Service Description components are used to contain wsdl and xml schema files that describe message formats for xml based services.
 
+This tutorial helps you to create your first service description component.
+
+*NOTE*: Prerequisites for this tutorial is that the [InstallationGuide installation guide] is completed.
+
 =Create a new Service Description Component=
  * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
  * Select the code generator "Create a new component"
