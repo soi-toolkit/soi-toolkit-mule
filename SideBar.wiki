@@ -13,3 +13,17 @@
  * [InstallationGuide Installation Guide]
  * [ReferenceGuide Reference Guide (TBS)]
  * [Roadmap Roadmap (TBS)]
+
+
+====Collaboration====
+
+ * [http://groups.google.com/group/soi-toolkit-user soi-toolkit-user]
+ * [http://groups.google.com/group/soi-toolkit-dev soi-toolkit-dev]
+
+====Downloads====
+ * [http://soi-toolkit.googlecode.com/svn/eclipse-update-site/ Eclipse Update Site]
+ * [http://repo2.maven.org/maven2/org/soitoolkit/commons/  Central Repository]
+ * [http://code.google.com/p/soi-toolkit/source/browse/#svn/trunk/refapps Ref Apps (TBS)]
+
+====soi-toolkit developers====
+ * [DeveloperGuidelines Developer Guidelines]
