@@ -31,18 +31,17 @@ This tutorial helps you to create your first service description component.
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent3.png
 
  * The following work is performed by the wizard:
-  * Created folders and files according to the input on the previous page.
+  * Creates folders and files according to the input on the previous page.
   * Launch maven to do a initial build and also create eclipse files
   * Opens the project in the current Eclipse workspace
 
- * When the wizard is done you can find your new schema component in the Eclipse Package Explorer
+ * When the wizard is done you can find your new service description component in the Eclipse Package Explorer
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent4.png
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
-  Skeleton wsdl and xml schema files 
-  Created with some defaut method and some request and reply elements for you to fill in :-)
+  Skeleton wsdl and xml schema files are created with some default method and some request and reply elements for you to fill in :-)
   
   * Source folder {{{target/generated-sources/cxf}}}
   Generated jax-ws and jaxb Java classes according to the wsdl and xml schema in the 
