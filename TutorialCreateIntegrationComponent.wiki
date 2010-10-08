@@ -2,6 +2,12 @@
 
 = Introduction =
 
+Integration components are used to contain Mule ESB based services and integrations.
+
+This tutorial helps you to create your first integration component.
+
+*NOTE*: Prerequisites for this tutorial is that the [InstallationGuide installation guide] is completed.
+
 =Create Integration component=
  * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
  * Select the code generator "Create a new component"
