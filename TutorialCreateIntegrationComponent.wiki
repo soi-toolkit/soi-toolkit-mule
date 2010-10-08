@@ -15,7 +15,7 @@ This tutorial helps you to create your first integration component.
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent1.png
 
  * Click on the "Next >" button
- * The wizard "SOI Toolkit - Create a new Component" opens up
+ The wizard "SOI Toolkit - Create a new Component" opens up
   * Select the component type "Intergation Component" in the radio button control named "Type of component"
   * Specify a proper name of the component in the field "Artifact Id"
   * Specify a proper group name in the field "Group Id"
@@ -25,16 +25,16 @@ This tutorial helps you to create your first integration component.
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent2.png
 
  * Click on the "Next >" button
-  * The wizard now displays a new page where you can perform some initial configuration of the new integration component
-   * In the drop down box called "Mule version" you can select what version of Mule you want the integration component to use.
-   NOTE: Only v2.2.1 and v3.0.0 are available through public Maven repositories so if you choose another version you have to assure that the selected version is available in your organizations local maven repository!
-   * Select when transports you want initial support for
-    The generator will add connectors for these transports
+ The wizard now displays a new page where you can perform some initial configuration of the new integration component
+  * In the drop down box called "Mule version" you can select what version of Mule you want the integration component to use.
+  NOTE: Only v2.2.1 and v3.0.0 are available through public Maven repositories so if you choose another version you have to assure that the selected version is available in your organizations local maven repository!
+  * Select when transports you want initial support for
+  The generator will add connectors for these transports
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent3.png
 
  * Click on the "Finish" button
-  * The wizard now starts to execute and logs its output to a text area.
+ The wizard now starts to execute and logs its output to a text area.
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent4.png
 
@@ -43,11 +43,11 @@ This tutorial helps you to create your first integration component.
   * Launch maven to do a initial build and also create eclipse files
   * Opens the project in the current Eclipse workspace
 
- * When the wizard is done you can find your new schema component in the Eclipse Package Explorer
+ * When the wizard is done you can find your new integration component in the Eclipse Package Explorer
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent5.png
 
-*HIT KOPM JAG!!!*
+*HIT KOM JAG!!!*
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
