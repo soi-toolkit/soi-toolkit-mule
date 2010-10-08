@@ -4,10 +4,10 @@
  * [InstallationGuide Installation Guide] 
 
  * Getting started tutorials
-  * [TutorialCreateIntegrationComponent Create an Integration Component]
-  * [TutorialCreateJmsToJmsService Create a one-way JMS to JMS service with transformation]
-  * [TutorialCreateSftpToSftpService Create a one-way SFTP to SFTP service with transformation]
-  * [TutorialCreateServiceDescriptionComponent Create a Service Description Component]
+ * [TutorialCreateIntegrationComponent Create an Integration Component]
+ * [TutorialCreateJmsToJmsService Create a one-way JMS to JMS service with transformation]
+ * [TutorialCreateSftpToSftpService Create a one-way SFTP to SFTP service with transformation]
+ * [TutorialCreateServiceDescriptionComponent Create a Service Description Component]
 
  * [ReferenceGuide Reference Guide (TBS)]
  * [Roadmap Roadmap (TBS)]
