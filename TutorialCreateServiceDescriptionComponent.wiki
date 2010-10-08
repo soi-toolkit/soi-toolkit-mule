@@ -42,7 +42,6 @@ This tutorial helps you to create your first service description component.
  * Files of interest:
   * Source folder {{{src/main/resources}}}
   Skeleton wsdl and xml schema files ({{{mySampleSchema.wsdl}}} and {{{mySample.xsd}}}) are created with some default method and some request and reply elements for you to fill in :-)
-  
   * Source folder {{{target/generated-sources/cxf}}}
   Generated jax-ws and jaxb Java classes according to the wsdl and xml schema.
   
