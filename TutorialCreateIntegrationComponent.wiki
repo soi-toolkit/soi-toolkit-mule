@@ -8,7 +8,7 @@
  * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
  * Select the code generator "Create a new component"
 
- pic 1
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent1.png
 
  * Click on the "Next >" button
  * The wizard "SOI Toolkit - Create a new Component" opens up
@@ -18,7 +18,7 @@
   * Select where you want the files to be created in the field "Root folder"
   Note: The pre-selected root folder is picked up from the preference page you filled in during the installation of the soi-toolkit plugin.
 
-pic 2
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent2.png
 
  * Click on the "Next >" button
   * The wizard now displays a new page where you can perform some initial configuration of the new integration component
@@ -27,12 +27,12 @@ pic 2
    * Select when transports you want initial support for
     The generator will add connectors for these transports
 
-pic 3
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent3.png
 
  * Click on the "Finish" button
   * The wizard now starts to execute and logs its output to a text area.
 
-pic 4
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent4.png
 
  * The following work is performed by the wizard:
   * Created folders and files according to the input on the previous page.
@@ -41,9 +41,9 @@ pic 4
 
  * When the wizard is done you can find your new schema component in the Eclipse Package Explorer
 
-pic 5
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent5.png
 
-HIT KOPM JAG!!!
+*HIT KOPM JAG!!!*
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
@@ -61,13 +61,11 @@ HIT KOPM JAG!!!
 
  * In the filesystem the following folder structure is created for you under the selected root folder:
 
- pic 6
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent6.png
 
  * After updating the wsdl and/or the xml schemas you can create new Java files and runtime files by opening a command window in the projects trunk-folder and enter the command 
  {{{mvn clean install}}}.
  
  If everything goes well the build ends with a {{{BUILD SUCCESSFUL}}} - message
 
- pic 7
-
-
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent7.png
