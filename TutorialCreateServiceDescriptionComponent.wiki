@@ -41,16 +41,19 @@ This tutorial helps you to create your first service description component.
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
-  Skeleton wsdl and xml schema files are created with some default method and some request and reply elements for you to fill in :-)
+  Skeleton wsdl and xml schema files ({{{mySampleSchema.wsdl}}} and {{{mySample.xsd}}}) are created with some default method and some request and reply elements for you to fill in :-)
   
   * Source folder {{{target/generated-sources/cxf}}}
-  Generated jax-ws and jaxb Java classes according to the wsdl and xml schema in the 
+  Generated jax-ws and jaxb Java classes according to the wsdl and xml schema.
+  
   These files are automatically created by maven when it builds the component.
    
   * Target folder {{{target}}}
   The runtime files for this component:
-  {{{mySample-schemas-1.0-SNAPSHOT.jar}}} contains the wsdl and xml schema files and the class files for the corresponding generated java source files, typically used by Java based consumers and providers of these service descriptions.
-  {{{mySample-schemas-1.0-SNAPSHOT-schemas.zip}}} contains only the wsdl and xml schema files, typically used by non Java based consumers and providers of these service descriptions, such as Microsoft .Net based consumers and providers of these service descriptions.
+   
+   * {{{mySample-schemas-1.0-SNAPSHOT.jar}}} contains the wsdl and xml schema files and the class files for the corresponding generated java source files, typically used by Java based consumers and providers of these service descriptions.
+   
+   * {{{mySample-schemas-1.0-SNAPSHOT-schemas.zip}}} contains only the wsdl and xml schema files, typically used by non Java based consumers and providers of these service descriptions, such as Microsoft .Net based consumers and providers of these service descriptions.
 
  * In the filesystem the following folder structure is created for you under the selected root folder:
 
