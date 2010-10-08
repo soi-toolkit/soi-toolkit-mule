@@ -8,7 +8,7 @@ Service Description components are used to contain wsdl and xml schema files tha
  * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
  * Select the code generator "Create a new component"
 
- http://soi-toolkit.googlecode.com/svn/wiki/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent1.png
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent1.png
 
  * Click on the "Next >" button
  * The wizard "SOI Toolkit - Create a new Component" opens up
@@ -19,12 +19,12 @@ Service Description components are used to contain wsdl and xml schema files tha
   * Select where you want the files to be created in the field "Root folder"
   Note: The preselected folder is picked up from the preference page you filled in during the installation of the soi-toolkit plugin.
 
-pic 2
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent2.png
 
  * Click on the "Finish" button
   * The wizard now starts to execute and logs its output to a text area.
 
-pic 3
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent3.png
 
  * The following work is performed by the wizard:
   * Created folders and files according to the input on the previous page.
@@ -33,7 +33,7 @@ pic 3
 
  * When the wizard is done you can find your new schema component in the Eclipse Package Explorer
 
-pic 4
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent4.png
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
@@ -51,11 +51,11 @@ pic 4
 
  * In the filesystem the following folder structure is created for you under the selected root folder:
 
- pic 5
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent5.png
 
  * After updating the wsdl and/or the xml schemas you can create new Java files and runtime files by opening a command window in the projects trunk-folder and enter the command 
  {{{mvn clean install}}}.
  
  If everything goes well the build ends with a {{{BUILD SUCCESSFUL}}} - message
 
- pic 6
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent6.png
