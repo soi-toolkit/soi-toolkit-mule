@@ -51,7 +51,7 @@ This tutorial helps you to create your first integration component.
 
  * Files of interest:
   * Source folder {{{src/main/resources}}}
-  Common mule-configuration files used by all services in this integration component. THe specific mule configuration fiels ...
+  mySample-common.xml and mySample-config.xml are common mule-configuration files used by all services in this integration component. The service-folder will contain the mule configuration files for the spoecific services as they are created. See [architecture soi.toolkit architecture] for further details.
   
   * Source folder {{{target/generated-sources/cxf}}}
   Generated jax-ws and jaxb Java classes according to the wsdl and xml schema in the 
