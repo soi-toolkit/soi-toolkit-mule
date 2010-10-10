@@ -161,3 +161,5 @@ Follow these instructions to install ActiveMQ locally on your PC:
 http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/ActiveMQVerifyInstallation.png
 
 ===Setup of PKI keys for the SFTP transport===
+
+=!!! Under construction !!!=
