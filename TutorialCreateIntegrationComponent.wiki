@@ -50,23 +50,32 @@ This tutorial helps you to create your first integration component.
 *HIT KOM JAG!!!*
 
  * Files of interest:
-  * Source folder {{{src/main/resources}}}
-  mySample-common.xml and mySample-config.xml are common mule-configuration files used by all services in this integration component. The service-folder will contain the mule configuration files for the spoecific services as they are created. See [architecture soi.toolkit architecture] for further details.
-  
-  * Source folder {{{target/generated-sources/cxf}}}
-  Generated jax-ws and jaxb Java classes according to the wsdl and xml schema in the 
-  These files are automatically created by maven when it builds the component.
-   
-  * Target folder {{{target}}}
-  The runtime files for this component:
-  {{{mySample-schemas-1.0-SNAPSHOT.jar}}} contains the wsdl and xml schema files and the class files for the corresponding generated java source files, typically used by Java based consumers and providers of these service descriptions.
-  {{{mySample-schemas-1.0-SNAPSHOT-schemas.zip}}} contains only the wsdl and xml schema files, typically used by non Java based consumers and providers of these service descriptions, such as Microsoft .Net based consumers and providers of these service descriptions.
+ An integration component contains of three eclipse projects and each project contains a typical maven source structure of folders.  See [architecture soi.toolkit architecture] for further explanations of this structure. 
+  * Project {{{mySample-services}}}
+   * Source folder {{{src/test/java}}}
+   Contains a main-program, {{{MySampleMuleServer.java}}}, that can start Mule inside Eclipse, mainly used for manual tests and debugging inside the development environment. Service specific test code (unit-tests and producer-teststubs) will be created here when creating services.
+   * Source folder {{{src/test/resources}}}
+   {{{mySample-teststubs-and-services-config.xml}}} and {{{mySample-teststubs-only-config.xml}}} are common test mule-configuration files used by all services in this integration component. The {{{teststub-service}}}-folder will contain the mule configuration files for the specific services teststubs as they are created. 
+   * Source folder {{{src/environment}}}
+   This folder contains configuration files for log4j and the services themselves. The files in this folder are used during development inside the project (e.g. loaded by mule on the classpath) but when the integration component is deployed to test and production environments these files are copied to an separate folder in the target environment to be able to be changed and adopted to that specific environment without having to redeploy the integration component for each change.
+   * Source folder {{{src/main/java}}}
+   This source folder is initially empty but will contain service specific java-code, e.g. transformers,as they are created. 
+   * Source folder {{{src/main/resources}}}
+   {{{mySample-common.xml}}} and {{{mySample-config.xml}}} are common mule-configuration files used by all services in this integration component. The service-folder will contain the mule configuration files for the spoecific services as they are created. 
+  * Project {{{mySample-teststub-web}}}   
+   * Target folder {{{target}}}
+   The runtime files for this integration components teststub.
+   {{{mySample-teststub-1.0-SNAPSHOT.war}}} contains the mule config files and class files for the services teststubs and all jar-files created for executing the teststubs on a standard servlet engine, e.g. Tomcat or Jetty.
+  * Project {{{mySample-web}}}
+   * Target folder {{{target}}}
+   The runtime files for this integration component.
+   {{{mySample-1.0-SNAPSHOT.war}}} contains the mule config files and class files for the services and all jar-files created for executing the integration component on a standard servlet engine, e.g. Tomcat or Jetty.
 
  * In the filesystem the following folder structure is created for you under the selected root folder:
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent6.png
 
- * After updating the wsdl and/or the xml schemas you can create new Java files and runtime files by opening a command window in the projects trunk-folder and enter the command 
+ * After development and local tests are done and you want to deploy the integration component to a common test environment (and later  on in a production environment)  you can create new runtime files (the war-files) by opening a command window in the integration components trunk-folder and enter the command 
  {{{mvn clean install}}}.
  
  If everything goes well the build ends with a {{{BUILD SUCCESSFUL}}} - message
