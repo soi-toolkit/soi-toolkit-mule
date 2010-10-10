@@ -9,8 +9,8 @@
 
 ==Other documents===
  * [InstallationGuide Installation Guide]
- * [Overview Overview]
- * [ReferenceGuide Reference Guide (TBS)]
+ * [Overview Overview (TBS)]
+ * [Architecture Architecture (TBS)]
  * [Roadmap Roadmap (TBS)]
 
 ==Collaboration==
