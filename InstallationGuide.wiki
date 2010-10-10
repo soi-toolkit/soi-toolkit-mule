@@ -141,7 +141,7 @@ Install the Maven plugin for Eclipse according to the following instructions:
 
 ==Optional installation==
 
-===Installing Apache ActiveMQ for manual tests===
+===Installing Apache ActiveMQ===
 If you want to be able to perform manuel tests on your PC where JMS is involved it could be a good idea to run these tests with a external JMS provider, i.e. not a JMS provider that is embedded in Mule (as it is when you run unit tests).
 
 Follow these instructions to install ActiveMQ locally on your PC:
