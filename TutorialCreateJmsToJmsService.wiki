@@ -2,14 +2,54 @@
 
 = !!! Under construction !!! =
 
-= Introduction =
+=Introduction=
 
-Add your content here.
+This tutorial will help you to get started with a one-way service that consumes a jms message, transform it and produce an outgoing jms message.
 
+The generated code includes error handling that:
+ * Automatically reconnects to the JMS Provider after a network failure or problem with the jms provider itself
+ * Perform jms receive and jms send operations in one and the same transaction
+ * In case of error during processing (e.g. receiving poisoned messages that can't be transformed)
+  * Rollback the transaction
+  * Sends a error-log-message to the error-log-queue 
+  * Removes the poisoned message from the in-queue and puts it on a dead letter queue 
+    (with the same name as the input-queue but prefixed with "DLQ.")
 
-= Details =
+*NOTE*: Prerequisites for this tutorial is that the tutorial [TutorialCreateServiceDescriptionComponent Create a new Service Description Component] is completed.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+=Create a JMS to JMS service=
+
+ * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
+ * Select the code generator "Create a new service"
+
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService1.png
+
+ * Click on the "Next >" button
+ * The wizard "SOI Toolkit - Create a new service" opens up
+  * Select the message exchange pattern "One Way"
+  * Select the inbound transport "JMS"
+  * Select the outbound transport "JMS"
+  * Select your service project using the "Browse..." button, e.g. "/mySample-services"
+  * Set a proper service-name, e.g. mySampleJmsService
+
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService2.png
+
+HIT KOM JAG
+
+* Click on the "Finish" button
+ * The wizard now starts to execute and logs its output to a text area.
+
+http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent3.png
+
+* The following work is performed by the wizard:
+ * Creates folders and files according to the input on the previous page.
+ * Launch maven to do a initial build and also create eclipse files
+ * Opens the project in the current Eclipse workspace
+
+* When the wizard is done you can find your new service description component in the Eclipse Package Explorer
+
+http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent4.png
+
+* Files of interest:
+ * Source folder {{{src/main/resources}}}
+ Skeleton wsdl and xml schema files ({{{mySampleSchema.wsdl}}} and {{{mySample.xsd}}}) are created with some
