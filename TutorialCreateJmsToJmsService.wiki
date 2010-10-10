@@ -1,6 +1,4 @@
-#summary One-sentence summary of this page.
-
-= !!! Under construction !!! =
+#summary Tutorial on how to create an one way Service based on the JMS transport.
 
 =Introduction=
 
