@@ -1,4 +1,4 @@
-#summary side bar
+#summary Side bar
 
 ==Tutorials==
 ====Creating a====
