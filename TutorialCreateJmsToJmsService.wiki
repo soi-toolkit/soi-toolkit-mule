@@ -1,4 +1,4 @@
-#summary Tutorial on how to create an one way Service based on the JMS transport.
+#summary Tutorial on how to create a one way Service based on the JMS transport.
 
 =Introduction=
 
