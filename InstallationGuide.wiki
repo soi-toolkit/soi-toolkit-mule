@@ -157,6 +157,7 @@ Follow these instructions to install ActiveMQ locally on your PC:
 
  Open the url http://localhost:8161/admin/index.jsp in a web browser.
 
- The following row should be displayed: "_Welcome to the ActiveMQ Console_"
- 
+ A page like the following should now be displayed:
+http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/ActiveMQVerifyInstallation.png
+
 ===Setup of PKI keys for the SFTP transport===
