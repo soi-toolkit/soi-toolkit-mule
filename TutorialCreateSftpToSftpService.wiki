@@ -1,15 +1,83 @@
-#summary One-sentence summary of this page.
+#summary Tutorial on how to create a one way Service based on the SFTP transport.
 
 = !!! Under construction !!! =
 
-= Introduction =
+#summary Tutorial on how to create a one way Service based on the SFTP transport.
 
-Add your content here.
+=Introduction=
 
+This tutorial will help you to get started with a one-way service that consumes a file over SFTP, transform it and produce an outgoing file again using SFTP.
 
-= Details =
+The generated code includes error handling that:
+ * Verifying that the file is stable, no one is writing to it
+ * Renaming the file before consuming it to avoid that two threads start to consume one and the same file
+ * Saving the file to a local archive before processing its content, e.g transforming it.
+ * Sending files to a separate name avoiding that the receiving application starts to consume the file before it is completely sent.
+ * Duplication detection, either overwrite, add seq-no or throw an exception
+ * Manual routine for restart sending the file, either from original sender or from Mule.
+ * Logging of central SFPT events, such as get, put, rename, delete and any errors that might occur
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+*NOTE*: Prerequisites for this tutorial is that the tutorial [TutorialCreateIntegrationComponent Create a new Integration Component] is completed and the installation guide regarding [InstallationGuide#Setup_of_PKI_keys_for_the_SFTP_transport Setup of PKI keys for the SFTP transport]
+
+=Create a SFTP to SFTP service=
+
+ * Select the menu "File --> New --> Other" and expand the wizard "SOI Toolkit Code Generator"
+ * Select the code generator "Create a new service"
+
+http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateSftpToSftpService/TutorialCreateSftpToSftpService1.png
+
+ * Click on the "Next >" button
+ * The wizard "SOI Toolkit - Create a new service" opens up
+  * Select the message exchange pattern "One Way"
+  * Select the inbound transport "SFTP"
+  * Select the outbound transport "SFTP"
+  * Select your service project using the "Browse..." button, e.g. "/mySample-services"
+  * Set a proper service-name, e.g. mySampleSftpService
+
+http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateSftpToSftpService/TutorialCreateSftpToSftpService2.png
+
+ * Click on the "Finish" button
+  * The wizard now starts to generate files and refresh the workspace.
+
+ * When the wizard is done you can find the files for your new service in the Eclipse Package Explorer
+
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateSftpToSftpService/TutorialCreateSftpToSftpService3.png
+
+*HIT KOM JAG*
+
+ * Files of interest:
+  * Source folder {{{src/test/java}}}
+  A new package is created for the service {{{org.sample.mysample.mysamplejmsservice}}} with two Java-classes.
+  {{{MySampleJmsServiceIntegrationTest.java}}} contains some unit tests for the service that you can use as a start.
+  {{{MySampleJmsServiceTestReceiver.java}}} contains a teststub receiver that you can use as a start.
+  * Source folder {{{src/test/resources}}}
+  The folder {{{teststub-services}}} contains the file {{{MySampleJmsService-teststub-service.xml}}} that is a teststub service that you can use as a start.
+  * Source folder {{{src/main/java}}}
+  A new package is created for the service {{{org.sample.mysample.mysamplejmsservice}}} with one Java-class.
+  {{{MySampleJmsServiceTransformer.java}}} contains a sample transformation that you can use as a start.
+  * Source folder {{{src/main/resources}}}
+  The folder {{{services}}} contains the file {{{MySampleJmsService-service.xml}}} that contains the actual definition of the new service. 
+
+ * Run unit tests
+  * Right-click the test-class {{{MySampleJmsServiceIntegrationTest.java}}} and select "Run As" --> "JUnit Test"
+  The tests runs and its success are reported in the JUnit view:
+
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService4.png
+
+  The Console view displays at the same time log-messages from the execution:
+
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService5.png
+
+  NOTE: Take a look at the unit test code and the transformer code for a better understanding on what is going on :-)
+
+ * Run tests manually
+ Sometimes just running unit tests are not sufficient so it is a good idea to know how to perform manual tests locally in your own PC.
+  * NOTE: Requires that you have ActiveMQ installed separately and that it is started.
+  See [InstallationGuide#Installing_Apache_ActiveMQ installation guide] for instructions.
+  * Right-click on the test-server {{{MySampleMuleServer.java}}} in package {{{org/sample/mysample}}} in source folder {{{src/test/java}}} and select "Run As --> Java Application"
+  * Go to the url {{{http://localhost:8161/admin/queues.jsp}}} in a web browser.
+  * Write at ok test-message (e.g. "AAA") to the in-queue ({{{MYSAMPLE.MYSAMPLEJMSSERVICE.IN.QUEUE}}}) using the ActiveMQ console and watch the console output and the log + out-queue ({{{SOITOOLKIT.LOG.INFO}}} and {{{MYSAMPLE.MYSAMPLEJMSSERVICE.OUT.QUEUE}}})
+  * Write a incorrect message (e.g. "ERROR") to the in-queue and review the console + queues.
+  * Stop the mule server by giving focus to the console view in Eclipse and pressing the return key.
+
+http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService6.png
