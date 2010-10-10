@@ -24,3 +24,4 @@
 
 ==soi-toolkit developers==
  * [DeveloperGuidelines Developer Guidelines]
+ * [https://www.google.com/analytics/reporting/?id=37696735 Google Analytics]
