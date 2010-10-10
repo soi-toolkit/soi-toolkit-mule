@@ -34,22 +34,41 @@ The generated code includes error handling that:
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService2.png
 
-HIT KOM JAG
+ * Click on the "Finish" button
+  * The wizard now starts to generate files and refresh the workspace.
 
-* Click on the "Finish" button
- * The wizard now starts to execute and logs its output to a text area.
+ * When the wizard is done you can find the files for your new service in the Eclipse Package Explorer
 
-http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent3.png
+ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService3.png
 
-* The following work is performed by the wizard:
- * Creates folders and files according to the input on the previous page.
- * Launch maven to do a initial build and also create eclipse files
- * Opens the project in the current Eclipse workspace
+ * Files of interest:
+  * Source folder {{{src/test/java}}}
+  A new package is created for the service {{{org.sample.mysample.mysamplejmsservice}}} with two Java-classes.
+  {{{MySampleJmsServiceIntegrationTest.java}}} contains some unit tests for the service that you can use as a start.
+  {{{MySampleJmsServiceTestReceiver.java}}} contains a teststub receiver that you can use as a start.
+  * Source folder {{{src/test/resources}}}
+  The folder {{{teststub-services}}} contains the file {{{MySampleJmsService-teststub-service.xml}}} that is a teststub service that you can use as a start.
+  * Source folder {{{src/main/java}}}
+  A new package is created for the service {{{org.sample.mysample.mysamplejmsservice}}} with one Java-class.
+  {{{MySampleJmsServiceTransformer.java}}} contains a sample transformation that you can use as a start.
+  * Source folder {{{src/main/resources}}}
+  The folder {{{services}}} contains the file {{{MySampleJmsService-service.xml}}} that contains the actual definition of the new service. 
 
-* When the wizard is done you can find your new service description component in the Eclipse Package Explorer
+HIT KOM JAG!
 
-http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateServiceDescriptionComponent/TutorialCreateServiceDescriptionComponent4.png
+ * Run unit tests
+  * Right-click the test-class {{{MySampleJmsServiceIntegrationTest.java}}} and select "Run As" --> "JUnit Test"
+  The tests runs and its success are reported in the JUnit view:
 
-* Files of interest:
- * Source folder {{{src/main/resources}}}
- Skeleton wsdl and xml schema files ({{{mySampleSchema.wsdl}}} and {{{mySample.xsd}}}) are created with some
+  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService4.png
+
+  The Console view displays at the same time log-messages from the execution:
+
+  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService5.png
+
+ * Run tests manually
+  * NOTE: Requires that you have ActiveMQ installed separately and that it is started.
+  * Right-click on the test-server {{{}}} and select "run as program"
+  * Go to the url ... in a browser
+  * Write at ok test-message to the in queue and watch the console output and the log + out-queue
+  * Write a incorrect message to the in-queue and...
