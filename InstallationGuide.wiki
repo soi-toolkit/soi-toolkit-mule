@@ -156,6 +156,7 @@ Follow these instructions to install ActiveMQ locally on your PC:
  Verify that ActiveMQ is running after the installation and start its windows service if not by:
 
  Open the url http://localhost:8161/admin/index.jsp in a web browser.
- The following row should be displayed: "Welcome to the ActiveMQ Console"
+
+ The following row should be displayed: "_Welcome to the ActiveMQ Console_"
  
 ===Setup of PKI keys for the SFTP transport===
