@@ -141,4 +141,19 @@ Install the Maven plugin for Eclipse according to the following instructions:
 
 ==Optional installation==
 
+===Installing Apache ActiveMQ for manual tests===
+If you want to be able to perform manuel tests where JMS is involved it could be a good idea to run these tests with a external JMS provider, i.e. not an embedded.
+
+Follow these instructions to install ActiveMQ locally on your PC:
+
+ * Download ActiveMQ från http://www.apache.org/dyn/closer.cgi?path=%2Factivemq%2Fapache-activemq%2F5.3.2%2Fapache-activemq-5.3.2-bin.zip
+
+ * Unzip to some folder, e.g. C:\opt
+
+ * Go to the folder C:\opt\apache-activemq-5.3.2\bin\win32 and execute the filen {{{InstallService.bat}}}.
+
+Active MQ är nu registrerad som en windows service och startar automatisk i samband med uppstart av datorn.
+Verifiera att Active MQ är startad efter installationen och starta dess windows service om så inte är fallet.
+
+Öppna url'en http://localhost:8161/admin/index.jsp i en web läsare.Följande rad skall nu bla visas "Welcome to the ActiveMQ Console 
 ===Setup of PKI keys for the SFTP transport===
