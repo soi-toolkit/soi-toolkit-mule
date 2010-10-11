@@ -190,3 +190,93 @@ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/CreateDsaKeys.png
  * Configure default sfpt-settings in soi-toolkit source code generator
 
 Add info both regarding setup of pki and hot to setup preferences in the doi-toolkit eclipse plugin for pki usage...
+
+
+Tänk nu på att *ALDRIG* lämna ut din privata nyckel.
+\\
+\\
+{noformat}
+$ ssh-keygen -t dsa
+Generating public/private dsa key pair.
+Enter file in which to save the key (/cygdrive/c/Documents and Settings/df00801/.ssh/id_dsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /cygdrive/c/Documents and Settings/df00801/.ssh/id_dsa.
+Your public key has been saved in /cygdrive/c/Documents and Settings/df00801/.ssh/id_dsa.pub.
+The key fingerprint is: 96:80:0c:8a:5d:95:df:3d:0e:15:28:7f:05:40:c7:d7 DF00801@dse31429
+{noformat}
+\\
+# Ändra behörighet på _.ssh_ katalogen.
+\\
+\\
+{noformat}
+$ cd ~ chmod 755 .ssh
+{noformat}
+
+h2. Publicera nyckeln på remote maskinen
+
+# Efter att vi skapat nyckelpar så blir nästa steg blir att konfigurera remote maskinen som man vill koppla upp sig mot med sin nyckel för authentisiera. Detta görs genom att kopiera över din publika nyckel till remote maskinen. Du kan antingen kopiera över nyckeln med _ssh-copy-id_ kommandot eller manuellt.
+h3. Kopiera med ssh-copy-id kommando.
+Att använda ssh-copy-id kommandot förutsätter självklart att du har kommandot installera på den datorn där du vill använda det finns det inte så kan du troligtvis installera det alternativt att då gör hela manövern manuellt.
+\\
+\\
+{noformat}
+$ ssh-copy-id -i .ssh/id_dsa.pub df00801@vfin8003.volvofinans.net
+df00801@vfin8003.volvofinans.net's password:
+Now try logging into the machine, with "ssh 'df00801@vfin8003.volvofinans.net'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+{noformat}
+
+h3. Kopiera manuellt.
+
+# Kopiera över din publika nyckel till remote maskinen enligt nedan. Eftersom vi inte har nyckelhanteringen på plats än så blir vi promptade att ange lösenord.
+\\
+\\
+{noformat}
+$ scp ~/.ssh/id_dsa.pub df00801@vfin8003.volvofinans.net:
+df00801@vfin8003.volvofinans.net's password:
+id_dsa.pub                                                        100%  606     0.6KB/s   00:00
+{noformat}
+# Efter att ha kopierat över den publika nyckeln så måste vi nu {{aktivera}} den. Att aktivera nyckeln gör vi enligt följande:
+\\
+## Logga först in på remote maskinen
+{noformat}
+$ ssh df00801@vfin8003.volvofinans.net
+df00801@vfin8003.volvofinans.net's password:
+Last login: Wed Apr  9 15:17:12 2008 from dse31429.volvofinans.net
+{noformat}
+## Skapa en .ssh katalog om den inte finns
+{noformat}
+[df00801@vfin8003 ~]$ mkdir ~/.ssh
+[df00801@vfin8003 ~]$ chmod 755 ~/.ssh
+{noformat}
+## Kopiera in nyckeln till till nyckelfilen och ta sedan bort nyckeln. Vi passar även på att sätta rätt behörighet på nyckelfilen.
+{noformat}
+[df00801@vfin8003 ~]$ cat id_dsa.pub >> ~/.ssh/authorized_keys2
+[df00801@vfin8003 ~]$ chmod 600 ~/.ssh/authorized_keys2
+[df00801@vfin8003 ~]$ rm id_dsa.pub
+{noformat}
+\\
+{note:title=Viktigt om rättigheter}
+För att ssh skall fungera ihop med nycklar så gäller följande:
+1. Hemkatalogen får ej vara skrivbar för grupp eller public (*chmod 700 /home/df00801*)
+2. Katalogen *.ssh* får ej vara skrivbar för grupp eller public (*chmod 755 \~/.ssh*)
+3. Filerna *\~/.ssh/authorized_keys* och *\~/.ssh/authorized_keys2* får ej vara läs eller skrivbar för grupp eller public (*chmod 600 \~/.ssh/*\*)
+
+{noformat}[df00801@vfin8003 ~]$ mkdir .ssh
+[df00801@vfin8003 ~]$ chmod 755 ~/.ssh
+[df00801@vfin8003 ~]$ chmod 600 ~/.ssh/*
+{noformat}
+{note}
+
+h2. Koppla upp med nyckel
+
+Dags att koppla upp sig mot remote maskinen. När vi nu kopplar upp oss så måste vi ange lösenordsfrasen.
+{noformat}$ ssh df00801@vfin8003.volvofinans.net
+Enter passphrase for key '/cygdrive/c/Documents and Settings/df00801/.ssh/id_dsa':
+Last login: Wed Apr  9 15:35:24 2008 from dse31429.volvofinans.net
+[df00801@vfin8003 ~]$
+{noformat}
