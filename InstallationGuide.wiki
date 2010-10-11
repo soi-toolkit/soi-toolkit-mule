@@ -163,3 +163,4 @@ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/ActiveMQVerifyInsta
 ===Setup of PKI keys for the SFTP transport===
 
 =!!! Under construction !!!=
+Add info both regarding setup of pki and hot to setup preferences in the doi-toolkit eclipse plugin for pki usage...
