@@ -15,7 +15,7 @@ The generated code includes error handling that:
 
 *NOTE*: Prerequisites for this tutorial are:
  * The tutorial [TutorialCreateIntegrationComponent Create a new Integration Component] is completed (and that the SFTP transport was selected) 
- * The installation guide regarding [InstallationGuide#Setup_of_PKI_keys_for_the_SFTP_transport Setup of PKI keys for the SFTP transport] is completed
+ * The installation guide regarding [InstallationGuide#Setup_of_public_key_cryptography_for_the_SFTP_transport Setup of public key cryptography for the SFTP transport] is completed
 
 =Create a SFTP to SFTP service=
 
