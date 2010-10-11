@@ -279,6 +279,7 @@ Is currently done manually :-(
   * update/site.xml
   * Commit any changed files
 
+ * Ensure that {{{soi_toolkit_generator_plugin_default_preferences.properties}}} is reverted to the checked-in version, i.e. no developer specific settings here!
  * Ensure that the update-project is fully reverted, i.e. no runtime files exists in the project
  * Perform a "build all" in the update-project (click on the "Build All" button
  * Copy updated runtime files from the update project to svn/eclipse-update-site
