@@ -175,15 +175,17 @@ The instruction below is based on DSA keys but RSA keys can be used as well.
   * file authorized_keys, authorized_keys2: 600
   * private keys (id_dsa,id_rsa): 600
   * public keys (id_dsa.pub,id_rsa.pub): 644
-  * Use the chmod command to correct if any file or folder is too open, e.g. {{{chmod 700 .ssh}}}.
- 
+  * Use the chmod command to correct if any file or folder is too open, e.g.
+ {{{
+chmod 700 .ssh
+ }}}.
 
  * Create a pair of private and public keys
   Execute the command {{{ssh-keygen -t dsa}}}, accept default filename and enter a proper passphrase of your selection.
   The files {{{id_dsa}}} and {{{id_dsa.pub}}} are now created in your .ssh - folder.
   NOTE: Never give away your private key {{{id_dsa}}}, only share the public one {{{id_dsa.pub}}}!
 
-{{{
+ {{{
 MagnusMac-2:~ magnuslarsson$ ssh-keygen -t dsa
 Generating public/private dsa key pair.
 Enter file in which to save the key (/Users/magnuslarsson/.ssh/id_dsa): 
@@ -199,7 +201,7 @@ MagnusMac-2:~ magnuslarsson$ ls /Users/magnuslarsson/.ssh/id_dsa
 
 MagnusMac-2:~ magnuslarsson$ ls /Users/magnuslarsson/.ssh/id_dsa.pub
 /Users/magnuslarsson/.ssh/id_dsa.pub
-}}} 
+ }}} 
 
 
  * Copy and activate public key to remote sftp-machines
@@ -230,7 +232,6 @@ MagnusMac-2:~ magnuslarsson$
  * Validate setup
  It should now be possible to login and start a sftp session to the remote sftp server without specifying any username.
  In the example below we use account {{{muletest1}}} on sftp-server {{{localhost}}}:
-
  {{{
 MagnusMac-2:.ssh magnuslarsson$ ssh muletest1@localhost
 Enter passphrase:
@@ -253,5 +254,4 @@ MagnusMac-2:.ssh magnuslarsson$
 
 
  * Configure default sfpt-settings in soi-toolkit source code generator
-
-Add info both regarding setup of pki and hot to setup preferences in the doi-toolkit eclipse plugin for pki usage...
+ Add info both regarding setup of pki and hot to setup preferences in the doi-toolkit eclipse plugin for pki usage...
