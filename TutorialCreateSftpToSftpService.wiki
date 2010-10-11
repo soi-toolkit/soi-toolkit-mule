@@ -41,8 +41,6 @@ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateSftpToSftpSer
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateSftpToSftpService/TutorialCreateSftpToSftpService3.png
 
-*HIT KOM JAG*
-
  * Files of interest:
   * Source folder {{{src/test/java}}}
   A new package is created for the service {{{org.sample.mysample.mysamplesftpservice}}} with two Java-classes.
