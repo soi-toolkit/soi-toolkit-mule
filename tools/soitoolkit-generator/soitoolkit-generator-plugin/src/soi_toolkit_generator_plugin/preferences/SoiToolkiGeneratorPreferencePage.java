@@ -47,8 +47,8 @@ public class SoiToolkiGeneratorPreferencePage
 		addField(new StringFieldEditor(PreferenceConstants.P_GROOVY_MODEL, "Custom Groovy model:", getFieldEditorParent()));
 
 		addField(new StringFieldEditor(PreferenceConstants.P_SFTP_ROOT_FOLDER,         "Default SFTP root folder:", getFieldEditorParent()));
-		addField(new FileFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_FILE,         "SFTP identity file for PKI:", getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_PASSPHRASE, "SFTP PKI passphrase:", getFieldEditorParent()));
+		addField(new FileFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_FILE,         "SFTP private key file:", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_PASSPHRASE, "SFTP private key passphrase:", getFieldEditorParent()));
 		
 //		addField(
 //			new BooleanFieldEditor(
