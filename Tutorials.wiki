@@ -7,5 +7,5 @@
   * [TutorialCreateSftpToSftpService Create a one-way SFTP to SFTP service with transformation]
   * [TutorialCreateServiceDescriptionComponent Create a Service Description Component]
 
- * [TutorialCustomizations Customize components and services (TBS)]
+ * [TutorialCustomizations Customize creation of skeleton components and services (TBS)]
  * [TutorialDeploy Deploy an integration component (TBS)]
