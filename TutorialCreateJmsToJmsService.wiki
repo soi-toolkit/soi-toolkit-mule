@@ -51,6 +51,15 @@ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsServi
   {{{MySampleJmsServiceTransformer.java}}} contains a sample transformation that you can use as a start.
   * Source folder {{{src/main/resources}}}
   The folder {{{services}}} contains the file {{{MySampleJmsService-service.xml}}} that contains the actual definition of the new service. 
+  * Source folder {{{src/environment}}}
+  The configuration file {{{mySample-config.properties}}} has got the following properties added:
+ {{{
+ # Properties for jms-service "mySampleJmsService"
+ # TODO: Update to reflect your settings
+ MYSAMPLEJMSSERVICE_IN_QUEUE=MYSAMPLE.MYSAMPLEJMSSERVICE.IN.QUEUE
+ MYSAMPLEJMSSERVICE_OUT_QUEUE=MYSAMPLE.MYSAMPLEJMSSERVICE.OUT.QUEUE
+ MYSAMPLEJMSSERVICE_DL_QUEUE=DLQ.MYSAMPLE.MYSAMPLEJMSSERVICE.IN.QUEUE
+ }}}
 
  * Run unit tests
   * Right-click the test-class {{{MySampleJmsServiceIntegrationTest.java}}} and select "Run As" --> "JUnit Test"
