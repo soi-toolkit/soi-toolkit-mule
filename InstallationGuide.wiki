@@ -184,8 +184,7 @@ chmod 700 .ssh
   Execute the command {{{ssh-keygen -t dsa}}}, accept default filename and enter a proper passphrase of your selection.
   The files {{{id_dsa}}} and {{{id_dsa.pub}}} are now created in your .ssh - folder.
   NOTE: Never give away your private key {{{id_dsa}}}, only share the public one {{{id_dsa.pub}}}!
-
- {{{
+{{{
 MagnusMac-2:~ magnuslarsson$ ssh-keygen -t dsa
 Generating public/private dsa key pair.
 Enter file in which to save the key (/Users/magnuslarsson/.ssh/id_dsa): 
@@ -201,7 +200,7 @@ MagnusMac-2:~ magnuslarsson$ ls /Users/magnuslarsson/.ssh/id_dsa
 
 MagnusMac-2:~ magnuslarsson$ ls /Users/magnuslarsson/.ssh/id_dsa.pub
 /Users/magnuslarsson/.ssh/id_dsa.pub
- }}} 
+}}} 
 
 
  * Copy and activate public key to remote sftp-machines
