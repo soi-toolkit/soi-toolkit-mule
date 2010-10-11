@@ -168,11 +168,23 @@ When using the SFTP transport it is strongly recommended to not use traditional 
 
 The instruction below is based on DSA keys but RSA keys can be used as well.
 
+ * Verify proper security settings on files and folders
+ Ssh is quit picky on security settings (not unexpected :-) so before trying to create keys verify the following permission settings:
+  * folder .ssh: 700
+  * home folder: 711
+  * file authorized_keys, authorized_keys2: 600
+  * private keys (id_dsa,id_rsa): 600
+  * public keys (id_dsa.pub,id_rsa.pub): 644
+  * Use the chmod command to correct if any file or folder is too open, e.g. {{{chmod 700 .ssh}}}.
+ 
  * Create a pair of private and public keys
-  * 
+  Execute the command {{{ssh-keygen -t dsa}}}, accept default filename and enter a proper passphrase of your selection.
+  The files {{{id_dsa}}} and {{{id_dsa.pub}}} are now created in your .ssh - folder.
 
- * Copy public key to remote sftp-machines
-
+http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/CreateDsaKeys.png
+ 
+* Copy public key to remote sftp-machines
+ 
  * Validate setup
 
  * Configure default sfpt-settings in soi-toolkit source code generator
