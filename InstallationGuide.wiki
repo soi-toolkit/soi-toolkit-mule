@@ -163,4 +163,18 @@ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/ActiveMQVerifyInsta
 ===Setup of public key cryptography for the SFTP transport===
 
 =!!! Under construction !!!=
+
+When using the SFTP transport it is strongly recommended to not use traditional username/passwords but instead use public key cryptography. See http://en.wikipedia.org/wiki/Public-key_cryptography for background information.
+
+The instruction below is based on DSA keys but RSA keys can be used as well.
+
+ * Create a pair of private and public keys
+  * 
+
+ * Copy public key to remote sftp-machines
+
+ * Validate setup
+
+ * Configure default sfpt-settings in soi-toolkit source code generator
+
 Add info both regarding setup of pki and hot to setup preferences in the doi-toolkit eclipse plugin for pki usage...
