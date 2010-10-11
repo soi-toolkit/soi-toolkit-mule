@@ -7,10 +7,15 @@
  * [TutorialCreateSftpToSftpService  SFTP to SFTP service]
  * [TutorialCreateServiceDescriptionComponent Service Description Component]
 
+====Other tutorials====
+ * [TutorialCustomizations Customizations (TBS)]
+ * [TutorialDeploy Deploy (TBS)]
+
 ==Other documents===
  * [InstallationGuide Installation Guide]
  * [Overview Overview (TBS)]
  * [Architecture Architecture (TBS)]
+ * [PatternCatalog Pattern Catalog (TBS)]
  * [Roadmap Roadmap (TBS)]
 
 ==Collaboration==
