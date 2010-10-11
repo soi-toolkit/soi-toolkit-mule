@@ -176,9 +176,9 @@ The instruction below is based on DSA keys but RSA keys can be used as well.
   * private keys (id_dsa,id_rsa): 600
   * public keys (id_dsa.pub,id_rsa.pub): 644
   * Use the chmod command to correct if any file or folder is too open, e.g.
- {{{
+{{{
 chmod 700 .ssh
- }}}.
+}}}
 
  * Create a pair of private and public keys
   Execute the command {{{ssh-keygen -t dsa}}}, accept default filename and enter a proper passphrase of your selection.
