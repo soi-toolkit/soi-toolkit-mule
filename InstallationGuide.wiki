@@ -162,13 +162,11 @@ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/ActiveMQVerifyInsta
 
 ===Setup of public key cryptography for the SFTP transport===
 
-=!!! Under construction !!!=
-
 When using the SFTP transport it is strongly recommended to not use traditional username/passwords but instead use public key cryptography. See http://en.wikipedia.org/wiki/Public-key_cryptography for background information.
 
 The instruction below is based on DSA keys but RSA keys can be used as well.
 
- * Verify proper security settings on files and folders
+ * *Verify proper security settings on files and folders*
  Ssh is quit picky on security settings (not unexpected :-) so before trying to create keys verify the following permission settings:
   * home folder: 711
   * folder .ssh: 700
@@ -180,7 +178,7 @@ The instruction below is based on DSA keys but RSA keys can be used as well.
 chmod 700 .ssh
 }}}
 
- * Create a pair of private and public keys
+ * *Create a pair of private and public keys*
 
   Execute the command {{{ssh-keygen -t dsa}}}, accept default filename and enter a proper passphrase of your selection.
 
@@ -206,7 +204,7 @@ MagnusMac-2:~ magnuslarsson$ ls /Users/magnuslarsson/.ssh/id_dsa.pub
 }}} 
 
 
- * Copy and activate public key to remote sftp-machines
+ * *Copy and activate public key to remote sftp-machines*
  To be able to authenticate yourself using your private key you must copy your public key to the accounts on the remote machines that you want to be able to use.
  Typically you have to copy the public file using the accounts username and password as:
  {{{
@@ -231,7 +229,8 @@ Connection to localhost closed.
 MagnusMac-2:~ magnuslarsson$ 
  }}}
 
- * Validate setup
+
+ * *Validate setup*
  It should now be possible to login and start a sftp session to the remote sftp server without specifying any username.
  In the example below we use account {{{muletest1}}} on sftp-server {{{localhost}}}:
  {{{
@@ -255,9 +254,8 @@ MagnusMac-2:.ssh magnuslarsson$
  }}}
 
 
- * Configure default sfpt-settings in soi-toolkit source code generator
+ * *Configure default sfpt-settings in soi-toolkit source code generator*
  To simplify setup of sftp-configuration in your development environment the soi-toolkit source code generator allows you to specify your favorite sftp-server, your private key location and your passphrase so you don't have to specify it over and over again while you create new sftp-based services and integrations.
- 
   * Open Eclipse Preference page in the menu and select the "SOI-Toolkit Generator"
   * Specify the root folder of the sftp server you will use most frequently during development
   E.g. {{{muletest1@localhost/~/sftp}}}
