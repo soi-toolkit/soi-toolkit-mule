@@ -33,7 +33,6 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 	 * 
 	 */
 	public ActiveMqJmsTestUtil() {
-//		this("tcp://localhost:61616");
 		this("vm://localhost");
 	}
 
