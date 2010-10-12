@@ -106,6 +106,8 @@ To publish a snapshot of soi-toolkit do:
 mvn clean deploy
 }}}
 
+Snapshot artifacts are deployed to the repository https://oss.sonatype.org/content/repositories/snapshots/org/soitoolkit
+
 = Release handling =
 
 To release a new version of soi-toolkit we use mavens release-plugin.
