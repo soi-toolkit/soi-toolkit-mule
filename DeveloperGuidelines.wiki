@@ -24,19 +24,27 @@ All components in soi-toolkit has one and the same release cycle (i.e. cm scope)
 
 As a base setup the development environment according to the [InstallationGuide installation guide] for soi-toolkit users.
 
+== Setup of source code analysis eclipse plugins ==
+
+It is recommended that developers of soi-toolkit have corresponding eclipse plugins to the source code analysis that are performed by the continuos integration server, Hudson.
+
+ * Install *findbugs* from the Eclipse update site http://findbugs.cs.umd.edu/eclipse
+ * Install *checkstyle* from the Eclipse update site http://eclipse-cs.sourceforge.net/update
+ * Install *eclemma* from the Eclipse update site http://update.eclemma.org
+
 == Setup for Mule ==
 
 TBS: Ways to get Mule 2.2.x > 2.2.1 in your local maven repo...
 
 == Setup for generator-plugin ==
 
- # on mac for 32bit Eclipse specify -d32 om launch command...
+ * on mac for 32bit Eclipse specify -d32 om launch command...
 
- # jvm minimum paramenters on launch command
+ * jvm minimum paramenters on launch command
 
- # specify your environment in the propertyfile, {{{src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+ * specify your environment in the propertyfile, {{{src/soi_toolkit_generator_plugin_default_preferences.properties}}}
 
- # how to create pki keys for sftp
+ * how to create pki keys for sftp
 
 == Setup for Sonatype OSS Maven Repository ==
 
