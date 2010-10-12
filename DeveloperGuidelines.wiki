@@ -20,7 +20,9 @@ soi-toolkit is based on the following components:
 
 All components in soi-toolkit has one and the same release cycle (i.e. cm scope) and are released together as described below.
 
-= Initial setup =
+= Initial setup of development environment=
+
+As a base setup the development environment according to the [InstallationGuide installation guide] for soi-toolkit users.
 
 == Setup for Mule ==
 
@@ -99,9 +101,14 @@ The generator is for now both tested and built manually using the built in suppo
 
 Use Eclipse to run all tests in the project {{{soitoolkit-generator-plugin}}}.
 
+=Continuous Integration=
+The soi-toolkit project uses Hudson as its continuous integration server. 
+Builds are performed after every commit to subversion and snapshots are published on a daily basis.
+For the moment Hudson runs on a developer PC but it will be moved to a build-server soon...
+
 = Publish snapshots =
 
-To publish a snapshot of soi-toolkit do:
+To manually publish a snapshot of soi-toolkit do:
 {{{
 mvn clean deploy
 }}}
