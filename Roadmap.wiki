@@ -7,6 +7,8 @@
 
 = Introduction =
 
+=Planned releases=
+
 == v0.5 ==
 
 *Plannes release date:* Mid November 2010.
@@ -25,7 +27,7 @@ Add your content here.  Format your content with:
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
 
-== No planned release ==
+= Not planned features =
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
