@@ -2,12 +2,30 @@
 
 = !!! Under construction !!! =
 
+*Content*
+<wiki:toc max_depth="2" />
+
 = Introduction =
 
-Add your content here.
+== v0.5 ==
 
+*Plannes release date:* Mid November 2010.
 
-= Details =
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+== v1.0 ==
+
+*Plannes release date:* End year 2010.
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+== No planned release ==
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
