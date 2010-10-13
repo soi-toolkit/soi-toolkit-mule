@@ -9,6 +9,8 @@
 
 Guidelines for developers of the soi-toolkit...
 
+
+<wiki:comment>
 soi-toolkit is based on the following components:
 || *Name* || *Svn-path* || *Description* ||
 || commons-schemas || trunk/commons/components/commons-schemas || TBS ||
@@ -19,6 +21,7 @@ soi-toolkit is based on the following components:
 || soitoolkit-generator-plugin || trunk/tools/soitoolkit-generator || TBS ||
 
 All components in soi-toolkit has one and the same release cycle (i.e. cm scope) and are released together as described below.
+</wiki:comment>
 
 = Initial setup of development environment=
 
@@ -28,6 +31,7 @@ As a base setup the development environment according to the [InstallationGuide 
 
 It is recommended that developers of soi-toolkit have corresponding eclipse plugins to the source code analysis that are performed by the continuos integration server, Hudson.
 
+ * Install *PMD* from the Eclipse update site  http://pmd.sourceforge.net/eclipse
  * Install *findbugs* from the Eclipse update site http://findbugs.cs.umd.edu/eclipse
  * Install *checkstyle* from the Eclipse update site http://eclipse-cs.sourceforge.net/update
  * Install *eclemma* from the Eclipse update site http://update.eclemma.org
