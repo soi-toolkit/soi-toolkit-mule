@@ -1,5 +1,8 @@
 #summary Tutorial on how to create a one way Service based on the SFTP transport.
 
+*Content*
+<wiki:toc max_depth="2" />
+
 =Introduction=
 
 This tutorial will help you to get started with a one-way service that consumes a file over SFTP, transform it and produce an outgoing file again using SFTP.
