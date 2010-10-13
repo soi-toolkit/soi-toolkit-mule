@@ -21,6 +21,7 @@
 ==Collaboration==
  * [http://groups.google.com/group/soi-toolkit-user soi-toolkit-user]
  * [http://groups.google.com/group/soi-toolkit-dev soi-toolkit-dev]
+ * [http://groups.google.com/group/soi-toolkit-scm soi-toolkit-scm]
 
 ==Downloads==
  * [http://soi-toolkit.googlecode.com/svn/eclipse-update-site/ Eclipse Update Site]
@@ -30,4 +31,5 @@
 
 ==soi-toolkit developers==
  * [DeveloperGuidelines Developer Guidelines]
+ * [https://soi-toolkit.ci.cloudbees.com/ Hudson@CloudBees]
  * [https://www.google.com/analytics/reporting/?id=37696735 Google Analytics]
