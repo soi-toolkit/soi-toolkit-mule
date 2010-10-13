@@ -1,5 +1,8 @@
 #summary Tutorial on how to create a one way Service based on the JMS transport.
 
+*Content*
+<wiki:toc max_depth="2" />
+
 =Introduction=
 
 This tutorial will help you to get started with a one-way service that consumes a jms message, transform it and produce an outgoing jms message.
