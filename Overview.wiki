@@ -2,8 +2,10 @@
 
 = !!! Under construction !!! =
 
-= Introduction =
+*Content*
+<wiki:toc max_depth="2" />
 
+= Introduction =
 
 Soi-toolkit helps you getting started with Mule ESB in no time using Eclipse and Maven.
 
