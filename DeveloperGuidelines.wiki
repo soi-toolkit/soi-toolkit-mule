@@ -1,7 +1,7 @@
 #summary Guidelines for developers of the soi-toolkit
 #labels Phase-Implementation
 
-Content
+*Content*
 
 <wiki:toc max_depth="2" />
 
