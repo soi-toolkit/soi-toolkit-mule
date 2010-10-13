@@ -1,5 +1,8 @@
 #summary Tutorial on how to create a Service Description Component
 
+*Content*
+<wiki:toc max_depth="2" />
+
 =Introduction=
 
 Service Description components are used to contain wsdl and xml schema files that describe message formats for xml based services.
