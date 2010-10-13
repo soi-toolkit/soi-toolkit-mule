@@ -13,23 +13,18 @@
 
 *Plannes release date:* Mid November 2010.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ * More patterns and more generic wizards
+  * For one way patterns we should support a mix of vm, jms, sftp and jdbc based endpoints
+  * For request/reply patterns we should suport a mix of vm, http(s) (soap and/or rest), jms and jdbc based endpoints.
 
 == v1.0 ==
 
 *Plannes release date:* End year 2010.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ * Support for Mule v3.0
+ Not only a plain port of our Mule v2.2.x patterns but rewritten versions that usa the new features in Mule 3.0, e.g. Flows, Patterns, improved Exception Strategy, the new deployment model and so on. Also ensuring that the soi-toolkit tools don't interfere with the new tools that are upcoming with Mule 3.0...
+ 
+= Not yet planned features =
 
-= Not planned features =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ * Support for BPM, BAM and CEP
+ Based on a solid foundation for services, i.e. Mule ESB, we should be able to upwards in the stack and add support for features like BPM, BAM and CEP based on proven open source products in each area such as JBoss jBPM and Esper...
