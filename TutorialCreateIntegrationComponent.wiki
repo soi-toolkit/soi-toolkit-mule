@@ -1,5 +1,8 @@
 #summary Tutorial on how to create an Integration Component.
 
+*Content*
+<wiki:toc max_depth="2" />
+
 = Introduction =
 
 Integration components are used to contain Mule ESB based services and integrations.
