@@ -1,7 +1,7 @@
 package org.soitoolkit.commons.mule.monitor;
 
-import static org.soitoolkit.commons.mule.core.PropertyNames.DEFAULT_MULE_JMS_CONNECTOR;
 import static org.soitoolkit.commons.mule.core.PropertyNames.DEFAULT_MULE_JDBC_DATASOURCE;
+import static org.soitoolkit.commons.mule.core.PropertyNames.DEFAULT_MULE_JMS_CONNECTOR;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +76,7 @@ public class MonitorEndpointHelper {
 		try {
 			c  = ds.getConnection();
 			s  = c.createStatement();
-			rs = c.createStatement().executeQuery("select 1 from " + tableName);
+			rs = s.executeQuery("select 1 from " + tableName);
 			
 		} catch (SQLException e) {
 			return ERROR_PREFIX + ": The table " + tableName + " was not found in the data source " + muleJdbcDataSourceName + ", reason: " + e.getMessage();
