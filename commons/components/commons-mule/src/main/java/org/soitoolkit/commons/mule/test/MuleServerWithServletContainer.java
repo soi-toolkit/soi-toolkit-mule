@@ -3,7 +3,6 @@ package org.soitoolkit.commons.mule.test;
 import org.mule.MuleServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.soitoolkit.commons.mule.test.ServletContainerWithMuleReceiverServlet;
 
 
 /**

@@ -1,10 +1,10 @@
 package org.soitoolkit.commons.mule.log.correlationid;
 
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
+
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.transformer.AbstractMessageAwareTransformer;
-
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
 
 /**
  * Save a correlation id message property in the CorrelationIdStore for later retrieval by a synchronous response-processing.

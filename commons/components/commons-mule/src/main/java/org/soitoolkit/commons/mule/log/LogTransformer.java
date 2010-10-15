@@ -1,6 +1,6 @@
 package org.soitoolkit.commons.mule.log;
 
-import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.*;
+import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
 
 import org.mule.RequestContext;
 import org.mule.api.MuleEventContext;
@@ -41,7 +41,7 @@ public class LogTransformer extends AbstractMessageAwareTransformer {
 		this.logType = logType;
 	}
 
-	private JaxbObjectToXmlTransformer jaxb2xml;
+	private JaxbObjectToXmlTransformer jaxb2xml = null;
 	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxb2xml) {
 		this.jaxb2xml = jaxb2xml;
 	}

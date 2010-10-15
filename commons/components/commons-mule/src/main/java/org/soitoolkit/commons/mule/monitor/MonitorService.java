@@ -13,8 +13,8 @@ import javax.xml.bind.JAXBElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.monitor.schema.v1.MonitorInfoType;
-import org.soitoolkit.commons.monitor.schema.v1.ObjectFactory;
 import org.soitoolkit.commons.monitor.schema.v1.MonitorInfoType.ExtraInfo;
+import org.soitoolkit.commons.monitor.schema.v1.ObjectFactory;
 import org.soitoolkit.commons.mule.util.XmlUtil;
 
 /**
