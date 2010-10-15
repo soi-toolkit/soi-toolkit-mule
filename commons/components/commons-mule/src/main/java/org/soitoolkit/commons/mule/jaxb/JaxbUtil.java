@@ -70,7 +70,13 @@ public class JaxbUtil {
      */
 	public String marshal(Object jaxbObject) {
 
-        try {
+		// Precondition, check that the jaxbContext is set!
+    	if (jaxbContext == null) {
+    		logger.error("Trying to marshal with a null jaxbContext, returns null. Check your configuration, e.g. jaxb-transformers!");
+    		return null;
+    	}
+
+    	try {
 
         	Marshaller marshaller = jaxbContext.createMarshaller();
             StringWriter writer = new StringWriter();
@@ -112,9 +118,15 @@ public class JaxbUtil {
      */
     @SuppressWarnings("rawtypes")
 	public Object unmarshal(Object payload) {
-        try {
 
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		// Precondition, check that the jaxbContext is set!
+    	if (jaxbContext == null) {
+    		logger.error("Trying to unmarshal with a null jaxbContext, returns null. Check your configuration, e.g. jaxb-transformers!");
+    		return null;
+    	}
+
+    	try {
+        	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             Object       jaxbObject   = null;
            
             // Unmarshal depending on the type of source
