@@ -3,9 +3,7 @@ package org.soitoolkit.commons.log.web;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.soitoolkit.commons.log.Log4jUtils;
 
 /**
@@ -81,13 +79,13 @@ public final class Log4jWebUtils {
             String val = sc.getInitParameter(CONTEXT_PARAM_LOG_WATCH_DISABLE_KEY);
 
             if (val == null || (!val.equalsIgnoreCase("true") && !val.equalsIgnoreCase("false"))) {
-                return null;
+                return false; // TODO: was null, should it be true or false?
             }
 
             return Boolean.valueOf(val);
 
         } catch (Exception e) {
-            return null;
+            return false; // TODO: was null, should it be true or false?
         }
     }
 
@@ -96,13 +94,13 @@ public final class Log4jWebUtils {
             String val = System.getProperty(paramName);
 
             if (val == null || (!val.equalsIgnoreCase("true") && !val.equalsIgnoreCase("false"))) {
-                return null;
+                return false; // TODO: was null, should it be true or false?
             }
 
             return Boolean.valueOf(val);
 
         } catch (Exception e) {
-            return null;
+            return false; // TODO: was null, should it be true or false?
         }
     }
 
