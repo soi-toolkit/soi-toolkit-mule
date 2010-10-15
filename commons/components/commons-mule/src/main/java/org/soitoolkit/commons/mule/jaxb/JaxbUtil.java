@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -36,7 +37,7 @@ public class JaxbUtil {
     @SuppressWarnings("rawtypes")
 	public JaxbUtil(Class... classesToBeBound) {
         try {
-        	if (logger.isDebugEnabled()) logger.debug("Load JAXBContext based on classes: " + classesToBeBound);
+        	if (logger.isDebugEnabled()) logger.debug("Load JAXBContext based on classes: " + Arrays.toString(classesToBeBound));
             jaxbContext = JAXBContext.newInstance(classesToBeBound);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
