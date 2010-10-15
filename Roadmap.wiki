@@ -7,11 +7,22 @@
 
 = Introduction =
 
+=Current release=
+
+v0.1.8, released 2010-10-
+
 =Planned releases=
+
+== v0.1.9 ==
+
+*Planned release date:* End October 2010.
+
+ * Bug fixes as they are reported by the first projects...
+ * Automated build process of soi-toolkit using CloudBee's [http://cloudbees.com/dev-haas.cb Hudson as a Service]
 
 == v0.5 ==
 
-*Plannes release date:* Mid November 2010.
+*Planned release date:* End November 2010.
 
  * More patterns and more generic wizards
   * For one way patterns we should support a mix of vm, jms, sftp and jdbc based endpoints
@@ -19,7 +30,7 @@
 
 == v1.0 ==
 
-*Plannes release date:* End year 2010.
+*Planned release date:* Early 2011.
 
  * Support for Mule v3.0
  Not only a plain port of our Mule v2.2.x patterns but rewritten versions that usa the new features in Mule 3.0, e.g. Flows, Patterns, improved Exception Strategy, the new deployment model and so on. Also ensuring that the soi-toolkit tools don't interfere with the new tools that are upcoming with Mule 3.0...
