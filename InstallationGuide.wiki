@@ -7,7 +7,7 @@
 
 To get started with soi-toolkit and Mule ESB you only need to install Java SE, Eclipse, Maven and the soi-toolkit Eclipse plugin. See section [#Required_installations Required installations] for instructions.
 
-Depending on your needs you also might want to install some optional tools in your development environment such as Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installations Optional installations] for instructions on how to install and configure these optional tools.
+Depending on your needs you also might want to install some optional tools in your development environment such as Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installation Optional installations] for instructions on how to install and configure these optional tools.
 
 The installation guides below assumes your on a 32 bit Microsoft Windows PC.
 
