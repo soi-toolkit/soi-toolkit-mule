@@ -18,7 +18,7 @@ v0.1.8, released Oct 06 2010.
 *Planned release date:* End October 2010.
 
  * Bug fixes as they are reported by the first projects...
- * Automated build process of soi-toolkit using CloudBee's [http://cloudbees.com/dev-haas.cb Hudson as a Service]
+ * Automated build process of soi-toolkit using !CloudBees's [http://cloudbees.com/dev-haas.cb Hudson as a Service]
 
 == v0.5 ==
 
