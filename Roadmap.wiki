@@ -9,7 +9,7 @@
 
 =Current release=
 
-v0.1.8, released 2010-10-
+v0.1.8, released Oct 06 2010.
 
 =Planned releases=
 
