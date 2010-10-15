@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jms.JMSException;
@@ -178,7 +179,7 @@ public class EventLogger {
 	
 	@SuppressWarnings("unused")
 	private void reqCtx_dispatchEvent(String endpointName, String msg) {
-		Session s = null;
+//		Session s = null;
 		try {
             MuleMessage logMessage = new DefaultMuleMessage(msg);
             MuleEventContext eventCtx = RequestContext.getEventContext();
@@ -202,8 +203,8 @@ public class EventLogger {
 			throw new RuntimeException(e);
 //		} catch (JMSException e) {
 //			throw new RuntimeException(e);
-		} finally {
-			if (s != null) try {s.close();} catch (JMSException e) {}
+//		} finally {
+//			if (s != null) try {s.close();} catch (JMSException e) {}
 		}		
 	}
 	
@@ -430,13 +431,11 @@ public class EventLogger {
 		
 		// Add any business contexts
 		if (businessContextId != null) {
-			Set<String> names = businessContextId.keySet();
-			for (String name : names) {
-				String value = businessContextId.get(name);
-
+			Set<Entry<String, String>> entries = businessContextId.entrySet();
+			for (Entry<String, String> entry : entries) {
 				BusinessContextId bxid = new BusinessContextId();
-				bxid.setName(name);
-				bxid.setValue(value);
+				bxid.setName(entry.getKey());
+				bxid.setValue(entry.getValue());
 				lri.getBusinessContextId().add(bxid);
 			}
 		}
