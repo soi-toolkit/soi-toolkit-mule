@@ -132,8 +132,8 @@ Install the Maven plugin for Eclipse according to the following instructions:
  http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/SoiToolkitInstallation6.png
 
  * Configure the plugin by open Eclipse Preference page in the menu and select the "SOI-Toolkit Generator"
-  * Specify the folder where you have Mule installed in the field "Maven home folder"
-  * Specify the default folder where the generator should create files in the field "Dffault root folder"
+  * Specify the folder where you have Maven installed in the field "Maven home folder"
+  * Specify the default folder where the generator should create files in the field "Default root folder"
   * You can leave the rest of the fields as they are.
   * Click on the "OK" button to conclude the configuration.
 
