@@ -1,9 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.*;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
-import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
+import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
 
 import java.io.IOException;
 import java.io.PrintStream;

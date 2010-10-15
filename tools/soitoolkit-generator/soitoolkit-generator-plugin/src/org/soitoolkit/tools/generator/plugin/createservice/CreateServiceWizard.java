@@ -2,9 +2,9 @@ package org.soitoolkit.tools.generator.plugin.createservice;
 
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.lookupParameterValue;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getFirstValue;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
+import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.lookupParameterValue;
 
 import java.io.File;
 import java.io.IOException;

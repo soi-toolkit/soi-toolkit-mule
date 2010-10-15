@@ -1,6 +1,6 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 
 import java.util.ArrayList;
 import java.util.List;

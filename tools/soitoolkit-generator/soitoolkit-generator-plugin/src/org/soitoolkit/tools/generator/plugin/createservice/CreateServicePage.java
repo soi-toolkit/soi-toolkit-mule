@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
-import org.soitoolkit.tools.generator.plugin.model.enums.ILabeledEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MepEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 

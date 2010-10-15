@@ -1,7 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 
 import java.io.IOException;

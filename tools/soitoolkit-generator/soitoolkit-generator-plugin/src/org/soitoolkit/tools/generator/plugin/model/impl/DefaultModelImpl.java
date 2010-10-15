@@ -2,6 +2,8 @@ package org.soitoolkit.tools.generator.plugin.model.impl;
 
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -14,9 +16,6 @@ import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.XmlUtil;
-
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 
 public class DefaultModelImpl implements IModel {
 

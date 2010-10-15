@@ -1,6 +1,7 @@
 package org.soitoolkit.tools.generator.plugin.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.soitoolkit.tools.generator.plugin.util.MiscUtil.convertStreamToString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +10,6 @@ import java.io.FileNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.soitoolkit.tools.generator.plugin.util.MiscUtil.convertStreamToString;
 
 public class PreferencesUtilTests {
 
