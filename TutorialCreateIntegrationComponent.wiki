@@ -19,7 +19,7 @@ This tutorial helps you to create your first integration component.
 
  * Click on the "Next >" button
  The wizard "SOI Toolkit - Create a new Component" opens up
-  * Select the component type "Intergation Component" in the radio button control named "Type of component"
+  * Select the component type "Integration Component" in the radio button control named "Type of component"
   * Specify a proper name of the component in the field "Artifact Id"
   * Specify a proper group name in the field "Group Id"
   * Select where you want the files to be created in the field "Root folder"
