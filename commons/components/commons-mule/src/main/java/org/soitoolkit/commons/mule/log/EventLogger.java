@@ -31,6 +31,7 @@ import org.mule.api.config.MuleConfiguration;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
+import org.mule.module.client.MuleClient;
 import org.mule.module.xml.stax.ReversibleXMLStreamReader;
 import org.mule.transport.jms.JmsMessageUtils;
 import org.slf4j.Logger;
@@ -61,6 +62,9 @@ public class EventLogger {
 	// Creating JaxbUtil objects (i.e. JaxbContext objects)  are costly, so we only keep one instance.
 	// According to https://jaxb.dev.java.net/faq/index.html#threadSafety this should be fins since they are thread safe!
 	private static final JaxbUtil JAXB_UTIL = new JaxbUtil(LogEvent.class);
+
+	// MuleClient used to dispatch log-messages to log-queues, created on first usage 
+	private static MuleClient muleClient = null;
 
 	private static final String MSG_ID = "soi-toolkit.log";
 	private static final String LOG_EVENT_INFO = "logEvent-info";
@@ -146,19 +150,43 @@ public class EventLogger {
 	//----------------
 	
 	private void dispatchInfoEvent(String msg) {
-		dispatchEvent("soitoolkit-info-log-endpoint", msg);
+		dispatchEvent("vm://soitoolkit-info-log", msg);
+//		dispatchEvent("soitoolkit-info-log-endpoint", msg);
 	}
 
 	private void dispatchErrorEvent(String msg) {
-		dispatchEvent("soitoolkit-error-log-endpoint", msg);
+		dispatchEvent("vm://soitoolkit-error-log", msg);
+//		dispatchEvent("soitoolkit-error-log-endpoint", msg);
 	}
 
-	private void dispatchEvent(String endpointName, String msg) {
+	private void dispatchEvent(String url, String msg) {
+		try {
+			// TODO: We use MuleClient since RequestContext.getEventContext() returns null when we don't have a request active, e.g. when sftp-notifications are logged...
+			getMuleClient().dispatch(url, msg, null);
+		} catch (MuleException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private MuleClient getMuleClient() throws MuleException {
+		if (muleClient == null) {
+			MuleContext mctx = MuleServer.getMuleContext();
+			muleClient = new MuleClient(mctx);
+		}
+		return muleClient;
+	}
+	
+	@SuppressWarnings("unused")
+	private void reqCtx_dispatchEvent(String endpointName, String msg) {
 		Session s = null;
 		try {
             MuleMessage logMessage = new DefaultMuleMessage(msg);
             MuleEventContext eventCtx = RequestContext.getEventContext();
-			eventCtx.dispatchEvent(logMessage, endpointName);
+            if (eventCtx == null) {
+            	System.err.println("EventCtx null, can't log to endpoint: " + endpointName + ", logMsg: " + msg);
+            } else {
+            	eventCtx.dispatchEvent(logMessage, endpointName);
+            }
 
 /*			
 			EndpointBuilder eb = MuleServer.getMuleContext().getRegistry().lookupEndpointBuilder(endpointName);
