@@ -2,6 +2,7 @@ package ${javaPackage}.${lowercaseService};
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.mule.api.MuleMessage;
 import org.mule.transport.sftp.SftpConnector;
@@ -42,8 +43,8 @@ public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
 
     public void test${capitalizedService}_ok() throws Exception {
 
-		// TODO: Replace with name of endpoint
-    	String inFolder         = "muletest1@localhost/~/sftp/${lowercaseService}/sender";
+        ResourceBundle rb       = ResourceBundle.getBundle("${configPropertyFile}");
+        String inFolder         = rb.getString("${uppercaseService}_SENDER_SFTP_ADDRESS");
 		String filename         = "testfile.txt";
 		String content          = "Annn";
         String expectedResult   = "1nnn\\n";
