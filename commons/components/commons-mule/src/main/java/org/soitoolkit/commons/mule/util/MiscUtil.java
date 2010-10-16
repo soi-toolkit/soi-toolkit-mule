@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Various helper methods that doesn't fit naturally elsewhere for the time being...
@@ -13,7 +18,11 @@ import java.io.InputStreamReader;
  */
 public class MiscUtil {
 
-    /**
+	private final static Logger logger = LoggerFactory.getLogger(MiscUtil.class);
+    private final static String placeholderPrefix = "${";
+    private final static String placeholderSuffix = "}";
+
+	/**
      * Hidden constructor.
      */
     private MiscUtil() {
@@ -55,4 +64,63 @@ public class MiscUtil {
         return sb.toString();
     }
 
+    static public String parseStringValue(String strVal, Properties props) {
+
+    	StringBuffer buf = new StringBuffer(strVal);
+
+    	int startIndex = strVal.indexOf(placeholderPrefix);
+    	while (startIndex != -1) {
+    		int endIndex = findPlaceholderEndIndex(buf, startIndex);
+    		if (endIndex != -1) {
+    			String placeholder = buf.substring(startIndex + placeholderPrefix.length(), endIndex);
+
+    			String propVal = props.getProperty(placeholder);
+    			
+    			if (propVal != null) {
+    				
+					// Recursive invocation, parsing placeholders contained in the previously resolved placeholder value.
+    				// E.g. a variable value like: VARIABLE1=Var${VARIABLE2}Value
+					propVal = parseStringValue(propVal, props);
+
+					buf.replace(startIndex, endIndex + placeholderSuffix.length(), propVal);
+    				if (logger.isTraceEnabled()) {
+    					logger.trace("Resolved placeholder '" + placeholder + "'");
+    				}
+    				startIndex = buf.indexOf(placeholderPrefix, startIndex + propVal.length());
+    			}
+    			else {
+    				throw new RuntimeException("Could not resolve placeholder '" + placeholder + "'");
+    			}
+    		}
+    		else {
+    			startIndex = -1;
+    		}
+    	}
+    	return buf.toString();
+    }
+    
+    static private int findPlaceholderEndIndex(CharSequence buf, int startIndex) {
+    	int index = startIndex + placeholderPrefix.length();
+    	int withinNestedPlaceholder = 0;
+    	while (index < buf.length()) {
+    		if (StringUtils.substringMatch(buf, index, placeholderSuffix)) {
+    			if (withinNestedPlaceholder > 0) {
+    				withinNestedPlaceholder--;
+    				index = index + 1;
+    			}
+    			else {
+    				return index;
+    			}
+    		}
+    		else if (StringUtils.substringMatch(buf, index, placeholderPrefix)) {
+    			withinNestedPlaceholder++;
+    			index = index + placeholderPrefix.length();
+    		}
+    		else {
+    			index++;
+    		}
+    	}
+    	return -1;
+    }    
+    
 }
