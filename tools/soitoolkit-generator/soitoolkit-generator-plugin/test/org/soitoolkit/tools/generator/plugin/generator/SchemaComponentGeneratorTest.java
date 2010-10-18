@@ -59,7 +59,7 @@ public class SchemaComponentGeneratorTest {
 		ops.add("createOrder");
 		ops.add("getOrderStatus");
 		new SchemaComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", SCHEMA, ops, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 16, SystemUtil.countFiles(PROJECT_FOLDER));
+		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
