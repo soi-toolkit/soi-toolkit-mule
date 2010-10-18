@@ -66,12 +66,19 @@
 <% if (servlet) { %>
 	<servlet:connector name="servletConnector" />
 <% } %>  
+
+
+<% if (false) { %>
+    <!-- We don't use these global endpoint for the moment but maybe we will again in the future so we keep the code fragments -->
 	<endpoint name="soitoolkit-info-log-endpoint" address="vm://soitoolkit-info-log">
 		<jms:transaction action="NONE" />
 	</endpoint>
 	<endpoint name="soitoolkit-error-log-endpoint" address="vm://soitoolkit-error-log">
 		<jms:transaction action="NONE" />
 	</endpoint>
+<% } %>  
+
+
     <spring:beans>
 <% if (sftp) { %>
         <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
