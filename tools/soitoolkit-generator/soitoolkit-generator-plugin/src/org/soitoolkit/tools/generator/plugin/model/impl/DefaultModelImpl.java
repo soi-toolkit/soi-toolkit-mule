@@ -272,9 +272,13 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getJavaPackage()
 	 */
 	public String getJavaPackage() {
-		String javaPackage = getJavaGroupId() + "." + getJavaArtifactId(); 
+		String javaPackage = getJavaGroupId(); 
+		if (!isGroupIdSuffixedWithArtifactId()) {
+			javaPackage += "." + getJavaArtifactId(); 
+		}
 		return javaPackage.toLowerCase();
 	}
+
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getJavaPackageFilepath()
 	 */
@@ -340,7 +344,7 @@ public class DefaultModelImpl implements IModel {
 
 	// --------------------	
 
-	private boolean isTransportSelected(TransportEnum selectedTransport) {
+	protected boolean isTransportSelected(TransportEnum selectedTransport) {
 
 		if (transports == null) return false;
 
@@ -350,12 +354,51 @@ public class DefaultModelImpl implements IModel {
 		return false;
 	}
 
-	private String getJavaGroupId() {
+	protected String getJavaGroupId() {
 		return makeJavaName(getGroupId());
 	}
 	
-	private String getJavaArtifactId() {
+	protected String getJavaArtifactId() {
 		return makeJavaName(getArtifactId());
 	}
 
+	/**
+	 * Note: Keep the method public in its package so that is can be tested properly
+	 * @return
+	 */
+	boolean isGroupIdSuffixedWithArtifactId() {
+		String grpId = getJavaGroupId();
+		String artId = getJavaArtifactId();
+		
+		// Return false if one of them are null...
+		if (grpId == null || artId == null) {
+			return false;
+		}
+		
+		int grpIdLen = grpId.length();
+		int artIdLen = artId.length();
+
+		// Return false if artId is longer then grpId
+		if (artIdLen > grpIdLen) {
+			return false;
+		}
+		
+		grpId = grpId.toLowerCase();
+		artId = artId.toLowerCase();
+		
+		int artIdInGrpIdLastPosition = grpId.lastIndexOf(artId);
+
+		// Return false if artId is not found in grpId
+		if (artIdInGrpIdLastPosition == -1) {
+			return false;
+		}
+
+		// Return false if the last position of artId is not in the end of the grpId
+		if (grpIdLen != artIdInGrpIdLastPosition + artIdLen) {
+			return false;
+		}
+		
+		// Ok, the grpId is really suffixed with the artifactId, let's return true :-)
+		return true;
+	}
 }

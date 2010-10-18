@@ -16,6 +16,11 @@ public class ModelUtil {
 	}
 
 	static public String makeJavaName(String name) {
+		
+		if (name == null) {
+			return null;
+		}
+		
 		// Remove all '-' and capitalize word folloing after...
 	    StringBuffer javaName = new StringBuffer();
 	    StringTokenizer st = new StringTokenizer(name, "-");
