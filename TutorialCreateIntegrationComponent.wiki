@@ -51,7 +51,7 @@ This tutorial helps you to create your first integration component.
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent5.png
 
  * Files of interest:
- An integration component contains of three eclipse projects and each project contains a typical maven source structure of folders.  See [architecture soi.toolkit architecture] for further explanations of this structure. 
+ An integration component consists of three eclipse projects and each project contains a typical maven source structure of folders.  See [architecture soi.toolkit architecture] for further explanations of this structure. 
   * Project {{{mySample-services}}}
    * Source folder {{{src/test/java}}}
    Contains a main-program, {{{MySampleMuleServer.java}}}, that can start Mule inside Eclipse, mainly used for manual tests and debugging inside the development environment. Service specific test code (unit-tests and producer-teststubs) will be created here when creating services.
