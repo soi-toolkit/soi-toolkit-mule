@@ -45,10 +45,22 @@
 	<!--  Allow tests to register dynamic listeners by specifying dynamic="true" -->
 	<!-- TODO: Is there a performance hit with this that is not acceptable in runtime?
 	           Then we maybe need a teststub-common-xml file in the end... -->
+<% if (sftp) { %>
+	<spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
+	<spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
+   	<notifications dynamic="true">
+		<notification event="COMPONENT-MESSAGE"/>
+		<notification event="ENDPOINT-MESSAGE"/>
+		<notification event="CUSTOM"/>
+		<notification-listener ref="sftpTransportNotificationLogger"/>
+		<notification-listener ref="endpointMessageNotificationLogger"/>
+	</notifications>
+<% } else { %>  
    	<notifications dynamic="true">
 		<notification event="COMPONENT-MESSAGE"/>
 		<notification event="ENDPOINT-MESSAGE"/>
 	</notifications>
+<% } %>  
 
     <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
 <% if (servlet) { %>
