@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-	<display-name>Mule Web App for refapp-soapproxy</display-name>
+	<display-name>Mule Web App for ${webProject}</display-name>
 
 	<!-- TODO: For each integration component to be deployed by this war add add a dependency like:
 	           (This example is for integration component abc)
