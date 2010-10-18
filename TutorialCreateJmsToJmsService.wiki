@@ -82,7 +82,7 @@ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsServi
   See [InstallationGuide#Installing_Apache_ActiveMQ installation guide] for instructions.
   * Right-click on the test-server {{{MySampleMuleServer.java}}} in package {{{org/sample/mysample}}} in source folder {{{src/test/java}}} and select "Run As --> Java Application"
   * Go to the url {{{http://localhost:8161/admin/queues.jsp}}} in a web browser.
-  * Write at ok test-message (e.g. "AAA") to the in-queue ({{{MYSAMPLE.MYSAMPLEJMSSERVICE.IN.QUEUE}}}) using the ActiveMQ console and watch the console output and the log + out-queue ({{{SOITOOLKIT.LOG.INFO}}} and {{{MYSAMPLE.MYSAMPLEJMSSERVICE.OUT.QUEUE}}})
+  * Write an ok test-message (e.g. "AAA") to the in-queue ({{{MYSAMPLE.MYSAMPLEJMSSERVICE.IN.QUEUE}}}) using the ActiveMQ console and watch the console output and the log + out-queue ({{{SOITOOLKIT.LOG.INFO}}} and {{{MYSAMPLE.MYSAMPLEJMSSERVICE.OUT.QUEUE}}})
   * Write a incorrect message (e.g. "ERROR") to the in-queue and review the console + queues.
   * Stop the mule server by giving focus to the console view in Eclipse and pressing the return key.
 
