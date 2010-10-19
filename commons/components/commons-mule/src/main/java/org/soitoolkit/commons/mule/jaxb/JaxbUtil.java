@@ -8,6 +8,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -34,6 +37,11 @@ public class JaxbUtil {
     private JAXBContext jaxbContext = null;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	// Lazy instantiation through getters
+    private Map<String, Object> unmarshallProps = null;
+	private Map<String, Object> marshallProps = null;
+	
+	
     @SuppressWarnings("rawtypes")
 	public JaxbUtil(Class... classesToBeBound) {
         try {
@@ -61,7 +69,20 @@ public class JaxbUtil {
             throw new RuntimeException(e);
 		}    	
     }
+    
+    public void addMarchallProperty(String name, Object value) {
+    	if (marshallProps == null) {
+    		marshallProps = new HashMap<String, Object>();
+    	}
+    	marshallProps.put(name, value);    	
+    }
 
+    public void addUnmarchallProperty(String name, Object value) {
+    	if (unmarshallProps == null) {
+    		unmarshallProps = new HashMap<String, Object>();
+    	}
+    	unmarshallProps.put(name, value);    	
+    }
      
     /** 
      * Marshal a JAXB object to a XML-string
@@ -79,9 +100,13 @@ public class JaxbUtil {
 
     	try {
 
-        	Marshaller marshaller = jaxbContext.createMarshaller();
             StringWriter writer = new StringWriter();
-
+        	Marshaller marshaller = jaxbContext.createMarshaller();
+        	if (marshallProps != null) {
+	        	for (Entry<String, Object> entry : marshallProps.entrySet()) {
+	        		marshaller.setProperty(entry.getKey(), entry.getValue());
+				}
+        	}
         	marshaller.marshal(jaxbObject, writer);
 
         	String xml = writer.toString();
@@ -128,7 +153,12 @@ public class JaxbUtil {
 
     	try {
         	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Object       jaxbObject   = null;
+        	if (unmarshallProps != null) {
+	        	for (Entry<String, Object> entry : unmarshallProps.entrySet()) {
+	        		unmarshaller.setProperty(entry.getKey(), entry.getValue());
+				}
+        	}
+            Object jaxbObject = null;
            
             // Unmarshal depending on the type of source
             if (payload instanceof String) {
@@ -185,9 +215,9 @@ public class JaxbUtil {
 
             return jaxbObject;
         }
-        catch (JAXBException e)
-        {
+        catch (JAXBException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
