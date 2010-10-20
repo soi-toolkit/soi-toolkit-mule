@@ -14,7 +14,7 @@ The generated code includes error handling that:
  * Sending files to a separate name avoiding that the receiving application starts to consume the file before it is completely sent.
  * Duplication detection, either overwrite, add seq-no or throw an exception
  * Manual routine for restart sending the file, either from original sender or from Mule.
- * Logging of central SFPT events, such as get, put, rename, delete and any errors that might occur
+ * Logging of central SFTP events, such as get, put, rename, delete and any errors that might occur
 
 *NOTE*: Prerequisites for this tutorial are:
  * The tutorial [TutorialCreateIntegrationComponent Create a new Integration Component] is completed (and that the SFTP transport was selected) 
