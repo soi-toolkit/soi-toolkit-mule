@@ -203,6 +203,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		jmsButton.setEnabled(false);
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
 		servletButton = SwtUtil.createCheckboxButton(container, null, i++, "Servlet");
+		servletButton.setSelection(true);
+		servletButton.setEnabled(false);
 
 		// TODO: How to pack?
 //		container.pack();
