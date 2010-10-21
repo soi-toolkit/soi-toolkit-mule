@@ -206,7 +206,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getParentPom()
 	 */
 	public String getParentPom() {
-		return getArtifactId() + "-parent";
+		return getArtifactId();
 	}
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getIntegrationComponentProject()
