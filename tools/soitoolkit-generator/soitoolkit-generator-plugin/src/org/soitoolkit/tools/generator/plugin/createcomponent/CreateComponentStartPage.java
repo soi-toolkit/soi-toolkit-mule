@@ -245,6 +245,17 @@ public class CreateComponentStartPage extends WizardPage {
 			return;
 		}
 
+		String artifactId = getArtifactId();
+		if (artifactId == null) {
+			updateStatus("Missing artifact id");
+			return;
+		}
+
+		if (artifactId.toLowerCase().startsWith("test")) {
+			updateStatus("Artifact id should not start with \"test\" since it will confuse JUnit to think that non unit-test classes are unit-test classes");
+			return;
+		}
+
 		// If creating an integration component then force viewing page #2 otherwise mark it as completed
 		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
 		CreateIntegrationComponentPage p = ((CreateComponentWizard)getWizard()).getCreateIntegrationComponentPage();
