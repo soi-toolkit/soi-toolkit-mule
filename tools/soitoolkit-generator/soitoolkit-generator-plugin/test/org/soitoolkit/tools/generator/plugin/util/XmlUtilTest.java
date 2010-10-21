@@ -1,3 +1,19 @@
+/* 
+ * Licensed to the soi-toolkit project under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.soitoolkit.tools.generator.plugin.util;
 
 
@@ -26,6 +42,21 @@ public class XmlUtilTest {
 	private final String nsPrefix = "ns";
 	private final String nsURI = "http://maven.apache.org/POM/4.0.0";
 	private final String docComment=" \n"+
+"  Licensed to the soi-toolkit project under one or more\n"+
+"  contributor license agreements.  See the NOTICE file distributed with\n"+
+"  this work for additional information regarding copyright ownership.\n"+
+"  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0\n"+
+"  (the \"License\"); you may not use this file except in compliance with\n"+
+"  the License.  You may obtain a copy of the License at\n"+
+" \n"+
+"      http://www.apache.org/licenses/LICENSE-2.0\n"+
+" \n"+
+"  Unless required by applicable law or agreed to in writing, software\n"+
+"  distributed under the License is distributed on an \"AS IS\" BASIS,\n"+
+"  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"+
+"  See the License for the specific language governing permissions and\n"+
+"  limitations under the License.\n"+
+"\n" +
 "DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!\n"+
 "[soi-toolkit.gen.version=n.n.n]\n"+
 "[soi-toolkit.gen.type=services]\n"+
