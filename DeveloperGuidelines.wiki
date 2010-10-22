@@ -131,6 +131,8 @@ Snapshot artifacts are deployed to the repository https://oss.sonatype.org/conte
 
 To release a new version of soi-toolkit we use mavens release-plugin.
 
+*NOTE*: Do not use mobile internet during {{{mvn release:perform}}} or {{{mvn deploy}}} commands since your IP adress might change during a lengthy deploy operation and sonatypes maven repositories will get very confused by that typ of upload and you will not be able to get your artifacts transferred into the staging repository...
+
 Perform the following steps:
 
  * Go to the components trunk-folder
