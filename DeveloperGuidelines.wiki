@@ -177,6 +177,8 @@ mvn clean test
 
  * Review build command constant in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java}}}, e.g. remove "-o" if it is used during development to speed up tests...
 
+ * Review build command in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/createcomponent/CreateComponentWizard.java}}}, e.g. remove "-o" if it is used during development to speed up tests...
+
  * Check versions of dependencies and parent pom, replace any SNAPSHOT-versions with stable ones. 
 {{{
 mate pom.xml
@@ -273,6 +275,9 @@ mvn release:perform
  * Re-apply any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
 
  * Review build command constant in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java}}}, e.g. add back "-o" if it is used during development to speed up tests...
+
+ * Review build command in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/createcomponent/CreateComponentWizard.java}}}, e.g. add back "-o" if it is used during development to speed up tests...
+
 
  * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
