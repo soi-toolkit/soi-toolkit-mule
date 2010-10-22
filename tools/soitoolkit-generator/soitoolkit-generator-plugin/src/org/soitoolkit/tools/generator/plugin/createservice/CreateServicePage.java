@@ -366,7 +366,7 @@ public class CreateServicePage extends WizardPage {
 				projectText.setText(container.getFullPath().toString());
 			}
 		}
-		serviceText.setText("myService");
+		serviceText.setText("mySample");
 	}
 
 	/**
