@@ -165,7 +165,7 @@ mvn clean test
  }}}
 
  NOTE: Same for:
-  * Parent version for {{{commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml}}} 
+  * Parent version for {{{commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml}}} 
   * Parent version for {{{commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml}}} 
   * Constant {{{SOITOOLKIT_VERSION}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/impl/DefaultModelImpl.java}}}
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
@@ -209,7 +209,7 @@ mvn release:perform
  cd ../tags
  svn update
  cd soitoolkit-n.n.n
- mvn deploy -f commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml -Psonatype-oss-release
+ mvn deploy -f commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml -Psonatype-oss-release
  mvn deploy -f commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml -Psonatype-oss-release
  cd ../../trunk
  }}}
@@ -244,7 +244,7 @@ mvn release:perform
  If something is wrong you can fix it on the release-tag in svn and perform av redeploy to the staging repo from the tag-folder using:
 {{{
  mvn deploy -Psonatype-oss-release
- mvn deploy -f commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml -Psonatype-oss-release
+ mvn deploy -f commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml -Psonatype-oss-release
  mvn deploy -f commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml -Psonatype-oss-release
 }}}
 
@@ -265,7 +265,7 @@ mvn release:perform
 <soitoolkit.version>0.1.3-SNAPSHOT</soitoolkit.version>
 }}}
  NOTE: Same for:
-  * Parent version for {{{commons/poms/mule-dependencies/mule-2.2.1-dependencies/pom.xml}}} 
+  * Parent version for {{{commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml}}} 
   * Parent version for {{{commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml}}} 
   * Constant {{{SOITOOLKIT_VERSION}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/impl/DefaultModelImpl.java}}}
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
@@ -282,7 +282,7 @@ mvn release:perform
  * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
 mvn clean install
-mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.xml 
+mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.5/pom.xml 
 mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-3.0.0/pom.xml 
 }}}
 
