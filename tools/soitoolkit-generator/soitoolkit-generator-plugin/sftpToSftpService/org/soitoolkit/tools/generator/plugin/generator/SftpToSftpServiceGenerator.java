@@ -64,15 +64,16 @@ public class SftpToSftpServiceGenerator implements Generator {
 			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
 			String service = gu.getModel().getUppercaseService();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
-			
+		    String serviceName = gu.getModel().getLowercaseService();
+
 		    out.println("");
 		    out.println("# Properties for sftp-service \"" + gu.getModel().getService() + "\"");
 		    out.println("# TODO: Update to reflect your settings");
-		    out.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/sender");
+			out.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/sender");
 		    out.println(service + "_SENDER_POLLING_MS=1000");
 		    out.println(service + "_SENDER_SIZECHECK_MS=500");
-		    out.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + gu.getModel().getLowercaseService() + "/receiver");
-		    out.println(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive");
+		    out.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/receiver");
+		    out.println(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive/" + serviceName);
 		    out.println(service + "_ARCHIVE_RESTART_POLLING_MS=1000");
 
 		} catch (IOException e) {
