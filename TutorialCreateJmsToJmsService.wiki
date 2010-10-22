@@ -32,6 +32,7 @@ http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsServi
   * Select the outbound transport "JMS"
   * Select your service project using the "Browse..." button, e.g. "/mySample-services"
   * Set a proper service-name, e.g. mySampleJmsService
+  NOTE: In real usage, avoid using "{{{service}}}" in the name of the service since the actual Mule service will be suffixed with "{{{-service}}}", see the file list screenshot below,  {{{mySampleJmsService-service.xml}}}
 
 http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateJmsToJmsService/TutorialCreateJmsToJmsService2.png
 
