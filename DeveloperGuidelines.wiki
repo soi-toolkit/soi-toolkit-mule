@@ -225,7 +225,8 @@ mvn release:perform
   * Click the Close button.
 
  * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/
-  * Start a runtime eclipse workbench and runt the new version of the generator plugin to create an integration component and service description component.
+  * Re-apply any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+  * Start a runtime eclipse workbench and run the new version of the generator plugin to create an integration component and service description component.
    * The creation of these components will fail, since the new version is not yet available in the central maven repo.
    * Add the staging-repo to the components pom.xml files:
  {{{
@@ -280,7 +281,7 @@ mvn release:perform
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
 
- * Re-apply any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
+ * Re-apply (if not already done during the verification) any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
 
  * Review build command constant in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/util/SystemUtil.java}}}, e.g. add back "-o" if it is used during development to speed up tests...
 
