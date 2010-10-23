@@ -273,6 +273,8 @@ MagnusMac-2:.ssh magnuslarsson$
 
 To update the Soi-toolkit Eclipse plugin do the following:
 
+ * First write down the preference-setting you have for the existing version of the Soi-toolkit Eclipse plugin, you will have to reenter them after the upgrade
+  * Open the Eclipse Preference page in the menu and select the "SOI-Toolkit Generator"
  * Select the Eclipse menu "Help --> Check for Updates"
  * If any update is available a dialog like the following will be displayed:
 
@@ -284,3 +286,4 @@ To update the Soi-toolkit Eclipse plugin do the following:
   * The plugin is now downloaded and installed.
  * Click on the "Ok" button when asked to accept unsigned content
  * Click on the "Restart Now" button when asked to restart Eclipse
+ * Open the Eclipse Preference page in the menu and select the "SOI-Toolkit Generator" and reenter your preference-settings that you wrote down in the first step above
