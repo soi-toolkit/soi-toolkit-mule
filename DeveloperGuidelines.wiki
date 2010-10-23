@@ -261,6 +261,8 @@ mvn release:perform
 
  NOTE: Don't forget to apply the relevant changes to trunk as well...
 
+ * Release the eclipse plugin as described below
+
  * Publish to central repo
   * If ok go back to the Sonatype staing repository web-app
   * Select the soi-toolkit release again and click on the Release button.
