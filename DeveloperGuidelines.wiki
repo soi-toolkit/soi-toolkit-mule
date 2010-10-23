@@ -313,6 +313,10 @@ mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.1/pom.
 == Releasing the eclipse plugin ==
 Is currently done manually :-(
 
+ * temporary remove the plugin, feature and update project from the eclipse workspace
+
+ * import the plugin, feature and update projects from the new tag
+
  * Verify/update version numbers
   * DefaultModelImpl.java
   * plugin/MANIFEST.MF
@@ -327,6 +331,10 @@ Is currently done manually :-(
    NOTE: Do not copy folders, then .svn files will be removed from eclipse-update-site folders!!!
  * Commit changes in svn/eclipse-update-site
  * Revert the update project to get rid of the runtime files
+
+ * remove the plugin, feature and update projects from the new tag in the eclipse workspace
+ * import plugin, feature and update project from trunk back into the eclipse workspace
+
 
 = Naming Conventions =
 
