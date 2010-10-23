@@ -224,8 +224,10 @@ mvn release:perform
   * Select the soi-toolkit release
   * Click the Close button.
 
- * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/ ...
- Useful repo for tests against staging-repo:
+ * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/
+  * Start a runtime eclipse workbench and runt the new version of the generator plugin to create an integration component and service description component.
+   * The creation of these components will fail, since the new version is not yet available in the central maven repo.
+   * Add the staging-repo to the components pom.xml files:
  {{{
 	<repositories> 
 		<repository> 
@@ -241,6 +243,10 @@ mvn release:perform
 		</repository> 
 	</repositories> 
 }}}
+   * Build the components manually {{{mvn install eclipse:m2eclipse}}}
+   * Import the components manually into the runtime eclipse workbench
+   * Try out the new components, e.g. create som services in the integration component and run their integration tests
+  * TBS: How to add the generator unit tests manually against the pre-released new version (how to control the soi-toolkit version that the generated code use, is it pointing to the new version already?)
 
  * If errors then Click on the Drop button and correct error and redo the process...
  If something is wrong you can fix it on the release-tag in svn and perform av redeploy to the staging repo from the tag-folder using:
