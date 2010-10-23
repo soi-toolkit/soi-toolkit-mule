@@ -266,7 +266,7 @@ mvn release:perform
   * Select the soi-toolkit release again and click on the Release button.
   * Artifacts should now be synched with central repo on a hourly bases... 
 
- * Manually update the soi-toolkit version to snapshot of the next release version in {{{trunk/commons/poms/default-parent/pom.xml}}}. 
+ * Manually update the soi-toolkit version to snapshot of the next release version in {{{commons/poms/default-parent/pom.xml}}}. 
  E.g. change:
 {{{
 <soitoolkit.version>0.1.2</soitoolkit.version>
@@ -280,7 +280,7 @@ mvn release:perform
   * Parent version for {{{commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml}}} 
   * Constant {{{SOITOOLKIT_VERSION}}} in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/org/soitoolkit/tools/generator/plugin/model/impl/DefaultModelImpl.java}}}
   * Bundle version in {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/META-INF/MANIFEST.MF}}}
-  * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}}
+  * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml}}} (*two places*)
   * Feature version in {{{tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml}}} 
 
  * Re-apply (if not already done during the verification) any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
@@ -293,13 +293,15 @@ mvn release:perform
  * Perform a local build to get the new snapshot-versions of the parent pom installed in your local repository
 {{{
 mvn clean install
-mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-2.2.5/pom.xml 
-mvn clean install -f commons/poms/mule-dependencies/mule-dependencies-3.0.0/pom.xml 
+mvn clean install -f commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml 
+mvn clean install -f commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml 
 }}}
 
- * Commit the change
+ * Refresh the soitoolkit-projects in Eclipse, update their maven snapshot dependencies and verify that no build/compile problem exists
+
+ * Commit the changes
 {{{
-svn commit
+svn commit -m "Start work on version n.n.n"
 }}}
 
 == Handling other mule version deps ==
