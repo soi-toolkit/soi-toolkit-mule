@@ -7,21 +7,24 @@
 
 To get started with soi-toolkit and Mule ESB you only need to install Java SE, Eclipse, Maven and the soi-toolkit Eclipse plugin. See section [#Required_installations Required installations] for instructions.
 
-Depending on your needs you also might want to install some optional tools in your development environment such as Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installation Optional installations] for instructions on how to install and configure these optional tools.
+For not so experienced Maven users it is also strongly recommended to install the Maven Eclipse plugin, see section #Recommended_installations Recommended installations].
+
+Depending on your needs you also might want to install some optional tools in your development environment such as ActiveMQ, Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installation Optional installations] for instructions on how to install and configure these optional tools.
 
 The installation guides below assumes your on a 32 bit Microsoft Windows PC.
-
-==Required installations==
 
 The following versions (or newer) are recommended:
 || *Tool* || *Version* ||
 ||Java SE||6 Update 21||
 ||Eclipse EE||3.6.1 (Helios)||
 ||Maven||2.2.1||
+||Soi-toolkit plugin for Eclipse||0.1.9||
 ||Maven plugin for Eclipse||0.10.0||
-||Soi-toolkit plugin for Eclipse||0.1.7||
-
+||ActiveMQ||5.2.0||
 *Note:* Older version such as Java SE 5 and Eclipse 3.4, 3.5 should work without any problem (even though we don't test against these versions), but we strongly recommend using Maven 2.2.1 or newer since some older versions of Maven are known to produce incorrect GPG signatures and checksums .
+
+==Required installations==
+
 
 ===Java SE===
 Install Java SE according to the following instructions:
@@ -81,21 +84,6 @@ Install Maven according to the following instructions:
 
  * For full installation instructions see http://maven.apache.org/download.html # Installation
 
-===Maven Eclipse plugin===
-
-Install the Maven plugin for Eclipse according to the following instructions:
-
- * The installation is performed using the Eclipse "Update Site"-mechanism.
- The Update Site is: http://m2eclipse.sonatype.org/sites/m2e.
- 
- For full installation instructions see http://m2eclipse.sonatype.org/installing-m2eclipse.html.
-
- Notes:
-  * If the installation asks for approval of certificates, so be sure to select the available certificate before the next step in the installation.
-  * Restart the workspace when so requested.
-
- * To avoid the error message {{{"The Maven Integration requires that Eclipse be running in a JDK, because a number of Maven core plugins are using jars from the JDK. (...)"}}} follow the instructions on the following page [http://tech.karolzielinski.com/m2eclipse-eclipse-is-running-in-a-jre-but-a-jdk-is-required Eclipse is running in a JRE, but a JDK is required]
-
 ===Soi-toolkit Eclipse plugin===
 
  * Select in the Eclipse menu "Help --> Install New Software..."
@@ -139,6 +127,23 @@ Install the Maven plugin for Eclipse according to the following instructions:
 
  http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/SoiToolkitInstallation7.png
 
+==Recommended installations==
+
+===Maven Eclipse plugin===
+
+Install the Maven plugin for Eclipse according to the following instructions:
+
+ * The installation is performed using the Eclipse "Update Site"-mechanism.
+ The Update Site is: http://m2eclipse.sonatype.org/sites/m2e.
+ 
+ For full installation instructions see http://m2eclipse.sonatype.org/installing-m2eclipse.html.
+
+ Notes:
+  * If the installation asks for approval of certificates, so be sure to select the available certificate before the next step in the installation.
+  * Restart the workspace when so requested.
+
+ * To avoid the error message {{{"The Maven Integration requires that Eclipse be running in a JDK, because a number of Maven core plugins are using jars from the JDK. (...)"}}} follow the instructions on the following page [http://tech.karolzielinski.com/m2eclipse-eclipse-is-running-in-a-jre-but-a-jdk-is-required Eclipse is running in a JRE, but a JDK is required]
+
 ==Optional installation==
 
 ===Installing Apache ActiveMQ===
@@ -146,7 +151,7 @@ If you want to be able to perform manuel tests on your PC where JMS is involved 
 
 Follow these instructions to install ActiveMQ locally on your PC:
 
- * Download ActiveMQ from http://www.apache.org/dyn/closer.cgi?path=%2Factivemq%2Fapache-activemq%2F5.3.2%2Fapache-activemq-5.3.2-bin.zip
+ * Download ActiveMQ from http://www.apache.org/dyn/closer.cgi?path=%2Factivemq%2Fapache-activemq%2F5.2.0%2Fapache-activemq-5.2.0-bin.zip
 
  * Unzip to some folder, e.g. {{{C:\opt}}}
 
