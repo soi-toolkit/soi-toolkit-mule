@@ -269,7 +269,7 @@ MagnusMac-2:.ssh magnuslarsson$
 
 ==Updates==
 
-===Soi-toolkit Eclipse plugin===
+===Updating the Soi-toolkit Eclipse plugin===
 
 To update the Soi-toolkit Eclipse plugin do the following:
 
