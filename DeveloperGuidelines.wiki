@@ -225,6 +225,7 @@ mvn release:perform
   * Click the Close button.
 
  * Validate against the staging repo https://oss.sonatype.org/content/repositories/staging/org/soitoolkit/
+  * Refresh the generator plugin project in eclipse to get the updated version-numbers from above into the eclipse-project
   * Re-apply any personal settings in the property file for the generator plugin, {{{tools/soitoolkit-generator/soitoolkit-generator-plugin/src/soi_toolkit_generator_plugin_default_preferences.properties}}}
   * Start a runtime eclipse workbench and run the new version of the generator plugin to create an integration component and service description component.
    * The creation of these components will fail, since the new version is not yet available in the central maven repo.
