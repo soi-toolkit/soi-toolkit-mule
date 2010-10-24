@@ -7,9 +7,11 @@
 
 To get started with soi-toolkit and Mule ESB you only need to install Java SE, Eclipse, Maven and the soi-toolkit Eclipse plugin. See section [#Required_installations Required installations] for instructions.
 
-For not so experienced Maven users it is also strongly recommended to install the Maven Eclipse plugin, see section [#Recommended_installations Recommended installations].
+For not so experienced Maven users it is also strongly recommended to install the Maven Eclipse plugin for a very simple and transparent integration with Maven inside Eclipse, see section [#Recommended_installations  Recommended installations].
 
-Depending on your needs you also might want to install some optional tools in your development environment such as ActiveMQ, Subversion clients, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installation Optional installations] for instructions on how to install and configure these optional tools.
+We also recommend using the Subversive Eclipse plugin for a smooth integration with Subversion (if used) inside Eclipse, see section [#Recommended_installations  Recommended installations].
+
+Depending on your needs you also might want to install some optional tools in your development environment such as ActiveMQ, test tool for Web Services, soapUI, or setting up PKI - keys for usage with the SFTP transport. See section [#Optional_installation Optional installations] for instructions on how to install and configure optional tools.
 
 The installation guides below assumes your on a 32 bit Microsoft Windows PC.
 
@@ -20,6 +22,8 @@ The following versions (or newer) are recommended:
 ||Maven||2.2.1||
 ||Soi-toolkit plugin for Eclipse||0.1.9||
 ||Maven plugin for Eclipse||0.10.0||
+||Subversive plugin for Subversion||0.7.9||
+||Subversive SVN Connectors||2.2.2||
 ||ActiveMQ||5.2.0||
 *Note:* Older version such as Java SE 5 and Eclipse 3.4, 3.5 should work without any problem (even though we don't test against these versions), but we strongly recommend using Maven 2.2.1 or newer since some older versions of Maven are known to produce incorrect GPG signatures and checksums .
 
@@ -143,6 +147,38 @@ Install the Maven plugin for Eclipse according to the following instructions:
   * Restart the workspace when so requested.
 
  * To avoid the error message {{{"The Maven Integration requires that Eclipse be running in a JDK, because a number of Maven core plugins are using jars from the JDK. (...)"}}} follow the instructions on the following page [http://tech.karolzielinski.com/m2eclipse-eclipse-is-running-in-a-jre-but-a-jdk-is-required Eclipse is running in a JRE, but a JDK is required]
+
+===Subversive Eclipse plugin===
+
+If you already use Subversion as your source control system the Subversive Eclipse plugin can help you to bring  Subversion client functionality into Eclipse.
+
+The Subversive plugin is, due to license restrictions, divided into two separate installations, one for the Subversive plugin itself and one separate installation of the SVN connectors.
+
+==== Version check ====
+To be able to install the SVN connector part you need to know what version of subversion you use.
+Open a command window and enter the command {{{svn --version --quiet}}}.
+The command will return something like {{{1.6.5}}}
+
+==== Install the plugin ====
+ * The installation of the Eclipse plugin is performed using the Eclipse "Update Site"-mechanism.
+ The Update Site is a part of Helios Update Site. 
+ * Select the Eclipse menu "Help --> Install New Software... 
+ * In the field "Work with:" select the predefined update site "Helios - http://download.eclipse.org/releases/helios"
+ * In the list below of available features expand the node "Collaboration" 
+ * Select:
+  * Subversive SVN Team Provider (mandatory)
+  * Subversive SVN JDT Ignore Extension (optional)
+  * Subversive Revision Graph (optional)
+ * Progress through the wizard as normal, approving licences and so on...
+
+==== Install the SVN connector ====
+
+ * The installation of the SVN Connectors is performed automatically on the first usage of svn-functionality in Eclipse after the installation of the plugin.
+  * A dialog named "Subversive SVN Connectors" dialog will popup. 
+  * Select appropriate svn connectors, e.g. "SVN Kit 1.3.2" if you have SVN 1.6.x installed in your environment and want to use a pure Java connector
+  (verify with you svn version check as described above).
+
+ http://soi-toolkit.googlecode.com/svn/wiki/InstallationGuide/SvnConnectors.png
 
 ==Optional installation==
 
