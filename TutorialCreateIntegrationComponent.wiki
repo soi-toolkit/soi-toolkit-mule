@@ -46,6 +46,9 @@ This tutorial helps you to create your first integration component.
   * Launch maven to do a initial build and also create eclipse files
   * Opens the project in the current Eclipse workspace
 
+ NOTE: If something goes wrong under this execution see section [#If_something_goes_wrong if something goes wrong] for help
+  
+
  * When the wizard is done you can find your new integration component in the Eclipse Package Explorer
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent5.png
@@ -82,3 +85,29 @@ This tutorial helps you to create your first integration component.
  If everything goes well the build ends with a {{{BUILD SUCCESSFUL}}} - message
 
  http://soi-toolkit.googlecode.com/svn/wiki/Tutorials/TutorialCreateIntegrationComponent/TutorialCreateIntegrationComponent7.png
+
+=If something goes wrong=
+
+If something goes wrong during the creation of the component after you pressed the "Finish" button in the wizard, typically under the execution of the maven install command, you can manually fix the problem and then manually finish the process:
+
+ * Ensure that the required and recommended tools are installed as specified in the [InstallationGuide installation guide].
+  * Specifically ensure that the "{{{mvn -v}}}"-command returns "{{{Apache Maven 2.2.1}}}" (or what version you decided to use if not 2.2.1).
+
+ * Open a command window in the trunk folder of the newly created component
+ The trunk folder is found in a folder named "{{{artifact-id}}}" specified in the wizard under the "{{{root-folder}}}" as specified in the wizard.
+
+ * Build the component by entering the command "{{{mvn clean install}}}" 
+ Correct any errors reported by the maven build command...
+
+ * Create Eclipse-specific files using the command:
+  * "{{{mvn eclipse:m2eclipse}}}" if you are using the Maven Eclipse plugin (recommended)
+  * "{{{mvn eclipse:eclipse}}}" if you are not using the Maven Eclipse plugin
+
+ * Now switch to Eclipse and import the Eclipse project(s) created under the {{{trunk}}}-folder.
+  * In the menu select "File --> Import..." 
+  * In the Import-wizard expand the "General" node and select "Existing Projects into Workspace" and click on the "Next >" button.
+  * Click on the "Browse..." button for the field named "Select root directory" and locate and select the trunk-folder
+  * The Eclipse projects created above are now displayed in the "Projects:" - list.
+  * Click on the "Finish" - button to complete the import.
+
+You have now corrected the problem and manually finished the process that the wizard automates!
