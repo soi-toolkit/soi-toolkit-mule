@@ -1,0 +1,31 @@
+#summary Release Notes
+
+*Content*
+<wiki:toc max_depth="2" />
+
+= Release Notes =
+== soi-toolkit v0.1.9 ==
+Release date: Oct 23 2010
+
+This is a maintenance release with bug fixes and minor enhancements based on feedback from the first projects using soi-toolkit.
+
+Release Notes can be found here: [http://code.google.com/p/soi-toolkit/issues/list?can=1&q=label:Milestone-Release0.1.9 Release Notes]
+
+== Upgrade from earlier versions of soi-toolkit ==
+
+ * Existing projects are updated by replacing the soi.toolkit version in the parent-pom...
+
+ * The Eclipse plugin can be upgraded by following the instructions here.
+
+== soi-toolkit v0.1.8 ==
+Release date: Oct 11 2010
+
+This is the first release of soi-toolkit.
+
+It contains:
+ * An [InstallationGuide Installation guide]
+ * A set of initial [Tutorials Getting started tutorials] on how to create components and services 
+ (very few types of services are supported initially)
+ * Runtime components ([http://repo2.maven.org/maven2/org/soitoolkit/commons/ Maven repository])
+ * Integration pattern driven code generator ([http://soi-toolkit.googlecode.com/svn/eclipse-update-site/ Eclipse plugin])
+ * This web site
