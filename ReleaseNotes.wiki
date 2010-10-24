@@ -7,15 +7,22 @@
 == soi-toolkit v0.1.9 ==
 Release date: Oct 23 2010
 
-This is a maintenance release with bug fixes and minor enhancements based on feedback from the first projects using soi-toolkit.
+This is a maintenance release with bug fixes and minor internal enhancements based on feedback from the first projects using soi-toolkit.
 
 Release Notes can be found here: [http://code.google.com/p/soi-toolkit/issues/list?can=1&q=label:Milestone-Release0.1.9 Release Notes]
 
-== Upgrade from earlier versions of soi-toolkit ==
+=== Upgrade from earlier versions of soi-toolkit ===
 
- * Existing projects are updated by replacing the soi.toolkit version in the parent-pom...
+ * Existing projects are updated by specifying the new soi-toolkit version in the parent-pom in the pom.xml file in each projects trunk-folder...
+{{{
+	<parent>
+		<groupId>org.soitoolkit.commons.poms</groupId>
+		<artifactId>soitoolkit-default-parent</artifactId>
+		<version>0.1.9</version>
+	</parent>
+}}}
 
- * The Eclipse plugin can be upgraded by following the instructions here.
+ * The Eclipse plugin can be upgraded by following the instructions [http://code.google.com/p/soi-toolkit/wiki/InstallationGuide#Updating_the_Soi-toolkit_Eclipse_plugin here].
 
 == soi-toolkit v0.1.8 ==
 Release date: Oct 11 2010
