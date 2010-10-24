@@ -16,7 +16,7 @@
  * [Overview Overview (TBS)]
  * [Architecture Architecture (TBS)]
  * [PatternCatalog Pattern Catalog (TBS)]
- * [Release Notes]
+ * [ReleaseNotes Release Notes]
  * [Roadmap Roadmap (TBS)]
 
 ==Collaboration==
