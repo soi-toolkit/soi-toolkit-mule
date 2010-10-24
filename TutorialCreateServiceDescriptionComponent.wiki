@@ -38,7 +38,7 @@ This tutorial helps you to create your first service description component.
   * Launch maven to do a initial build and also create eclipse files
   * Opens the project in the current Eclipse workspace
 
- NOTE: If something goes wrong under this execution see section [#If_something_goes_wrong] for help
+ NOTE: If something goes wrong under this execution see section [#If_something_goes_wrong if something goes wrong] for help
   
  * When the wizard is done you can find your new service description component in the Eclipse Package Explorer
 
