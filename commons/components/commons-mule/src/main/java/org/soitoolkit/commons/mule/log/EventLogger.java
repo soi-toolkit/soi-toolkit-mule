@@ -97,7 +97,7 @@ public class EventLogger {
 	private String serverId = null; // Can't read this one at class initialization because it is not set at that time. Can also be different for different loggers in the same JVM (e.g. multiple wars in one servlet container with shared classes?))
 
 	// Used to transform payloads that are jaxb-objects into a xml-string
-	private JaxbObjectToXmlTransformer jaxb2xml = null;
+	private JaxbObjectToXmlTransformer jaxbToXml = null;
 
 	{
 		try {
@@ -113,8 +113,13 @@ public class EventLogger {
 	public EventLogger() {
 	}
 
-	public EventLogger(JaxbObjectToXmlTransformer jaxb2xml) {
-		this.jaxb2xml  = jaxb2xml;
+	/**
+	 * Setter for the jaxbToXml property
+	 * 
+	 * @param jaxbToXml
+	 */
+	public void setJaxbToXml(JaxbObjectToXmlTransformer jaxbToXml) {
+		this.jaxbToXml  = jaxbToXml;
 	}
 
 	public void logInfoEvent (
@@ -340,7 +345,7 @@ public class EventLogger {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String getJaxbContentAsString(Object jaxbObject, String outputEncoding) {
 		String content;
-		if (jaxb2xml == null) {
+		if (jaxbToXml == null) {
 			content = "Missing jaxb2xml injection, can't marshal JAXB object of type: "
 					+ jaxbObject.getClass().getName();
 		} else {
@@ -357,7 +362,7 @@ public class EventLogger {
 			}
 
 			try {
-				content = (String) jaxb2xml.doTransform(jaxbObject,
+				content = (String) jaxbToXml.doTransform(jaxbObject,
 						outputEncoding);
 			} catch (TransformerException e) {
 				e.printStackTrace();

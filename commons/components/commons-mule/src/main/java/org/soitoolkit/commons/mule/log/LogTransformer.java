@@ -19,6 +19,7 @@ package org.soitoolkit.commons.mule.log;
 import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
 
 import org.mule.RequestContext;
+import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.endpoint.EndpointURI;
@@ -57,21 +58,26 @@ public class LogTransformer extends AbstractMessageAwareTransformer {
 		this.logType = logType;
 	}
 
-	private JaxbObjectToXmlTransformer jaxb2xml = null;
-	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxb2xml) {
-		this.jaxb2xml = jaxb2xml;
-	}
-	
 	public LogTransformer() {
-		eventLogger = new EventLogger(jaxb2xml);		
+		eventLogger = new EventLogger();		
 	}
 
+	/**
+	 * Setter for the jaxbToXml property
+	 * 
+	 * @param jaxbToXml
+	 */
+	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxbToXml) {
+		eventLogger.setJaxbToXml(jaxbToXml);
+	}
+	
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
 
     	try {
 			// Skip logging if an error has occurred, then the error is logged by an error handler
-    		if (message.getExceptionPayload() != null) {
-    			log.debug("Skip logging message, exception detected!");
+    		ExceptionPayload exp = message.getExceptionPayload();
+    		if (exp != null) {
+    			log.debug("Skip logging message, exception detected! " + exp.getException().getMessage());
     			return message;
     		}
 
