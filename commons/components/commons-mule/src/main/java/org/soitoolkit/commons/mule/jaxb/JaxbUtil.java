@@ -86,14 +86,14 @@ public class JaxbUtil {
 		}    	
     }
     
-    public void addMarchallProperty(String name, Object value) {
+    public void addMarshallProperty(String name, Object value) {
     	if (marshallProps == null) {
     		marshallProps = new HashMap<String, Object>();
     	}
     	marshallProps.put(name, value);    	
     }
 
-    public void addUnmarchallProperty(String name, Object value) {
+    public void addUnmarshallProperty(String name, Object value) {
     	if (unmarshallProps == null) {
     		unmarshallProps = new HashMap<String, Object>();
     	}

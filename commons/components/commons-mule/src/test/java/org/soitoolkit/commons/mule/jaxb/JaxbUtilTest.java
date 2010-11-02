@@ -85,7 +85,7 @@ public class JaxbUtilTest {
 		logEntry.setPayload("MyPayload");
 		
 		JaxbUtil jaxbUtil = new JaxbUtil(LogEvent.class);
-		jaxbUtil.addMarchallProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		jaxbUtil.addMarshallProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		String actualXml = jaxbUtil.marshal(logEvent);
 		
 		System.err.println(actualXml);
