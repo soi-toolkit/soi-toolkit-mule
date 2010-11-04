@@ -87,6 +87,7 @@ public class EventLogger {
 	private static final String LOG_STRING = MSG_ID + 
 		"\n** {}.start ***********************************************************" +
 		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}" + 
+		"{}" + // Placeholder for stack trace info if an error is logged
 		"\n** {}.end *************************************************************";
 
 	private static InetAddress HOST = null;
@@ -235,7 +236,19 @@ public class EventLogger {
 		String payload                 = logEvent.getLogEntry().getPayload();
 		String businessContextIdString = businessContextIdToString(runtimeInfo.getBusinessContextId());
 		
-		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, logEventName});
+		StringBuffer stackTrace = new StringBuffer();
+		LogMessageExceptionType lmeException = logEvent.getLogEntry().getMessageInfo().getException();
+		if (lmeException != null) {
+			String ex = lmeException.getExceptionClass();
+			String msg = lmeException.getExceptionMessage();
+			List<String> st = lmeException.getStackTrace();
+
+			stackTrace.append('\n').append("Stacktrace=").append(ex).append(": ").append(msg);
+			for (String stLine : st) {
+				stackTrace.append('\n').append("\t at ").append(stLine);
+			}
+		}
+		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, stackTrace.toString(), logEventName});
 	}
 	
 	private String businessContextIdToString(List<BusinessContextId> businessContextIds) {
@@ -472,6 +485,7 @@ public class EventLogger {
 			LogMessageExceptionType lme = new LogMessageExceptionType();
 			
 			lme.setExceptionClass(exception.getClass().getName());
+			lme.setExceptionMessage(exception.getMessage());
 			StackTraceElement[] stArr = exception.getStackTrace();
 			List<String> stList = new ArrayList<String>();
 			for (int i = 0; i < stArr.length; i++) {
