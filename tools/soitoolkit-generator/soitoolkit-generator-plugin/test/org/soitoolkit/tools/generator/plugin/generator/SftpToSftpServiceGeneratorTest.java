@@ -70,7 +70,7 @@ public class SftpToSftpServiceGeneratorTest {
 	}
 
 	@Test
-	public void testGenerateOrderMgm() throws IOException {
+	public void testGenerateOrderMgm1() throws IOException {
 
 		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
 		
@@ -80,9 +80,19 @@ public class SftpToSftpServiceGeneratorTest {
 		new SftpToSftpServiceGenerator(System.out, GROUP_ID, PROJECT, service, PROJECT_FOLDER + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
 
-		// FIXME: Update to reflect my environment!
-		// SOITOOLKIT_SFTP_IDENTITYFILE=/Users/xxx/.ssh/id_dsa
-		// SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=xxx
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+	}
+
+	@Test
+	public void testGenerateOrderMgm2() throws IOException {
+
+		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
+		
+		String service = "process-order";
+		
+		IModel model = ModelFactory.newModel(GROUP_ID, PROJECT, VERSION, service, null, null);
+		new SftpToSftpServiceGenerator(System.out, GROUP_ID, PROJECT, service, PROJECT_FOLDER + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}

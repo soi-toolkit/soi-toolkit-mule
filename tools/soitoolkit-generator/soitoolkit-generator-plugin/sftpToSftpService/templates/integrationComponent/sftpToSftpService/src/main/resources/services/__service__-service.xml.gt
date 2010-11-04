@@ -13,7 +13,7 @@
 		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd">
 
 	<!-- TODO: Add service specific definitions here -->
-    <custom-transformer name="${service}Transformer" class="${javaPackage}.${lowercaseService}.${capitalizedService}Transformer"/>
+    <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
 
 	<model name="${service}-model">
 	
@@ -68,7 +68,7 @@
 						tempDir="receiving"
 						useTempFileTimestampSuffix="true"
 						duplicateHandling="addSeqNo"
-						transformer-refs="${service}Transformer logMsgOut"/>
+						transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
 				</pass-through-router>
 			</outbound>
 		</service>

@@ -29,7 +29,7 @@
 				</sftp:inbound-endpoint>			
             </inbound>
 
-            <component class="${javaPackage}.${lowercaseService}.${capitalizedService}TestReceiver"/>
+            <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
 
         </service>
 

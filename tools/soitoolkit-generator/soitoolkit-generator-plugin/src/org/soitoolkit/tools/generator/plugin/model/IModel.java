@@ -52,6 +52,10 @@ public interface IModel {
 
 	public String getUppercaseService();
 
+	public String getCapitalizedJavaService();
+
+	public String getLowercaseJavaService();
+
 	public String getSoitoolkitVersion();
 
 	public String getSuperpomGroupId();

@@ -11,7 +11,7 @@
 		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
 
 	<!-- TODO: Add service specific definitions here -->
-    <custom-transformer name="${service}Transformer" class="${javaPackage}.${lowercaseService}.${capitalizedService}Transformer"/>
+    <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
 
 	<model name="${service}-model">
 	
@@ -24,7 +24,7 @@
 
 			<outbound>
 				<pass-through-router>
-                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="${service}Transformer strToJms logMsgOut">
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="${lowercaseJavaService}Transformer strToJms logMsgOut">
 						<jms:transaction action="ALWAYS_JOIN" />
 					</outbound-endpoint>
 				</pass-through-router>

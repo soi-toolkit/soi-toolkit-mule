@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseService};
+package ${javaPackage}.${lowercaseJavaService};
 
 import static org.mule.context.notification.EndpointMessageNotification.MESSAGE_RECEIVED;
 
@@ -15,7 +15,7 @@ import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
 import org.soitoolkit.commons.mule.test.AbstractTestCase;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 
-public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	
 	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
@@ -37,7 +37,7 @@ public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
      *                   </deadLetterStrategy>
      * 
 	 */
-    public ${capitalizedService}IntegrationTest() {
+    public ${capitalizedJavaService}IntegrationTest() {
     	
     	// TODO: Should this be placed in tha baseclass?
     	
@@ -66,7 +66,7 @@ public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
 		jmsUtil.clearQueues(IN_QUEUE, OUT_QUEUE, DEADLETTER_QUEUE, ERROR_LOG_QUEUE);
     }
 
-    public void test${capitalizedService}_ok() throws JMSException {
+    public void test${capitalizedJavaService}_ok() throws JMSException {
 
 		String message = "Annn";
         MuleMessage reply = dispatchAndWaitForDelivery("jms://" + IN_QUEUE, message, null, "${service}-teststub-endpoint", MESSAGE_RECEIVED, 2000);
@@ -93,7 +93,7 @@ public class ${capitalizedService}IntegrationTest extends AbstractTestCase {
      * 
      * @throws JMSException
      */
-    public void test${capitalizedService}_transformationError() throws JMSException {
+    public void test${capitalizedJavaService}_transformationError() throws JMSException {
         
 		String message = "Cnnn";
         String expectedErrMsg="Unknown content: " + message;

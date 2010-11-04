@@ -1,0 +1,13 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}TestReceiver {
+
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestReceiver.class);
+
+	public void process(Object message) {
+		log.info("${capitalizedJavaService}TestReceiver received the message: {}", message);
+	}
+}

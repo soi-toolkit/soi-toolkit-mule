@@ -69,11 +69,25 @@ public class JmsToJmsServiceGeneratorTest {
 	}
 
 	@Test
-	public void testGenerateOrderMgm() throws IOException {
+	public void testGenerateOrderMgm1() throws IOException {
 
 		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
 		
 		String service = "processOrder";
+
+		IModel model = ModelFactory.newModel(GROUP_ID, PROJECT, VERSION, service, null, null);
+		new JmsToJmsServiceGenerator(System.out, GROUP_ID, PROJECT, service, PROJECT_FOLDER + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", 7, SystemUtil.countFiles(PROJECT_FOLDER) - noOfFilesBefore);
+		
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+	}
+
+	@Test
+	public void testGenerateOrderMgm2() throws IOException {
+
+		int noOfFilesBefore = SystemUtil.countFiles(PROJECT_FOLDER);
+		
+		String service = "process-order";
 
 		IModel model = ModelFactory.newModel(GROUP_ID, PROJECT, VERSION, service, null, null);
 		new JmsToJmsServiceGenerator(System.out, GROUP_ID, PROJECT, service, PROJECT_FOLDER + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();

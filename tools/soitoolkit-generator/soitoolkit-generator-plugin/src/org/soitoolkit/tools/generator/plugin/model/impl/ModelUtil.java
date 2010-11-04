@@ -37,7 +37,7 @@ public class ModelUtil {
 			return null;
 		}
 		
-		// Remove all '-' and capitalize word folloing after...
+		// Remove all '-' and capitalize word following after...
 	    StringBuffer javaName = new StringBuffer();
 	    StringTokenizer st = new StringTokenizer(name, "-");
 

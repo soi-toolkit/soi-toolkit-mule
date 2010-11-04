@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.plugin.model.enums.MepEnum;
+import org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 
 /**
@@ -60,6 +61,7 @@ public class CreateServicePage extends WizardPage {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private String getSelectedValue(Combo combo) {
 		try {
 			return combo.getItem(combo.getSelectionIndex());
@@ -434,7 +436,7 @@ public class CreateServicePage extends WizardPage {
 			updateStatus("Name of the service must be specified");
 			return;
 		}
-		if (!isJavaIdentifier(serviceName)) {
+		if (!isJavaIdentifier(ModelUtil.makeJavaName(serviceName))) {
 			updateStatus("Service name must be a valid Java identifier");
 			return;
 		}

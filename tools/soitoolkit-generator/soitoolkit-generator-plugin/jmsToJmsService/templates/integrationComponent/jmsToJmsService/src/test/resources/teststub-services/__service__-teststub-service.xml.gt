@@ -19,7 +19,7 @@
                 <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
             </inbound>
 
-            <component class="${javaPackage}.${lowercaseService}.${capitalizedService}TestReceiver"/>
+            <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
 
         </service>
 

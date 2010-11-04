@@ -187,6 +187,21 @@ public class DefaultModelImpl implements IModel {
 	public String getUppercaseService() {
 		return getService().toUpperCase();
 	}
+
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getCapitalizedJavaService()
+	 */
+	public String getCapitalizedJavaService() {
+		return capitalize(getJavaService());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getLowercaseService()
+	 */
+	public String getLowercaseJavaService() {
+		return getJavaService().toLowerCase();
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSoitoolkitVersion()
@@ -376,6 +391,10 @@ public class DefaultModelImpl implements IModel {
 	
 	protected String getJavaArtifactId() {
 		return makeJavaName(getArtifactId());
+	}
+
+	protected String getJavaService() {
+		return makeJavaName(getService());
 	}
 
 	/**
