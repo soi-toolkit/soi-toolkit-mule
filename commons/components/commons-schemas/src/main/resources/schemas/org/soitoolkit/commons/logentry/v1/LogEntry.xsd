@@ -243,6 +243,14 @@
 	            </xsd:annotation>
     		</xsd:element>
 
+    		<xsd:element name="exceptionMessage" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                	Exception message, e.g.: File not found
+	                </xsd:documentation>
+	            </xsd:annotation>
+    		</xsd:element>
+
     		<xsd:element name="stackTrace" type="xsd:string" maxOccurs="unbounded">
 	            <xsd:annotation>
 	                <xsd:documentation>
