@@ -29,15 +29,13 @@ import org.slf4j.LoggerFactory;
  * @author Magnus Larsson
  *
  */
-public class MuleServerWithServletContainer {
+public class MuleServerWithServletContainer extends StandaloneMuleServer {
 
 	private static Logger log = LoggerFactory.getLogger(MuleServerWithServletContainer.class);
 	
 	private static final int WAITTIME_MULE_SERVLET_TRANSPORT = 5000;
 
 	// Configuration parameters set by the constructor
-	protected String muleServerId = null;
-	protected String muleConfig = null;
     protected int httpPort = -1;
     protected String contextPath = null;
     protected String muleReceiverServletUri = null;
@@ -49,38 +47,17 @@ public class MuleServerWithServletContainer {
 	/**
 	 * Constructor that takes configuration parameters
 	 * 
+	 * @param muleServerId
 	 * @param muleConfig
 	 * @param httpPort
 	 * @param contextPath
 	 * @param muleReceiverServletUri
 	 */
     public MuleServerWithServletContainer(String muleServerId, String muleConfig, int httpPort, String contextPath, String muleReceiverServletUri) {
-    	this.muleServerId = muleServerId;
-    	this.muleConfig = muleConfig;
+    	super(muleServerId, muleConfig);
     	this.httpPort = httpPort ;
 	    this.contextPath = contextPath;
 	    this.muleReceiverServletUri = muleReceiverServletUri;
-	}
-
-    /**
-     * Convenience method that both starts and stops both mule and the servlet container 
-     * 
-     * @throws Exception
-     */
-	public void run() throws Exception {
-
-		// Start me up...
-        log.info("Startup mule and servlet container with mule redirect servlet");
-		start();
-
-        // Run until the return key is hit...
-        log.info("Hit the RETURN - key to shutdown");
-        System.in.read();
-
-        // Bye, bye...
-        log.info("Shutdown...");
-        shutdown();
-        log.info("Shutdown complete");
 	}
 
 	/**
@@ -89,22 +66,18 @@ public class MuleServerWithServletContainer {
 	 * @throws InterruptedException
 	 * @throws Exception
 	 */
+    @Override
 	public void start() throws InterruptedException, Exception {
+
+    	// First startup Mule...
+    	super.start();
 		
-		// Before launching Mule ESB set its server id
-		System.setProperty("mule.serverId", muleServerId);
-
-		// Before launching Mule ESB alse ensure that CXF use LOG4J for logging
-		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Log4jLogger");
-
-		// Startup Mule ESB in the background
-		muleServer = new MuleServer(muleConfig);
-        muleServer.start(true, true);
-
         // Wait for a while so that mule and its servlet transport gets time to get started
     	Thread.sleep(getWaittimeMuleServletTransport());
 
-    	// Startup the servlet container and the mule receiver servlet once mule servlet transport is ready
+        log.info("Startup Servlet container with Mule Receiver Servlet...");
+
+        // Startup the servlet container and the mule receiver servlet once mule servlet transport is ready
 		servletContainer = new ServletContainerWithMuleReceiverServlet(httpPort, contextPath, muleReceiverServletUri);
         servletContainer.start();
 	}
@@ -114,10 +87,16 @@ public class MuleServerWithServletContainer {
 	 * 
 	 * @throws Exception
 	 */
+    @Override
 	public void shutdown() throws Exception {
-		// Shutdown servlet container and mule server
+
+    	log.info("Shutdown Servlet container...");
+
+        // Shutdown servlet container and mule server
         servletContainer.shutdown();	
-        muleServer.shutdown();
+        
+        // Also shutdown Mule
+        super.shutdown();
 	}
 
 	/**
