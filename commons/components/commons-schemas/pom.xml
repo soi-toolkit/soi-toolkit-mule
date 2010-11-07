@@ -43,7 +43,6 @@
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf-gen.version}</version>
 				<executions>
 					<execution>
 						<id>ws.generate</id>
@@ -82,7 +81,6 @@
 				<!-- Create a zip-file only containing wsdl & xsd files, i.e. no JAX-WS/JAXB-generated 
 					artifacts, for example for a Microsoft .Net C# app -->
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
 				<dependencies>
 					<dependency>
 						<!-- Plugin-dependency to a shared assembly-descriptor that creates the zip-file -->
