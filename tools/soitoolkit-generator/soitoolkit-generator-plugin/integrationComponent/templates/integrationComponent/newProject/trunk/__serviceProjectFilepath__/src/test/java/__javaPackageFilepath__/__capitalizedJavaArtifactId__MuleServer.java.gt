@@ -2,11 +2,19 @@ package ${javaPackage};
 
 <% if (servlet) { %>
 import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
+
+import java.util.ResourceBundle;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.StandaloneMuleServer;
 <% } %> 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class ${capitalizedJavaArtifactId}MuleServer {
+
+	private static final Logger logger = LoggerFactory.getLogger(${capitalizedJavaArtifactId}MuleServer.class);
 
 	public static final String MULE_SERVER_ID   = "${artifactId}";
 <% if (servlet) { %>
@@ -27,4 +35,22 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 <% } %> 
 		muleServer.run();
 	}
+	
+<% if (servlet) { %>
+    /**
+     * Address based on usage of the servlet-transport and a config-property for the URI-part
+     * 
+     * @param serviceUriPropertyName
+     * @return
+     */
+    public static String getAddressForServletTransport(String serviceUriPropertyName) {
+
+        ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+	    String uri  = rb.getString(serviceUriPropertyName);
+
+	    String url = "http://localhost:" + HTTP_PORT + CONTEXT_PATH + MULE_SERVLET_URI + "/" + uri;
+	    logger.info("Servlet URL: {}", url);
+	    return url;
+    }	
+<% } %> 
 }
