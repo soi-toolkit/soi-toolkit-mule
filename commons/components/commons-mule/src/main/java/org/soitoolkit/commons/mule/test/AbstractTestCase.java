@@ -211,23 +211,94 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
     }
 
 	/**
+	 * Use the Dispatcher to send a asynchronous message and waits <code>timeout</code> ms for a <code>MuleMessage</code> to be processed by a service component with the name <code>serviceComponentName</code>. 
+	 * 
+	 * Sample usage: TBS
+	 * 
+	 * @param dispatcher
+	 * @param serviceComponentName
+	 * @param timeout in ms
+	 * @return the received MuleMEssage on the outboundEndpoint
+	 */
+	protected MuleMessage dispatchAndWaitForServiceComponent(Dispatcher dispatcher, final String serviceComponentName, long timeout) {
+		// Declare MuleMessage to return
+		final ValueHolder<MuleMessage> receivedMessageHolder = new ValueHolder<MuleMessage>();
+		
+		// Declare countdown latch and listener
+		final CountDownLatch latch = new CountDownLatch(1);
+		ComponentMessageNotificationListener listener = null;
+
+		try {
+			// Create a listener that listens for invoke events on the named component
+			listener = new ComponentMessageNotificationListener() {
+				public void onNotification(ServerNotification notification) {
+
+//					System.err.println("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName());
+
+					// Only care about ComponentMessageNotification
+					if (notification instanceof ComponentMessageNotification) {
+						ComponentMessageNotification componentNotification = (ComponentMessageNotification)notification;
+
+						// Extract action and name of the component
+						int    action    = componentNotification.getAction();
+						String component = componentNotification.getResourceIdentifier();
+
+						// If it is a post-invoke event (i.e. the processing is done) on our component then countdown the latch.
+						if (action == COMPONENT_POST_INVOKE && component.equals(serviceComponentName)) {
+							if (logger.isDebugEnabled()) logger.debug("Expected notification received on " + serviceComponentName + " (action: " + componentNotification.getActionName() + "), time to countdown the latch");
+							receivedMessageHolder.value = (MuleMessage)componentNotification.getSource();
+							latch.countDown();
+						}
+					}
+				}
+			};
+
+			// Now register the listener
+			muleContext.getNotificationManager().addListener(listener);
+
+			// Perform the actual dispatch
+			dispatcher.doDispatch();
+
+			// Wait for the delivery to occur...
+			if (logger.isDebugEnabled()) logger.debug("Waiting for message to be delivered to the endpoint...");
+			boolean workDone = latch.await(timeout, TimeUnit.MILLISECONDS);
+			if (logger.isDebugEnabled()) logger.debug((workDone) ? "Message delivered, continue..." : "No message delivered, timeout occurred!");
+
+			// Raise a fault if the test timed out
+			assertTrue("Test timed out. It took more than " + timeout + " milliseconds. If this error occurs the test probably needs a longer time out (on your computer/network)", workDone);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("An unexpected error occurred: " + e.getMessage());
+
+		} finally {
+			// Always remove the listener if created
+			if (listener != null) muleContext.getNotificationManager().removeListener(listener);
+		}
+		
+		return receivedMessageHolder.value;		
+    }
+
+	/**
 	 * Sends the <code>payload</code> and <code>headers</code> to the <code>inboundEndpointAddress</code> and waits <code>timeout</code> ms for a <code>MuleMessage</code> to be processed by a service component with the name <code>serviceComponentName</code>. 
 	 * 
 	 * Sample usage:
 	 * <tt>
-	 *	public void testTransferKorttransaktioner() throws Exception {
-	 *		String expectedPayload = "Yada, yada, yada...";
+	 *	Map<String, String> props = new HashMap<String, String>();
+	 *	String message            = "Annn";
+     *  String expectedResult     = "1nnn";
+     *  String receivingService   = "some-teststub-service";
+	 *	int    timeout            = 5000;
 	 *
-	 *		MuleMessage message = dispatchAndWaitForDelivery(
-	 *			"sftp://dfcx0346@vfin8003.volvofinans.net/sftp/vfkonto/ut",
-	 *			expectedPayload,
-	 *			createFileHeader("from_vfkonto.dat"),
-	 *			"volvokort-test-endpoint",
-	 *			TIMEOUT);
+	 *	// Setup inbound endpoint for jms
+	 *	String inboundEndpoint = "jms://" + IN_QUEUE;
 	 *
-	 *		String actualPayload = message.getPayloadAsString();
-	 *		assertEquals(expectedPayload, actualPayload); 
-	 *	}	 
+	 *	// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
+	 *	MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, message, props, receivingService, timeout);
+	 *	String transformedMessage = reply.getPayload().toString();
+	 *
+	 *	// Verify the result, i.e. the transformed message
+     *   assertEquals(expectedResult, transformedMessage);
 	 * </tt>
 	 * 
 	 * @param inboundEndpointAddress
@@ -237,9 +308,11 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 	 * @param timeout in ms
 	 * @return the received MuleMEssage on the outboundEndpoint
 	 */
-	protected MuleMessage dispatchAndWaitForServiceComponent(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceComponentName, long timeout)
-    {
+	protected MuleMessage dispatchAndWaitForServiceComponent(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceComponentName, long timeout) {
 
+		return dispatchAndWaitForServiceComponent(new DispatcherMuleClientImpl(inboundEndpointAddress, payload, headers), serviceComponentName, timeout);
+
+/*
 		// Declare MuleMessage to return
 		final ValueHolder<MuleMessage> receivedMessageHolder = new ValueHolder<MuleMessage>();
 		
@@ -249,10 +322,10 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 		MuleClient muleClient = null;
 
 		try {
-			// First create a muleClient instance
+ 			// First create a muleClient instance
 			muleClient = new MuleClient();
 
-			// Next create a listener that listens for dispatch events on the outbound endpoint
+			// Next create a listener that listens for invoke events on the named component
 			listener = new ComponentMessageNotificationListener() {
 				public void onNotification(ServerNotification notification) {
 
@@ -303,6 +376,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 		}
 		
 		return receivedMessageHolder.value;		
+*/
     }
 
     /**

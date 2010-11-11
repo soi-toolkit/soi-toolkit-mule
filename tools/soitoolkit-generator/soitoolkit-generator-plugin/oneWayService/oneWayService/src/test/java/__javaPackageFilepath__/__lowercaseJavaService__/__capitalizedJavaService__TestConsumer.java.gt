@@ -1,0 +1,23 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddressForServletTransport;
+
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}TestConsumer {
+
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestReceiver.class);
+
+	public static void main(String[] args) {
+		String url       = getAddressForServletTransport("${uppercaseService}_INBOUND_SERVLET_URI");
+    	String inputFile = "src/test/resources/testfiles/${service}-input.txt";
+		int timeout      = 5000;
+
+		log.info("Post message to: {}, {} chars", url, inputFile.length());
+    	sendFileAsMultipartHttpPost(url, new File(inputFile), false, timeout);
+	}
+}

@@ -36,39 +36,41 @@ public class DefaultModelImplTest {
 		String service = null;
 		MuleVersionEnum muleVersion = null;
 		List<TransportEnum> transports = null;
+		TransportEnum inboundTransport = null;
+		TransportEnum outboundTransport = null;
 		String serviceDescriptor = null;
 		List<String> operations = null;
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertTrue(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = "test";
 		artifactId = "test";
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertTrue(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = "se.callista.soitoolkit.test";
 		artifactId = null;
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertFalse(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = null;
 		artifactId = "test";
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertFalse(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = "se.callista.soitoolkit.test";
 		artifactId = "notFound";
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertFalse(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = "se.callista.soitoolkit.test";
 		artifactId = "te";
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertFalse(dm.isGroupIdSuffixedWithArtifactId());
 
 		groupId = "short";
 		artifactId = "loooooong";
-		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+		dm.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 		assertFalse(dm.isGroupIdSuffixedWithArtifactId());
 	}
 

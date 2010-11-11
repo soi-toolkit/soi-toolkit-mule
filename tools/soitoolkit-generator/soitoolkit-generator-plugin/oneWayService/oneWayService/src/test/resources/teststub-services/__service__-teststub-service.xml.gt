@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
+	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/file/2.2 http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
+		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<!-- TODO: Add teststub-service specific definitions here -->
+
+	<model name="${service}-teststub-model">
+	
+        <service name="${service}-teststub-service">
+            <inbound>
+<% if (outboundTransport=="JMS") { %>
+                <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
+<% } else if (outboundTransport=="SFTP") { %> 
+				<sftp:inbound-endpoint
+					address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_RECEIVER_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_TESTSTUB_RECEIVER_SIZECHECK_MS}"
+					tempDir="sending"
+					useTempFileTimestampSuffix="true"
+					transformer-refs="objToStr">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</sftp:inbound-endpoint>			
+<% } %> 
+            </inbound>
+
+            <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
+
+        </service>
+
+	</model>
+
+</mule>

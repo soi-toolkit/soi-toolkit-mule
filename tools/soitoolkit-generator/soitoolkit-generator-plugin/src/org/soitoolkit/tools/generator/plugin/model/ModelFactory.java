@@ -83,6 +83,19 @@ public class ModelFactory {
 	}
 
     /**
+	 * Constructor-method to use when services with inbound and outbound services
+	 * 
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param service
+     * @return the new model instance
+	 */
+    public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport) {
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, null, inboundTransport, outboundTransport, null, null);
+	}
+
+    /**
 	 * Constructor-method to use when service descriptors are not required (e.g. schema and wsdl for services)
 	 * 
 	 * @param groupId
@@ -92,7 +105,7 @@ public class ModelFactory {
      * @return the new model instance
 	 */
     public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports) {
-		return newModel(groupId, artifactId, version, service, muleVersion, transports, null, null);
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, transports, null, null, null, null);
 	}
 
 	/**
@@ -107,9 +120,24 @@ public class ModelFactory {
      * @return the new model instance
      */
     public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, transports, null, null, serviceDescriptor, operations);
+    }
+
+	/**
+	 * Constructor-method to use when service descriptors are required (e.g. schema and wsdl for services)
+	 * 
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param service
+	 * @param serviceDescriptor
+	 * @param operations
+     * @return the new model instance
+     */
+    private static IModel doCreateNewModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, String serviceDescriptor, List<String> operations) {
 		try {
 	    	DefaultModelImpl m = (DefaultModelImpl)modelClass.newInstance();
-	    	m.initModel(groupId, artifactId, version, service, muleVersion, transports, serviceDescriptor, operations);
+	    	m.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, serviceDescriptor, operations);
 	    	System.err.println("### New model-class: " + m.getClass().getName());
 	    	return m;
 		} catch (Exception e) {

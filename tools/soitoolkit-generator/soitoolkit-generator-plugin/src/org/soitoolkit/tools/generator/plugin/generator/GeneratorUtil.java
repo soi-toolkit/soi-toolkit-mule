@@ -63,10 +63,31 @@ public class GeneratorUtil {
 	 * @param artifactId
 	 * @param version
 	 * @param service
+	 * @param inboundTransport
+	 * @param outboundTransport
+	 * @param templateFolder
+	 * @param outputFolder
+	 */
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, String templateFolder, String outputFolder) {
+
+		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, inboundTransport, outboundTransport);
+
+		init(ps, templateFolder, outputFolder); // , outputRootFolderModelExpression);			
+		
+		logInfo("Generate files from templateFolder: " + templateFolder);
+
+	}
+
+	/**
+	 * 
+	 * @param ps
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param service
 	 * @param transports
 	 * @param templateFolder
 	 * @param outputFolder
-//	 * @param outputRootFolderModelExpression
 	 */
 	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String templateFolder, String outputFolder) {
 
@@ -90,7 +111,6 @@ public class GeneratorUtil {
 	 * @param operations
 	 * @param templateFolder
 	 * @param outputFolder
-//	 * @param outputRootFolderModelExpression
 	 */
 	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String schemaName, List<String> operations, String templateFolder, String outputFolder) {
 		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, transports, schemaName, operations);

@@ -102,6 +102,8 @@
 			"/>
 	</custom-transformer>
 
+	<custom-transformer name="mimeToStr" class="org.soitoolkit.commons.mule.mime.MimeToStringTransformer" />
+
     <custom-transformer name="logMsgIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
 		<spring:property name="logType"  value="msg-in"/>
 		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
@@ -130,8 +132,8 @@
     <custom-transformer name="logRespOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
 		<spring:property name="logType"  value="resp-out"/>
 		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
-    </custom-transformer>
-  
+    </custom-transformer>  
+
     <!-- TODO: Add global definitions here -->
 
 </mule>

@@ -17,5 +17,5 @@
 package org.soitoolkit.tools.generator.plugin.model.enums;
 
 public enum TransportEnum {
-	JMS, JDBC, VM, SFTP, SERVLET;
+	VM, JMS, JDBC, FILE, FTP, SFTP, HTTP, HTTPS, SERVLET, SOAP_HTTP, SOAP_HTTPS, SOAP_SERVLET;
 }

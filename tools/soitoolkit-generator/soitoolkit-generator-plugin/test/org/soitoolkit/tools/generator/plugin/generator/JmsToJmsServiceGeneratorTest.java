@@ -61,7 +61,7 @@ public class JmsToJmsServiceGeneratorTest {
 		SystemUtil.delDirs(PROJECT_FOLDER);
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
 		new IntegrationComponentGenerator(System.out, GROUP_ID, PROJECT, VERSION, MULE_VERSION, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 60, SystemUtil.countFiles(PROJECT_FOLDER));
+		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(PROJECT_FOLDER));
 	}
 
 	@After

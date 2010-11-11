@@ -18,8 +18,12 @@ package org.soitoolkit.tools.generator.plugin.model.impl;
 
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SFTP;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JDBC;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+
 
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +49,8 @@ public class DefaultModelImpl implements IModel {
 
 	private MuleVersionEnum     muleVersion;
 	private List<TransportEnum> transports;
+	private TransportEnum inboundTransport;
+	private TransportEnum outboundTransport;
 	
 	private ServiceDescriptorModel serviceDescriptorModel;
 
@@ -61,7 +67,7 @@ public class DefaultModelImpl implements IModel {
 	 * @param serviceDescriptor
 	 * @param operations
 	 */
-	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
+	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, String serviceDescriptor, List<String> operations) {
 
 		this.groupId = groupId;
 		this.artifactId = artifactId;
@@ -69,6 +75,8 @@ public class DefaultModelImpl implements IModel {
 		this.service = service;
 		this.muleVersion = muleVersion;
 		this.transports = transports;
+		this.inboundTransport = inboundTransport;
+		this.outboundTransport = outboundTransport;
 
 		serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
 
@@ -363,7 +371,26 @@ public class DefaultModelImpl implements IModel {
 		return isTransportSelected(TransportEnum.SERVLET);
 	}	
 
+    public String getInboundTransport() {
+    	return inboundTransport.name();
+    }
+    public String getOutboundTransport() {
+    	return outboundTransport.name();
+    }
 
+    
+    public boolean isServiceTransactional() {
+    	return isInboundTransportTransactional() && isOutboundTransportTransactional();
+    }
+    			    	
+    public boolean isServiceXaTransactional() {
+    	return false; // Wait a bit more for this one :-)
+    }
+    public boolean isInboundEndpointFilebased() {
+    	return inboundTransport == SFTP;
+    }
+
+    
     // Property files
     public String getConfigPropertyFile() {
     	return getArtifactId() + "-config";
@@ -374,6 +401,14 @@ public class DefaultModelImpl implements IModel {
 
 
 	// --------------------	
+
+	protected boolean isInboundTransportTransactional() {
+		return inboundTransport==JMS || inboundTransport==JDBC;
+	}
+	protected boolean isOutboundTransportTransactional() {
+		return outboundTransport==JMS || outboundTransport==JDBC;
+	}
+
 
 	protected boolean isTransportSelected(TransportEnum selectedTransport) {
 

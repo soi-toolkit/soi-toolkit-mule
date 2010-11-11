@@ -24,7 +24,7 @@
 		http://www.mulesource.org/schema/mule/sftp/2.2   http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd">
 
 	<sftp:connector 
-		name="sftp-connector" 
+		name="soitoolkit-sftp-connector" 
 		identityFile="${SOITOOLKIT_SFTP_IDENTITYFILE}" 
 		passphrase="${SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE}">
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>

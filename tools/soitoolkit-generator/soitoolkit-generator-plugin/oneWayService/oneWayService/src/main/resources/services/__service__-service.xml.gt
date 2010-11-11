@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:vm="http://www.mulesource.org/schema/mule/vm/2.2"
+	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
+	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/vm/2.2   http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd
+		http://www.mulesource.org/schema/mule/file/2.2 http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
+		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<!-- TODO: Add service specific definitions here -->
+    <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
+
+	<model name="${service}-model">
+	
+		<service name="${service}-sender-service">
+            <inbound>
+
+<% if (inboundTransport=="JMS") { %>
+                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
+<% if (serviceTransactional) { %>
+					<jms:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+				</inbound-endpoint>
+
+<% } else if (inboundTransport=="SERVLET") { %> 
+				<inbound-endpoint address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_SERVLET_URI}"
+					synchronous="true" transformer-refs="createCorrId mimeToStr"
+					responseTransformer-refs="logReqIn" />
+
+<% } else if (inboundTransport=="SFTP") { %> 
+				<sftp:inbound-endpoint
+					name="${service}-inbound-endpoint"
+					address="sftp://${dollarSymbol}{${uppercaseService}_SENDER_SFTP_ADDRESS}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_SENDER_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_SENDER_SIZECHECK_MS}"
+					tempDir="sending"
+					useTempFileTimestampSuffix="true"
+					archiveDir="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					archiveTempReceivingDir="receiving"
+					archiveTempSendingDir="sending"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</sftp:inbound-endpoint>			
+<% } %> 
+            </inbound>
+            
+			<outbound>
+				<pass-through-router>
+<% if (outboundTransport=="JMS") { %>
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="${lowercaseJavaService}Transformer strToJms logMsgOut">
+<% if (serviceTransactional) { %>
+						<jms:transaction action="ALWAYS_JOIN" />
+<% } %> 
+					</outbound-endpoint>
+
+<% } else if (outboundTransport=="SFTP") { %> 
+					<outbound-endpoint address="vm://${service}-service" />
+<% } %> 
+				</pass-through-router>
+			</outbound>					
+		</service>
+
+<% if (outboundTransport=="SFTP") { %> 
+		<service name="${service}-receiver-service">
+			<inbound>
+				<inbound-endpoint address="vm://${service}-service" />
+			</inbound>
+			<outbound>
+				<pass-through-router>
+					<sftp:outbound-endpoint
+						name="${service}-outbound-endpoint"
+						address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
+<% if (inboundEndpointFilebased) { %>
+						outputPattern="#[ORIGINALNAME]"
+<% } else { %> 
+						outputPattern="${dollarSymbol}{${uppercaseService}_RECEIVER_FILE}"
+<% } %> 
+						tempDir="receiving"
+						useTempFileTimestampSuffix="true"
+						duplicateHandling="addSeqNo"
+						transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
+				</pass-through-router>
+			</outbound>
+
+        </service>
+
+		<service name="${service}-resend-from-archive-service">
+			<inbound>
+				<file:inbound-endpoint
+					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_ARCHIVE_RESEND_POLLING_MS}"
+				/>
+			</inbound>
+			<outbound>
+				<pass-through-router>
+					<outbound-endpoint address="vm://${service}-service" />
+				</pass-through-router>
+			</outbound>
+		</service>		
+<% } %> 
+	</model>
+
+</mule>

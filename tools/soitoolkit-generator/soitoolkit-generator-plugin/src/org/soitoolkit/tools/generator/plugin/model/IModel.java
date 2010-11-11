@@ -101,6 +101,13 @@ public interface IModel {
     public boolean isJms();
 	public boolean isSftp();
 	public boolean isServlet();
+    public String getInboundTransport();
+    public String getOutboundTransport();
+    
+    public boolean isServiceTransactional();
+    public boolean isServiceXaTransactional();
+    public boolean isInboundEndpointFilebased();
+    
 
     // Property files
     public String getConfigPropertyFile();

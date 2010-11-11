@@ -17,6 +17,8 @@
 package org.soitoolkit.commons.mule.util;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +47,14 @@ public class MiscUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
+	public static String readFileAsString(String filename) {
+	    try {
+			return MiscUtil.convertStreamToString(new FileInputStream(filename));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
     public static String convertStreamToString(InputStream is) {
     	return convertStreamToString(is, "UTF-8");
     }
@@ -67,9 +77,16 @@ public class MiscUtil {
 
         try {
         	// TODO: Can this be a performance killer if many many lines or is BufferedReader handling that in a good way?
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, charset));
+            boolean emptyBuffer = true;
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(is, charset));
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+            	// Skip adding line break before the first line
+            	if (emptyBuffer) {
+            		emptyBuffer = false;
+            	} else {
+                	sb.append('\n');
+            	}
+            	sb.append(line);
             }
         } catch (IOException e) {
         	throw new RuntimeException(e);

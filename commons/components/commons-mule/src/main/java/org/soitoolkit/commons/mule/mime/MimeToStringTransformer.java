@@ -140,6 +140,9 @@ public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
 		
 		boundaryStartPos = str.indexOf("--" + boundary + "--");
 		
+		// Also strip off the new line char preceding the boundary-tag
+		boundaryStartPos--;
+		
 		payload = str.subSequence(0, boundaryStartPos).toString();
 		return payload;
 	}

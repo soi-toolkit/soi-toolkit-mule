@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.plugin.model.enums.MepEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 
@@ -220,7 +221,7 @@ public class CreateServicePage extends WizardPage {
 //					patternTypeCombo.setItems (new String [] {"JMS with JMS adapter",
 //							"JMS with JDBC adapter",
 //							"JMS with file adapter"});
-					inboundTransportCombo.setItems  (new String [] {"JMS", "SFTP"}); // , "JDBC"
+					inboundTransportCombo.setItems  (new String [] {"JMS", "SFTP", "HTTP (Multipart POST)"}); // , "JDBC"
 					outboundTransportCombo.setItems (new String [] {"JMS", "SFTP"}); // , "JDBC"
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
@@ -246,29 +247,29 @@ public class CreateServicePage extends WizardPage {
 		SelectionListener inboundTransportComboListener = new SelectionListener () {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.err.println("### Set default selected selectedTransport");
+				System.err.println("### Set default selected selectedInboundTransport");
 				Combo c = (Combo)e.widget;
 				selectedInboundTransport = c.getSelectionIndex();
-				System.err.println("### Set default selected selectedTransport to: " + selectedInboundTransport);
+				System.err.println("### Set default selected selectedInboundTransport to: " + selectedInboundTransport);
 			}
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.err.println("### Set selected selectedTransport");
+				System.err.println("### Set selected selectedInboundTransport");
 				Combo c = (Combo)e.widget;
 				selectedInboundTransport = c.getSelectionIndex();
-				System.err.println("### Set selected selectedTransport type to: " + selectedInboundTransport);
+				System.err.println("### Set selected selectedInboundTransport type to: " + selectedInboundTransport);
 
-				int inbTransp = c.getSelectionIndex();
-				switch (MepEnum.get(mepCombo.getSelectionIndex())) {
-				case MEP_REQUEST_RESPONSE:
-					break;
-				case MEP_ONE_WAY:
-					outboundTransportCombo.setItems (new String [] {c.getItem(inbTransp)});
-					break;
-				case MEP_PUBLISH_SUBSCRIBE:
-					break;
-				}
+//				int inbTransp = c.getSelectionIndex();
+//				switch (MepEnum.get(mepCombo.getSelectionIndex())) {
+//				case MEP_REQUEST_RESPONSE:
+//					break;
+//				case MEP_ONE_WAY:
+//					outboundTransportCombo.setItems (new String [] {c.getItem(inbTransp)});
+//					break;
+//				case MEP_PUBLISH_SUBSCRIBE:
+//					break;
+//				}
 
 				dialogChanged();
 
@@ -456,19 +457,43 @@ public class CreateServicePage extends WizardPage {
 		return selectedMep;
 	}
 
-	public int getSelectedInboundTransport() {
-		return selectedInboundTransport;
+	public TransportEnum getSelectedInboundTransport() {
+		
+		TransportEnum t = null;
+		switch (selectedInboundTransport) {
+			case 0: 
+				t = TransportEnum.JMS;
+				break;
+			case 1: 
+				t = TransportEnum.SFTP;
+				break;
+			case 2: 
+				t = TransportEnum.SERVLET;
+				break;
+		}
+		return t;
 	}
-	public int getSelectedOutboundTransport() {
-		return selectedOutboundTransport;
+	
+	public TransportEnum getSelectedOutboundTransport() {
+
+		TransportEnum t = null;
+		switch (selectedOutboundTransport) {
+			case 0: 
+				t = TransportEnum.JMS;
+				break;
+			case 1: 
+				t = TransportEnum.SFTP;
+				break;
+		}
+		return t;
 	}
+
 	public String getServiceName() {
 		return serviceText.getText();
 	}
 	
 	
 /*
-
 	private void addRadioButtons (final Composite parent) {
 
 		final Composite container = SwtUtil.createGridContainer(parent, 1);

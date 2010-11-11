@@ -13,13 +13,13 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	
     public ${capitalizedJavaService}IntegrationTest() {
     	
-    	// TODO: Should this be placed in tha baseclass?
+    	// TODO: Should this be placed in the baseclass?
     	
     	// Only start up Mule once to make the tests run faster...
     	// Set to false if tests interfere with each other when Mule is started only once.
         setDisposeManagerPerSuite(true);
 
-		// Increase the default 1200 sec so that you have a chance to debug...
+		// Increase the default 120 sec so that you have a chance to debug...
         setTestTimeoutSecs(120);
     }
 
@@ -47,7 +47,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         String inFolder         = rb.getString("${uppercaseService}_SENDER_SFTP_ADDRESS");
 		String filename         = "testfile.txt";
 		String content          = "Annn";
-        String expectedResult   = "1nnn\\n";
+        String expectedResult   = "1nnn";
         String receivingService = "${service}-teststub-service";
 		int    timeout          = 10000;
 

@@ -27,11 +27,11 @@ import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 public class SftpToSftpServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
-	
+
 	public SftpToSftpServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, String folderName) {
 		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, null, "/templates/integrationComponent/sftpToSftpService", folderName);
 	}
-		
+
     public void startGenerator() {
 
 		gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
@@ -42,7 +42,7 @@ public class SftpToSftpServiceGenerator implements Generator {
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
 
 		updatePropertyFile();
-		
+
 		/*
 		TODO: Lägg på följande i propertfil:
 

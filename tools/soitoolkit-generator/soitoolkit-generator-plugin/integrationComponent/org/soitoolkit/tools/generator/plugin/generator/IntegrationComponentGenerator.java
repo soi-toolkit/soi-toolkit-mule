@@ -48,6 +48,7 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/test/resources/__artifactId__-teststubs-and-services-config.xml.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/test/resources/__artifactId__-teststubs-only-config.xml.gt");
+		gu.generateFolder("trunk/__serviceProjectFilepath__/src/test/resources/testfiles");
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/test/resources/teststub-services");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/log4j.dtd.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/log4j.xml.gt");

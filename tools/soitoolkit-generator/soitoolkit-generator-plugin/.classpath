@@ -8,5 +8,8 @@
 	<classpathentry kind="src" path="jmsToJmsService"/>
 	<classpathentry kind="src" path="sftpToSftpService"/>
 	<classpathentry kind="src" path="schemaComponent"/>
+	<classpathentry kind="src" path="oneWayService"/>
+	<classpathentry kind="lib" path="lib/groovy-all-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-engine.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

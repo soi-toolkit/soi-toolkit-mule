@@ -48,9 +48,11 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.soitoolkit.tools.generator.plugin.generator.JmsToJmsServiceGenerator;
+import org.soitoolkit.tools.generator.plugin.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.generator.SftpToSftpServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.w3c.dom.Document;
 
 
@@ -94,8 +96,8 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
 		final int    mep = page.getSelectedMep();
-		final int    inboundTransport = page.getSelectedInboundTransport();
-		final int    outboundTransport = page.getSelectedOutboundTransport();
+		final TransportEnum inboundTransport = page.getSelectedInboundTransport();
+		final TransportEnum outboundTransport = page.getSelectedOutboundTransport();
 		final String serviceName = page.getServiceName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
@@ -128,7 +130,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	 * @param outboundTransport 
 	 * @param mep 
 	 */
-	private void doFinish(String containerName, int mep, int inboundTransport, int outboundTransport, String serviceName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, String serviceName, IProgressMonitor monitor) throws CoreException {
 
 		monitor.beginTask("Creating " + serviceName, 3);
 		
@@ -179,22 +181,26 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 
 		case 1: // One Way
 			
-			switch (inboundTransport) {
-			case 0: // JMS --> JMS
-				new JmsToJmsServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
-				
-				break;
+			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, rootFolderName).startGenerator();
 
-			case 1: // SFTP --> SFTP
-				new SftpToSftpServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
-				
-				break;
-
-			default:
-				break;
-			}
-			
-			break;
+//		case 1: // One Way
+//			
+//			switch (inboundTransport) {
+//			case 0: // JMS --> JMS
+//				new JmsToJmsServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
+//				
+//				break;
+//
+//			case 1: // SFTP --> SFTP
+//				new SftpToSftpServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
+//				
+//				break;
+//
+//			default:
+//				break;
+//			}
+//			
+//			break;
 
 		default:
 			break;
