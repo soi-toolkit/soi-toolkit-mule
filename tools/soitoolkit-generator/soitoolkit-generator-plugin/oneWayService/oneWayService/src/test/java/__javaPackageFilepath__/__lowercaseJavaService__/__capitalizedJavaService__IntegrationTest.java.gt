@@ -31,6 +31,7 @@ import org.soitoolkit.commons.mule.test.AbstractTestCase;
 
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.commons.mule.test.Dispatcher;
+import org.soitoolkit.commons.mule.util.MiscUtil;
 
 <% if (inboundTransport=="SERVLET") { %>
 public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
@@ -130,10 +131,13 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test${capitalizedJavaService}_ok() throws JMSException {
 
 		Map<String, String> props = new HashMap<String, String>();
-		String message            = "Annn";
-        String expectedResult     = "1nnn"; // \\n";
+    	final  String inputFile   = "src/test/resources/testfiles/${service}-input.txt";
+    	String expectedResultFile = "src/test/resources/testfiles/${service}-expected-result.txt";
         String receivingService   = "${service}-teststub-service";
 		final  int timeout        = 5000;
+
+		String input          = MiscUtil.readFileAsString(inputFile);
+		String expectedResult = MiscUtil.readFileAsString(expectedResultFile);
 
 <% if (inboundTransport=="JMS") { %>
 		// Setup inbound endpoint for jms
@@ -148,7 +152,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% } else if (inboundTransport=="SERVLET") { %>
 		final String url       = getAddressForServletTransport("${uppercaseService}_INBOUND_SERVLET_URI");
-    	final String inputFile = "src/test/resources/testfiles/${service}-input.txt";
 		Dispatcher dispatcher = new Dispatcher() {
 			public void doDispatch() {
 				sendFileAsMultipartHttpPost(url, new File(inputFile), false, timeout);
@@ -161,7 +164,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		MuleMessage reply = dispatchAndWaitForServiceComponent(dispatcher, receivingService, timeout);
 <% } else { %> 
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
-		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, message, props, receivingService, timeout);
+		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
 <% } %> 
 		String transformedMessage = reply.getPayload().toString();
 

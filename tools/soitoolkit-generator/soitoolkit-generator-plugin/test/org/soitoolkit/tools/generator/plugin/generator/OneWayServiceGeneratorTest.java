@@ -108,7 +108,7 @@ public class OneWayServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = (inboundTransport == SERVLET) ? 9 : 8;
+		int expectedNoOfFiles = (inboundTransport == SERVLET) ? 11 : 10;
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 
