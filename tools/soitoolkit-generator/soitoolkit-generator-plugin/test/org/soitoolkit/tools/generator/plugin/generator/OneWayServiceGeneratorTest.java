@@ -17,11 +17,13 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SERVLET;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SFTP;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JDBC;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capital
 
 public class OneWayServiceGeneratorTest {
 
-	private static final MuleVersionEnum MULE_VERSION = MULE_2_2_5;
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String VERSION = "1.0-SNAPSHOT";
@@ -65,27 +66,35 @@ public class OneWayServiceGeneratorTest {
 	}
 
 	@Test
-	public void testOneWayServices() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway");
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "oneway-tests");
+	public void testOneWayServices221() throws IOException {
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_1);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "oneway-tests", MULE_2_2_1);
 	}
 
-	private void doTestOneWayServices(String groupId, String artifactId) throws IOException {
+	@Test
+	public void testOneWayServices225() throws IOException {
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_5);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "oneway-tests", MULE_2_2_5);
+	}
+
+	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		TransportEnum[] inboundTransports  = {JMS, SFTP, SERVLET};
 		TransportEnum[] outboundTransports = {JMS, SFTP};
+//		TransportEnum[] inboundTransports  = {JDBC};
+//		TransportEnum[] outboundTransports = {JDBC};
 
-		createEmptyIntegrationComponent(groupId, artifactId);	
+		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
 				createOneWayService(groupId, artifactId, inboundTransport, outboundTransport);
 			}
 		}
-		
+
 		performMavenBuild(groupId, artifactId);
 	}
 
-	private void createEmptyIntegrationComponent(String groupId, String artifactId) throws IOException {
+	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		TRANSPORTS.add(JMS);
@@ -94,7 +103,7 @@ public class OneWayServiceGeneratorTest {
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
-		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, MULE_VERSION, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(projectFolder));
 	}
 
@@ -108,7 +117,13 @@ public class OneWayServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = (inboundTransport == SERVLET) ? 11 : 10;
+		int expectedNoOfFiles = 10;
+		if (inboundTransport == SERVLET) {
+			expectedNoOfFiles++;
+		}
+		if (inboundTransport == JDBC || outboundTransport == JDBC) {
+			expectedNoOfFiles += 2;
+		}
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 
