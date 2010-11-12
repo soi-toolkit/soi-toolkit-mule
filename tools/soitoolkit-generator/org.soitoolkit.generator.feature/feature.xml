@@ -18,7 +18,7 @@
 <feature
       id="org.soitoolkit.generator.feature"
       label="soi-toolkit generator feature"
-      version="0.1.10">
+      version="0.2.0">
 
    <description url="http://soi-toolkit.org">
       [Enter Feature Description here.]
