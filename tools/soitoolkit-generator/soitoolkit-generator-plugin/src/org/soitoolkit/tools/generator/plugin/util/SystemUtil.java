@@ -25,13 +25,8 @@ import java.io.PrintStream;
 
 public class SystemUtil {
 	
-//	public static final String TEST_OUT_FOLDER = System.getProperty("user.home") + "/Documents/temp/_test";
 	// Build command used by generator tests
 	public static final String BUILD_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install eclipse:m2eclipse";
-//	public static final String BUILD_COMMAND = "/Users/magnuslarsson/Applications/apache-maven-2.2.1/bin/mvn install eclipse:m2eclipse";
-//	public static final String BUILD_COMMAND = "mvn -version";
-//	public static final String BUILD_COMMAND = "mvn install eclipse:m2eclipse";
-//	public static final String BUILD_COMMAND = "mvn -o eclipse:m2eclipse ";
 
 	static class ThreadedStreamReader extends Thread {
 	    InputStream in;
