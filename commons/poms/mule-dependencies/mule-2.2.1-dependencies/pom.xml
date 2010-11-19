@@ -179,11 +179,16 @@
 			<artifactId>mule-transport-email</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
-    <dependency>
-      <groupId>org.mule.transports</groupId>
-      <artifactId>mule-transport-jdbc</artifactId>
-      <version>${mule.version}</version>
-    </dependency>
+	    <dependency>
+	      <groupId>org.mule.transports</groupId>
+	      <artifactId>mule-transport-jdbc</artifactId>
+	      <version>${mule.version}</version>
+	    </dependency>
+		<dependency>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-quartz</artifactId>
+			<version>${mule.version}</version>
+		</dependency>
 		<!-- Exclude dependency to file-transport since it is to an old version -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
