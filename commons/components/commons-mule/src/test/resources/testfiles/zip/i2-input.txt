@@ -1,0 +1,6 @@
+0123456789Fornamn A           Efternamn H         20010203
+0123456790Fornamn B           Efternamn I         20010204
+0123456791Fornamn C           Efternamn J         20010205
+0123456792Fornamn D           Efternamn K         20010206
+0123456793Fornamn E           Efternamn L         20010207
+0123456794Fornamn F           Efternamn M         20010208
