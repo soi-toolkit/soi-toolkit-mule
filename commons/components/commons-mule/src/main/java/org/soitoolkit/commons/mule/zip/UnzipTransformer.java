@@ -1,5 +1,22 @@
+/* 
+ * Licensed to the soi-toolkit project under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.soitoolkit.commons.mule.zip;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,27 +25,40 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.tools.ant.filters.StringInputStream;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.config.i18n.MessageFactory;
+import org.mule.routing.filters.WildcardFilter;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 import org.mule.transport.file.FileConnector;
 
 /**
  * Extracts the first file in a zip-file
- * Expects the zip-file as byte-array or an inputStream and returns the content of the fisrt file as a byte-array
+ * Expects the zip-file as byte-array or an inputStream and returns the content of the first file matching the filter as an input stream
  * 
  * @author magnus larsson
  *
  */
 public class UnzipTransformer extends AbstractMessageAwareTransformer {
 
+	private WildcardFilter filter = new WildcardFilter("*");
+
 	public UnzipTransformer() {
+	    registerSourceType(InputStream.class);
 	    registerSourceType(byte[].class);
-	    setReturnClass(byte[].class);
+	    setReturnClass(InputStream.class);	    
 	}
 
+	public void setFilenamePattern(String pattern) {
+		filter.setPattern(pattern);
+	}
+
+	public String getFilenamePattern() {
+		return filter.getPattern();
+	}
+	
 	@Override
 	public Object transform(MuleMessage message, String encoding) throws TransformerException {
 		Object payload = message.getPayload();
@@ -46,15 +76,24 @@ public class UnzipTransformer extends AbstractMessageAwareTransformer {
 
 		ZipInputStream zis = new ZipInputStream(is);
 		ZipEntry entry = null;
-		ByteArrayOutputStream dest = null;
-		byte[] result = null;
+		InputStream result = null;
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
 				
-				// Skip folders...
-				if (entry.isDirectory()) continue;
-
 				String name = entry.getName();
+
+				// Skip folders...
+				if (entry.isDirectory()) {
+					logger.debug("skip folder " + name);
+					continue;
+				}
+
+				// Does the file pass the filename-filter?
+				if (!filter.accept(name)) {
+					logger.debug("skip file " + name + " did not match filename pattern: " + filter.getPattern());
+					continue;
+				}
+
 				int lastDirSep = name.lastIndexOf('/');
 				if (lastDirSep != -1) {
 					logger.debug("unzip strips zip-folderpath " + name.substring(0, lastDirSep));
@@ -66,27 +105,13 @@ public class UnzipTransformer extends AbstractMessageAwareTransformer {
 				}
 				message.setProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME, name);
 
+				result = new BufferedInputStream(zis);
 				
-				dest = new ByteArrayOutputStream();
-				IOUtils.copy(zis, dest);
-
-				dest.flush();
-				dest.close();
-
-				result = dest.toByteArray();
-				if (logger.isDebugEnabled()) {
-					logger.debug("unzip extracted " + result.length + " bytes");
-				}
-				
-				// Bail out of this while-loop after the first file...
+				// Bail out of this while-loop after the first file matching the filter...
 				break;
 			}
-			zis.close();
 		} catch (IOException ioException) {
 			throw new TransformerException(MessageFactory.createStaticMessage("Failed to uncompress file."), this, ioException);
-		} finally {
-			IOUtils.closeQuietly(dest);
-			IOUtils.closeQuietly(zis);
 		}
 		return result;
 	}
