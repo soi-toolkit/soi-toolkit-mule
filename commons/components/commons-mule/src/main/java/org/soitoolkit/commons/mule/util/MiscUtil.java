@@ -22,7 +22,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,26 +80,76 @@ public class MiscUtil {
     	StringBuilder sb = new StringBuilder();
         String line;
 
+        long linecount = 0;
+        long size = 0;
         try {
         	// TODO: Can this be a performance killer if many many lines or is BufferedReader handling that in a good way?
             boolean emptyBuffer = true;
-        	BufferedReader reader = new BufferedReader(new InputStreamReader(is, charset));
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMStripperInputStream(is), charset));
             while ((line = reader.readLine()) != null) {
             	// Skip adding line break before the first line
             	if (emptyBuffer) {
             		emptyBuffer = false;
             	} else {
                 	sb.append('\n');
+                	size++;
             	}
             	sb.append(line);
+            	linecount++;
+            	size += line.length();
+
+            	if (logger.isTraceEnabled()) {
+	            	if (linecount % 50000 == 0) {
+	        			System.err.println("### Lines read: " + linecount + ", " + size + " characters and counting...");
+	        			printMemUsage();            	
+	            	}
+            	}
             }
         } catch (IOException e) {
         	throw new RuntimeException(e);
 		} finally {
 			// Ignore exceptions on call to the close method
+        	if (logger.isTraceEnabled()) {
+				System.err.println("### Lines read: " + linecount + ", " + size + " characters");
+				printMemUsage();            	
+        	}
             try {is.close();} catch (IOException e) {}
         }
         return sb.toString();
+    }
+
+	private static void printMemUsage() {
+		int mb = 1024*1024;
+
+		MemoryMXBean mxb = ManagementFactory.getMemoryMXBean(); 
+		MemoryUsage hm  = mxb.getHeapMemoryUsage();
+		MemoryUsage nhm = mxb.getNonHeapMemoryUsage();
+		int finalizable = mxb.getObjectPendingFinalizationCount();
+		
+		System.out.println("Heap Memory:  init/used/committed/max=" +  hm.getInit()/mb + "/" +  hm.getUsed()/mb + "/" +  hm.getCommitted()/mb + "/" +  hm.getMax()/mb);
+		System.out.println("Non-Heap Mem: init/used/committed/max=" + nhm.getInit()/mb + "/" + nhm.getUsed()/mb + "/" + nhm.getCommitted()/mb + "/" + nhm.getMax()/mb);
+//        			System.err.println("finalizable: " + finalizable);
+
+
+		//Getting the runtime reference from system
+		Runtime runtime = Runtime.getRuntime();
+
+		System.out.println("Used/Free/Total/Max:"
+			//Print used memory
+			+ (runtime.totalMemory() - runtime.freeMemory()) / mb + "/"
+
+			//Print free memory
+			+ runtime.freeMemory() / mb + "/"
+
+			//Print total available memory
+			+ runtime.totalMemory() / mb + "/"
+
+			//Print Maximum available memory
+			+ runtime.maxMemory() / mb);
+	}
+
+    static public String parseStringValue(String strVal, ResourceBundle bundle) {
+    	return parseStringValue(strVal, convertResourceBundleToProperties(bundle));
     }
 
     static public String parseStringValue(String strVal, Properties props) {
@@ -156,4 +211,21 @@ public class MiscUtil {
     	return -1;
     }    
     
+    /**
+     * Convert ResourceBundle into a Properties object.
+     *
+     * @param resource a resource bundle to convert.
+     * @return Properties a properties version of the resource bundle.
+     */
+    static private Properties convertResourceBundleToProperties(ResourceBundle resource) {
+        Properties properties = new Properties();
+
+        Enumeration<String> keys = resource.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            properties.put(key, resource.getString(key));
+        }
+
+        return properties;
+    }
 }
