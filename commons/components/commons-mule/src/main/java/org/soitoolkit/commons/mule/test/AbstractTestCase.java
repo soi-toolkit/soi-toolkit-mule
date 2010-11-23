@@ -211,6 +211,19 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
     }
 
 	/**
+	 * Waits <code>timeout</code> ms for a <code>MuleMessage</code> to be processed by a service component with the name <code>serviceComponentName</code>. 
+	 * 
+	 * Sample usage: TBS
+	 * 
+	 * @param serviceComponentName
+	 * @param timeout in ms
+	 * @return the MuleMessage sent to the named service component
+	 */
+	protected MuleMessage waitForServiceComponent(final String serviceComponentName, long timeout) {
+		return dispatchAndWaitForServiceComponent(null, serviceComponentName, timeout);
+    }
+
+	/**
 	 * Use the Dispatcher to send a asynchronous message and waits <code>timeout</code> ms for a <code>MuleMessage</code> to be processed by a service component with the name <code>serviceComponentName</code>. 
 	 * 
 	 * Sample usage: TBS
@@ -218,7 +231,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 	 * @param dispatcher
 	 * @param serviceComponentName
 	 * @param timeout in ms
-	 * @return the received MuleMEssage on the outboundEndpoint
+	 * @return the MuleMessage sent to the named service component
 	 */
 	protected MuleMessage dispatchAndWaitForServiceComponent(Dispatcher dispatcher, final String serviceComponentName, long timeout) {
 		// Declare MuleMessage to return
@@ -256,8 +269,10 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			// Now register the listener
 			muleContext.getNotificationManager().addListener(listener);
 
-			// Perform the actual dispatch
-			dispatcher.doDispatch();
+			// Perform the actual dispatch, if any...
+			if (dispatcher != null) {
+				dispatcher.doDispatch();
+			}
 
 			// Wait for the delivery to occur...
 			if (logger.isDebugEnabled()) logger.debug("Waiting for message to be delivered to the endpoint...");
