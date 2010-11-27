@@ -279,7 +279,7 @@
             </goals>
             <configuration>
               <outputFile>
-                ${project.build.outputDirectory}/${artifactId}-build.properties
+                ${project.build.outputDirectory}/${project.artifactId}-build.properties
               </outputFile>
             </configuration>
           </execution>
