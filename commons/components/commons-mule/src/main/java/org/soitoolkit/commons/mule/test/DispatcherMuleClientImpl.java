@@ -17,7 +17,6 @@ public class DispatcherMuleClientImpl implements Dispatcher {
 		this.headers = headers;
 	}
 	
-	@Override
 	public void doDispatch() {
 		MuleClient muleClient = null;
 
