@@ -29,6 +29,12 @@
 	<name>soitoolkit-commons-schemas</name>
     <url>http://soi-toolkit.org</url>
 
+  <properties>
+    <!-- Properties for generating code from XML Schemas (JAX-WS + JAXB) -->
+    <schema.path>${basedir}/src/main/resources/schemas</schema.path>
+    <schema.gen.src.dir>${project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
+  </properties>
+    
   <dependencies>
     <dependency>
       <groupId>org.soitoolkit.commons.poms</groupId>

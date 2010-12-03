@@ -50,15 +50,15 @@
 		<soitoolkit.buildinfo.group>${project.groupId}</soitoolkit.buildinfo.group>
 		<soitoolkit.buildinfo.artifact>${project.artifactId}</soitoolkit.buildinfo.artifact>
 		<soitoolkit.buildinfo.version>${project.version}</soitoolkit.buildinfo.version>
-        
-        <!-- TODO: move these into commons-log ?-->
-        <!-- Properties for generating code from XML Schemas (JAX-WS + JAXB) -->
-        <schema.path>${basedir}/src/main/resources/schemas</schema.path>
-        <schema.gen.src.dir>${project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
-
     
     <compiler.target.version>1.5</compiler.target.version>
     <compiler.source.version>1.5</compiler.source.version>
+
+    <!-- ************************************************************* -->
+    <!-- dependency versions - please keep list alphabetically ordered -->
+    <!-- ************************************************************* -->
+    <log4j.version>1.2.16</log4j.version>
+    <slf4j.version>1.5.11</slf4j.version>
 
     
     <!-- ********************************************************* -->
@@ -118,7 +118,32 @@ TODO: should be removed?
 			<url>http://repository.muleforge.org</url>
 		</repository>
 	</repositories>
-
+  
+  <dependencyManagement>
+    <dependencies>
+      <!-- ****************************************************** -->
+      <!-- dependencies - please keep list alphabetically ordered -->
+      <!-- *****************^************************************ -->
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>      
+      <!-- TODO: add slf4j's JCL-bridge (jcl-over-slf4j.jar) when
+        JCL has been excluded from classpath - is currently in -->
+    </dependencies>
+  </dependencyManagement>
+  
   <build>
     <pluginManagement>
       <plugins>
