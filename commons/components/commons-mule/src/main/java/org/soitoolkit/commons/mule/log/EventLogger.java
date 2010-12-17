@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 import org.soitoolkit.commons.logentry.schema.v1.LogEntryType;
+import org.soitoolkit.commons.logentry.schema.v1.LogEntryType.ExtraInfo;
 import org.soitoolkit.commons.logentry.schema.v1.LogEvent;
 import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
 import org.soitoolkit.commons.logentry.schema.v1.LogMessageExceptionType;
@@ -65,6 +66,7 @@ import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType;
 import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType.BusinessContextId;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
+import org.soitoolkit.commons.mule.util.MuleUtil;
 import org.soitoolkit.commons.mule.util.XmlUtil;
 
 /**
@@ -86,7 +88,7 @@ public class EventLogger {
 	private static final String LOG_EVENT_ERROR = "logEvent-error";
 	private static final String LOG_STRING = MSG_ID + 
 		"\n** {}.start ***********************************************************" +
-		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}" + 
+		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}\nExtraInfo={}" + 
 		"{}" + // Placeholder for stack trace info if an error is logged
 		"\n** {}.end *************************************************************";
 
@@ -126,10 +128,11 @@ public class EventLogger {
 	public void logInfoEvent (
 		MuleMessage message,
 		String      logMessage,
-		Map<String, String> businessContextId) {
-
+		Map<String, String> businessContextId,
+		Map<String, String> extraInfo) {
+		
 		if (messageLogger.isInfoEnabled()) {
-			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, businessContextId, message.getPayload(), null);
+			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, businessContextId, extraInfo, message.getPayload(), null);
 			
 			String xmlString = JAXB_UTIL.marshal(logEvent);
 			dispatchInfoEvent(xmlString);
@@ -141,9 +144,11 @@ public class EventLogger {
 
 	public void logErrorEvent (
 		Throwable   error,
-		MuleMessage message) {
+		MuleMessage message,
+		Map<String, String> businessContextId,
+		Map<String, String> extraInfo) {
 
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), null, message.getPayload(), error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), businessContextId, extraInfo, message.getPayload(), error);
 		
 		String xmlString = JAXB_UTIL.marshal(logEvent);
 		dispatchErrorEvent(xmlString);
@@ -154,9 +159,11 @@ public class EventLogger {
 
 	public void logErrorEvent (
 		Throwable   error,
-		Object      payload) {
+		Object      payload,
+		Map<String, String> businessContextId,
+		Map<String, String> extraInfo) {
 
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), null, payload, error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), businessContextId, extraInfo, payload, error);
 
 		String xmlString = JAXB_UTIL.marshal(logEvent);
 		dispatchErrorEvent(xmlString);
@@ -196,7 +203,8 @@ public class EventLogger {
 	}
 
 	private Session getSession() throws JMSException {
-		JmsConnector jmsConn = (JmsConnector)MuleServer.getMuleContext().getRegistry().lookupConnector("soitoolkit-jms-connector");
+//		JmsConnector jmsConn = (JmsConnector)MuleServer.getMuleContext().getRegistry().lookupConnector("soitoolkit-jms-connector");
+		JmsConnector jmsConn = (JmsConnector)MuleUtil.getSpringBean("soitoolkit-jms-connector");
 		Connection c = jmsConn.getConnection();
 		Session s = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		return s;
@@ -235,6 +243,7 @@ public class EventLogger {
 		String businessCorrelationId   = runtimeInfo.getBusinessCorrelationId();
 		String payload                 = logEvent.getLogEntry().getPayload();
 		String businessContextIdString = businessContextIdToString(runtimeInfo.getBusinessContextId());
+		String extraInfoString         = extraInfoToString(logEvent.getLogEntry().getExtraInfo());
 		
 		StringBuffer stackTrace = new StringBuffer();
 		LogMessageExceptionType lmeException = logEvent.getLogEntry().getMessageInfo().getException();
@@ -248,7 +257,7 @@ public class EventLogger {
 				stackTrace.append('\n').append("\t at ").append(stLine);
 			}
 		}
-		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, stackTrace.toString(), logEventName});
+		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, extraInfoString, stackTrace.toString(), logEventName});
 	}
 	
 	private String businessContextIdToString(List<BusinessContextId> businessContextIds) {
@@ -257,9 +266,20 @@ public class EventLogger {
 		
 		StringBuffer businessContextIdString = new StringBuffer();
 		for (BusinessContextId bci : businessContextIds) {
-			businessContextIdString.append("\n-").append(bci.getName()).append(" = ").append(bci.getValue());
+			businessContextIdString.append("\n-").append(bci.getName()).append("=").append(bci.getValue());
 		}
 		return businessContextIdString.toString();
+	}
+
+	private String extraInfoToString(List<ExtraInfo> extraInfo) {
+		
+		if (extraInfo == null) return "";
+		
+		StringBuffer extraInfoString = new StringBuffer();
+		for (ExtraInfo ei : extraInfo) {
+			extraInfoString.append("\n-").append(ei.getName()).append("=").append(ei.getValue());
+		}
+		return extraInfoString.toString();
 	}
 
 	private String getServerId() {
@@ -397,6 +417,7 @@ public class EventLogger {
 		MuleMessage message, 
 		String logMessage,
 		Map<String, String> businessContextId,
+		Map<String, String> extraInfo,
 		Object payload,
 		Throwable exception) {
 
@@ -504,6 +525,16 @@ public class EventLogger {
 		logEntry.setMessageInfo(lm);
 		logEntry.setPayload(payloadASstring);
 
+		// Add any extra info
+		if (extraInfo != null) {
+			Set<Entry<String, String>> entries = extraInfo.entrySet();
+			for (Entry<String, String> entry : entries) {
+				ExtraInfo ei = new ExtraInfo();
+				ei.setName(entry.getKey());
+				ei.setValue(entry.getValue());
+				logEntry.getExtraInfo().add(ei);
+			}
+		}
 		
 		// Create the final log event object
 		LogEvent logEvent = new LogEvent();

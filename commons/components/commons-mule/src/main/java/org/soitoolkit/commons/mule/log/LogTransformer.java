@@ -18,6 +18,8 @@ package org.soitoolkit.commons.mule.log;
 
 import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
 
+import java.util.Map;
+
 import org.mule.RequestContext;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleEventContext;
@@ -47,15 +49,40 @@ public class LogTransformer extends AbstractMessageAwareTransformer {
 
 	private final EventLogger eventLogger;
 
+	/*
+	 * Property logLevel 
+	 */
 	private LogLevelType logLevel = INFO;
-
 	public void setLogLevel(LogLevelType logLevel) {
 		this.logLevel = logLevel;
 	}
 
+	/*
+	 * Property logType 
+	 */
 	private String logType;
 	public void setLogType(String logType) {
 		this.logType = logType;
+	}
+
+	/*
+	 * Property extraInfo 
+	 * 
+     * <custom-transformer name="logKivReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+	 * 	<spring:property name="logType"  value="Received"/>
+	 * 	<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+	 *    <spring:property name="extraInfo">
+	 *      <spring:map>
+	 *        <spring:entry key="id1" value="123"/>
+	 *        <spring:entry key="id2" value="456"/>
+	 *      </spring:map>
+	 *    </spring:property>
+     * </custom-transformer>
+	 * 
+	 */
+	private Map<String, String> extraInfo;
+	public void setExtraInfo(Map<String, String> extraInfo) {
+		this.extraInfo = extraInfo;
 	}
 
 	public LogTransformer() {
@@ -100,13 +127,13 @@ public class LogTransformer extends AbstractMessageAwareTransformer {
 			case INFO:
 			case DEBUG:
 			case TRACE:
-				eventLogger.logInfoEvent(message, logType, null);
+				eventLogger.logInfoEvent(message, logType, null, extraInfo);
 				break;
 
 			case FATAL:
 			case ERROR:
 			case WARNING:
-				eventLogger.logErrorEvent(new RuntimeException(logType), message);
+				eventLogger.logErrorEvent(new RuntimeException(logType), message, null, extraInfo);
 				break;
 			}
 

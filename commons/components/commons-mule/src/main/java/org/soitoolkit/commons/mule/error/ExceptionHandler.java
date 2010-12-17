@@ -46,15 +46,15 @@ public class ExceptionHandler extends DefaultExceptionStrategy {
         {
         	if (muleException instanceof MessagingException) {
         		MessagingException me = (MessagingException)muleException;
-            	eventLogger.logErrorEvent(muleException, me.getMuleMessage());
+            	eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
 
         	} else {
                 Map<String, Object> info = ExceptionHelper.getExceptionInfo(muleException);
-            	eventLogger.logErrorEvent(muleException, info.get("Payload"));
+            	eventLogger.logErrorEvent(muleException, info.get("Payload"), null, null);
         	}
         	
         } else {
-        	eventLogger.logErrorEvent(t, (Object)null);
+        	eventLogger.logErrorEvent(t, (Object)null, null, null);
         }
 	}
 
@@ -63,6 +63,6 @@ public class ExceptionHandler extends DefaultExceptionStrategy {
 //		This type of fatal error (i.e. problem with the error handling itself) is best to log both with Mule's standard error-logging and our own
 		super.logFatal(message, t);
 
-		eventLogger.logErrorEvent(t, message);
+		eventLogger.logErrorEvent(t, message, null, null);
 	}
 }
