@@ -33,7 +33,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
  */
 public class JdbcScriptEngine {
 
-	private final static Logger log = LoggerFactory.getLogger(JdbcUtil.class);
+	private final static Logger log = LoggerFactory.getLogger(JdbcScriptEngine.class);
 	
 	private SimpleJdbcTemplate t;
 	
