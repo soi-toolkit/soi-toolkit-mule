@@ -26,16 +26,37 @@
 		http://www.mulesource.org/schema/mule/jdbc/2.2 http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd">
 
 	<!-- 
+		Generic property based datasource definition based on Apache's DBCP for connection pooling
+		 
 		Expects settings in the property file similar to:
-			SOITOOLKIT_JDBC_URL=jdbc:jtds:sqlserver://myhost:1433;prepareSql=2;domain=mydomain;DatabaseName=mydatabase
-			SOITOOLKIT_JDBC_USR=myuser
-			SOITOOLKIT_JDBC_PWD=mypwd
+			SOITOOLKIT_JDBC_DRIVER=jdbc driver class
+			SOITOOLKIT_JDBC_URL=jdbc driver connection url
+			SOITOOLKIT_JDBC_USR=username
+			SOITOOLKIT_JDBC_PWD=passowrd
 	    	SOITOOLKIT_JDBC_CON_POOL_INIT_SIZE=1
 	    	SOITOOLKIT_JDBC_CON_POOL_MAX_ACTIVE=2
 	    	SOITOOLKIT_JDBC_CON_POOL_MAX_IDLE=10
+
+		Note: It is recommended to keep the username and password properties separate in the security-property-file
+		
+		Sample settings for an Apache Derby database:
+			SOITOOLKIT_JDBC_DRIVER=org.apache.derby.jdbc.ClientDriver
+			SOITOOLKIT_JDBC_URL=jdbc:derby://myhost:1527/mydatabase;create=true
+
+		Sample settings for a Microsoft SQL Server database using the JTDS JDBC driver:
+			SOITOOLKIT_JDBC_DRIVER=net.sourceforge.jtds.jdbc.Driver
+			SOITOOLKIT_JDBC_URL=jdbc:jtds:sqlserver://myhost:1433;prepareSql=2;domain=mydomain;DatabaseName=mydatabase
+
+		Sample settings for a MySQL database:
+			SOITOOLKIT_JDBC_DRIVER=com.mysql.jdbc.Driver
+			SOITOOLKIT_JDBC_URL=jdbc:mysql://myhost:3306/mydatabase
+
+		Sample settings for an Oracle database:
+			SOITOOLKIT_JDBC_DRIVER=oracle.jdbc.driver.OracleDriver
+			SOITOOLKIT_JDBC_URL=jdbc:oracle:thin:@muhost:1521:mydatabase
 	 -->
 	<spring:bean id="soitoolkit-jdbc-datasource" class="org.apache.commons.dbcp.BasicDataSource">
-		<spring:property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+		<spring:property name="driverClassName" value="${SOITOOLKIT_JDBC_DRIVER}"/>
 		<spring:property name="url"        		value="${SOITOOLKIT_JDBC_URL}"/>
 	    <spring:property name="username"      	value="${SOITOOLKIT_JDBC_USR}"/>
 	    <spring:property name="password"   		value="${SOITOOLKIT_JDBC_PWD}"/>
