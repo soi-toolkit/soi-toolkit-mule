@@ -84,6 +84,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //	private Button genSchemaButton;
 	private Button genWarButton;
 	private Button jmsButton;
+	private Button jdbcButton;
 	private Button sftpButton;
 	private Button servletButton;
 
@@ -201,6 +202,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		jmsButton = SwtUtil.createCheckboxButton(container, null, i++, "JMS");
 		jmsButton.setSelection(true);
 		jmsButton.setEnabled(false);
+		jdbcButton = SwtUtil.createCheckboxButton(container, null, i++, "JDBC");
+		jdbcButton.setSelection(true);
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
 		sftpButton.setSelection(true);
 		servletButton = SwtUtil.createCheckboxButton(container, null, i++, "Servlet");
@@ -314,6 +317,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	public List<TransportEnum> getTransports() {
 		List<TransportEnum> transports = new ArrayList<TransportEnum>();
 		if (isJmsTransportSelected()) transports.add(TransportEnum.JMS);
+		if (isJdbcTransportSelected()) transports.add(TransportEnum.JDBC);
 		if (isSftpTransportSelected()) transports.add(TransportEnum.SFTP);
 		if (isServletTransportSelected()) transports.add(TransportEnum.SERVLET);
 		return transports;
@@ -323,6 +327,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	
 	private boolean isJmsTransportSelected() {
 		return jmsButton.getSelection();
+	}
+
+	private boolean isJdbcTransportSelected() {
+		return jdbcButton.getSelection();
 	}
 
 	private boolean isSftpTransportSelected() {

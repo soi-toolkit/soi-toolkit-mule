@@ -1,4 +1,13 @@
 # TODO: Add security related properties here...
+
+<% if (jdbc) { %>
+# Properties for the default soitoolkit-jdbc-connector's that require username/password
+# See ${configPropertyFile}.properties for more jdbc-connector properties
+# TODO: Update to reflect your settings
+SOITOOLKIT_JDBC_USR=APP
+SOITOOLKIT_JDBC_PWD=pwd
+<% } %>  
+
 <% if (sftp) { %>
 # Properties for the default soitoolkit-sftp-connector
 # TODO: Update to reflect your settings

@@ -44,6 +44,14 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/java/__javaPackageFilepath__");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/main/resources/__artifactId__-common.xml.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/main/resources/__artifactId__-config.xml.gt");
+
+	    if (gu.getModel().isJdbc()) {
+			gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/main/resources/__artifactId__-jdbc-connector.xml.gt");
+			gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/setup/__artifactId__-db-create-tables.sql.gt");
+			gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/setup/__artifactId__-db-drop-tables.sql.gt");
+			gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/setup/__artifactId__-db-insert-testdata.sql.gt");
+	    }
+
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/resources/services");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/test/resources/__artifactId__-teststubs-and-services-config.xml.gt");

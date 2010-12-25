@@ -7,12 +7,14 @@
 	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
 	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
 	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
-		http://www.mulesource.org/schema/mule/file/2.2 http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
-		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
-		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+		http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
+		http://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
+		http://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
 
 	<!-- TODO: Add teststub-service specific definitions here -->
 
@@ -22,6 +24,9 @@
             <inbound>
 <% if (outboundTransport=="JMS") { %>
                 <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
+<% } else if (outboundTransport=="JDBC") { %> 
+            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-teststub-export-query"/>
+            	
 <% } else if (outboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
 					address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"

@@ -367,6 +367,11 @@ public class DefaultModelImpl implements IModel {
 	}	
 
 	@Override
+	public boolean isJdbc() {
+		return isTransportSelected(TransportEnum.JDBC);
+	}	
+
+	@Override
 	public boolean isServlet() {
 		return isTransportSelected(TransportEnum.SERVLET);
 	}	

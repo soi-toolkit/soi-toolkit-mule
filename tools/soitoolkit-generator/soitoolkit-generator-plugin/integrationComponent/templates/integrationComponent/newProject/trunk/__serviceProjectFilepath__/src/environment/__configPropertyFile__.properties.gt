@@ -7,3 +7,19 @@ SOITOOLKIT_LOG_ERROR_QUEUE=SOITOOLKIT.LOG.ERROR
 
 # Default timeout for synchronous services
 SERVICE_TIMEOUT_MS=8000
+
+<% if (jdbc) { %>
+# Properties for the generic soitoolkit-mule-jdbc-connector.xml.
+# See ${securityPropertyFile}.properties for authentication related jdbc-connector properties
+# TODO: Update to reflect your settings
+# For Derby:
+# (see soitoolkit-mule-jdbc-datasource.xml for how to setup other databases, e.g. MySQL, SQL Server or Oracle)
+SOITOOLKIT_JDBC_DRIVER=org.apache.derby.jdbc.ClientDriver
+SOITOOLKIT_JDBC_URL=jdbc:derby://localhost:1527/${artifactId}Db;create=true
+
+SOITOOLKIT_JDBC_CON_POLLING_MS=1000
+SOITOOLKIT_JDBC_CON_POOL_INIT_SIZE=1
+SOITOOLKIT_JDBC_CON_POOL_MAX_ACTIVE=2
+SOITOOLKIT_JDBC_CON_POOL_MAX_IDLE=10
+<% } %>  
+

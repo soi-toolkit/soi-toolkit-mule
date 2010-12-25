@@ -99,6 +99,7 @@ public interface IModel {
 
     // Transports
     public boolean isJms();
+    public boolean isJdbc();
 	public boolean isSftp();
 	public boolean isServlet();
     public String getInboundTransport();

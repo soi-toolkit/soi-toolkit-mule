@@ -5,6 +5,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:spring="http://www.springframework.org/schema/beans"
 	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+<% if (jdbc) { %>
+	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
+<% } %>  
 <% if (servlet) { %>
 	xmlns:servlet="http://www.mulesource.org/schema/mule/servlet/2.2"
 <% } %>  
@@ -13,6 +16,9 @@
 		http://www.springframework.org/schema/beans          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.mulesource.org/schema/mule/core/2.2       http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
 		http://www.mulesource.org/schema/mule/jms/2.2        http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd
+<% if (jdbc) { %>
+		http://www.mulesource.org/schema/mule/jdbc/2.2    http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
+<% } %>  
 <% if (servlet) { %>
 		http://www.mulesource.org/schema/mule/servlet/2.2    http://www.mulesource.org/schema/mule/servlet/2.2/mule-servlet.xsd
 <% } %>  
@@ -67,7 +73,6 @@
 	<servlet:connector name="servletConnector" />
 <% } %>  
 
-
 <% if (false) { %>
     <!-- We don't use these global endpoint for the moment but maybe we will again in the future so we keep the code fragments -->
 	<endpoint name="soitoolkit-info-log-endpoint" address="vm://soitoolkit-info-log">
@@ -78,12 +83,10 @@
 	</endpoint>
 <% } %>  
 
-
     <spring:beans>
 <% if (sftp) { %>
         <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
 <% } %>  
-	    <spring:import resource="classpath:soitoolkit-log-service.xml"/>
     </spring:beans>
 
 	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>

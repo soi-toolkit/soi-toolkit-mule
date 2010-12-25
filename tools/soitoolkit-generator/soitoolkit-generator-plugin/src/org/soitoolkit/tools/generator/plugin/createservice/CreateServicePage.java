@@ -221,8 +221,8 @@ public class CreateServicePage extends WizardPage {
 //					patternTypeCombo.setItems (new String [] {"JMS with JMS adapter",
 //							"JMS with JDBC adapter",
 //							"JMS with file adapter"});
-					inboundTransportCombo.setItems  (new String [] {"JMS", "SFTP", "HTTP (Multipart POST)"}); // , "JDBC"
-					outboundTransportCombo.setItems (new String [] {"JMS", "SFTP"}); // , "JDBC"
+					inboundTransportCombo.setItems  (new String [] {"JMS", "SFTP", "HTTP (Multipart POST)", "JDBC"});
+					outboundTransportCombo.setItems (new String [] {"JMS", "SFTP", "JDBC"}); 
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
 					inboundTransportCombo.setItems  (new String [] {"JMS"});
@@ -470,6 +470,9 @@ public class CreateServicePage extends WizardPage {
 			case 2: 
 				t = TransportEnum.SERVLET;
 				break;
+			case 3: 
+				t = TransportEnum.JDBC;
+				break;
 		}
 		return t;
 	}
@@ -483,6 +486,9 @@ public class CreateServicePage extends WizardPage {
 				break;
 			case 1: 
 				t = TransportEnum.SFTP;
+				break;
+			case 2: 
+				t = TransportEnum.JDBC;
 				break;
 		}
 		return t;

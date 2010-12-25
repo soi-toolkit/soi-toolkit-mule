@@ -16,7 +16,11 @@
  */
 package org.soitoolkit.tools.generator.plugin.util;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -33,6 +37,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -42,6 +55,8 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class XmlUtil {
 
@@ -109,13 +124,13 @@ public class XmlUtil {
 		}
 	}
 
-	static public NodeList getXPathResult(Document doc, String namespacePrefix, String namespaceURI, String expression) {
+	static public NodeList getXPathResult(Node node, String namespacePrefix, String namespaceURI, String expression) {
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put(namespacePrefix, namespaceURI);
-		return getXPathResult(doc, namespaceMap, expression);
+		return getXPathResult(node, namespaceMap, expression);
 	}
 
-	static public NodeList getXPathResult(Document doc, Map<String, String> namespaceMap, String expression) {
+	static public NodeList getXPathResult(Node node, Map<String, String> namespaceMap, String expression) {
 		try {
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			if (namespaceMap != null) {
@@ -124,7 +139,7 @@ public class XmlUtil {
 
 			XPathExpression expr = xpath.compile(expression);
 
-			Object result = expr.evaluate(doc, XPathConstants.NODESET);
+			Object result = expr.evaluate(node, XPathConstants.NODESET);
 			return (NodeList) result;
 
 		} catch (XPathExpressionException e) {
@@ -143,6 +158,47 @@ public class XmlUtil {
 		}
 		return values;
 	}
+
+	/**
+	  * @param parent
+	  *          node to add fragment to
+	  * @param fragment
+	  *          a well formed XML fragment
+ 	  * @throws ParserConfigurationException 
+	  */
+	public static void appendXmlFragment(Node parent, String fragment) throws IOException, SAXException, ParserConfigurationException {
+
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+		domFactory.setNamespaceAware(true);
+		DocumentBuilder docBuilder = domFactory.newDocumentBuilder();
+		Document doc = parent.getOwnerDocument();
+
+	    Node fragmentNode = docBuilder.parse(new InputSource(new StringReader(fragment))).getDocumentElement();
+
+	    fragmentNode = doc.importNode(fragmentNode, true);
+	    
+	    parent.appendChild(fragmentNode);
+	    System.err.println("### ADDED: " + fragment + " node " + parent.getLocalName());
+	}
+
+
+    public static String getXml(Document doc) {
+    	try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			//initialize StreamResult with File object to save to file
+			StreamResult result = new StreamResult(new StringWriter());
+			DOMSource source = new DOMSource(doc);
+			transformer.transform(source, result);
+
+			String xmlString = result.getWriter().toString();
+			return xmlString;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
 
     public static XMLGregorianCalendar convertDateToXmlDate(Date date) {
 		try {

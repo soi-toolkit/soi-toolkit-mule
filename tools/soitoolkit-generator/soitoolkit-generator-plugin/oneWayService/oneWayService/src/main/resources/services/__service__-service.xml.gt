@@ -7,6 +7,7 @@
 	xmlns:vm="http://www.mulesource.org/schema/mule/vm/2.2"
 	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
 	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
+	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
 	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
@@ -14,10 +15,17 @@
 		http://www.mulesource.org/schema/mule/vm/2.2   http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd
 		http://www.mulesource.org/schema/mule/file/2.2 http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
 		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
+		http://www.mulesource.org/schema/mule/jdbc/2.2 http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
 		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
 
 	<!-- TODO: Add service specific definitions here -->
     <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
+<% if (inboundTransport=="JDBC") { %>
+    <custom-transformer name="${lowercaseJavaService}ExportFromDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
+<% } %> 
+<% if (outboundTransport=="JDBC") { %>
+    <custom-transformer name="${lowercaseJavaService}ImportToDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
+<% } %> 
 
 	<model name="${service}-model">
 	
@@ -30,6 +38,13 @@
 					<jms:transaction action="ALWAYS_BEGIN" />
 <% } %> 
 				</inbound-endpoint>
+
+<% } else if (inboundTransport=="JDBC") { %> 
+            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="${lowercaseJavaService}ExportFromDb">
+<% if (serviceTransactional) { %>
+					<jdbc:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+            	</jdbc:inbound-endpoint>
 
 <% } else if (inboundTransport=="SERVLET") { %> 
 				<inbound-endpoint address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_SERVLET_URI}"
@@ -61,6 +76,13 @@
 						<jms:transaction action="ALWAYS_JOIN" />
 <% } %> 
 					</outbound-endpoint>
+
+<% } else if (outboundTransport=="JDBC") { %>
+            		<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="${lowercaseJavaService}Transformer ${lowercaseJavaService}ImportToDb">
+<% if (serviceTransactional) { %>
+						<jdbc:transaction action="ALWAYS_JOIN" />
+<% } %> 
+					</jdbc:outbound-endpoint>
 
 <% } else if (outboundTransport=="SFTP") { %> 
 					<outbound-endpoint address="vm://${service}-service" />

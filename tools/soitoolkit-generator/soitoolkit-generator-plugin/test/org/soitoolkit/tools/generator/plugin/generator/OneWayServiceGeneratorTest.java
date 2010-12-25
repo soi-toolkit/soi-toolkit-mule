@@ -68,25 +68,25 @@ public class OneWayServiceGeneratorTest {
 	@Test
 	public void testOneWayServices221() throws IOException {
 		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_1);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "oneway-tests", MULE_2_2_1);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests", MULE_2_2_1);
 	}
 
 	@Test
 	public void testOneWayServices225() throws IOException {
 		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_5);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "oneway-tests", MULE_2_2_5);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests", MULE_2_2_5);
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {JMS, SFTP, SERVLET};
-		TransportEnum[] outboundTransports = {JMS, SFTP};
-//		TransportEnum[] inboundTransports  = {JDBC};
-//		TransportEnum[] outboundTransports = {JDBC};
+		TransportEnum[] inboundTransports  = {JMS, JDBC, SFTP, SERVLET};
+		TransportEnum[] outboundTransports = {JMS, JDBC, SFTP};
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
+				if (inboundTransport == JMS  && outboundTransport == JDBC) continue;
+				if (inboundTransport == JDBC && outboundTransport == JMS)  continue;
 				createOneWayService(groupId, artifactId, inboundTransport, outboundTransport);
 			}
 		}
@@ -98,13 +98,14 @@ public class OneWayServiceGeneratorTest {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		TRANSPORTS.add(JMS);
+		TRANSPORTS.add(JDBC);
 		TRANSPORTS.add(SFTP);
 		TRANSPORTS.add(SERVLET);
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
 		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(projectFolder));
+		assertEquals("Missmatch in expected number of created files and folders", 66, SystemUtil.countFiles(projectFolder));
 	}
 
 	private void createOneWayService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport) throws IOException {
@@ -121,8 +122,11 @@ public class OneWayServiceGeneratorTest {
 		if (inboundTransport == SERVLET) {
 			expectedNoOfFiles++;
 		}
-		if (inboundTransport == JDBC || outboundTransport == JDBC) {
-			expectedNoOfFiles += 2;
+		if (inboundTransport == JDBC) {
+			expectedNoOfFiles++; // from-db-transformer
+		}
+		if (outboundTransport == JDBC) {
+			expectedNoOfFiles++; // to-db-transformer
 		}
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
