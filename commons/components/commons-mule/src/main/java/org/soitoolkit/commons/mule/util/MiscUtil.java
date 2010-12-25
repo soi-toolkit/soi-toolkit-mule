@@ -41,6 +41,7 @@ import org.springframework.util.StringUtils;
  */
 public class MiscUtil {
 
+	private static final String DEFAULT_CHARSET = "UTF-8";
 	private final static Logger logger = LoggerFactory.getLogger(MiscUtil.class);
     private final static String placeholderPrefix = "${";
     private final static String placeholderSuffix = "}";
@@ -53,15 +54,19 @@ public class MiscUtil {
     }
 
 	public static String readFileAsString(String filename) {
+		return readFileAsString(filename, DEFAULT_CHARSET);
+    }
+
+	public static String readFileAsString(String filename, String charset) {
 	    try {
-			return MiscUtil.convertStreamToString(new FileInputStream(filename));
+			return MiscUtil.convertStreamToString(new FileInputStream(filename), charset);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
     public static String convertStreamToString(InputStream is) {
-    	return convertStreamToString(is, "UTF-8");
+    	return convertStreamToString(is, DEFAULT_CHARSET);
     }
     
     /**
