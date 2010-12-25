@@ -53,7 +53,8 @@
 		transportType="CLIENT_MQ_TCPIP"
 		numberOfConsumers="${SOITOOLKIT_MULE_WMQ_NO_OF_CONSUMERS}"
 		targetClient="JMS_COMPLIANT"
-		disableTemporaryReplyToDestinations="true">
+		disableTemporaryReplyToDestinations="true"
+		maxRedelivery="10">
     
     <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
 
