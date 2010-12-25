@@ -156,7 +156,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			// Next create a listener that listens for dispatch events on the outbound endpoint
 			listener = new EndpointMessageNotificationListener() {
 				public void onNotification(ServerNotification notification) {
-//					System.err.println("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName() + ")");
+					if (logger.isDebugEnabled()) logger.debug("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName() + ")");
 
 					// Only care about EndpointMessageNotification
 					if (notification instanceof EndpointMessageNotification) {
@@ -167,8 +167,10 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 						String actualEndpoint = endpointNotification.getEndpoint().getName();
 
 						// If it is a dispatch event on our outbound endpoint then countdown the latch.
-//						System.err.println(actualAction == action);
-//						System.err.println(actualEndpoint.equals(outboundEndpointName));
+						if (logger.isDebugEnabled()) {
+							logger.debug(actualAction == action);
+							logger.debug(actualEndpoint.equals(outboundEndpointName));
+						}
 						if (actualAction == action && actualEndpoint.equals(outboundEndpointName)) {
 							if (logger.isDebugEnabled()) logger.debug("Expected notification received on " + actualEndpoint + " (action: " + endpointNotification.getActionName() + "), time to countdown the latch");
 							receivedMessageHolder.value = (MuleMessage)endpointNotification.getSource();
@@ -246,7 +248,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			listener = new ComponentMessageNotificationListener() {
 				public void onNotification(ServerNotification notification) {
 
-//					System.err.println("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName());
+					if (logger.isDebugEnabled()) logger.debug("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName());
 
 					// Only care about ComponentMessageNotification
 					if (notification instanceof ComponentMessageNotification) {
@@ -324,74 +326,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 	 * @return the received MuleMEssage on the outboundEndpoint
 	 */
 	protected MuleMessage dispatchAndWaitForServiceComponent(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceComponentName, long timeout) {
-
 		return dispatchAndWaitForServiceComponent(new DispatcherMuleClientImpl(inboundEndpointAddress, payload, headers), serviceComponentName, timeout);
-
-/*
-		// Declare MuleMessage to return
-		final ValueHolder<MuleMessage> receivedMessageHolder = new ValueHolder<MuleMessage>();
-		
-		// Declare countdown latch and listener
-		final CountDownLatch latch = new CountDownLatch(1);
-		ComponentMessageNotificationListener listener = null;
-		MuleClient muleClient = null;
-
-		try {
- 			// First create a muleClient instance
-			muleClient = new MuleClient();
-
-			// Next create a listener that listens for invoke events on the named component
-			listener = new ComponentMessageNotificationListener() {
-				public void onNotification(ServerNotification notification) {
-
-//					System.err.println("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName());
-
-					// Only care about ComponentMessageNotification
-					if (notification instanceof ComponentMessageNotification) {
-						ComponentMessageNotification componentNotification = (ComponentMessageNotification)notification;
-
-						// Extract action and name of the component
-						int    action    = componentNotification.getAction();
-						String component = componentNotification.getResourceIdentifier();
-
-						// If it is a post-invoke event (i.e. the processing is done) on our component then countdown the latch.
-						if (action == COMPONENT_POST_INVOKE && component.equals(serviceComponentName)) {
-							if (logger.isDebugEnabled()) logger.debug("Expected notification received on " + serviceComponentName + " (action: " + componentNotification.getActionName() + "), time to countdown the latch");
-							receivedMessageHolder.value = (MuleMessage)componentNotification.getSource();
-							latch.countDown();
-						}
-					}
-				}
-			};
-
-			// Now register the listener
-			muleContext.getNotificationManager().addListener(listener);
-
-			// Perform the actual dispatch
-			muleClient.dispatch(inboundEndpointAddress, payload, headers);
-
-			// Wait for the delivery to occur...
-			if (logger.isDebugEnabled()) logger.debug("Waiting for message to be delivered to the endpoint...");
-			boolean workDone = latch.await(timeout, TimeUnit.MILLISECONDS);
-			if (logger.isDebugEnabled()) logger.debug((workDone) ? "Message delivered, continue..." : "No message delivered, timeout occurred!");
-
-			// Raise a fault if the test timed out
-			assertTrue("Test timed out. It took more than " + timeout + " milliseconds. If this error occurs the test probably needs a longer time out (on your computer/network)", workDone);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("An unexpected error occurred: " + e.getMessage());
-
-		} finally {
-			// Dispose muleClient 
-			muleClient.dispose();
-
-			// Always remove the listener if created
-			if (listener != null) muleContext.getNotificationManager().removeListener(listener);
-		}
-		
-		return receivedMessageHolder.value;		
-*/
     }
 
     /**
@@ -403,8 +338,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
      * @param timeout
      * @return
      */
-    protected Exception dispatchAndWaitForException(String inboundEndpointAddress, Object payload, Map<String, String> headers, long timeout)
-    {
+    protected Exception dispatchAndWaitForException(String inboundEndpointAddress, Object payload, Map<String, String> headers, long timeout) {
 		// Declare MuleMessage to return
 		final ValueHolder<Throwable> exceptionHolder = new ValueHolder<Throwable>();
 
@@ -483,8 +417,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
      * @param timeout
      * @return
      */
-    protected Exception dispatchAndWaitForException(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceName, long timeout)
-    {
+    protected Exception dispatchAndWaitForException(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceName, long timeout) {
 		// Declare MuleMessage to return
 		final ValueHolder<Exception> exceptionHolder = new ValueHolder<Exception>();
 
@@ -501,7 +434,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			listener = new ExceptionNotificationListener() {
 				public void onNotification(ServerNotification notification) {
 
-					System.err.println("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName() + ")");
+					if (logger.isDebugEnabled()) logger.debug("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName() + ")");
 
 					// Only care about ExceptionNotification
 					if (notification instanceof ExceptionNotification) {

@@ -21,11 +21,16 @@ import static org.junit.Assert.*;
 import javax.xml.bind.Marshaller;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.logentry.schema.v1.LogEntryType;
 import org.soitoolkit.commons.logentry.schema.v1.LogEvent;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
 
 public class JaxbUtilTest {
 
+	private final static Logger log = LoggerFactory.getLogger(JaxbUtilTest.class);
+	
 	@Test
 	public void testMarshal() {
 		
@@ -45,7 +50,7 @@ public class JaxbUtilTest {
 		JaxbUtil jaxbUtil = new JaxbUtil(LogEvent.class);
 		String actualXml = jaxbUtil.marshal(logEvent);
 		
-		System.err.println(actualXml);
+		log.info(actualXml);
 		assertEquals(expectedXml, actualXml);
 	}
 
@@ -64,7 +69,7 @@ public class JaxbUtilTest {
 		JaxbUtil jaxbUtil = new JaxbUtil(LogEvent.class);
 		String actualXml = jaxbUtil.marshal(logEntry, "urn:org.soitoolkit.commons.logentry.schema:v1", "logEntry");
 		
-		System.err.println(actualXml);
+		log.info(actualXml);
 		assertEquals(expectedXml, actualXml);
 	}
 
@@ -88,7 +93,7 @@ public class JaxbUtilTest {
 		jaxbUtil.addMarshallProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		String actualXml = jaxbUtil.marshal(logEvent);
 		
-		System.err.println(actualXml);
+		log.info(actualXml);
 		assertEquals(expectedXml, actualXml);
 	}
 
@@ -110,7 +115,7 @@ public class JaxbUtilTest {
 
 		String actualPayload = logEvent.getLogEntry().getPayload();
 				
-		System.err.println(actualPayload);
+		log.info(actualPayload);
 		assertEquals(expectedPayload, actualPayload);
 	}
 

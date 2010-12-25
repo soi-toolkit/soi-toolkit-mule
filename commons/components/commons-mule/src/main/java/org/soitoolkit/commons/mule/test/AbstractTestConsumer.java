@@ -19,6 +19,10 @@ package org.soitoolkit.commons.mule.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
+
 /**
  * Base class for test consumer of services based on the servlet-transport
  * 
@@ -27,7 +31,9 @@ import java.net.URL;
  */
 abstract public class AbstractTestConsumer {
 
-    /**
+	private final static Logger log = LoggerFactory.getLogger(AbstractTestConsumer.class);
+
+	/**
      * Address based on usage of the servlet-transport
      * 
      * @param serviceUriPropertyName
@@ -35,7 +41,7 @@ abstract public class AbstractTestConsumer {
      */
     public static String getAddress(String uri, int httpPort, String ctxPath, String servletUri) {
 	    String url = "http://localhost" + ":" + httpPort + ctxPath + servletUri + "/" + uri;
-	    System.err.println("URL: " + url);
+	    log.info("URL: {}", url);
 	    return url;    	
     }
 

@@ -105,7 +105,7 @@ public class MiscUtil {
 
             	if (logger.isTraceEnabled()) {
 	            	if (linecount % 50000 == 0) {
-	        			System.err.println("### Lines read: " + linecount + ", " + size + " characters and counting...");
+	    				logger.trace("Lines read: {}, {} characters and counting...", linecount, size);
 	        			printMemUsage();            	
 	            	}
             	}
@@ -115,7 +115,7 @@ public class MiscUtil {
 		} finally {
 			// Ignore exceptions on call to the close method
         	if (logger.isTraceEnabled()) {
-				System.err.println("### Lines read: " + linecount + ", " + size + " characters");
+				logger.trace("Lines read: {}, {} characters", linecount, size);
 				printMemUsage();            	
         	}
             try {is.close();} catch (IOException e) {}
@@ -131,15 +131,14 @@ public class MiscUtil {
 		MemoryUsage nhm = mxb.getNonHeapMemoryUsage();
 		int finalizable = mxb.getObjectPendingFinalizationCount();
 		
-		System.out.println("Heap Memory:  init/used/committed/max=" +  hm.getInit()/mb + "/" +  hm.getUsed()/mb + "/" +  hm.getCommitted()/mb + "/" +  hm.getMax()/mb);
-		System.out.println("Non-Heap Mem: init/used/committed/max=" + nhm.getInit()/mb + "/" + nhm.getUsed()/mb + "/" + nhm.getCommitted()/mb + "/" + nhm.getMax()/mb);
-//        			System.err.println("finalizable: " + finalizable);
-
+		logger.trace("Heap Memory:  init/used/committed/max=" +  hm.getInit()/mb + "/" +  hm.getUsed()/mb + "/" +  hm.getCommitted()/mb + "/" +  hm.getMax()/mb);
+		logger.trace("Non-Heap Mem: init/used/committed/max=" + nhm.getInit()/mb + "/" + nhm.getUsed()/mb + "/" + nhm.getCommitted()/mb + "/" + nhm.getMax()/mb);
+//        			logger.trace("finalizable: " + finalizable);
 
 		//Getting the runtime reference from system
 		Runtime runtime = Runtime.getRuntime();
 
-		System.out.println("Used/Free/Total/Max:"
+		logger.trace("Used/Free/Total/Max:"
 			//Print used memory
 			+ (runtime.totalMemory() - runtime.freeMemory()) / mb + "/"
 
