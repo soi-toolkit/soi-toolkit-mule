@@ -83,10 +83,16 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	private Button genServiceButton;
 //	private Button genSchemaButton;
 	private Button genWarButton;
+	private Button vmButton;
 	private Button jmsButton;
 	private Button jdbcButton;
-	private Button sftpButton;
 	private Button servletButton;
+	private Button fileButton;
+	private Button ftpButton;
+	private Button sftpButton;
+	private Button pop3Button;
+	private Button imapButton;
+	private Button smtpButton;
 
 	private ISelection selection;
 
@@ -199,16 +205,28 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 		int i = 0;
 		// Jms transport is mandatory for logging, should not be selectable
+//		vmButton = SwtUtil.createCheckboxButton(container, null, i++, "VM");
+//		vmButton.setSelection(true);
 		jmsButton = SwtUtil.createCheckboxButton(container, null, i++, "JMS");
 		jmsButton.setSelection(true);
 		jmsButton.setEnabled(false);
 		jdbcButton = SwtUtil.createCheckboxButton(container, null, i++, "JDBC");
 		jdbcButton.setSelection(true);
-		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
-		sftpButton.setSelection(true);
 		servletButton = SwtUtil.createCheckboxButton(container, null, i++, "Servlet");
 		servletButton.setSelection(true);
-
+//		fileButton = SwtUtil.createCheckboxButton(container, null, i++, "File");
+//		fileButton.setSelection(true);
+//		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
+//		ftpButton.setSelection(true);
+		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
+		sftpButton.setSelection(true);
+//		pop3Button = SwtUtil.createCheckboxButton(container, null, i++, "POP3");
+//		pop3Button.setSelection(true);
+//		imapButton = SwtUtil.createCheckboxButton(container, null, i++, "IMAP");
+//		imapButton.setSelection(true);
+//		smtpButton = SwtUtil.createCheckboxButton(container, null, i++, "SMTP");
+//		smtpButton.setSelection(true);
+		
 		// TODO: How to pack?
 //		container.pack();
 		
@@ -316,30 +334,58 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 	public List<TransportEnum> getTransports() {
 		List<TransportEnum> transports = new ArrayList<TransportEnum>();
-		if (isJmsTransportSelected()) transports.add(TransportEnum.JMS);
-		if (isJdbcTransportSelected()) transports.add(TransportEnum.JDBC);
-		if (isSftpTransportSelected()) transports.add(TransportEnum.SFTP);
+		if (isVmTransportSelected())      transports.add(TransportEnum.VM);
+		if (isJmsTransportSelected())     transports.add(TransportEnum.JMS);
+		if (isJdbcTransportSelected())    transports.add(TransportEnum.JDBC);
 		if (isServletTransportSelected()) transports.add(TransportEnum.SERVLET);
+		if (isFileTransportSelected())    transports.add(TransportEnum.FILE);
+		if (isFtpTransportSelected())     transports.add(TransportEnum.FTP);
+		if (isSftpTransportSelected())    transports.add(TransportEnum.SFTP);
+		if (isPop3TransportSelected())    transports.add(TransportEnum.POP3);
+		if (isImapTransportSelected())    transports.add(TransportEnum.IMAP);
+		if (isSmtpTransportSelected())    transports.add(TransportEnum.SMTP);
 		return transports;
 	}
 
 	// ---------------
 	
+	private boolean isVmTransportSelected() {
+		return vmButton != null && vmButton.getSelection();
+	}
+
 	private boolean isJmsTransportSelected() {
-		return jmsButton.getSelection();
+		return jmsButton != null && jmsButton.getSelection();
 	}
 
 	private boolean isJdbcTransportSelected() {
-		return jdbcButton.getSelection();
-	}
-
-	private boolean isSftpTransportSelected() {
-		return sftpButton.getSelection();
+		return jdbcButton != null && jdbcButton.getSelection();
 	}
 
 	private boolean isServletTransportSelected() {
-		return servletButton.getSelection();
+		return servletButton != null && servletButton.getSelection();
 	}
 
-	
+	private boolean isFileTransportSelected() {
+		return fileButton != null && fileButton.getSelection();
+	}
+
+	private boolean isFtpTransportSelected() {
+		return ftpButton != null && ftpButton.getSelection();
+	}
+
+	private boolean isSftpTransportSelected() {
+		return sftpButton != null && sftpButton.getSelection();
+	}
+
+	private boolean isPop3TransportSelected() {
+		return pop3Button != null && pop3Button.getSelection();
+	}
+
+	private boolean isImapTransportSelected() {
+		return imapButton != null && imapButton.getSelection();
+	}
+
+	private boolean isSmtpTransportSelected() {
+		return smtpButton != null && smtpButton.getSelection();
+	}	
 }

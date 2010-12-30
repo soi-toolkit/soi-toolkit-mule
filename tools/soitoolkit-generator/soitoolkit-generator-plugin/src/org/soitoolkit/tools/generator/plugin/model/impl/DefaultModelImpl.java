@@ -18,9 +18,7 @@ package org.soitoolkit.tools.generator.plugin.model.impl;
 
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SFTP;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JDBC;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
@@ -376,6 +374,22 @@ public class DefaultModelImpl implements IModel {
 		return isTransportSelected(TransportEnum.SERVLET);
 	}	
 
+	@Override
+    public boolean isPop3() {
+		return isTransportSelected(TransportEnum.POP3);
+	}	
+
+	@Override
+    public boolean isImap() {
+		return isTransportSelected(TransportEnum.IMAP);
+	}	
+
+	@Override
+    public boolean isSmtp() {
+		return isTransportSelected(TransportEnum.SMTP);
+	}	
+
+
     public String getInboundTransport() {
     	return inboundTransport.name();
     }
@@ -392,7 +406,14 @@ public class DefaultModelImpl implements IModel {
     	return false; // Wait a bit more for this one :-)
     }
     public boolean isInboundEndpointFilebased() {
-    	return inboundTransport == SFTP;
+    	return inboundTransport == FILE ||
+    	       inboundTransport == FTP  ||
+    	       inboundTransport == SFTP;
+    }
+    public boolean isOutboundEndpointFilebased() {
+    	return outboundTransport == FILE ||
+    	       outboundTransport == FTP  ||
+    	       outboundTransport == SFTP;
     }
 
     

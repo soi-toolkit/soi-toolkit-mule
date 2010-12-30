@@ -23,8 +23,13 @@ import groovy.text.Template;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.net.URL;
@@ -142,6 +147,12 @@ public class GeneratorUtil {
 		String filename = getFilename(templateFile);
 		logDebug("Create file: " + filename + " size: " + content.length() + " characters");
 		createFile(filename, content);
+	}
+
+	public void copyContentAndCreateFile(String templateFile) {
+		String filename = getFilename(templateFile);
+		logDebug("Create file: " + filename);
+		copyfile(templateFolder + "/" + templateFile, filename);
 	}
 
 	public String getOutputFolder() {
@@ -281,6 +292,26 @@ public class GeneratorUtil {
 		} finally {
 			if (out != null) try {out.close();} catch (IOException e) {}
 		}
+	}
+
+	private void copyfile(String srcFile, String destFile) {
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			URL file = loadTemplate(srcFile);
+			in = file.openStream();
+			out = new FileOutputStream(destFile);
+
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0) {
+				out.write(buf, 0, len);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		if ( in != null) try { in.close();} catch (IOException ioe) {}
+		if (out != null) try {out.close();} catch (IOException ioe) {}
 	}
 
 	private void logWarn(String msg) {

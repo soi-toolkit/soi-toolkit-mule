@@ -14,8 +14,7 @@ public class ${capitalizedJavaService}ImportToDbTransformer extends AbstractTran
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ImportToDbTransformer.class);
 	
-    public ${capitalizedJavaService}ImportToDbTransformer()
-    {
+    public ${capitalizedJavaService}ImportToDbTransformer() {
         super();
         this.registerSourceType(String.class);
         setReturnClass(Map.class);
@@ -29,8 +28,8 @@ public class ${capitalizedJavaService}ImportToDbTransformer extends AbstractTran
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
 		StringTokenizer st = new StringTokenizer((String)src, "=");
-		String id    = st.nextToken();
-		String value = st.nextToken();
+		String id    = st.nextToken().trim();
+		String value = st.nextToken().trim();
 
 		Map map = new HashMap();
         map.put("ID", id);

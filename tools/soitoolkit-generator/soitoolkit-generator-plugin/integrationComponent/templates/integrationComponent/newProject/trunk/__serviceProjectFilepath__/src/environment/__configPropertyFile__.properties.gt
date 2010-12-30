@@ -8,6 +8,16 @@ SOITOOLKIT_LOG_ERROR_QUEUE=SOITOOLKIT.LOG.ERROR
 # Default timeout for synchronous services
 SERVICE_TIMEOUT_MS=8000
 
+<% if (imap) { %>
+# Default check frequency for reading e-mail using the imap-transport
+IMAP_CHECK_FREQUENCY_MS=3000
+<% } %>
+
+<% if (pop3) { %>
+# Default check frequency for reading e-mail using the pop3-transport
+POP3_CHECK_FREQUENCY_MS=3000
+<% } %>
+
 <% if (jdbc) { %>
 # Properties for the generic soitoolkit-mule-jdbc-connector.xml.
 # See ${securityPropertyFile}.properties for authentication related jdbc-connector properties

@@ -41,6 +41,14 @@ public class PreferencesUtil {
     	return get("custom_groovy_model_impl", "");
 	}
 
+    static public String getDefaultFileRootFolder() {
+    	return get("file_root_folder", getUserHome() + "/soitoolkit/file-transport");
+    }
+    
+    static public String getDefaultFtpRootFolder() {
+    	return get("ftp_root_folder", "muletest1:muletest1@localhost/~/ftp");
+    }
+    
     static public String getDefaultSftpRootFolder() {
     	return get("sftp_root_folder", "muletest1@localhost/~/sftp");
     }
@@ -53,7 +61,11 @@ public class PreferencesUtil {
     	return get("sftp_identity_passphrase", "nnn");
     }
 
-	// -----------------
+    static public String getDefaultArchiveFolder() {
+    	return get("archive_folder", getUserHome() + "/soitoolkit/archive");
+    }
+
+    // -----------------
 	
     static private ResourceBundle defaultPreferences = null;
     

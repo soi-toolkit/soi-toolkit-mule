@@ -102,12 +102,16 @@ public interface IModel {
     public boolean isJdbc();
 	public boolean isSftp();
 	public boolean isServlet();
+    public boolean isPop3();
+    public boolean isImap();
+    public boolean isSmtp();
     public String getInboundTransport();
     public String getOutboundTransport();
     
     public boolean isServiceTransactional();
     public boolean isServiceXaTransactional();
     public boolean isInboundEndpointFilebased();
+    public boolean isOutboundEndpointFilebased();
     
 
     // Property files

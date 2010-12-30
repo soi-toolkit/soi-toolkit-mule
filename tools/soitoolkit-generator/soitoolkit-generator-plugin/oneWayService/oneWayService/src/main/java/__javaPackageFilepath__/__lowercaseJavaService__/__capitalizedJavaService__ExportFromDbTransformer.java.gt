@@ -12,8 +12,7 @@ public class ${capitalizedJavaService}ExportFromDbTransformer extends AbstractTr
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ExportFromDbTransformer.class);
 	
-    public ${capitalizedJavaService}ExportFromDbTransformer()
-    {
+    public ${capitalizedJavaService}ExportFromDbTransformer() {
         super();
         this.registerSourceType(Map.class);
         setReturnClass(String.class);

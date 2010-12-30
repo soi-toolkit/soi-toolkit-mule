@@ -5,28 +5,55 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:spring="http://www.springframework.org/schema/beans"
 	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
+	xmlns:ftp="http://www.mulesource.org/schema/mule/ftp/2.2"
 	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
-	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
 	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
+	xmlns:imap="http://www.mulesource.org/schema/mule/imap/2.2"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-		http://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
-		http://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
-		http://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
-		http://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
-		http://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/file/2.2 http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
+		http://www.mulesource.org/schema/mule/ftp/2.2  http://www.mulesource.org/schema/mule/ftp/2.2/mule-ftp.xsd
+		http://www.mulesource.org/schema/mule/sftp/2.2 http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
+		http://www.mulesource.org/schema/mule/jdbc/2.2 http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
+		http://www.mulesource.org/schema/mule/imap/2.2 http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
 
 	<!-- TODO: Add teststub-service specific definitions here -->
 
 	<model name="${service}-teststub-model">
-	
+
         <service name="${service}-teststub-service">
             <inbound>
-<% if (outboundTransport=="JMS") { %>
+<% if (outboundTransport=="VM") { %>
+                <inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}"/>
+
+<% } else if (outboundTransport=="JMS") { %>
                 <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
+
 <% } else if (outboundTransport=="JDBC") { %> 
             	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-teststub-export-query"/>
-            	
+
+<% } else if (outboundTransport=="FILE") { %> 
+				<file:inbound-endpoint
+					path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+					fileAge="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FILE_AGE_MS}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
+					transformer-refs="objToStr">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</file:inbound-endpoint>
+
+<% } else if (outboundTransport=="FTP") { %> 
+				<ftp:inbound-endpoint 
+					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
+					binary="false"
+					passive="true"
+					transformer-refs="objToStr">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</ftp:inbound-endpoint>
+
 <% } else if (outboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
 					address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
@@ -37,6 +64,14 @@
 					transformer-refs="objToStr">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</sftp:inbound-endpoint>			
+
+<% } else if (outboundTransport=="SMTP") { %> 
+				<imap:inbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_IMAP_HOST}"
+					port="${dollarSymbol}{${uppercaseService}_IMAP_PORT}"
+					user="${dollarSymbol}{${uppercaseService}_IMAP_TEST_USR}" 
+					password="${dollarSymbol}{${uppercaseService}_IMAP_TEST_PWD}"> 
+				</imap:inbound-endpoint>			
 <% } %> 
             </inbound>
 

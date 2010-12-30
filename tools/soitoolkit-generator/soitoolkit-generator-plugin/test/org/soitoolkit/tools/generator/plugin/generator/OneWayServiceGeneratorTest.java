@@ -20,10 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SERVLET;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SFTP;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JDBC;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,19 +64,19 @@ public class OneWayServiceGeneratorTest {
 
 	@Test
 	public void testOneWayServices221() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_1);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests", MULE_2_2_1);
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway221", MULE_2_2_1);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-221", MULE_2_2_1);
 	}
 
 	@Test
 	public void testOneWayServices225() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway", MULE_2_2_5);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests", MULE_2_2_5);
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway225", MULE_2_2_5);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-225", MULE_2_2_5);
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {JMS, JDBC, SFTP, SERVLET};
-		TransportEnum[] outboundTransports = {JMS, JDBC, SFTP};
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
@@ -97,10 +94,16 @@ public class OneWayServiceGeneratorTest {
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
+		TRANSPORTS.add(VM);
 		TRANSPORTS.add(JMS);
 		TRANSPORTS.add(JDBC);
+		TRANSPORTS.add(FILE);
+		TRANSPORTS.add(FTP);
 		TRANSPORTS.add(SFTP);
 		TRANSPORTS.add(SERVLET);
+		TRANSPORTS.add(POP3);
+		TRANSPORTS.add(IMAP);
+		TRANSPORTS.add(SMTP);
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
@@ -128,6 +131,10 @@ public class OneWayServiceGeneratorTest {
 		if (outboundTransport == JDBC) {
 			expectedNoOfFiles++; // to-db-transformer
 		}
+//		TODO: Wait with attachments... 	    
+//		if (inboundTransport == POP3 || inboundTransport == IMAP) {
+//			expectedNoOfFiles += 2; // png + pdf attachment
+//		}
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 

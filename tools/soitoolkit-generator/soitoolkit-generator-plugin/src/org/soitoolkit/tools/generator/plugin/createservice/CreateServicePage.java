@@ -211,28 +211,17 @@ public class CreateServicePage extends WizardPage {
 
 				switch (MepEnum.get(c.getSelectionIndex())) {
 				case MEP_REQUEST_RESPONSE:
-//					patternTypeCombo.setItems (new String [] {"SOAP/HTTPS(S) with SOAP/HTTP(S) adapter",
-//							"SOAP/HTTPS(S) with JMS adapter",
-//							"SOAP/HTTPS(S) with REST/HTTP(S) adapter"});
 					inboundTransportCombo.setItems  (new String [] {"SOAP"});
 					outboundTransportCombo.setItems (new String [] {"SOAP", "REST", "JMS", "JDBC"});
 					break;
 				case MEP_ONE_WAY:
-//					patternTypeCombo.setItems (new String [] {"JMS with JMS adapter",
-//							"JMS with JDBC adapter",
-//							"JMS with file adapter"});
-					inboundTransportCombo.setItems  (new String [] {"JMS", "SFTP", "HTTP (Multipart POST)", "JDBC"});
-					outboundTransportCombo.setItems (new String [] {"JMS", "SFTP", "JDBC"}); 
+					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"});
+					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "SMTP"}); 
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
 					inboundTransportCombo.setItems  (new String [] {"JMS"});
 					outboundTransportCombo.setItems (new String [] {"JMS"});
 					break;
-//				case 3:
-//					inboundTransportCombo.setItems (new String [] {"SFTP to SFTP",
-//							"SFTP to JDBC",
-//							"SFTP to JMS"});
-//					break;
 				}
 
 				dialogChanged();
@@ -459,37 +448,70 @@ public class CreateServicePage extends WizardPage {
 
 	public TransportEnum getSelectedInboundTransport() {
 		
+		// FIXME: if (MEP == ONE_WAY)...
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"});
+
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
-			case 0: 
-				t = TransportEnum.JMS;
-				break;
-			case 1: 
-				t = TransportEnum.SFTP;
-				break;
-			case 2: 
-				t = TransportEnum.SERVLET;
-				break;
-			case 3: 
-				t = TransportEnum.JDBC;
-				break;
+		case 0: 
+			t = TransportEnum.VM;
+			break;
+		case 1: 
+			t = TransportEnum.JMS;
+			break;
+		case 2: 
+			t = TransportEnum.JDBC;
+			break;
+		case 3: 
+			t = TransportEnum.FILE;
+			break;
+		case 4: 
+			t = TransportEnum.FTP;
+			break;
+		case 5: 
+			t = TransportEnum.SFTP;
+			break;
+		case 6: 
+			t = TransportEnum.SERVLET;
+			break;
+		case 7: 
+			t = TransportEnum.POP3;
+			break;
+		case 8: 
+			t = TransportEnum.IMAP;
+			break;
 		}
 		return t;
 	}
 	
 	public TransportEnum getSelectedOutboundTransport() {
 
+		// FIXME: if (MEP == ONE_WAY)...
+		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "SMTP"}); 
+
 		TransportEnum t = null;
 		switch (selectedOutboundTransport) {
-			case 0: 
-				t = TransportEnum.JMS;
-				break;
-			case 1: 
-				t = TransportEnum.SFTP;
-				break;
-			case 2: 
-				t = TransportEnum.JDBC;
-				break;
+		case 0: 
+			t = TransportEnum.VM;
+			break;
+		case 1: 
+			t = TransportEnum.JMS;
+			break;
+		case 2: 
+			t = TransportEnum.JDBC;
+			break;
+		case 3: 
+			t = TransportEnum.FILE;
+			break;
+		case 4: 
+			t = TransportEnum.FTP;
+			break;
+		case 5: 
+			t = TransportEnum.SFTP;
+			break;
+		case 6: 
+			t = TransportEnum.SMTP;
+			break;
 		}
 		return t;
 	}

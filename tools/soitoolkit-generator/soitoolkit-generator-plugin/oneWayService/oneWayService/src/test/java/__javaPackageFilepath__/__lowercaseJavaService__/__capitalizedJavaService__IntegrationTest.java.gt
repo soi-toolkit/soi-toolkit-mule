@@ -11,6 +11,7 @@ import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET
 
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import javax.sql.DataSource;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.transport.email.MailProperties;
 import org.mule.transport.sftp.SftpConnector;
 
 import org.soitoolkit.commons.mule.jdbc.JdbcScriptEngine;
@@ -39,6 +41,8 @@ import org.soitoolkit.commons.mule.test.Dispatcher;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 import org.soitoolkit.commons.mule.util.MuleUtil;
 import org.soitoolkit.commons.mule.sftp.SftpUtil;
+import org.soitoolkit.commons.mule.file.FileUtil;
+import org.soitoolkit.commons.mule.mail.MailUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,23 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+<% if (inboundTransport=="VM") { %>
+	private static final String IN_VM_QUEUE = rb.getString("${uppercaseService}_IN_VM_QUEUE");
+<% } %> 
+
+<% if (outboundTransport=="VM") { %>
+	private static final String OUT_VM_QUEUE = rb.getString("${uppercaseService}_OUT_VM_QUEUE");
+<% } %> 
+
+<% if (inboundTransport=="FILE" || inboundTransport=="FTP") { %>
+	private static final String IN_FOLDER = rb.getString("${uppercaseService}_INBOUND_FOLDER");
+<% } %> 
+<% if (outboundTransport=="FILE" || outboundTransport=="FTP") { %>
+	private static final String OUT_FOLDER = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
+<% } %> 
+<% if (inboundEndpointFilebased || outboundEndpointFilebased) { %>
+	private static final String ARCHIVE = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+<% } %> 
 <% if (inboundTransport=="JMS") { %>
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
 	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
@@ -62,6 +83,14 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
 	private AbstractJmsTestUtil jmsUtil = null;
+	
+<% if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
+	private static final String smtpHost = rb.getString("IMAPTOFILE_SMTP_HOST");
+	private static final int    smtpPort = Integer.parseInt(rb.getString("IMAPTOFILE_SMTP_PORT"));
+	private static final String from     = rb.getString("IMAPTOFILE_INBOUND_EMAIL_TEST_FROM");
+	private static final String to       = rb.getString("IMAPTOFILE_INBOUND_EMAIL_TO");
+	private static final String subject  = rb.getString("IMAPTOFILE_INBOUND_EMAIL_SUBJECT");
+<% } %> 
 	
 	/**
 	 *
@@ -109,6 +138,24 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		doSetUpJms();
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
 		doSetUpDb();
+<% } %> 
+
+<% if (inboundTransport=="FILE") { %>
+		FileUtil.initFolder(new File(IN_FOLDER));
+<% } %> 
+
+<% if (outboundTransport=="FILE") { %>
+		FileUtil.initFolder(new File(OUT_FOLDER));
+<% } %> 
+<% if (inboundTransport=="FTP") { %>
+		// TODO: Clear FTP-inbound-endpoint
+<% } %> 
+<% if (outboundTransport=="FTP") { %>
+		// TODO: Clear FTP-outbound-endpoint
+<% } %> 
+
+<% if (inboundEndpointFilebased || outboundEndpointFilebased) { %>
+		FileUtil.initFolder(new File(ARCHIVE));
 <% } %> 
 
 <% if (inboundTransport=="SFTP") { %>
@@ -170,14 +217,33 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     	final  String inputFile   = "src/test/resources/testfiles/${service}-input.txt";
     	String expectedResultFile = "src/test/resources/testfiles/${service}-expected-result.txt";
         String receivingService   = "${service}-teststub-service";
+<% if (inboundTransport=="POP3" || inboundTransport=="IMAP" || outboundTransport=="SMTP") { %>
+		final  int timeout        = 30000; // Let's increase the timeout a bit since we have an email transport involved
+<% } else { %>
 		final  int timeout        = 5000;
-
+<% } %> 
 		String input          = MiscUtil.readFileAsString(inputFile);
 		String expectedResult = MiscUtil.readFileAsString(expectedResultFile);
 
-<% if (inboundTransport=="JMS") { %>
+<% if (inboundTransport=="VM") { %>
+		// Setup inbound endpoint for vm-transport
+		String inboundEndpoint = "vm://" + IN_VM_QUEUE;
+
+<% } else if (inboundTransport=="JMS") { %>
 		// Setup inbound endpoint for jms
 		String inboundEndpoint = "jms://" + IN_QUEUE;
+
+<% } else if (inboundTransport=="FILE") { %>
+		// Setup inbound endpoint for file-transport
+        String inboundEndpoint = "file://" + IN_FOLDER;
+		String filename        = "testfile.txt";
+		props.put(SftpConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="FTP") { %>
+		// Setup inbound endpoint for file-transport
+        String inboundEndpoint = "ftp://" + IN_FOLDER;
+		String filename        = "testfile.txt";
+		props.put(SftpConnector.PROPERTY_FILENAME, filename);
 
 <% } else if (inboundTransport=="SFTP") { %>
 		// Setup inbound endpoint for sftp
@@ -199,11 +265,19 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		String inId        = st.nextToken();
 		String inValue     = st.nextToken();
         String inboundEndpoint = "jdbc://INSERT INTO ${uppercaseService}_EXPORT_TB(ID, VALUE) VALUES ('" + inId + "', '" + inValue + "')";
+
+<% } else if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
+		// Setup inbound endpoint for the smtp-transport
+		String inboundEndpoint = "smtp://" + smtpHost + ":" + smtpPort;
+		props.put(MailProperties.FROM_ADDRESS_PROPERTY, from);
+		props.put(MailProperties.TO_ADDRESSES_PROPERTY, to);
+		props.put(MailProperties.SUBJECT_PROPERTY, subject);
 <% } %>
 
 <% if (inboundTransport=="SERVLET") { %>
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
 		MuleMessage reply = dispatchAndWaitForServiceComponent(dispatcher, receivingService, timeout);
+
 <% } else { %> 
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
 		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
@@ -218,6 +292,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		String transformedMessage = outId + "=" + outValue;
 <% } else { %>
 		String transformedMessage = reply.getPayload().toString();
+		
+		// Remove any new lines added by various transports and transformers, e.g. the email-related ones...
+		transformedMessage = MiscUtil.removeTrailingNewLines(transformedMessage);
 <% } %>
 		// Verify the result, i.e. the transformed message
         assertEquals(expectedResult, transformedMessage);

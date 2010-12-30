@@ -21,10 +21,7 @@ import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXml;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.appendXmlFragment;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JDBC;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SFTP;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SERVLET;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -71,7 +68,13 @@ public class OnewayServiceGenerator implements Generator {
 			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestConsumer.java.gt");
 	    }
 
-		updatePropertyFile(inboundTransport, outboundTransport);
+//		TODO: Wait with attachments... 	    
+//	    if (inboundTransport == POP3 || inboundTransport == IMAP) {
+//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__-input-attachment.pdf.gt");
+//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__-input-attachment.png.gt");
+//	    }
+
+		updatePropertyFiles(inboundTransport, outboundTransport);
 		
 	    if (inboundTransport == JDBC) {
 	    	updateSqlDdlFilesAddExportTable();
@@ -87,59 +90,153 @@ public class OnewayServiceGenerator implements Generator {
 		
     }
 
-	private void updatePropertyFile(TransportEnum inboundTransport, TransportEnum outboundTransport) {
+	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
-		PrintWriter out = null;
+		PrintWriter cfg = null;
+		PrintWriter sec = null;
 		try {
-			out = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
+			cfg = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
+			sec = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getSecurityPropertyFile());
+
 			String service        = gu.getModel().getUppercaseService();
 		    String serviceName    = gu.getModel().getLowercaseService();
+			String fileRootFolder = PreferencesUtil.getDefaultFileRootFolder();
+			String ftpRootFolder  = PreferencesUtil.getDefaultFtpRootFolder();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
-			
-		    out.println("");
-		    out.println("# Properties for service \"" + gu.getModel().getService() + "\"");
-		    out.println("# TODO: Update to reflect your settings");
+			String archiveFolder  = PreferencesUtil.getDefaultArchiveFolder(); 
+
+			// Print header for this service's properties
+		    cfg.println("");
+		    cfg.println("# Properties for service \"" + gu.getModel().getService() + "\"");
+		    cfg.println("# TODO: Update to reflect your settings");
+
+		    if (inboundTransport == POP3 || inboundTransport == IMAP) {
+				// Print header for this service's properties if any security related properties are required
+			    sec.println("");
+			    sec.println("# Security related properties for service \"" + gu.getModel().getService() + "\"");
+			    sec.println("# TODO: Update to reflect your settings");
+		    }
+		    
+		    // VM properties
+		    if (inboundTransport == VM) {
+			    cfg.println(service + "_IN_VM_QUEUE="  + gu.getModel().getJmsInQueue());
+		    }
+		    if (outboundTransport == VM) {
+			    cfg.println(service + "_OUT_VM_QUEUE=" + gu.getModel().getJmsOutQueue());
+		    }
 
 		    // JMS properties
 		    if (inboundTransport == JMS) {
-			    out.println(service + "_IN_QUEUE="  + gu.getModel().getJmsInQueue());
-			    out.println(service + "_DL_QUEUE="  + gu.getModel().getJmsDLQueue());
+			    cfg.println(service + "_IN_QUEUE="  + gu.getModel().getJmsInQueue());
+			    cfg.println(service + "_DL_QUEUE="  + gu.getModel().getJmsDLQueue());
 		    }
 		    if (outboundTransport == JMS) {
-			    out.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());
+			    cfg.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());
 		    }
 
 		    // Servlet properties
 		    if (inboundTransport == SERVLET) {
-			    out.println(service + "_INBOUND_SERVLET_URI=" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_SERVLET_URI=" + serviceName + "/inbound");
 		    }
+
+		    // File properties
+		    if (inboundTransport == FILE) {
+				cfg.println(service + "_INBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_POLLING_MS=1000");
+			    cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
+		    }
+		    if (outboundTransport == FILE) {
+				cfg.println(service + "_OUTBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/outbound");
+			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
+			    cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=500");
+		    }
+
+		    // FTP properties
+		    if (inboundTransport == FTP) {
+				cfg.println(service + "_INBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_POLLING_MS=1000");
+		    }
+		    if (outboundTransport == FTP) {
+				cfg.println(service + "_OUTBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/outbound");
+			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
+		    }		    
 		    
 		    // SFTP properties
 		    if (inboundTransport == SFTP) {
-				out.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/sender");
-			    out.println(service + "_SENDER_POLLING_MS=1000");
-			    out.println(service + "_SENDER_SIZECHECK_MS=500");
+				cfg.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/sender");
+			    cfg.println(service + "_SENDER_POLLING_MS=1000");
+			    cfg.println(service + "_SENDER_SIZECHECK_MS=500");
 		    }
 		    if (outboundTransport == SFTP) {
-			    out.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/receiver");
-			    out.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
-			    out.println(service + "_TESTSTUB_RECEIVER_POLLING_MS=1000");
-			    out.println(service + "_TESTSTUB_RECEIVER_SIZECHECK_MS=500");
+			    cfg.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/receiver");
+			    cfg.println(service + "_TESTSTUB_RECEIVER_POLLING_MS=1000");
+			    cfg.println(service + "_TESTSTUB_RECEIVER_SIZECHECK_MS=500");
+		    }
 
-			    if (!gu.getModel().isInboundEndpointFilebased()) {
-			    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
-			    	out.println(service + "_RECEIVER_FILE=outfile.txt");
+		    // Properties common to all filebased transports
+		    if (gu.getModel().isInboundEndpointFilebased() || gu.getModel().isOutboundEndpointFilebased()) {
+		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
+		    }
+		    if (gu.getModel().isOutboundEndpointFilebased()) {
+			    cfg.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
+			    
+		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
+				if (!gu.getModel().isInboundEndpointFilebased()) {
+			    	cfg.println(service + "_OUTBOUND_FILE=outfile.txt");
 			    }
 		    }
 
-		    if (inboundTransport == SFTP || outboundTransport == SFTP) {
-		    	out.println(service + "_ARCHIVE_FOLDER=/Users/magnuslarsson/archive/" + serviceName);
+		    // Properties common to POP3, IMAP and SMTP (Inb POP3 and IMAP needs SMTP to send testmessages in junit-testcode)
+		    if (inboundTransport == POP3 || inboundTransport == IMAP || outboundTransport == SMTP) {
+				cfg.println(service + "_SMTP_HOST=smtp.bredband.net");
+			    cfg.println(service + "_SMTP_PORT=25");
+		    }
+
+		    // Properties common to IMAP and SMTP (SMTP teststub reads mails using IMAP...)
+		    if (inboundTransport == IMAP || outboundTransport == SMTP) {
+				cfg.println(service + "_IMAP_HOST=imap.n.mail.yahoo.com");
+			    cfg.println(service + "_IMAP_PORT=143");
+		    }
+		    
+		    // Properties common to POP3 and IMAP (Mail-proeprties use to send testmails from juin-testcode)
+		    if (inboundTransport == POP3 || inboundTransport == IMAP) {
+				cfg.println(service + "_INBOUND_EMAIL_TEST_FROM=soitoolkit2@yahoo.se");
+				cfg.println(service + "_INBOUND_EMAIL_TO=soitoolkit1@yahoo.se");
+				cfg.println(service + "_INBOUND_EMAIL_SUBJECT=Inbound mail sent to Mule ESB");
+		    }
+		    
+		    // POP3 properties
+		    if (inboundTransport == POP3) {
+				cfg.println(service + "_POP3_HOST=pop.mail.yahoo.com");
+			    cfg.println(service + "_POP3_PORT=110");
+
+		    	// Write to the security-property-file
+			    sec.println(service + "_POP3_USR=soitoolkit1%40yahoo.se");
+			    sec.println(service + "_POP3_PWD=soitoolkit1pwd");
+		    }
+		    
+		    // IMAP properties
+		    if (inboundTransport == IMAP) {
+		    	// Write to the security-property-file
+			    sec.println(service + "_IMAP_USR=soitoolkit1%40yahoo.se");
+			    sec.println(service + "_IMAP_PWD=soitoolkit1pwd");
+		    }
+
+		    // SMTP properties
+		    if (outboundTransport == SMTP) {
+			    cfg.println(service + "_IMAP_TEST_USR=soitoolkit2%40yahoo.se");
+			    cfg.println(service + "_IMAP_TEST_PWD=soitoolkit2pwd");
+
+			    cfg.println(service + "_OUTBOUND_EMAIL_FROM=soitoolkit1@yahoo.se");
+			    cfg.println(service + "_OUTBOUND_EMAIL_TEST_TO=soitoolkit2@yahoo.se");
+			    cfg.println(service + "_OUTBOUND_EMAIL_SUBJECT=Outbound mail sent from Mule ESB");
 		    }
 		    
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (out != null) {out.close();}
+			if (cfg != null) {cfg.close();}
+			if (sec != null) {sec.close();}
 		}
 	}
 	
