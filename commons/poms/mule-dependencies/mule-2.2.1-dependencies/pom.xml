@@ -53,7 +53,8 @@
 		<mule-transport-sftp.version>2.2.1-RC3</mule-transport-sftp.version>
 		<mule-transport-jersey.version>1.1.3</mule-transport-jersey.version>
 		<jersey.version>1.0</jersey.version>
-    <derby.version>10.6.2.1</derby.version>
+    	<derby.version>10.6.2.1</derby.version>
+    	<hsql.version>1.8.0.7</hsql.version>
 	</properties>
 
 	<dependencies>
@@ -295,6 +296,13 @@
       TODO: these should really have test-scope, see:
       http://code.google.com/p/soi-toolkit/issues/detail?id=61
     -->
+	<!-- JDBC Driver used for embedded in-memory tests -->
+	<dependency>
+		<groupId>hsqldb</groupId>
+		<artifactId>hsqldb</artifactId>
+		<version>${hsql.version}</version>
+	</dependency>
+	<!-- JDBC Driver used for standalone tests -->
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derbyclient</artifactId>
