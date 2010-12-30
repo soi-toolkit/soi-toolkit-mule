@@ -16,7 +16,6 @@
  */
 package org.soitoolkit.commons.mule.sftp;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ import com.jcraft.jsch.SftpException;
 
 /**
  * Helper methods for the SFTP-transport.
- * TODO: These methods should be moved to the SFT-transport SftpUtil-class!
+ * TODO: These methods should be moved to the SFTP-transport's SftpUtil-class!
  * 
  * @author Magnus Larsson
  *
@@ -166,26 +165,6 @@ public class SftpUtil {
         }
 	}
 
-	
-    public static void recursiveDeleteInLocalFilesystem(File parent) throws IOException {
-
-    	// If this file is a directory then first delete all its children
-    	if (parent.isDirectory()) {
-    		for (File child : parent.listFiles()) {
-    			recursiveDeleteInLocalFilesystem(child);
-    		}
-    	}
-
-    	// Now delete this file, but first check write permissions on its parent...
-    	File parentParent = parent.getParentFile();
-    	if (!parentParent.canWrite()) {
-			if (!parentParent.setWritable(true)) throw new IOException("Failed to set readonly-folder: " + parentParent + " to writeable");
-    	}
-      if(parent.exists()) {
-		    if (!parent.delete()) throw new IOException("Failed to delete folder: " + parent);
-      }
-    }
-    
 	/*
 	 * Private parts...
 	 */	
