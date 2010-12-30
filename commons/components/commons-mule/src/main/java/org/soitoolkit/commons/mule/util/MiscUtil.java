@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.commons.mule.util;
 
+import static org.apache.commons.lang.StringUtils.chomp;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,6 +37,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Various helper methods that doesn't fit naturally elsewhere for the time being...
+ * <b>WARNING:<b> Methods in this class can be moved to more appropriate classes in the future!
  * 
  * @author Magnus Larsson
  *
@@ -70,10 +73,14 @@ public class MiscUtil {
     }
     
     /**
+     * Converts an InputStream to a String.
+     * 
      * To convert an InputStream to a String we use the BufferedReader.readLine()
      * method. We iterate until the BufferedReader return null which means
      * there's no more data to read. Each line will appended to a StringBuilder
      * and returned as String.
+     * 
+     * Closes the InputStream after completion of the processing.
      * 
      * @param is
      * @return
@@ -113,12 +120,12 @@ public class MiscUtil {
         } catch (IOException e) {
         	throw new RuntimeException(e);
 		} finally {
-			// Ignore exceptions on call to the close method
         	if (logger.isTraceEnabled()) {
 				logger.trace("Lines read: {}, {} characters", linecount, size);
 				printMemUsage();            	
         	}
-            try {is.close();} catch (IOException e) {}
+			// Ignore exceptions on call to the close method
+            try {if (is != null) is.close();} catch (IOException e) {}
         }
         return sb.toString();
     }
@@ -129,7 +136,7 @@ public class MiscUtil {
 		MemoryMXBean mxb = ManagementFactory.getMemoryMXBean(); 
 		MemoryUsage hm  = mxb.getHeapMemoryUsage();
 		MemoryUsage nhm = mxb.getNonHeapMemoryUsage();
-		int finalizable = mxb.getObjectPendingFinalizationCount();
+//		int finalizable = mxb.getObjectPendingFinalizationCount();
 		
 		logger.trace("Heap Memory:  init/used/committed/max=" +  hm.getInit()/mb + "/" +  hm.getUsed()/mb + "/" +  hm.getCommitted()/mb + "/" +  hm.getMax()/mb);
 		logger.trace("Non-Heap Mem: init/used/committed/max=" + nhm.getInit()/mb + "/" + nhm.getUsed()/mb + "/" + nhm.getCommitted()/mb + "/" + nhm.getMax()/mb);
@@ -191,6 +198,36 @@ public class MiscUtil {
     	return buf.toString();
     }
     
+    /** 
+     * Removes any trailing new lines from the string.
+     * A newline is one of &quot;<code>\n</code>&quot;,
+     * &quot;<code>\r</code>&quot;, or &quot;<code>\r\n</code>&quot;.</p>
+     *  
+     * @param string
+     * @return
+     */
+    static public String removeTrailingNewLines(String string) {
+    	if (string == null) return string;
+    	
+    	String trimmedString = chomp(string);
+
+    	// Loop until the chomp-method does not remove any more trailing NewLines...
+    	while (trimmedString.length() < string.length()) {
+			// Try remove one more NewLine
+    		string = trimmedString;
+			trimmedString = chomp(string);
+		}
+    	
+    	return trimmedString;
+    	
+    }
+
+    
+    // ---------------
+    // PRIVATE METHODS
+    // ---------------
+
+    
     static private int findPlaceholderEndIndex(CharSequence buf, int startIndex) {
     	int index = startIndex + placeholderPrefix.length();
     	int withinNestedPlaceholder = 0;
@@ -232,4 +269,5 @@ public class MiscUtil {
 
         return properties;
     }
+    
 }
