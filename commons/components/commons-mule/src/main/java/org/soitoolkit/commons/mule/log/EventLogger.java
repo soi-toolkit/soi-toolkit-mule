@@ -150,11 +150,11 @@ public class EventLogger {
 
 		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), businessContextId, extraInfo, message.getPayload(), error);
 		
-		String xmlString = JAXB_UTIL.marshal(logEvent);
-		dispatchErrorEvent(xmlString);
-
 		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
 		messageLogger.error(logMsg);
+
+		String xmlString = JAXB_UTIL.marshal(logEvent);
+		dispatchErrorEvent(xmlString);
 	}
 
 	public void logErrorEvent (
@@ -165,11 +165,12 @@ public class EventLogger {
 
 		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), businessContextId, extraInfo, payload, error);
 
+		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
+		messageLogger.error(logMsg);
+
 		String xmlString = JAXB_UTIL.marshal(logEvent);
 		dispatchErrorEvent(xmlString);
 
-		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
-		messageLogger.error(logMsg);
 	}
 
 	//----------------
@@ -445,6 +446,13 @@ public class EventLogger {
 		String businessCorrelationId = "";
 
 		if (message != null) {
+
+//			Set names = message.getPropertyNames();
+//			for (Object object : names) {
+//				Object value = message.getProperty(object.toString());
+//				System.err.println(object + " = " + value);
+//			}
+			
 			messageId             = message.getUniqueId();
 			contractId            = message.getStringProperty(SOITOOLKIT_CONTRACT_ID, "");
 			businessCorrelationId = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "");
