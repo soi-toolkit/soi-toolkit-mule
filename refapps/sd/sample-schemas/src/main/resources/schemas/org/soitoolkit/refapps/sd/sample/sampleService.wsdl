@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+	name="sampleService"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:sd="urn:org.soitoolkit.refapps.sd.sample.schema:v1"
+	xmlns="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1" 
+	targetNamespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import 
+				namespace="urn:org.soitoolkit.refapps.sd.sample.schema:v1"
+            	schemaLocation="sample.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+
+	<wsdl:message name="sampleRequest">
+		<wsdl:part name="parameters" element="sd:sample" />
+	</wsdl:message>
+	<wsdl:message name="sampleResponse">
+		<wsdl:part name="parameters" element="sd:sampleResponse"/>
+	</wsdl:message>
+
+	
+    <wsdl:message name="Fault">
+       <wsdl:part name="fault" element="sd:faultInfo"/>
+    </wsdl:message>
+	
+	<wsdl:portType name="sampleInterface">
+
+
+		<wsdl:operation  name="sample">
+			<wsdl:input  message="sampleRequest"/>
+			<wsdl:output message="sampleResponse"/>
+			<wsdl:fault name="fault" message="Fault"/>
+		</wsdl:operation>
+
+	</wsdl:portType>
+	
+	<wsdl:binding name="sampleBinding" type="sampleInterface">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+
+		<wsdl:operation name="sample">
+			<soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.sample.wsdl:v1:sample"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+		</wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="sampleService">
+		<wsdl:port name="samplePort" binding="sampleBinding">
+			<soap:address location="http://localhost:8080/services/sampleService/v1"/>
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>
