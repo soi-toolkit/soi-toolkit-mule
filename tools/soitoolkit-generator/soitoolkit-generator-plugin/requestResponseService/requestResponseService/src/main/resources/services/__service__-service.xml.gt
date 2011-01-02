@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:cxf="http://www.mulesource.org/schema/mule/cxf/2.2"
+	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
+		http://www.mulesource.org/schema/mule/cxf/2.2   http://www.mulesource.org/schema/mule/cxf/2.2/mule-cxf.xsd
+		http://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+
+	<!-- TODO: Add service specific definitions here -->
+    <custom-transformer name="${lowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+    <custom-transformer name="${lowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+
+	<model name="${service}-model">
+	
+		<service name="${service}-service">
+            <inbound>
+<% if (inboundTransport=="SOAP") { %>
+                <cxf:inbound-endpoint 
+                	address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
+                    wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl"
+                    serviceName="sampleService"
+                    namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1"                 
+                    proxy="true" 
+                    synchronous="true"
+                    applyTransformersToProtocol="false"
+                    transformer-refs="logReqIn"
+                    responseTransformer-refs="createSoapFaultIfException logRespOut"
+                />
+<% } %> 
+            </inbound>
+
+			<outbound>
+				<pass-through-router>
+<% if (outboundTransport=="JMS") { %>
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="${lowercaseJavaService}RequestTransformer strToJms logReqOut" synchronous="true"/>
+                    <reply-to address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />                                                             
+<% } %> 
+				</pass-through-router>
+			</outbound>
+<% if (outboundTransport=="JMS") { %>
+            <async-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${lowercaseJavaService}ResponseTransformer"/>
+                <single-async-reply-router/>
+            </async-reply>      
+<% } %> 
+		</service>
+	</model>
+</mule>

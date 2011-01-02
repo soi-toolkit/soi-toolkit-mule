@@ -341,6 +341,12 @@ public class DefaultModelImpl implements IModel {
     public String getJmsDLQueue() {
     	return "DLQ." + getJmsInQueue(); 
     }
+    public String getJmsRequestQueue() {
+    	return getJavaArtifactId().toUpperCase() + "." + getService().toUpperCase() + ".REQUEST.QUEUE"; 
+    }
+    public String getJmsResponseQueue() {
+    	return getJavaArtifactId().toUpperCase() + "." + getService().toUpperCase() + ".RESPONSE.QUEUE"; 
+    }
     public String getJmsLogInfoQueue() {
     	return "SOITOOLKIT.LOG.INFO"; 
     }

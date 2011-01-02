@@ -1,0 +1,51 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import java.util.StringTokenizer;
+
+import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}ResponseTransformer extends AbstractTransformer {
+
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ResponseTransformer.class);
+	
+	/**
+	 * Simplest possible transformer that ...
+	 */
+	@Override
+	protected Object doTransform(Object src, String encoding) throws TransformerException {
+
+		StringTokenizer st = new StringTokenizer((String)src, ",");
+		String msgType = st.nextToken().trim();
+		String value = st.nextToken().trim();
+
+		String xml = null;
+		
+		if (msgType.equals("msg-0001-resp")) {
+			xml = "<?xml version='1.0' encoding='UTF-8'?><sampleResponse xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\"><value>" + value + "</value></sampleResponse>";
+
+		} else if (msgType.equals("msg-error")) {
+			
+			String errorMessage = value;
+			xml = createSoapFault(errorMessage);
+			
+		} else {
+
+			String errorMessage = "Unknown message type: " + msgType;
+			xml = createSoapFault(errorMessage);
+
+		}
+
+		return xml;
+	}
+
+	private String createSoapFault(String errorMessage) {
+		return "<?xml version='1.0' encoding='UTF-8'?>" +
+		"<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" + 
+		  "<faultcode>soap:Server</faultcode>" + 
+		  "<faultstring>" + errorMessage + "</faultstring>" + 
+		"</soap:Fault>";
+	}
+}

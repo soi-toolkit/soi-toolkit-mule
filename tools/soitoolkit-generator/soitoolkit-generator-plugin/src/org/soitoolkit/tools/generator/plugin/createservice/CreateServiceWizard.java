@@ -48,6 +48,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.soitoolkit.tools.generator.plugin.generator.OnewayServiceGenerator;
+import org.soitoolkit.tools.generator.plugin.generator.RequestResponseServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -175,30 +176,16 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		switch (mep) {
 		case 0: // Req Resp
 			
+			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, rootFolderName).startGenerator();
 			break;
 
 		case 1: // One Way
 			
 			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, rootFolderName).startGenerator();
+			break;
 
-//		case 1: // One Way
+//		case 2: // Pub Sub
 //			
-//			switch (inboundTransport) {
-//			case 0: // JMS --> JMS
-//				new JmsToJmsServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
-//				
-//				break;
-//
-//			case 1: // SFTP --> SFTP
-//				new SftpToSftpServiceGenerator(ps, groupId, artifactId, serviceName, rootFolderName).startGenerator();
-//				
-//				break;
-//
-//			default:
-//				break;
-//			}
-//			
-//			break;
 
 		default:
 			break;

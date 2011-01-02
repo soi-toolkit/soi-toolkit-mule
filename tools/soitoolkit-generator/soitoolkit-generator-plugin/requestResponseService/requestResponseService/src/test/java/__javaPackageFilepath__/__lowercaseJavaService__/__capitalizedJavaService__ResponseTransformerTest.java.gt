@@ -1,0 +1,27 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.Test;
+import org.mule.api.transformer.TransformerException;
+
+public class ${capitalizedJavaService}ResponseTransformerTest {
+
+	@Test
+	public void testTransformer() throws IOException, TransformerException {
+
+		// Specify input and expected result 
+		String input          = "msg-0001-resp,Value1234567890";
+		String expectedResult = "<?xml version='1.0' encoding='UTF-8'?><sampleResponse xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\"><value>Value1234567890</value></sampleResponse>";
+		
+		// Create the transformer under test and let it perform the transformation
+		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
+		String result = (String)transformer.doTransform(input, "UTF-8");
+
+		// Compare the result to the expected value
+		assertEquals(expectedResult, result);
+	}
+
+}

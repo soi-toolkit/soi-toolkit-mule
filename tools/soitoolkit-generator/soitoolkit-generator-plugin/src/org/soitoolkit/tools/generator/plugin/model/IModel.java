@@ -91,6 +91,8 @@ public interface IModel {
     public String getJmsInQueue();
     public String getJmsOutQueue();
     public String getJmsDLQueue();
+    public String getJmsRequestQueue();
+    public String getJmsResponseQueue();
     public String getJmsLogInfoQueue();
     public String getJmsLogErrorQueue();
 

@@ -1,0 +1,31 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.util.XmlUtil;
+
+public class ${capitalizedJavaService}RequestTransformer extends AbstractTransformer {
+
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+	
+	/**
+	 * Simplest possible transformer that ...
+	 */
+	@Override
+	protected Object doTransform(Object src, String encoding) throws TransformerException {
+
+		String xml = XmlUtil.convertXMLStreamReaderToString((XMLStreamReader)src, encoding);
+		log.debug("Transforming xml payload: " + xml);
+		int startPos = xml.indexOf("<id>") + 4;
+		int endPos = xml.indexOf("</id>");
+		String id = xml.substring(startPos, endPos);
+		
+		String csv = "msg-0001-req," + id;
+
+		return csv;
+	}
+}
