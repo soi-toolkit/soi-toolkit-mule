@@ -48,11 +48,15 @@ public class XmlUtil extends org.mule.util.XMLUtils {
 	private static XMLInputFactory  xmlInputFactory  = XMLInputFactory.newInstance();
     private static XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 
+	public static XMLStreamReader toXmlStreamReader(Object src) throws XMLStreamException {
+		return XMLUtils.toXMLStreamReader(xmlInputFactory, src);
+	}
+
     public static QName getRootElementQName(Object src) throws XMLStreamException {
 		QName name;
 		XMLStreamReader reader = null;
 		try {
-			reader = XMLUtils.toXMLStreamReader(xmlInputFactory, src);
+			reader = toXmlStreamReader(src);
 			reader.nextTag();
 			name = reader.getName();
 		} finally {
