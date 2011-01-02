@@ -91,6 +91,7 @@
 
 	<modules>
 		<module>commons</module>
+		<module>refapps</module>
 	</modules>
 
 	<repositories>
