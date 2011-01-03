@@ -199,6 +199,39 @@ public class MiscUtil {
     }
     
     /** 
+     * Removes any leading new lines from the string.
+     * A newline is one of &quot;<code>\n</code>&quot;,
+     * &quot;<code>\r</code>&quot;, or &quot;<code>\r\n</code>&quot;.</p>
+     *  
+     * @param string
+     * @return
+     */
+    static public String removeLeadingNewLines(String string) {
+    	if (string == null) return string;
+    	
+    	int pos = 0;
+    	int len = string.length();
+    	boolean done = false;
+    	while (!done) {
+    		char c = string.charAt(pos);
+    		if (c == '\n' || c == '\r') {
+    			pos++;
+    		} else {
+    			done = true;
+    		}
+
+    		if (pos == len) {
+    			done = true;
+    		}
+    	}
+    	String result = string.substring(pos);
+    	
+    	logger.debug("removed " + pos + " new line characters");
+    	return result;
+    }
+
+    
+    /** 
      * Removes any trailing new lines from the string.
      * A newline is one of &quot;<code>\n</code>&quot;,
      * &quot;<code>\r</code>&quot;, or &quot;<code>\r\n</code>&quot;.</p>
