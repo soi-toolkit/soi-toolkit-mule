@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.w3c.dom.Document;
@@ -43,8 +44,8 @@ public class OnewayServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
 	
-	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, "/oneWayService", folderName);
+	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, transformerType, "/oneWayService", folderName);
 	}
 		
     public void startGenerator() {

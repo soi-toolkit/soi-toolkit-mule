@@ -15,11 +15,14 @@
 		http://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
 
 	<!-- TODO: Add service specific definitions here -->
-    <custom-transformer name="x-${lowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
-    <custom-transformer name="x-${lowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
-    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+<% if (transformerType=="JAVA") { %>
+    <custom-transformer name="${lowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+    <custom-transformer name="${lowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+<% } else { %>     
 	<smooks:transformer name="${lowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
 	<smooks:transformer name="${lowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
+<% } %> 
+    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
 
 	<model name="${service}-model">
 	

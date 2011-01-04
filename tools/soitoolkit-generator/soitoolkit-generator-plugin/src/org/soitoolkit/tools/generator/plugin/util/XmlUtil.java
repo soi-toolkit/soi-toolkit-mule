@@ -16,7 +16,6 @@
  */
 package org.soitoolkit.tools.generator.plugin.util;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -40,10 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -178,7 +174,7 @@ public class XmlUtil {
 	    fragmentNode = doc.importNode(fragmentNode, true);
 	    
 	    parent.appendChild(fragmentNode);
-	    System.err.println("### ADDED: " + fragment + " node " + parent.getLocalName());
+//	    System.err.println("### ADDED: " + fragment + " node " + parent.getLocalName());
 	}
 
     public static String getXml(Document doc) {

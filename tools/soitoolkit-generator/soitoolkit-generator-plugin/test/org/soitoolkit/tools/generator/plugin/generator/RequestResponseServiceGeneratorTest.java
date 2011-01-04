@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
@@ -82,7 +83,8 @@ public class RequestResponseServiceGeneratorTest {
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
-				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport);
+				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.JAVA);
+				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
 			}
 		}
 
@@ -102,17 +104,17 @@ public class RequestResponseServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createRequestResponseService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport) throws IOException {
+	private void createRequestResponseService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
-		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase());
+		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase() + "Using" + capitalize(transformerType.name().toLowerCase()));
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
-		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = 20;
+		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 

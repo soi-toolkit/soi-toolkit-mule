@@ -16,6 +16,16 @@
  */
 package org.soitoolkit.tools.generator.plugin.model.enums;
 
-public enum TransformerEnum {
-	NONE, JAVA, SMOOKS;
+public enum TransformerEnum implements ILabeledEnum {
+	JAVA("Java"), SMOOKS("Smooks");
+
+	public static TransformerEnum get(int ordinal) {
+		return values()[ordinal];
+	}
+
+	private String label;
+	private TransformerEnum(String label) {
+		this.label = label;
+	}
+	public String getLabel() {return label;}
 }

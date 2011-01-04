@@ -23,8 +23,6 @@ import groovy.text.Template;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,6 +41,7 @@ import javax.script.ScriptException;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.model.impl.ModelReadOnlyMap;
 
@@ -73,9 +72,9 @@ public class GeneratorUtil {
 	 * @param templateFolder
 	 * @param outputFolder
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, String templateFolder, String outputFolder) {
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String templateFolder, String outputFolder) {
 
-		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, inboundTransport, outboundTransport);
+		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, inboundTransport, outboundTransport, transformerType);
 
 		init(ps, templateFolder, outputFolder); // , outputRootFolderModelExpression);			
 		

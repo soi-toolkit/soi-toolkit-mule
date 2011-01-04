@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
@@ -84,7 +85,7 @@ public class OneWayServiceGeneratorTest {
 			for (TransportEnum outboundTransport : outboundTransports) {
 				if (inboundTransport == JMS  && outboundTransport == JDBC) continue;
 				if (inboundTransport == JDBC && outboundTransport == JMS)  continue;
-				createOneWayService(groupId, artifactId, inboundTransport, outboundTransport);
+				createOneWayService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.JAVA);
 			}
 		}
 
@@ -111,7 +112,7 @@ public class OneWayServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", 66, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createOneWayService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport) throws IOException {
+	private void createOneWayService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase());
@@ -119,7 +120,7 @@ public class OneWayServiceGeneratorTest {
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
-		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
 		int expectedNoOfFiles = 10;
 		if (inboundTransport == SERVLET) {

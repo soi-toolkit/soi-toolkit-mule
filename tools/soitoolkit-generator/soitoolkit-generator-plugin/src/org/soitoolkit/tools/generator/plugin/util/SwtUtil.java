@@ -93,7 +93,9 @@ public class SwtUtil {
 				}
 				((Button) e.widget).setSelection (true);
 				
-				selectionChangedListener.handleEvent(e);
+				if (selectionChangedListener != null) {
+					selectionChangedListener.handleEvent(e);
+				}
 			}
 		};
 		Label label = new Label(container, SWT.NULL);

@@ -34,6 +34,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -43,21 +44,25 @@ public class RequestResponseServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
 	
-	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, "/requestResponseService", folderName);
+	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, transformerType, "/requestResponseService", folderName);
 	}
 		
     public void startGenerator() {
 
-    	System.err.println("### A BRAND NEW REQUEST-RESPONSE-SERVICE IS ON ITS WAY..., INB: " + gu.getModel().getInboundTransport() + ", OUTB: " + gu.getModel().getOutboundTransport());
+    	System.err.println("### A BRAND NEW REQUEST-RESPONSE-SERVICE IS ON ITS WAY..., INB: " + gu.getModel().getInboundTransport() + ", OUTB: " + gu.getModel().getOutboundTransport() + ", TRANSFORMER: " + gu.getModel().getTransformerType());
 		TransportEnum inboundTransport  = TransportEnum.valueOf(gu.getModel().getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(gu.getModel().getOutboundTransport());
+		TransformerEnum transformerType = TransformerEnum.valueOf(gu.getModel().getTransformerType());
 
     	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
-    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-request-transformer.xml.gt");
-    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-response-transformer.xml.gt");
-    	gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
-		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
+    	if (transformerType == TransformerEnum.SMOOKS) {
+	    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-request-transformer.xml.gt");
+	    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-response-transformer.xml.gt");
+    	} else {
+	    	gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
+			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
+    	}
 
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-input.xml.gt");
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-expected-result.csv.gt");
@@ -149,7 +154,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		String xml = null;
 		try {
 			
-		    System.err.println("### ADD: " + xmlFragment + " to " + file);
+//		    System.err.println("### ADD: " + xmlFragment + " to " + file);
 			content = new FileInputStream(file);
 			
 			Document doc = createDocument(content);
@@ -160,13 +165,14 @@ public class RequestResponseServiceGenerator implements Generator {
 			// First verify that the dependency does not exist already
 			NodeList testList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies/ns:dependency/ns:artifactId[.='" + artifactId + "']");
 			if (testList.getLength() > 0) {
+				// TODO: Replace with sl4j!
 				System.err.println("### Fragment already exists, bail out!!!");
 				return;
 			}
 			
 			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies");
 			Node root = rootList.item(0);
-		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName()));		    
+//		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName()));		    
 		    
 		    appendXmlFragment(root, xmlFragment);
 			
@@ -190,7 +196,7 @@ public class RequestResponseServiceGenerator implements Generator {
 			if (pw != null) {pw.close();}
 		}
 	
-	    System.err.println("### UPDATED: " + file);
+//	    System.err.println("### UPDATED: " + file);
 	}
 
 	private PrintWriter openFileForOverwrite(String filename) throws IOException {

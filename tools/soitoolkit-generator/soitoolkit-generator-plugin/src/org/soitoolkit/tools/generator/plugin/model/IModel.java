@@ -118,7 +118,7 @@ public interface IModel {
     public boolean isOutboundEndpointFilebased();
     
     // Selected type of transformer
-    public TransformerEnum getTransformerType();
+    public String getTransformerType();
 
     // Property files
     public String getConfigPropertyFile();

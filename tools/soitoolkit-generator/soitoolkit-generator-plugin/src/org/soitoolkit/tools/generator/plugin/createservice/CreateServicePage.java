@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.tools.generator.plugin.createservice;
 
+import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,9 +43,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.plugin.model.enums.MepEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
+import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -89,9 +93,12 @@ public class CreateServicePage extends WizardPage {
 	private Combo inboundTransportCombo;
 	private Combo outboundTransportCombo;
 
+	private ValueHolder<Integer> transformerType = new ValueHolder<Integer>(TransformerEnum.JAVA.ordinal());
+
 	private int  selectedMep;	
 	private int  selectedInboundTransport;	
 	private int  selectedOutboundTransport;	
+	
 //	private int  serviceType;	
 	private Text projectText;
 	private Text serviceText;
@@ -139,7 +146,7 @@ public class CreateServicePage extends WizardPage {
 			layout.numColumns = 1;
 			layout.verticalSpacing = 9;
 			
-			addRadioButtons(container);
+			addFileds(container);
 			
 //			addTextFields(container);
 
@@ -152,7 +159,7 @@ public class CreateServicePage extends WizardPage {
 		}
 	}
 
-	private void addRadioButtons (final Composite parent) {
+	private void addFileds (final Composite parent) {
 
 		final Composite container = SwtUtil.createGridContainer(parent, 2);
 
@@ -291,6 +298,13 @@ public class CreateServicePage extends WizardPage {
 		};
 		outboundTransportCombo.addSelectionListener(outboundTransportComboListener);
 
+		
+		/*
+		 * TransformerType
+		 */
+		addRadioButtons(EnumUtil.getLabels(TransformerEnum.values()), "&Type of transformer:", transformerType, container, null);		
+		label = new Label(container, SWT.NULL); // Filler in column 2
+		
 //	}
 //
 //	private void addTextFields(Composite parent) {
@@ -594,10 +608,13 @@ public class CreateServicePage extends WizardPage {
 		return t;
 	}
 
+	public TransformerEnum getTransformerType() {
+		return TransformerEnum.get(transformerType.value);
+	}
+	
 	public String getServiceName() {
 		return serviceText.getText();
 	}
-	
 	
 /*
 	private void addRadioButtons (final Composite parent) {

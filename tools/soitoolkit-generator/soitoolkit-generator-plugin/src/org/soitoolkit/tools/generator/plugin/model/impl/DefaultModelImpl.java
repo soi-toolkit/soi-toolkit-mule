@@ -50,6 +50,7 @@ public class DefaultModelImpl implements IModel {
 	private List<TransportEnum> transports;
 	private TransportEnum inboundTransport;
 	private TransportEnum outboundTransport;
+	private TransformerEnum transformerType;
 	
 	private ServiceDescriptorModel serviceDescriptorModel;
 
@@ -66,7 +67,7 @@ public class DefaultModelImpl implements IModel {
 	 * @param serviceDescriptor
 	 * @param operations
 	 */
-	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, String serviceDescriptor, List<String> operations) {
+	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceDescriptor, List<String> operations) {
 
 		this.groupId = groupId;
 		this.artifactId = artifactId;
@@ -76,6 +77,7 @@ public class DefaultModelImpl implements IModel {
 		this.transports = transports;
 		this.inboundTransport = inboundTransport;
 		this.outboundTransport = outboundTransport;
+		this.transformerType = transformerType;
 
 		serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
 
@@ -423,8 +425,8 @@ public class DefaultModelImpl implements IModel {
     	       outboundTransport == SFTP;
     }
 
-    public TransformerEnum getTransformerType() {
-    	return TransformerEnum.JAVA;
+    public String getTransformerType() {
+    	return transformerType.name();
     }
 
     // Property files

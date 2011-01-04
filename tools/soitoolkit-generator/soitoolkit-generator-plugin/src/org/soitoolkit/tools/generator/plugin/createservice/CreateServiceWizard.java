@@ -51,6 +51,7 @@ import org.soitoolkit.tools.generator.plugin.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.generator.RequestResponseServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.w3c.dom.Document;
 
@@ -97,11 +98,13 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		final int    mep = page.getSelectedMep();
 		final TransportEnum inboundTransport = page.getSelectedInboundTransport();
 		final TransportEnum outboundTransport = page.getSelectedOutboundTransport();
+		final TransformerEnum transformerType = page.getTransformerType(); 
+
 		final String serviceName = page.getServiceName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, mep, inboundTransport, outboundTransport, serviceName, monitor);
+					doFinish(containerName, mep, inboundTransport, outboundTransport, transformerType, serviceName, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -129,7 +132,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	 * @param outboundTransport 
 	 * @param mep 
 	 */
-	private void doFinish(String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, String serviceName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceName, IProgressMonitor monitor) throws CoreException {
 
 		monitor.beginTask("Creating " + serviceName, 3);
 		
@@ -172,16 +175,16 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 		monitor.setTaskName("Generating files...");
 
-		// TODO: Get rid of these hardcoded integrers, use the enum ordinal values!
+		// TODO: Get rid of these hardcoded integers, use the enum ordinal values!
 		switch (mep) {
 		case 0: // Req Resp
 			
-			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, rootFolderName).startGenerator();
+			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, transformerType , rootFolderName).startGenerator();
 			break;
 
 		case 1: // One Way
 			
-			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, rootFolderName).startGenerator();
+			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
 //		case 2: // Pub Sub
