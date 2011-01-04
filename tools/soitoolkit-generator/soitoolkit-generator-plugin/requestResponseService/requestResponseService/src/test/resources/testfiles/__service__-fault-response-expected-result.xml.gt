@@ -1,0 +1,4 @@
+<soap:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<faultcode>soap:Server</faultcode>
+	<faultstring>Some error message</faultstring>
+</soap:Fault>

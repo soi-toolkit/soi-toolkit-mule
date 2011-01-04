@@ -1,24 +1,69 @@
 package ${javaPackage}.${lowercaseJavaService};
 
 import static org.junit.Assert.assertEquals;
+import static org.soitoolkit.commons.mule.smooks.SmooksUtil.runSmooksTransformer;
 
 import java.io.IOException;
 
 import org.junit.Test;
 import org.mule.api.transformer.TransformerException;
+import org.soitoolkit.commons.mule.util.MiscUtil;
 
 public class ${capitalizedJavaService}ResponseTransformerTest {
 
 	@Test
-	public void testTransformer() throws IOException, TransformerException {
+	public void testJavaTransformer_ok() throws Exception {
 
 		// Specify input and expected result 
-		String input          = "msg-0001-resp,Value1234567890";
-		String expectedResult = "<?xml version='1.0' encoding='UTF-8'?><sampleResponse xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\"><value>Value1234567890</value></sampleResponse>";
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-expected-result.xml");
 		
 		// Create the transformer under test and let it perform the transformation
 		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
 		String result = (String)transformer.doTransform(input, "UTF-8");
+
+		// Compare the result to the expected value
+		assertEquals(expectedResult, result);
+	}
+
+	@Test
+	public void testJavaTransformer_fault() throws Exception {
+
+		// Specify input and expected result 
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-input.csv");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-expected-result.xml");
+		
+		// Create the transformer under test and let it perform the transformation
+		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
+		String result = (String)transformer.doTransform(input, "UTF-8");
+
+		// Compare the result to the expected value
+		assertEquals(expectedResult, result);
+	}
+
+	@Test
+	public void testSmooksTransformer_ok() throws Exception {
+
+		// Specify input and expected result 
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-expected-result.xml");
+		
+		// Create the transformer under test and let it perform the transformation
+		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}-response-transformer.xml");
+
+		// Compare the result to the expected value
+		assertEquals(expectedResult, result);
+	}
+
+	@Test
+	public void testSmookesTransformer_fault() throws Exception {
+
+		// Specify input and expected result 
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-input.csv");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-expected-result.xml");
+		
+		// Create the transformer under test and let it perform the transformation
+		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}-response-transformer.xml");
 
 		// Compare the result to the expected value
 		assertEquals(expectedResult, result);

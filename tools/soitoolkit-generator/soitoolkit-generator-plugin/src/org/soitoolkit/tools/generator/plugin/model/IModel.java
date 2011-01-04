@@ -18,6 +18,8 @@ package org.soitoolkit.tools.generator.plugin.model;
 
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
+
 public interface IModel {
 
 	public Object resolveParameter(String parameterName);
@@ -115,6 +117,8 @@ public interface IModel {
     public boolean isInboundEndpointFilebased();
     public boolean isOutboundEndpointFilebased();
     
+    // Selected type of transformer
+    public TransformerEnum getTransformerType();
 
     // Property files
     public String getConfigPropertyFile();

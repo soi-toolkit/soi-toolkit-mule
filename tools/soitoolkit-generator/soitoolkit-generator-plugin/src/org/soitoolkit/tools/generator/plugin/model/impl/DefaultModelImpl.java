@@ -31,6 +31,7 @@ import java.util.Map;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ServiceDescriptorModel;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.plugin.util.XmlUtil;
@@ -422,7 +423,10 @@ public class DefaultModelImpl implements IModel {
     	       outboundTransport == SFTP;
     }
 
-    
+    public TransformerEnum getTransformerType() {
+    	return TransformerEnum.JAVA;
+    }
+
     // Property files
     public String getConfigPropertyFile() {
     	return getArtifactId() + "-config";

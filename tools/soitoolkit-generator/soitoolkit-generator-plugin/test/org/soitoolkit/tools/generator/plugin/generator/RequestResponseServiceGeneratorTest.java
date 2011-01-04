@@ -112,7 +112,7 @@ public class RequestResponseServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
 		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = 11;
+		int expectedNoOfFiles = 20;
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 

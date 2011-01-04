@@ -1,28 +1,39 @@
 package ${javaPackage}.${lowercaseJavaService};
 
 import static org.junit.Assert.assertEquals;
-
-import javax.xml.stream.XMLStreamReader;
+import static org.soitoolkit.commons.mule.smooks.SmooksUtil.runSmooksTransformer;
 
 import org.junit.Test;
-import org.soitoolkit.commons.mule.util.XmlUtil;
+import org.soitoolkit.commons.mule.util.MiscUtil;
 
 public class ${capitalizedJavaService}RequestTransformerTest {
 
 	@Test
-	public void testTransformer() throws Exception {
+	public void testJavaTransformer_ok() throws Exception {
 
 		// Specify input and expected result 
-		String input          = "<?xml version='1.0' encoding='UTF-8'?><sample xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\"><id>1234567890</id></sample>";
-		String expectedResult = "msg-0001-req,1234567890";
-		
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-input.xml");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-expected-result.csv");
+
 		// Create the transformer under test and let it perform the transformation
-		XMLStreamReader r = XmlUtil.toXmlStreamReader(input);
 		${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
-		String result = (String)transformer.doTransform(r, "UTF-8");
+		String result = (String)transformer.doTransform(input, "UTF-8");
 
 		// Compare the result to the expected value
 		assertEquals(expectedResult, result);
 	}
 
+	@Test
+	public void testSmooksTransformer_ok() throws Exception {
+
+		// Specify input and expected result 
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-input.xml");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-expected-result.csv");
+
+		// Create the transformer under test and let it perform the transformation
+		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}-request-transformer.xml");
+
+		// Compare the result to the expected value
+		assertEquals(expectedResult, result);
+	}
 }

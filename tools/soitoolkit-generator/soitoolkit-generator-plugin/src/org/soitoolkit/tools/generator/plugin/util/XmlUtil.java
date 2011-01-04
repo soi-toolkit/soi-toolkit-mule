@@ -181,7 +181,6 @@ public class XmlUtil {
 	    System.err.println("### ADDED: " + fragment + " node " + parent.getLocalName());
 	}
 
-
     public static String getXml(Document doc) {
     	try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();

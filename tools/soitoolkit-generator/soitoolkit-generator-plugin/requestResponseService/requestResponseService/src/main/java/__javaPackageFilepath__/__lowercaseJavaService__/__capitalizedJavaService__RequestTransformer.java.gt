@@ -11,14 +11,14 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
 public class ${capitalizedJavaService}RequestTransformer extends AbstractTransformer {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
-	
+
 	/**
 	 * Simplest possible transformer that ...
 	 */
 	@Override
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
-		String xml = XmlUtil.convertXMLStreamReaderToString((XMLStreamReader)src, encoding);
+		String xml = (String)src;
 		log.debug("Transforming xml payload: " + xml);
 		int startPos = xml.indexOf("<id>") + 4;
 		int endPos = xml.indexOf("</id>");

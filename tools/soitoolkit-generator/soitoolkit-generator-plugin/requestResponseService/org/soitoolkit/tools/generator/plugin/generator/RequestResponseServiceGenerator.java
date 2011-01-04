@@ -54,9 +54,17 @@ public class RequestResponseServiceGenerator implements Generator {
 		TransportEnum outboundTransport = TransportEnum.valueOf(gu.getModel().getOutboundTransport());
 
     	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
-		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
+    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-request-transformer.xml.gt");
+    	gu.generateContentAndCreateFile("src/main/resources/transformers/__service__-response-transformer.xml.gt");
+    	gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
-		
+
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-input.xml.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-expected-result.csv.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.csv.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-expected-result.xml.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-input.csv.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-expected-result.xml.gt");
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformerTest.java.gt");
@@ -75,9 +83,32 @@ public class RequestResponseServiceGenerator implements Generator {
 			"			<artifactId>soitoolkit-refapps-sample-schemas</artifactId>\n" +
 			"			<version>${soitoolkit.version}</version>\n" +
 			"		</dependency>\n";
-		addDependency(file, xmlFragment);
-		addDependency(file, xmlFragment);
+		addDependency(file, xmlFragment, "soitoolkit-refapps-sample-schemas");
 
+
+		xmlFragment =
+			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+			"			<groupId>org.mule.modules.mule-module-smooks</groupId>\n" +
+			"			<artifactId>smooks-4-mule-2</artifactId>\n" +
+			"			<version>1.2</version>\n" +
+			"		</dependency>\n";
+		addDependency(file, xmlFragment, "smooks-4-mule-2");
+
+		xmlFragment =
+			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+			"			<groupId>org.milyn</groupId>\n" +
+			"			<artifactId>milyn-smooks-templating</artifactId>\n" +
+			"			<version>1.3.1</version>\n" +
+			"		</dependency>\n";
+		addDependency(file, xmlFragment, "milyn-smooks-templating");
+
+		xmlFragment =
+			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+			"			<groupId>org.milyn</groupId>\n" +
+			"			<artifactId>milyn-smooks-csv</artifactId>\n" +
+			"			<version>1.3.1</version>\n" +
+			"		</dependency>\n";
+		addDependency(file, xmlFragment, "milyn-smooks-csv");
     }
 
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
@@ -113,7 +144,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		}
 	}
 	
-	private void addDependency(String file, String xmlFragment) {
+	private void addDependency(String file, String xmlFragment, String artifactId) {
 		InputStream content = null;
 		String xml = null;
 		try {
@@ -127,7 +158,7 @@ public class RequestResponseServiceGenerator implements Generator {
 			namespaceMap.put("ns", "http://maven.apache.org/POM/4.0.0");
 
 			// First verify that the dependency does not exist already
-			NodeList testList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies/ns:dependency/ns:artifactId[.='soitoolkit-refapps-sample-schemas']");
+			NodeList testList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies/ns:dependency/ns:artifactId[.='" + artifactId + "']");
 			if (testList.getLength() > 0) {
 				System.err.println("### Fragment already exists, bail out!!!");
 				return;

@@ -24,7 +24,10 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractTransf
 		String xml = null;
 		
 		if (msgType.equals("msg-0001-resp")) {
-			xml = "<?xml version='1.0' encoding='UTF-8'?><sampleResponse xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\"><value>" + value + "</value></sampleResponse>";
+			xml = 
+			"<sampleResponse xmlns=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\">\\n" +
+			"	<value>" + value + "</value>\\n" +
+			"</sampleResponse>";
 
 		} else if (msgType.equals("msg-error")) {
 			
@@ -42,10 +45,10 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractTransf
 	}
 
 	private String createSoapFault(String errorMessage) {
-		return "<?xml version='1.0' encoding='UTF-8'?>" +
-		"<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" + 
-		  "<faultcode>soap:Server</faultcode>" + 
-		  "<faultstring>" + errorMessage + "</faultstring>" + 
+		return 
+		"<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\\n" + 
+		"	<faultcode>soap:Server</faultcode>\\n" + 
+		"	<faultstring>" + errorMessage + "</faultstring>\\n" + 
 		"</soap:Fault>";
 	}
 }
