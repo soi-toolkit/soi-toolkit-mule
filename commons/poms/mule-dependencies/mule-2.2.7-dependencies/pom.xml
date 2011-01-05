@@ -132,9 +132,11 @@
 		</dependency>
 		
 		<dependency>
+		  <!-- commonretrypolicies from muleforge:
+			  http://www.mulesoft.org/documentation/display/COMMONRETRYPOLICIES/Home
+			  version 2.2.1 is for mule 2.2.x -->
 			<groupId>org.mule.modules</groupId>
 			<artifactId>commonretrypolicies</artifactId>
-            <!-- TODO: replace with mule.version ??? -->
 			<version>2.2.1</version>
 		</dependency>
 			
