@@ -19,6 +19,7 @@ package org.soitoolkit.tools.generator.plugin.generator;
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
@@ -75,6 +76,12 @@ public class OneWayServiceGeneratorTest {
 		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-225", MULE_2_2_5);
 	}
 
+	@Test
+	public void testOneWayServices227() throws IOException {
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway227", MULE_2_2_7);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-227", MULE_2_2_7);
+	}
+	
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
 		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 

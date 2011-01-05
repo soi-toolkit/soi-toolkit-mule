@@ -19,6 +19,7 @@ package org.soitoolkit.tools.generator.plugin.generator;
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
@@ -75,6 +76,12 @@ public class RequestResponseServiceGeneratorTest {
 		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-225", MULE_2_2_5);
 	}
 
+	@Test
+	public void testRequestResponseServices227() throws IOException {
+		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse227", MULE_2_2_7);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-227", MULE_2_2_7);
+	}
+	
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		TransportEnum[] inboundTransports  = {SOAP};
 		TransportEnum[] outboundTransports = {JMS}; 
