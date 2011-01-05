@@ -16,7 +16,7 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 	private boolean mustBeDisplayed = false;
 	
-	private MuleVersionEnum muleVersion = MULE_2_2_5;
+	private MuleVersionEnum muleVersion = MULE_2_2_7;
 	
 	private Combo muleVersionCombo;
 	private Button genServiceButton;
@@ -256,7 +256,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //				containerText.setText(container.getFullPath().toString());
 //			}
 //		}
-		muleVersionCombo.select(MULE_2_2_5.ordinal());
+		muleVersionCombo.select(MULE_2_2_7.ordinal());
 	}
 
 	/**
