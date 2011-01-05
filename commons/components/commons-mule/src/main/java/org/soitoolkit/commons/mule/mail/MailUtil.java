@@ -144,32 +144,25 @@ public class MailUtil {
 		boolean debug
 	) {
 
-		try {
-			logger.info("Send mail to {}, content: {}.", to, content);
+		logger.info("Send mail to {}, content: {}.", to, content);
 			
-			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());  
+		Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());  
 
-			Properties props = new Properties();  
-			props.put("mail.transport.protocol", "smtp");  
-			props.put("mail.host", smtpHost);  
-			props.put("mail.smtp.auth", "true");  
-			props.put("mail.smtp.port", smtpSslPort);  
-			props.put("mail.smtp.socketFactory.port", smtpSslPort);  
-			props.put("mail.smtp.socketFactory.class",  "javax.net.ssl.SSLSocketFactory");  
-			props.put("mail.smtp.socketFactory.fallback", "false");  
-			props.put("mail.debug", debug? "true" : "false");  
-			
-			Session session = Session.getDefaultInstance(props, new UsrPwdAuthenticator(username, password)); 
-			session.setDebug(debug);  
-			  
-			sendMessage(from, to, subject, content, filenames, session);
-		} catch (AddressException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchProviderException e) {
-			throw new RuntimeException(e);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}  
+		Properties props = new Properties();  
+		props.put("mail.transport.protocol", "smtp");  
+		props.put("mail.host", smtpHost);  
+		props.put("mail.smtp.auth", "true");  
+		props.put("mail.smtp.port", smtpSslPort);  
+		props.put("mail.smtp.socketFactory.port", smtpSslPort);  
+		props.put("mail.smtp.socketFactory.class",  "javax.net.ssl.SSLSocketFactory");  
+		props.put("mail.smtp.socketFactory.fallback", "false");  
+		props.put("mail.debug", debug? "true" : "false");  
+		
+		Session session = Session.getDefaultInstance(props, new UsrPwdAuthenticator(username, password)); 
+		session.setDebug(debug);  
+		  
+		sendMimeMessage(from, to, subject, content, filenames, session);
+
 		logger.info("Mail sent");
 
 	}
@@ -185,109 +178,165 @@ public class MailUtil {
 			boolean debug
 		) {
 
-			try {
-				logger.info("Send mail to {}, content: {}.", to, content);
-				
-				Properties props = new Properties();  
-				props.put("mail.transport.protocol", "smtp");  
-				props.put("mail.host", smtpHost);  
-				props.put("mail.smtp.auth", "false");  
-				props.put("mail.smtp.port", smtpPort);  
-				props.put("mail.debug", debug? "true" : "false");  
-				
-				Session session = Session.getDefaultInstance(props); 
-				session.setDebug(debug);  
-				  
-				sendMessage(from, to, subject, content, filenames, session);
-			} catch (AddressException e) {
-				throw new RuntimeException(e);
-			} catch (NoSuchProviderException e) {
-				throw new RuntimeException(e);
-			} catch (MessagingException e) {
-				throw new RuntimeException(e);
-			}  
+			logger.info("Send mail to {}, content: {}.", to, content);
+			
+			Properties props = new Properties();  
+			props.put("mail.transport.protocol", "smtp");  
+			props.put("mail.host", smtpHost);  
+			props.put("mail.smtp.auth", "false");  
+			props.put("mail.smtp.port", smtpPort);  
+			props.put("mail.debug", debug? "true" : "false");  
+			
+			Session session = Session.getDefaultInstance(props); 
+			session.setDebug(debug);  
+			  
+			sendMimeMessage(from, to, subject, content, filenames, session);
+
 			logger.info("Mail sent");
 
 		}
 
-	private static void sendMessage(String from, String to, String subject,
-			String content, List<String> filenames, Session session)
-			throws MessagingException, AddressException,
-			NoSuchProviderException {
-		MimeMessage message = new MimeMessage(session);  
-		message.setSender(new InternetAddress(from));  
-		message.setSubject(subject, "UTF-8");  
-		message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));  
+	private static void sendMimeMessage(
+			String from, String to, String subject,
+			String content, List<String> filenames, Session session) {
 
-		if (filenames == null || filenames.size() == 0) {
-			message.setContent(content, "text/plain; charset=UTF-8");			
-			
-		} else {
-			// Setup a multipart message 
-			Multipart multipart = new MimeMultipart(); 
-			message.setContent(multipart);
+		try {
+			String[] toArr = {to};
+			DataSource[] attachments = (filenames == null) ? null : new DataSource[filenames.size()];
 
-			// Create the message part 
-			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setContent(content, "text/plain; charset=UTF-8");			
-			multipart.addBodyPart(messageBodyPart);
-			
-			// Add attachments, if any 
 			if (filenames != null) {
+				int i = 0;
 				for (String filename : filenames) {
-					BodyPart attatchmentBodyPart = new MimeBodyPart(); 
-					DataSource source = new FileDataSource(filename); 
-					attatchmentBodyPart.setDataHandler(new DataHandler(source)); 
-					// Only use the final part fo the filename in the mail, i.e. not the path of folders if any 
-					File f = new File(filename);
-					attatchmentBodyPart.setFileName(f.getName()); 
-					multipart.addBodyPart(attatchmentBodyPart);
+					attachments[i++] = new FileDataSource(filename);
 				}
 			}
-		}
-		
-		message.saveChanges(); 
-		   
-		Transport transport = session.getTransport();  
-		try {
-			transport.connect();  
-			transport.sendMessage(message, message.getAllRecipients());  
-		} finally {
-			transport.close();
+
+			MimeMessage message = createMimeMessage(session, from, toArr, subject, content, attachments);
+			message.saveChanges(); 
+			   
+			Transport transport = session.getTransport();  
+			try {
+				transport.connect();  
+				transport.sendMessage(message, message.getAllRecipients());  
+			} finally {
+				transport.close();
+			}
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
 		}
 	}  	
     
-    public static String getText(Part part) throws ParseException, MessagingException, IOException {
+    public static String getText(Part part) {
 
-		ContentType contentType = new ContentType(part.getContentType());
-		System.err.println("contentType: " + part.getContentType() + ", class: " + part.getContent().getClass().getName());
-		
-		if (part.isMimeType("text/*")) {
-			String charset = contentType.getParameter("charset");
-			System.err.println("Charset: " + charset);
+		try {
+			ContentType contentType = new ContentType(part.getContentType());
+			System.err.println("contentType: " + part.getContentType() + ", class: " + part.getContent().getClass().getName());
+			
+			if (part.isMimeType("text/*")) {
+				String charset = contentType.getParameter("charset");
+				System.err.println("Charset: " + charset);
 
-			return (String)part.getContent();
+				return (String)part.getContent();
 
-	    } else if (part.isMimeType("multipart/*")) {
-	        Multipart mp = (Multipart)part.getContent();
-	        for (int i = 0; i < mp.getCount(); i++) {
-                String text = getText(mp.getBodyPart(i));
+			} else if (part.isMimeType("multipart/*")) {
+			    Multipart mp = (Multipart)part.getContent();
+			    for (int i = 0; i < mp.getCount(); i++) {
+			        String text = getText(mp.getBodyPart(i));
 
-                if (text != null) {
-                	return text;
-                }
-	        }
-	    }
-		return null;
+			        if (text != null) {
+			        	return text;
+			        }
+			    }
+			}
+			return null;
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public static void fillAddresses(Message mail, RecipientType addrType, List<String> addrList) throws MessagingException {
-		Address[] receipients = mail.getRecipients(addrType);
+	public static void fillAddresses(Message mail, RecipientType addrType, List<String> addrList) {
+		try {
+			Address[] receipients = mail.getRecipients(addrType);
+			
+			if (receipients == null) return;
+			
+			for (Address address : receipients) {
+				addrList.add(address.toString());
+			}
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Creates a mime-message, multipart if attachements are supplied otherwise as plain text. Assumes UTF-8 encoding for both subject and content.
+	 * 
+	 * @param session, must be specified
+	 * @param from, can be null
+	 * @param to, can be null or empty
+	 * @param subject, can be null
+	 * @param content, must be specified
+	 * @param attachments, can be null or empty
+	 * @return the mime-message
+	 * @throws MessagingException
+	 * @throws AddressException
+	 * @throws NoSuchProviderException
+	 */
+	public static MimeMessage createMimeMessage(Session session, String from, String[] to, String subject, String content, DataSource[] attachments) {
+
+		logger.debug("Creates a mime message with {} attachments", (attachments == null) ? 0 : attachments.length);
 		
-		if (receipients == null) return;
-		
-		for (Address address : receipients) {
-			addrList.add(address.toString());
+		try {
+			MimeMessage message = new MimeMessage(session);  
+			
+			if (from != null) {
+				message.setSender(new InternetAddress(from));  
+			}
+			
+			if (subject != null) {
+				message.setSubject(subject, "UTF-8");  
+			}
+			
+			if (to != null) {
+				for (String toAdr : to) {
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(toAdr));  
+				}
+			}
+
+			if (attachments == null || attachments.length == 0) {
+				// Setup a plain text message
+				message.setContent(content, "text/plain; charset=UTF-8");			
+				
+			} else {
+				// Setup a multipart message 
+				Multipart multipart = new MimeMultipart(); 
+				message.setContent(multipart);
+
+				// Create the message part 
+				BodyPart messageBodyPart = new MimeBodyPart();
+				messageBodyPart.setContent(content, "text/plain; charset=UTF-8");			
+				multipart.addBodyPart(messageBodyPart);
+				
+				// Add attachments, if any 
+				if (attachments != null) {
+					for (DataSource attachment : attachments) {
+						BodyPart attatchmentBodyPart = new MimeBodyPart(); 
+						attatchmentBodyPart.setDataHandler(new DataHandler(attachment)); 
+						attatchmentBodyPart.setFileName(attachment.getName()); 
+						multipart.addBodyPart(attatchmentBodyPart);
+					}
+				}
+			}
+			return message;
+			
+		} catch (AddressException e) {
+			throw new RuntimeException(e);
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
