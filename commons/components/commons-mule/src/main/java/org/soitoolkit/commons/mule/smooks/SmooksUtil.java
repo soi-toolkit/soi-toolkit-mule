@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.milyn.Smooks;
-import org.milyn.SmooksException;
 import org.milyn.container.ExecutionContext;
 import org.milyn.event.report.HtmlReportGenerator;
 import org.slf4j.Logger;
@@ -48,20 +49,43 @@ public class SmooksUtil {
     private SmooksUtil() {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
- 
-    static public String runSmooksTransformer(String source, String smookesConfig) throws IOException, SAXException, SmooksException {
+    
+    static public void runSmooksTransformer(Source source, Result result, String smookesConfig, String report) {
 
-        Smooks smooks = new Smooks(smookesConfig);
-        StringWriter writer = new StringWriter();
+    	Smooks smooks = null;
 
         try {
         	
+            smooks = new Smooks(smookesConfig);
+
             ExecutionContext executionContext = smooks.createExecutionContext();
 
-            // Configure the execution context to generate a report...
-            executionContext.setEventListener(new HtmlReportGenerator("target/smooks-report/report.html"));
+            // Configure the execution context to generate a report if requested...
+            if (report != null) {
+            	executionContext.setEventListener(new HtmlReportGenerator(report));
+            }
+            
+            smooks.filterSource(executionContext, source, result);
 
-            smooks.filterSource(executionContext, new StreamSource(new StringReader(source)), new StreamResult(writer));
+        } catch (IOException e) {
+        	throw new RuntimeException(e);
+		} catch (SAXException e) {
+        	throw new RuntimeException(e);
+		} finally {
+            smooks.close();
+        }
+    }
+    
+    static public void runSmooksTransformer(Source source, Result result, String smookesConfig) {
+    	runSmooksTransformer(source, result, smookesConfig, "target/smooks-report/report.html");
+    }
+    
+    static public String runSmooksTransformer(String source, String smookesConfig) {
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            runSmooksTransformer(new StreamSource(new StringReader(source)), new StreamResult(writer), smookesConfig);
 
             String result = writer.toString();
             
@@ -75,8 +99,7 @@ public class SmooksUtil {
             return result;
 
         } finally {
-            smooks.close();
-            writer.close();
+            try {writer.close();} catch (IOException e) {}
         }
     }
 }
