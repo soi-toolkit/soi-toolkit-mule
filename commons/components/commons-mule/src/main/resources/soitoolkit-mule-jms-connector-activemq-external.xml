@@ -28,22 +28,22 @@
 	</spring:beans>
 
 	<!--
-		<jms:activemq-connector name="soitoolkit-jms-connector"
-		brokerURL="tcp://localhost:61616"
-		disableTemporaryReplyToDestinations="true" persistentDelivery="true"
-		/>
+    Sample configuration settings:
+    
+	SOITOOLKIT_MULE_AMQ_HOST=localhost
+	SOITOOLKIT_MULE_AMQ_PORT=61616
+	SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES=10
+	SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY=60000
+	SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
 	-->
 
 	<spring:bean name="soitoolkit-jms-connection-factory"
 		class="org.apache.activemq.ActiveMQConnectionFactory">
-		<spring:property name="brokerURL" value="failover:(tcp://localhost:61616)" />
-<!-- 
-		<spring:property name="brokerURL" value="tcp://localhost:61616" />
- -->
+		<spring:property name="brokerURL" value="failover:(tcp://${SOITOOLKIT_MULE_AMQ_HOST}:${SOITOOLKIT_MULE_AMQ_PORT})" />
 		<spring:property name="redeliveryPolicy">
 			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
-				<spring:property name="maximumRedeliveries" value="0" />
-				<spring:property name="initialRedeliveryDelay" value="0" />			
+				<spring:property name="maximumRedeliveries" value="${SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES}" />
+				<spring:property name="initialRedeliveryDelay" value="${SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY}" />			
 			</spring:bean>
 		</spring:property>
 	</spring:bean>
@@ -52,24 +52,24 @@
 		connectionFactory-ref="soitoolkit-jms-connection-factory"
 		disableTemporaryReplyToDestinations="true" 
 		persistentDelivery="true"
-		numberOfConsumers="2"
+		numberOfConsumers="${SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS}"
 		specification="1.1"
-		maxRedelivery="10">
+		maxRedelivery="-1">
+
+<!-- NOTE: The use below of Mule rety-policies are under development... -->
 
 <!-- 
  		<spring:property name="retryPolicyTemplate" ref="threadingPolicyTemplate" />
  -->
 		
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
-		
+
 <!-- 
         <default-connector-exception-strategy>
             <outbound-endpoint address="file://./mule-connector-errors">
             	<jms:transaction action="JOIN_IF_POSSIBLE" />
             </outbound-endpoint>
         </default-connector-exception-strategy>
-
-
  -->
         		
 	</jms:connector>

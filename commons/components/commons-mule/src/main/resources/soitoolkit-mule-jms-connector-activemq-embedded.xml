@@ -46,9 +46,6 @@
 				</amq:policyMap>
 			</amq:destinationPolicy>
 			<amq:transportConnectors>
-<!-- 
-	            <amq:transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
- -->
 				<amq:transportConnector uri="vm://localhost" />
 			</amq:transportConnectors>
 		</amq:broker>
@@ -59,7 +56,8 @@
 		<spring:property name="brokerURL" value="vm://localhost" />
 		<spring:property name="redeliveryPolicy">
 			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
-				<spring:property name="maximumRedeliveries" value="0" />
+				<spring:property name="maximumRedeliveries" value="3" />
+				<spring:property name="initialRedeliveryDelay" value="500" />			
 			</spring:bean>
 		</spring:property>
 	</spring:bean>
@@ -71,7 +69,6 @@
 		numberOfConsumers="2"
 		specification="1.1"
 		maxRedelivery="-1">
-		
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
 	</jms:connector>
 		

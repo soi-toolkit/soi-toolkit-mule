@@ -30,7 +30,7 @@
   </spring:beans>
   
   <!--
-    Sample values:
+    Sample configuration settings:
     
     SOITOOLKIT_MULE_WMQ_HOST=qm1host
     SOITOOLKIT_MULE_WMQ_PORT=1414

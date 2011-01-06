@@ -322,35 +322,73 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
      * - retry-policy 
      * - logging error information to error-queue
      * 
+     * Relies on a redelivery policy defined for ActiveMQ like:
+     * (e.g. defined in the amq-embedded-connector used when running jUnit tests)
+     * 
+     * <spring:bean class="org.apache.activemq.RedeliveryPolicy">
+     *	 <spring:property name="maximumRedeliveries" value="3" />
+     *	 <spring:property name="initialRedeliveryDelay" value="500" />
+     * </spring:bean>
+     * 
+     * 
+     * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
+     * 
+     * <deadLetterStrategy>
+     * <!--
+     *      Use the prefix 'DLQ.' for the destination name, and make
+     *      the DLQ a queue rather than a topic
+     *      -->
+     *      <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
+     * </deadLetterStrategy>
+     *
      * @throws JMSException
      */
     public void test${capitalizedJavaService}_transformationError() throws JMSException {
-        
-		String message = "Cnnn";
+
+    	String message = "Cnnn";
         String expectedErrMsg="Unknown content: " + message;
 
+        // Send a poisoned message to the in-queue and verify that the expected exception occurs in the ESB
         Exception exception = dispatchAndWaitForException("jms://" + IN_QUEUE, message, null, 2000);
         assertEquals(TransformerException.class, exception.getClass());
         assertEquals(expectedErrMsg, exception.getMessage());
 
-        // Allow some background processing to complete, e.g. move poison message to DLQ and post error-message to error-log-queue
+        // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
         try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {}
-        
+        	Thread.sleep(500);
+        } catch (InterruptedException e) {}
+
+        // Verify that the message is still on the in-queue and now marked for redelivery
+        List<Message> inMails = jmsUtil.browseMessagesOnQueue(IN_QUEUE);
+        assertEquals(1, inMails.size());
+        Message inMail = inMails.get(0);
+        assertTrue(inMail.getJMSRedelivered());
+
+        // Allow for some more background processing to complete so that the redelivery count is reached and the message is placed on the Dead Letter queue
+        try {
+        	Thread.sleep(1500);
+        } catch (InterruptedException e) {}
+
+        // Verify that the message now is gone from the in-queue
+        assertEquals("Sent message not removed", 0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
+
+        // Verify as well that nothing is placed on the out-queue
         assertEquals("Unexpected message on out-queue", 0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
 
-        assertEquals("Sent message not removed", 0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
-        
+        // Verify that the in-message now is found on the deadletter queue
         List<Message> msgs = jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE);
         assertEquals("Incorrect number of DLQ-messages", 1, msgs.size());
         String dlqMsg = ((TextMessage)msgs.get(0)).getText();
         assertEquals("Message on DLQ is not identical with the message sent", dlqMsg, message);
-        
+
+        // Wrap up with verifying that we now have four identical log-messages on the error-log-queue
+        // One message for the initial attempt and three more for the redeliveries
         msgs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
-        assertEquals("Incorrect number of error-messages", 1, msgs.size());
-        String errMsg = ((TextMessage)msgs.get(0)).getText();
-        assertTrue("Expected error message not found", errMsg.contains(expectedErrMsg));
-    }
+        assertEquals("Incorrect number of error-messages", 4, msgs.size());
+        for (Message errMessage : msgs) {
+            String errMsg = ((TextMessage)errMessage).getText();
+            assertTrue("Expected error message not found", errMsg.contains(expectedErrMsg));
+        }
+    }    
 <% } %>    
 }
