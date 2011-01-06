@@ -12,7 +12,7 @@ import org.soitoolkit.commons.mule.util.MiscUtil;
 public class ${capitalizedJavaService}ResponseTransformerTest {
 
 	@Test
-	public void testJavaTransformer_ok() throws Exception {
+	public void testTransformer_ok() throws Exception {
 
 		// Specify input and expected result 
 		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv");
@@ -31,7 +31,7 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 	}
 
 	@Test
-	public void testJavaTransformer_fault() throws Exception {
+	public void testTransformer_fault() throws Exception {
 
 		// Specify input and expected result 
 		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-input.csv");

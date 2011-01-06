@@ -11,7 +11,7 @@ import org.soitoolkit.commons.mule.util.MiscUtil;
 public class ${capitalizedJavaService}RequestTransformerTest {
 
 	@Test
-	public void testJavaTransformer_ok() throws Exception {
+	public void testTransformer_ok() throws Exception {
 
 		// Specify input and expected result 
 		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-input.xml");
