@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="urn:org.soitoolkit.refapps.dealernetwork.shippingrequest.schema:v1"
+	xmlns:tns="urn:org.soitoolkit.refapps.dealernetwork.shippingrequest.schema:v1"
+	xmlns:ct="urn:org.soitoolkit.refapps.dealernetwork.commontypes.schema:v1"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	version="1.0">
+
+  <xsd:import namespace="urn:org.soitoolkit.refapps.dealernetwork.commontypes.schema:v1"
+      schemaLocation="CommonTypes.xsd"/>
+
+
+	<xsd:element name="shippingRequest">
+	  <xsd:complexType>
+	    <xsd:sequence>
+	      <xsd:element name="customerId" type="xsd:int"/>
+	      <xsd:element name="companyName" type="xsd:string"/>
+	      <xsd:element name="customerEmail" type="xsd:string"/>
+	      
+	      <xsd:element name="adress">
+	        <xsd:complexType>
+	          <xsd:sequence>
+              <xsd:element name="street" type="xsd:string"/>
+              <xsd:element name="city" type="xsd:string"/>
+              <xsd:element name="postalCode" type="xsd:string"/>
+              <xsd:element name="country" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        
+        <xsd:element name="orderDate" type="xsd:dateTime"/>
+        <xsd:element name="orderId" type="xsd:int"/>
+
+        <xsd:element name="orderLines" minOccurs="1" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="productId" type="xsd:string"/>
+              <xsd:element name="quantity" type="xsd:int"/>
+              <xsd:element name="price" type="ct:MoneyType"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        
+        <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

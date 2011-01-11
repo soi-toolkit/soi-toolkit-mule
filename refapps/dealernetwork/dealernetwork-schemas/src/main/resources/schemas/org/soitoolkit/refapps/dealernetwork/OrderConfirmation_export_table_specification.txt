@@ -1,0 +1,11 @@
+CREATE TABLE ORDERCONFIRMATION_EXPORT_TB (
+	ID                          VARCHAR(128),
+	CUSTOMER_ID                 VARCHAR(128),
+	CUSTOMER_EMAIL				VARCHAR(128),
+	ORDER_ID                    VARCHAR(128),
+	ORDER_STATUS				VARCHAR(16), -- NEW, CONFIRMED, CANCELED, DELIVERED
+	ORDER_STATUS_COMMENT		VARCHAR(255), -- free text field, typically used to give a reason for a canceled order  
+	ESTIMATED_DELIVERY          VARCHAR(128), -- DATETIME is not fully portable across databases ...
+  
+  CONSTRAINT ORDERCONFIRMATION_EXPORT_PK PRIMARY KEY (ID)
+);

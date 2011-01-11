@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+	name="orderConfirmation"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns="urn:org.soitoolkit.refapps.dealernetwork.startorderprocess.wsdl:v1" 
+	targetNamespace="urn:org.soitoolkit.refapps.dealernetwork.startorderprocess.wsdl:v1">
+	
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import 
+				namespace="urn:org.soitoolkit.refapps.dealernetwork.startorderprocess.schema:v1"
+            	schemaLocation="StartOrderProcess.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+</wsdl:definitions>

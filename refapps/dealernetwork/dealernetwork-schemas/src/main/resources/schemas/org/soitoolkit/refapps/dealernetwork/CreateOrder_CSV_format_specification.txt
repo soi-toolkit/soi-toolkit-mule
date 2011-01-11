@@ -1,0 +1,41 @@
+Message format specification for CreateOrder-CSV.
+
+General
+=========
+* Line endings: CR + LF (MS-Windows-style)
+  Every line (including the last line) is terminated with
+  the above characters.
+* Character set: UTF-8 (no BOM)
+* A message type field is always present and is always the first field
+  in a row. Message types are:
+  msg-0001-req-hdr
+  msg-0001-req-line
+  msg-0001-resp
+  msg-error
+    
+
+Request
+===============
+* The first row is a header row (always present)
+* Then the orderlines follow [1..*]
+
+Example:
+msg-0001-req-hdr,customerId,uniqueCustomerReferenceId,orderDate
+msg-0001-req-line,productId,quantity,price
+msg-0001-req-line,productId,quantity,price
+
+
+Response
+===============
+* A single row
+
+Example:
+msg-0001-resp, customerId,uniqueCustomerReferenceId,orderId
+
+
+Fault
+===============
+* A single row is returned if any fault occured during request processing
+
+Example:
+msg-error, error-message

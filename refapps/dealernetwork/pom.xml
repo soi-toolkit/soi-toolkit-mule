@@ -18,21 +18,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
-        <groupId>org.soitoolkit</groupId>
+	  <groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
 		<version>0.2.1-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.refapps</groupId>
-	<artifactId>soitoolkit-refapps</artifactId>
+	<artifactId>soitoolkit-refapps-dealernetwork</artifactId>
 	<packaging>pom</packaging>
-	<name>soitoolkit-refapps</name>
-    <url>http://soi-toolkit.org</url>
+	<name>soitoolkit-refapps-dealernetwork</name>
+	<url>http://soi-toolkit.org</url>
 
 	<modules>
-		<module>sd/sample-schemas</module>
-		<module>dealernetwork</module>
+		<module>dealernetwork-schemas</module>
 	</modules>
 
 </project>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="urn:org.soitoolkit.refapps.dealernetwork.commontypes.schema:v1"
+	xmlns:tns="urn:org.soitoolkit.refapps.dealernetwork.commontypes.schema:v1"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	version="1.0">
+
+
+    <xsd:complexType name="MoneyType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Represents a monetary amount in a specific currency.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="currency" type="tns:CurrencyType"/>
+            <xsd:element name="amount" type="tns:Money_amountType"/>
+
+            <xsd:any namespace="##other" processContents="lax"
+                minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="Money_amountType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Java-implementation note:
+                See java.math.BigDecimal scale and rounding mode. Refer to
+                articles:
+                http://www.javaranch.com/journal/2003/07/MoneyInJava.html
+                http://www.javapractices.com/topic/TopicAction.do?Id=13
+                http://blogs.sun.com/CoreJavaTechTips/entry/the_need_for_bigdecimal
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:decimal"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="CurrencyType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The alphabetic three-letter currency code defined by ISO 4217.
+                For example: SEK (for swedish Krona), EUR (Euro), USD (US dollars)
+
+                Java-implementation note:
+                See java.util.Currency for handling the
+                number of fraction digits for a currency.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="3"></xsd:minLength>
+            <xsd:maxLength value="3"></xsd:maxLength>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+</xsd:schema>
