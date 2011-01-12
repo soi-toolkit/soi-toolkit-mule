@@ -405,6 +405,11 @@ public class CreateServicePage extends WizardPage {
 			return;
 		}
 		
+		if (mepIdx == 2) {
+			updateStatus("Message exchenge pattern Publish/Subscribe not yet supported");
+			return;
+		}
+		
 		// Validate Inbound Transport
 		int ibtIdx = inboundTransportCombo.getSelectionIndex();
 		if (ibtIdx == -1) {
