@@ -20,7 +20,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 	<parent>
 		<groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
-		<version>0.3.0</version>
+		<version>0.3.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.soitoolkit.refapps.sd</groupId>
