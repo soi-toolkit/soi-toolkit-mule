@@ -38,7 +38,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
@@ -302,7 +304,12 @@ public class CreateServicePage extends WizardPage {
 		/*
 		 * TransformerType
 		 */
-		addRadioButtons(EnumUtil.getLabels(TransformerEnum.values()), "&Type of transformer:", transformerType, container, null);		
+		addRadioButtons(EnumUtil.getLabels(TransformerEnum.values()), "&Type of transformer:", transformerType, container, new Listener () {
+			public void handleEvent (Event e) {
+				dialogChanged();
+			}
+		});		
+
 		label = new Label(container, SWT.NULL); // Filler in column 2
 		
 //	}
@@ -401,12 +408,13 @@ public class CreateServicePage extends WizardPage {
 		// Validate MEP
 		int mepIdx = mepCombo.getSelectionIndex();
 		if (mepIdx == -1) {
-			updateStatus("Select a message exchenge pattern");
+			updateStatus("Select a message exchange pattern");
 			return;
 		}
 		
+		// Do not allow pub/sub mep right now...
 		if (mepIdx == 2) {
-			updateStatus("Message exchenge pattern Publish/Subscribe not yet supported");
+			updateStatus("Message exchange pattern Publish/Subscribe not yet supported");
 			return;
 		}
 		
@@ -424,6 +432,14 @@ public class CreateServicePage extends WizardPage {
 			return;
 		}
 		
+		// Validate Transformer-type, do no allow smooks for oneway's right now.
+		int ttIdx = transformerType.value;
+		if (mepIdx == 1 && ttIdx == 1) {
+			updateStatus("Smooks based transformers are currently not supported for oneway message exchange patterns");
+			return;
+		}
+		
+
 		String containerName = getContainerName().trim();
 		IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(containerName));
