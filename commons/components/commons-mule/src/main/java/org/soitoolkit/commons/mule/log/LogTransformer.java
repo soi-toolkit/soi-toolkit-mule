@@ -24,6 +24,8 @@ import org.mule.RequestContext;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
+// FIXME: Mule 3.1
+// import org.mule.api.construct.FlowConstruct;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
@@ -110,6 +112,8 @@ public class LogTransformer extends AbstractMessageAwareTransformer {
 
     		// Skip logging if service name starts with "_cxfServiceComponent" (Mule 2.2.1) or ends with "_cxfComponent" (Mule 2.2.5) and endpoint contains "?wsdl" or "?xsd", then it's just tons of WSDL and XSD lookup calls, nothing to log...
             MuleEventContext event       = RequestContext.getEventContext();
+			// FIXME: Mule 3.1
+            // FlowConstruct    service = (event == null)? null : event.getFlowConstruct();
             Service          service     = (event == null)? null : event.getService();
             String           serviceName = (service == null)? null : service.getName();
     		if (serviceName != null && (serviceName.startsWith("_cxfServiceComponent") || serviceName.endsWith("_cxfComponent"))) {
