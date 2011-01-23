@@ -41,6 +41,9 @@ public class ExceptionHandler extends DefaultExceptionStrategy {
 //		No need to double log this type of errors
 //		super.logException(t);
 
+		// Inject the MuleContext in the EventLogger since we are creating the instance
+		eventLogger.setMuleContext(muleContext);
+		
         MuleException muleException = ExceptionHelper.getRootMuleException(t);
         if (muleException != null)
         {

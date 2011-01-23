@@ -28,9 +28,8 @@ public interface PropertyNames {
 	public static final String SOITOOLKIT_INTEGRATION_SCENARIO = "soitoolkit_integrationScenario"; 
 	public static final String SOITOOLKIT_CORRELATION_ID = "soitoolkit_correlationId"; 
 	public static final String SOITOOLKIT_CONTRACT_ID = "soitoolkit_contractId"; 
-	
+	public static final String SOITOOLKIT_BUSINESS_CONTEXT_ID = "soitoolkit_businessContextId"; 
+
 	public final static String DEFAULT_MULE_JMS_CONNECTOR = "soitoolkit-jms-connector";
 	public final static String DEFAULT_MULE_JDBC_DATASOURCE = "soitoolkit-jdbc-datasource";
-
-	
 }

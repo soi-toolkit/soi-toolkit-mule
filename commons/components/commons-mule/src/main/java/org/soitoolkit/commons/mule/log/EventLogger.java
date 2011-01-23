@@ -19,6 +19,7 @@ package org.soitoolkit.commons.mule.log;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -81,6 +82,8 @@ public class EventLogger implements MuleContextAware {
 
 	private static final Logger messageLogger = LoggerFactory.getLogger("org.soitoolkit.commons.mule.messageLogger");
 
+	private static final Logger log = LoggerFactory.getLogger(EventLogger.class);
+
 	// Creating JaxbUtil objects (i.e. JaxbContext objects)  are costly, so we only keep one instance.
 	// According to https://jaxb.dev.java.net/faq/index.html#threadSafety this should be fine since they are thread safe!
 	private static final JaxbUtil JAXB_UTIL = new JaxbUtil(LogEvent.class);
@@ -124,7 +127,7 @@ public class EventLogger implements MuleContextAware {
 	 */
 	private MuleContext muleContext = null;
 	public void setMuleContext(MuleContext muleContext) {
-		System.err.println("EventLogger.setMuleContext(): MULE-CONTEXT INJECTED");
+		log.debug("MuleContext injected");
 		this.muleContext = muleContext;
 	}
 	
@@ -457,19 +460,24 @@ public class EventLogger implements MuleContextAware {
 		String integrationScenarioId = ""; 
 		String contractId            = ""; 
 		String businessCorrelationId = "";
+		String propertyBusinessContextId = null;
 
 		if (message != null) {
 
-//			Set names = message.getPropertyNames();
-//			for (Object object : names) {
-//				Object value = message.getProperty(object.toString());
-//				System.err.println(object + " = " + value);
-//			}
+			if (log.isDebugEnabled()) {
+				@SuppressWarnings("rawtypes")
+				Set names = message.getPropertyNames();
+				for (Object object : names) {
+					Object value = message.getProperty(object.toString());
+					log.debug(object + " = " + value);
+				}
+			}
 			
 			messageId             = message.getUniqueId();
 			contractId            = message.getStringProperty(SOITOOLKIT_CONTRACT_ID, "");
 			businessCorrelationId = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "");
 			integrationScenarioId = message.getStringProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
+			propertyBusinessContextId = message.getStringProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
 		}
 
 		String componentId = getServerId();
@@ -504,6 +512,17 @@ public class EventLogger implements MuleContextAware {
 				bxid.setValue(entry.getValue());
 				lri.getBusinessContextId().add(bxid);
 			}
+		}
+		
+		// Also add any business contexts from message properties
+		if (propertyBusinessContextId != null) {
+			String[] nameValueArr = propertyBusinessContextId.split("=");
+			String name = nameValueArr[0];
+			String value = (nameValueArr.length > 1) ? nameValueArr[1] : "";
+			BusinessContextId bxid = new BusinessContextId();
+			bxid.setName(name);
+			bxid.setValue(value);
+			lri.getBusinessContextId().add(bxid);
 		}
 		
 

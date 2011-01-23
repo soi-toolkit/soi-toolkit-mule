@@ -26,6 +26,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.JAXBElement;
 
+import org.mule.api.MuleContext;
+import org.mule.api.context.MuleContextAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.monitor.schema.v1.MonitorInfoType;
@@ -40,7 +42,7 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
  *
  */
 @Path("/monitor")
-public class MonitorService {
+public class MonitorService implements MuleContextAware {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final static ObjectFactory OF = new ObjectFactory();
@@ -50,7 +52,16 @@ public class MonitorService {
 		this.artifactId = artifactId;
 	}
 
-    /**
+	/*
+	 * Property muleContext 
+	 */
+	private MuleContext muleContext = null;
+	public void setMuleContext(MuleContext muleContext) {
+		logger.debug("MuleContext injected");
+		this.muleContext = muleContext;
+	}
+
+	/**
      * Example: 
      *   HTTP GET on http://localhost:12000/infobus/kund3/rest/v1/monitor/xml
      *   
@@ -160,15 +171,15 @@ public class MonitorService {
 
 
 	protected void addJmsEndpointInfo(JAXBElement<MonitorInfoType> result, boolean showErrorsOnly, String queueName) {
-		addExtraInfo(result, showErrorsOnly, "jms", queueName, MonitorEndpointHelper.pingJmsEndpoint(queueName));
+		addExtraInfo(result, showErrorsOnly, "jms", queueName, MonitorEndpointHelper.pingJmsEndpoint(muleContext, queueName));
 	}
 
 	protected void addJmsBackoutQueueInfo(JAXBElement<MonitorInfoType> result, boolean showErrorsOnly, String queueName) {
-		addExtraInfo(result, showErrorsOnly, "jms", queueName, MonitorEndpointHelper.pingJmsBackoutQueue(queueName));
+		addExtraInfo(result, showErrorsOnly, "jms", queueName, MonitorEndpointHelper.pingJmsBackoutQueue(muleContext, queueName));
 	}
 	
 	protected void addJdbcEndpointInfo(JAXBElement<MonitorInfoType> result, boolean showErrorsOnly, String tableName) {
-		addExtraInfo(result, showErrorsOnly, "jdbc", tableName, MonitorEndpointHelper.pingJdbcEndpoint(tableName));
+		addExtraInfo(result, showErrorsOnly, "jdbc", tableName, MonitorEndpointHelper.pingJdbcEndpoint(muleContext, tableName));
 	}
 
 	protected void addSoapHttpEndpointInfo(JAXBElement<MonitorInfoType> result, boolean showErrorsOnly, String soapHttpUrl) {

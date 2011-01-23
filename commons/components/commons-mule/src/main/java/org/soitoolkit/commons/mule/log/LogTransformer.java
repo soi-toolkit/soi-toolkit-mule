@@ -22,10 +22,12 @@ import java.util.Map;
 
 import org.mule.RequestContext;
 import org.mule.api.ExceptionPayload;
+import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 // FIXME: Mule 3.1
 // import org.mule.api.construct.FlowConstruct;
+import org.mule.api.context.MuleContextAware;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
@@ -45,11 +47,24 @@ import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
  * 
  * @author Magnus Larsson
  */
-public class LogTransformer extends AbstractMessageAwareTransformer {
+public class LogTransformer extends AbstractMessageAwareTransformer implements MuleContextAware {
 
 	private static final Logger log = LoggerFactory.getLogger(LogTransformer.class);
 
 	private final EventLogger eventLogger;
+
+	// FIXME: Mule 3.1. To be removed since it's already in base class for Mule 3.1
+	/*
+	 * Property muleContext 
+	 */
+	private MuleContext muleContext = null;
+	public void setMuleContext(MuleContext muleContext) {
+		log.debug("MuleContext injected");
+		this.muleContext = muleContext;
+		
+		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
+		eventLogger.setMuleContext(this.muleContext);
+	}
 
 	/*
 	 * Property logLevel 

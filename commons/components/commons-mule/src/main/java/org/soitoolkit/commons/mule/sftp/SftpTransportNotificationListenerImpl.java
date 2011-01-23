@@ -16,7 +16,9 @@
  */
 package org.soitoolkit.commons.mule.sftp;
 
+import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
+import org.mule.api.context.MuleContextAware;
 import org.mule.api.context.notification.ServerNotification;
 import org.mule.transport.sftp.notification.SftpTransportNotification;
 import org.mule.transport.sftp.notification.SftpTransportNotificationListener;
@@ -29,7 +31,7 @@ import org.soitoolkit.commons.mule.log.EventLogger;
  * 
  * @author Magnus Larsson
  */
-public class SftpTransportNotificationListenerImpl implements SftpTransportNotificationListener {
+public class SftpTransportNotificationListenerImpl implements SftpTransportNotificationListener, MuleContextAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(SftpTransportNotificationListenerImpl.class);
 
@@ -39,6 +41,18 @@ public class SftpTransportNotificationListenerImpl implements SftpTransportNotif
 		logger.debug("SftpTransportNotificationListenerImpl Created");
 	}
 
+	/*
+	 * Property muleContext 
+	 */
+	private MuleContext muleContext = null;
+	public void setMuleContext(MuleContext muleContext) {
+		logger.debug("MuleContext injected");
+		this.muleContext = muleContext;
+
+		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
+		eventLogger.setMuleContext(this.muleContext);
+	}
+	
 	public void onNotification(ServerNotification notification) {
 
 		// Return at once if info-logging is disabled!

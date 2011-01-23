@@ -85,7 +85,7 @@ public class SftpUtil {
 
 		// Now init the directory for each named endpoint, one by one
 		for (String endpointName : endpointNames) {
-			initEndpointDirectory(endpointName);
+			initEndpointDirectory(muleContext, endpointName);
 		}
 
 		// We are done, startup the services again so that the test can begin...
@@ -98,13 +98,14 @@ public class SftpUtil {
 	 * Ensures that the directory exists and is writable by deleting the
 	 * directory and then recreate it.
 	 * 
+	 * @param muleContext 
 	 * @param endpointName
 	 * @throws org.mule.api.MuleException
 	 * @throws java.io.IOException
 	 * @throws com.jcraft.jsch.SftpException
 	 */
-	public static void initEndpointDirectory(String endpointName) throws MuleException, IOException, SftpException {
-		MuleClient muleClient = new MuleClient();
+	public static void initEndpointDirectory(MuleContext muleContext, String endpointName) throws MuleException, IOException, SftpException {
+		MuleClient muleClient = new MuleClient(muleContext);
 		SftpClient sftpClient = getSftpClient(muleClient, endpointName);
 		try {
 			ChannelSftp channelSftp = sftpClient.getChannelSftp();
@@ -125,8 +126,8 @@ public class SftpUtil {
 	}
 
 	
-	public static String[] getFilesInEndpoint(String endpointName, String subDirectory) throws IOException, MuleException {
-        MuleClient muleClient = new MuleClient();
+	public static String[] getFilesInEndpoint(MuleContext muleContext, String endpointName, String subDirectory) throws IOException, MuleException {
+        MuleClient muleClient = new MuleClient(muleContext);
     	SftpClient sftpClient = getSftpClient(muleClient, endpointName);
         ImmutableEndpoint tEndpoint = (ImmutableEndpoint) muleClient.getProperty(endpointName);
         try {
@@ -149,8 +150,8 @@ public class SftpUtil {
       return files;
     }
     
-	public static String getSftpFileContent(String endpointName, String file) throws MuleException, IOException {
-        MuleClient muleClient = new MuleClient();
+	public static String getSftpFileContent(MuleContext muleContext, String endpointName, String file) throws MuleException, IOException {
+        MuleClient muleClient = new MuleClient(muleContext);
     	SftpClient sftpClient = getSftpClient(muleClient, endpointName);
         ImmutableEndpoint tEndpoint = (ImmutableEndpoint) muleClient.getProperty(endpointName);
         try {

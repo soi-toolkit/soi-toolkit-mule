@@ -35,6 +35,7 @@ import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.sql.DataSource;
 
+import org.mule.api.MuleContext;
 import org.mule.transport.jms.JmsConnector;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 import org.soitoolkit.commons.mule.util.MuleUtil;
@@ -75,15 +76,15 @@ public class MonitorEndpointHelper {
 	/**
 	 * Verify access to a JDBC endpoint by verifying that a specified table is accessible.
 	 */
-	public static String pingJdbcEndpoint(String tableName) {
-		return pingJdbcEndpoint(DEFAULT_MULE_JDBC_DATASOURCE, tableName);	}
+	public static String pingJdbcEndpoint(MuleContext muleContext, String tableName) {
+		return pingJdbcEndpoint(muleContext, DEFAULT_MULE_JDBC_DATASOURCE, tableName);	}
 	
 	/**
 	 * Verify access to a JDBC endpoint by verifying that a specified table is accessible.
 	 */
-	public static String pingJdbcEndpoint(String muleJdbcDataSourceName, String tableName) {
+	public static String pingJdbcEndpoint(MuleContext muleContext, String muleJdbcDataSourceName, String tableName) {
 		
-		DataSource ds = (DataSource)MuleUtil.getSpringBean(muleJdbcDataSourceName);
+		DataSource ds = (DataSource)MuleUtil.getSpringBean(muleContext, muleJdbcDataSourceName);
 
 		Connection c = null;
 		Statement  s = null;
@@ -109,17 +110,17 @@ public class MonitorEndpointHelper {
 	/**
 	 * Verify access to a JMS endpoint by browsing a specified queue for messages.
 	 */
-	public static String pingJmsEndpoint(String queueName) {
-		return pingJmsEndpoint(DEFAULT_MULE_JMS_CONNECTOR, queueName);
+	public static String pingJmsEndpoint(MuleContext muleContext, String queueName) {
+		return pingJmsEndpoint(muleContext, DEFAULT_MULE_JMS_CONNECTOR, queueName);
 	}
 	
 	/**
 	 * Verify access to a JMS endpoint by browsing a specified queue for messages.
 	 */
-	public static String pingJmsEndpoint(String muleJmsConnectorName, String queueName) {
+	public static String pingJmsEndpoint(MuleContext muleContext, String muleJmsConnectorName, String queueName) {
 	    try {
 	    	
-	    	isQueueEmpty(muleJmsConnectorName, queueName);
+	    	isQueueEmpty(muleContext, muleJmsConnectorName, queueName);
 		    return OK_PREFIX + ": The queue " + queueName + " was found in the queue manager " + muleJmsConnectorName; 
 	
 	    } catch (JMSException e) {
@@ -134,8 +135,8 @@ public class MonitorEndpointHelper {
 	 * @param queueName
 	 * @return
 	 */
-	public static String pingJmsBackoutQueue(String queueName) {
-		return pingJmsBackoutQueue(DEFAULT_MULE_JMS_CONNECTOR, queueName);
+	public static String pingJmsBackoutQueue(MuleContext muleContext, String queueName) {
+		return pingJmsBackoutQueue(muleContext, DEFAULT_MULE_JMS_CONNECTOR, queueName);
 	}
 
 	/**
@@ -145,9 +146,9 @@ public class MonitorEndpointHelper {
 	 * @param queueName
 	 * @return
 	 */
-	public static String pingJmsBackoutQueue(String muleJmsConnectorName, String queueName) {
+	public static String pingJmsBackoutQueue(MuleContext muleContext, String muleJmsConnectorName, String queueName) {
 	    try {
-	    	if (isQueueEmpty(muleJmsConnectorName, queueName)) {
+	    	if (isQueueEmpty(muleContext, muleJmsConnectorName, queueName)) {
 	    	    return OK_PREFIX + ": The queue " + queueName + " in the queue manager " + muleJmsConnectorName + " is empty"; 
 	    		
 	    	} else {
@@ -198,8 +199,8 @@ public class MonitorEndpointHelper {
 	 * @throws JMSException
 	 */
 	@SuppressWarnings("rawtypes")
-	private static boolean isQueueEmpty(String muleJmsConnectorName, String queueName) throws JMSException {
-	    JmsConnector muleCon = (JmsConnector)MuleUtil.getSpringBean(muleJmsConnectorName);
+	private static boolean isQueueEmpty(MuleContext muleContext, String muleJmsConnectorName, String queueName) throws JMSException {
+	    JmsConnector muleCon = (JmsConnector)MuleUtil.getSpringBean(muleContext, muleJmsConnectorName);
 
 	    Session s = null;
 	    QueueBrowser b = null;
