@@ -22,6 +22,7 @@ import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRAT
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.api.transport.PropertyScope;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 import org.mule.util.UUID;
 
@@ -40,6 +41,7 @@ public class CreateCorrelationIdTransformer extends AbstractMessageAwareTransfor
 	public void setIntegrationScenario(String integrationScenario) {
 		this.integrationScenario = integrationScenario;
 	}
+
 	private String contractId = null;
 	public void setContractId(String contractId) {
 		this.contractId = contractId;
@@ -47,14 +49,14 @@ public class CreateCorrelationIdTransformer extends AbstractMessageAwareTransfor
 
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
 		String correlationId = UUID.getUUID();
-		message.setProperty(SOITOOLKIT_CORRELATION_ID, correlationId);
+		message.setProperty(SOITOOLKIT_CORRELATION_ID, correlationId, PropertyScope.SESSION);
 		
 		if (integrationScenario != null) {
-			message.setProperty(SOITOOLKIT_INTEGRATION_SCENARIO, integrationScenario);
+			message.setProperty(SOITOOLKIT_INTEGRATION_SCENARIO, integrationScenario, PropertyScope.SESSION);
 		}
 
 		if (contractId != null) {
-			message.setProperty(SOITOOLKIT_CONTRACT_ID, contractId);
+			message.setProperty(SOITOOLKIT_CONTRACT_ID, contractId, PropertyScope.SESSION);
 		}
 
 		if(logger.isDebugEnabled()) logger.debug("Created property: " + SOITOOLKIT_CORRELATION_ID + " = " + correlationId);

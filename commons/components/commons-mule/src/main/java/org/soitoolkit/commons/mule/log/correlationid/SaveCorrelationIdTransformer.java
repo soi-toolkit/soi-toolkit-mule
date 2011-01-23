@@ -26,13 +26,22 @@ import org.mule.transformer.AbstractMessageAwareTransformer;
  * Save a correlation id message property in the CorrelationIdStore for later retrieval by a synchronous response-processing.
  * 
  * @author Magnus Larsson
- *
+ * 
+ * @deprecated since soi-toolkit 0.2.1 this transformer are no longer required since the SOITOOLKIT_CORRELATION_ID is stored in the session scope
  */
 public class SaveCorrelationIdTransformer extends AbstractMessageAwareTransformer {
 
+	/*
+	 * Property id 
+	 */
+	private String id = "";
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
 		String correlationId = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "Missing " + SOITOOLKIT_CORRELATION_ID);
-		CorrelationIdStore.setCorrelationId(correlationId);
+		CorrelationIdStore.setCorrelationId(id, correlationId);
 
 		if(logger.isDebugEnabled()) logger.debug("Saved property in threadLocal variable: " + SOITOOLKIT_CORRELATION_ID + " = " + correlationId);
 		
