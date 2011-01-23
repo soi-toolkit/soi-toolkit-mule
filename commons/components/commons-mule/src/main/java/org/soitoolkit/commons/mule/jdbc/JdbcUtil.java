@@ -18,6 +18,7 @@ package org.soitoolkit.commons.mule.jdbc;
 
 import javax.sql.DataSource;
 
+import org.mule.api.MuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.MuleUtil;
@@ -40,9 +41,9 @@ public class JdbcUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
     
-    public DataSource lookupDataSource(String dataSourceName) {
+    public static DataSource lookupDataSource(MuleContext muleContext, String dataSourceName) {
     	log.debug("Lookup datasource named {}", dataSourceName);
-	    return (DataSource)MuleUtil.getSpringBean(dataSourceName);
+	    return (DataSource)MuleUtil.getSpringBean(muleContext, dataSourceName);
     }
 
 }
