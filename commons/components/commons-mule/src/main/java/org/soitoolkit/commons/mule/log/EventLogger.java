@@ -40,12 +40,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import org.mule.MuleServer;
 import org.mule.RequestContext;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleConfiguration;
+//FIXME: Mule 3.1
+//import org.mule.api.construct.FlowConstruct;
+import org.mule.api.context.MuleContextAware;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
@@ -75,7 +77,7 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
  * @author Magnus Larsson
  *
  */
-public class EventLogger {
+public class EventLogger implements MuleContextAware {
 
 	private static final Logger messageLogger = LoggerFactory.getLogger("org.soitoolkit.commons.mule.messageLogger");
 
@@ -116,6 +118,16 @@ public class EventLogger {
 	public EventLogger() {
 	}
 
+
+	/*
+	 * Property muleContext 
+	 */
+	private MuleContext muleContext = null;
+	public void setMuleContext(MuleContext muleContext) {
+		System.err.println("EventLogger.setMuleContext(): MULE-CONTEXT INJECTED");
+		this.muleContext = muleContext;
+	}
+	
 	/**
 	 * Setter for the jaxbToXml property
 	 * 
@@ -205,7 +217,7 @@ public class EventLogger {
 
 	private Session getSession() throws JMSException {
 //		JmsConnector jmsConn = (JmsConnector)MuleServer.getMuleContext().getRegistry().lookupConnector("soitoolkit-jms-connector");
-		JmsConnector jmsConn = (JmsConnector)MuleUtil.getSpringBean("soitoolkit-jms-connector");
+		JmsConnector jmsConn = (JmsConnector)MuleUtil.getSpringBean(muleContext, "soitoolkit-jms-connector");
 		Connection c = jmsConn.getConnection();
 		Session s = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		return s;
@@ -287,10 +299,9 @@ public class EventLogger {
 
 		if (serverId != null) return serverId;
 		
-		MuleContext mCtx = MuleServer.getMuleContext();
-		if (mCtx == null) return "UNKNOWN.MULE_CONTEXT"; 
+		if (muleContext == null) return "UNKNOWN.MULE_CONTEXT"; 
 
-		MuleConfiguration mConf = mCtx.getConfiguration();
+		MuleConfiguration mConf = muleContext.getConfiguration();
 		if (mConf == null) return "UNKNOWN.MULE_CONFIGURATION"; 
 		
 		return serverId = mConf.getId();
@@ -434,6 +445,8 @@ public class EventLogger {
 		String           endpoint    = "";
         MuleEventContext event       = RequestContext.getEventContext();
         if (event != null) {
+        	//FIXME: Mule 3.1
+//	        FlowConstruct service   = event.getFlowConstruct();
 	        Service     service     = event.getService();
 		    EndpointURI endpointURI = event.getEndpointURI();
 		    serviceImplementation   = (service == null)? "" : service.getName();
@@ -552,5 +565,5 @@ public class EventLogger {
 		// We are actually done :-)
 		return logEvent;
 	}
-	
+
 }
