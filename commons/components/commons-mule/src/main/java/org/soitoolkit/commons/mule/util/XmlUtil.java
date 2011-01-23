@@ -66,10 +66,10 @@ public class XmlUtil extends org.mule.util.XMLUtils {
 	}
 
     /**
-     * Converts a java.util.Date to a javax.xml.datatype.XMLGregorianCalendar;
+     * Converts a javax.xml.datatype.XMLGregorianCalendar to a java.util.Date.
      * 
-     * @param date
-     * @return a corresponding XMLGregorianCalendar object
+     * @param a XMLGregorianCalendar date object
+     * @return the corresponding Date object
      */
     public static Date convertXmlDateToDate(XMLGregorianCalendar date) {
     	return date.toGregorianCalendar().getTime();
