@@ -207,7 +207,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		// Jms transport is mandatory for logging, should not be selectable
 //		vmButton = SwtUtil.createCheckboxButton(container, null, i++, "VM");
 //		vmButton.setSelection(true);
-		jmsButton = SwtUtil.createCheckboxButton(container, null, i++, "JMS");
+		jmsButton = SwtUtil.createCheckboxButton(container, null, i++, "JMS (required)");
 		jmsButton.setSelection(true);
 		jmsButton.setEnabled(false);
 		jdbcButton = SwtUtil.createCheckboxButton(container, null, i++, "JDBC");
