@@ -43,6 +43,7 @@ import org.soitoolkit.commons.mule.util.MuleUtil;
 import org.soitoolkit.commons.mule.sftp.SftpUtil;
 import org.soitoolkit.commons.mule.file.FileUtil;
 import org.soitoolkit.commons.mule.mail.MailUtil;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,7 +199,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
 	private void doSetUpDb() throws FileNotFoundException {
-		DataSource ds = (DataSource) MuleUtil.getSpringBean("soitoolkit-jdbc-datasource");
+		DataSource ds = JdbcUtil.lookupDataSource(muleContext, "soitoolkit-jdbc-datasource");
 		JdbcScriptEngine se = new JdbcScriptEngine(ds);
 		
 		try {
