@@ -21,6 +21,7 @@ import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
+import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
 import java.io.IOException;
@@ -129,6 +130,9 @@ public class RequestResponseServiceGeneratorTest {
 		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		
+		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
+		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 }

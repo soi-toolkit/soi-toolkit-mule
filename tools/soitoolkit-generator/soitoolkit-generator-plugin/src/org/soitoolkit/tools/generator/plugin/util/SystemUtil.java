@@ -27,6 +27,7 @@ public class SystemUtil {
 	
 	// Build command used by generator tests
 	public static final String BUILD_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install eclipse:m2eclipse surefire-report:report -DshowSuccess=false -Dmaven.test.failure.ignore=true";
+	public static final String CLEAN_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " clean";
 
 	static class ThreadedStreamReader extends Thread {
 	    InputStream in;
