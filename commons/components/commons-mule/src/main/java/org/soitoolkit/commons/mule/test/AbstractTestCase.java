@@ -30,6 +30,7 @@ import org.mule.api.context.notification.ComponentMessageNotificationListener;
 import org.mule.api.context.notification.EndpointMessageNotificationListener;
 import org.mule.api.context.notification.ExceptionNotificationListener;
 import org.mule.api.context.notification.ServerNotification;
+// FIXME: Mule 3.1, no clue what we will get in case of exceptions...
 import org.mule.api.service.ServiceException;
 import org.mule.context.notification.ComponentMessageNotification;
 import org.mule.context.notification.EndpointMessageNotification;
@@ -151,7 +152,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 		try {
 			// First create a muleClient instance
-			muleClient = new MuleClient();
+			muleClient = new MuleClient(muleContext);
 
 			// Next create a listener that listens for dispatch events on the outbound endpoint
 			listener = new EndpointMessageNotificationListener() {
@@ -164,6 +165,8 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 						// Extract action and name of the endpoint
 						int    actualAction   = endpointNotification.getAction();
+						// FIXME: Mule 3.1
+						// String actualEndpoint = endpointNotification.getEndpoint();
 						String actualEndpoint = endpointNotification.getEndpoint().getName();
 
 						// If it is a dispatch event on our outbound endpoint then countdown the latch.
@@ -326,7 +329,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 	 * @return the received MuleMEssage on the outboundEndpoint
 	 */
 	protected MuleMessage dispatchAndWaitForServiceComponent(String inboundEndpointAddress, Object payload, Map<String, String> headers, final String serviceComponentName, long timeout) {
-		return dispatchAndWaitForServiceComponent(new DispatcherMuleClientImpl(inboundEndpointAddress, payload, headers), serviceComponentName, timeout);
+		return dispatchAndWaitForServiceComponent(new DispatcherMuleClientImpl(muleContext, inboundEndpointAddress, payload, headers), serviceComponentName, timeout);
     }
 
     /**
@@ -349,7 +352,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 		try {
 			// First create a muleClient instance
-			muleClient = new MuleClient();
+			muleClient = new MuleClient(muleContext);
 
 			// Next create a listener that listens for exception on the connector
 			listener = new ExceptionNotificationListener() {
@@ -428,7 +431,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 		try {
 			// First create a muleClient instance
-			muleClient = new MuleClient();
+			muleClient = new MuleClient(muleContext);
 
 			// Next create a listener that listens for exception on the connector
 			listener = new ExceptionNotificationListener() {
@@ -437,11 +440,15 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 					if (logger.isDebugEnabled()) logger.debug("notification received on " + notification.getResourceIdentifier() + " (action: " + notification.getActionName() + ")");
 
 					// Only care about ExceptionNotification
+					// FIXME: Mule 3.1, no clue what we will get in case of exceptions...
+					// System.err.println("### AbstractTestCase.dispatchAndWaitForException(...) received an notification of type: " + notification.getClass().getName());
 					if (notification instanceof ExceptionNotification) {
 						ExceptionNotification exceptionNotification = (ExceptionNotification)notification;
 
 						// Only handle ServiceExceptions
 						// TODO: Should probably also need to be able to handle ConnectorExceptions
+// FIXME: Mule 3.1, no clue what we will get in case of exceptions...
+/* FIXME: Mule 3.1, STARTS HERE */
 						if (exceptionNotification.getSource() instanceof ServiceException) {
 							ServiceException exception = (ServiceException)exceptionNotification.getSource();
 							int    action  = exceptionNotification.getAction();
@@ -457,6 +464,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 								if (logger.isDebugEnabled()) logger.debug("Unexpected exception (" + exception.getMessage() + ") occurred on service: " + serviceName  + ", continue to wait for exception the right service...");							
 							}
 						}
+/* FIXME: Mule 3.1, ENDS HERE */
 					}
 				}
 			};
