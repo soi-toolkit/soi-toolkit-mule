@@ -16,7 +16,6 @@
  */
 package org.soitoolkit.commons.mule.util;
 
-// import org.mule.MuleServer;
 import org.mule.api.MuleContext;
 import org.mule.config.spring.SpringRegistry;
 import org.springframework.context.ApplicationContext;

@@ -26,6 +26,8 @@ import org.mule.config.ExceptionHelper;
 import org.soitoolkit.commons.mule.log.EventLogger;
 
 /**
+ * FIXME: Needs to be reimplemented for Mule 3.1's MessagingExceptionHandler and SystemExceptionHandler-interface
+ * 
  * Base exception handler that catch errors and log them using the event-logger.
  * 
  * @author Magnus Larsson

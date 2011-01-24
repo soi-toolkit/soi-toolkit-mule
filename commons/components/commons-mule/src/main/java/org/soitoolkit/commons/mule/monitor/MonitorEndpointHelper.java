@@ -37,6 +37,7 @@ import javax.sql.DataSource;
 
 import org.mule.api.MuleContext;
 import org.mule.transport.jms.JmsConnector;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 import org.soitoolkit.commons.mule.util.MuleUtil;
 
@@ -81,10 +82,13 @@ public class MonitorEndpointHelper {
 	
 	/**
 	 * Verify access to a JDBC endpoint by verifying that a specified table is accessible.
+	 * @param muleContext 
+	 * @param muleJdbcDataSourceName
+	 * @param tableName
 	 */
 	public static String pingJdbcEndpoint(MuleContext muleContext, String muleJdbcDataSourceName, String tableName) {
 		
-		DataSource ds = (DataSource)MuleUtil.getSpringBean(muleContext, muleJdbcDataSourceName);
+		DataSource ds = JdbcUtil.lookupDataSource(muleContext, muleJdbcDataSourceName);
 
 		Connection c = null;
 		Statement  s = null;
@@ -113,7 +117,7 @@ public class MonitorEndpointHelper {
 	public static String pingJmsEndpoint(MuleContext muleContext, String queueName) {
 		return pingJmsEndpoint(muleContext, DEFAULT_MULE_JMS_CONNECTOR, queueName);
 	}
-	
+
 	/**
 	 * Verify access to a JMS endpoint by browsing a specified queue for messages.
 	 */
