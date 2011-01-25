@@ -18,14 +18,10 @@ package org.soitoolkit.commons.mule.zip;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.tools.ant.filters.StringInputStream;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
@@ -33,6 +29,8 @@ import org.mule.config.i18n.MessageFactory;
 import org.mule.routing.filters.WildcardFilter;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 import org.mule.transport.file.FileConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extracts the first file in a zip-file
@@ -42,6 +40,8 @@ import org.mule.transport.file.FileConnector;
  *
  */
 public class UnzipTransformer extends AbstractMessageAwareTransformer {
+
+	private static final Logger log = LoggerFactory.getLogger(UnzipTransformer.class);
 
 	private WildcardFilter filter = new WildcardFilter("*");
 
@@ -84,24 +84,24 @@ public class UnzipTransformer extends AbstractMessageAwareTransformer {
 
 				// Skip folders...
 				if (entry.isDirectory()) {
-					logger.debug("skip folder " + name);
+					log.debug("skip folder " + name);
 					continue;
 				}
 
 				// Does the file pass the filename-filter?
 				if (!filter.accept(name)) {
-					logger.debug("skip file " + name + " did not match filename pattern: " + filter.getPattern());
+					log.debug("skip file " + name + " did not match filename pattern: " + filter.getPattern());
 					continue;
 				}
 
 				int lastDirSep = name.lastIndexOf('/');
 				if (lastDirSep != -1) {
-					logger.debug("unzip strips zip-folderpath " + name.substring(0, lastDirSep));
+					log.debug("unzip strips zip-folderpath " + name.substring(0, lastDirSep));
 					name = name.substring(lastDirSep + 1);
 				}
-				if (logger.isDebugEnabled()) {
+				if (log.isDebugEnabled()) {
 					String oldname = message.getProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME).toString();
-					logger.debug("unzip replaces original filename " + oldname + " with " + name);
+					log.debug("unzip replaces original filename " + oldname + " with " + name);
 				}
 				message.setProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME, name);
 

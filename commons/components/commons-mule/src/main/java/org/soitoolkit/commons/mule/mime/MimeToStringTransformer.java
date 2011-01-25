@@ -48,19 +48,6 @@ public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
         Object payload = message.getPayload();
 
-        if (logger.isDebugEnabled()) {
-	        Object origPayload = message.getOrginalPayload();
-	        logger.debug("### OriPayload = " + origPayload.getClass().getName());
-	        logger.debug("### OriPayload = " + origPayload);
-	        logger.debug("### Payload = " + payload);
-	
-	        Set<String> pSet = message.getPropertyNames();
-	        for (String name : pSet) {
-				Object value = message.getProperty(name);
-				logger.debug(name + " = " + value);
-			}
-        }
-        
         String contentType = (String)message.getProperty("Content-Type");
         if (contentType == null) {
         	contentType = (String)message.getProperty("content-type");

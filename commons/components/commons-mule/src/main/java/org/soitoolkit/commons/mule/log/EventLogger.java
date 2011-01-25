@@ -46,11 +46,8 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleConfiguration;
-//FIXME: Mule 3.1
-//import org.mule.api.construct.FlowConstruct;
 import org.mule.api.context.MuleContextAware;
 import org.mule.api.endpoint.EndpointURI;
-import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
 import org.mule.module.xml.stax.ReversibleXMLStreamReader;
 import org.mule.transport.jms.JmsConnector;
@@ -448,11 +445,8 @@ public class EventLogger implements MuleContextAware {
 		String           endpoint    = "";
         MuleEventContext event       = RequestContext.getEventContext();
         if (event != null) {
-        	//FIXME: Mule 3.1
-//	        FlowConstruct service   = event.getFlowConstruct();
-	        Service     service     = event.getService();
+		    serviceImplementation   = MuleUtil.getServiceName(event);
 		    EndpointURI endpointURI = event.getEndpointURI();
-		    serviceImplementation   = (service == null)? "" : service.getName();
 			endpoint                = (endpointURI == null)? "" : endpointURI.toString();
         }
 		

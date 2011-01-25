@@ -16,8 +16,13 @@
  */
 package org.soitoolkit.commons.mule.util;
 
+import org.mule.DefaultMuleMessage;
 import org.mule.api.MuleContext;
+import org.mule.api.MuleEventContext;
+import org.mule.api.MuleMessage;
+import org.mule.api.construct.FlowConstruct;
 import org.mule.config.spring.SpringRegistry;
+import org.mule.context.notification.EndpointMessageNotification;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -32,5 +37,44 @@ public class MuleUtil {
 	    ApplicationContext ac = (ApplicationContext)muleContext.getRegistry().lookupObject(SpringRegistry.SPRING_APPLICATION_CONTEXT);				
 	    return ac.getBean(beanName);
 	}	
+
+	/**
+	 * Different implementations for retrieving the service name from a MuleEventContext-object in Mule 2.2.x and Mule 
+	 * 
+	 * @param event
+	 * @return
+	 */
+	public static String getServiceName(MuleEventContext event) {
+        // Mule 2.2 implementation
+		// Service    service = (event == null)? null : event.getService();
+        FlowConstruct service = (event == null)? null : event.getFlowConstruct();
+        String        name    = (service == null)?  "" : service.getName();
+        return name;
+	}
+
+	/**
+	 * Different implementations for creating a MuleMessage in Mule 2.2.x and Mule 
+	 * 
+	 * @param message
+	 * @param muleContext
+	 * @return
+	 */
+	public static MuleMessage createMuleMessage(Object message, MuleContext muleContext) {
+        // Mule 2.2 implementation
+		// return new DefaultMuleMessage(message);
+		return new DefaultMuleMessage(message, muleContext);
+	}
+
+	/**
+	 * Different implementations for retrieving the endpoint name from a EndpointMessageNotification-object in Mule 2.2.x and Mule 
+	 * 
+	 * @param notification
+	 * @return
+	 */
+	public static String getEndpointName(EndpointMessageNotification notification) {
+        // Mule 2.2 implementation
+		// return notification.getEndpoint().getName();
+		return notification.getEndpoint();
+	}
 	
 }

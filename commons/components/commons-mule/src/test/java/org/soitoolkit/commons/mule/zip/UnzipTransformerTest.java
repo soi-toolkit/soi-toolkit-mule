@@ -23,11 +23,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.junit.Test;
-import org.mule.DefaultMuleMessage;
+import org.mule.DefaultMuleContext;
+import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.config.DefaultMuleConfiguration;
+import org.mule.context.notification.ServerNotificationManager;
 import org.mule.transport.file.FileConnector;
 import org.soitoolkit.commons.mule.util.MiscUtil;
+import org.soitoolkit.commons.mule.util.MuleUtil;
 
 /**
  * Tests the unzip transformer with various usage scenarios
@@ -58,8 +62,12 @@ public class UnzipTransformerTest {
 	}
 
 	private void performUnzipTest(String zipFile, String filenamePattern) throws FileNotFoundException, TransformerException {
+		
+		ServerNotificationManager nm = new ServerNotificationManager();
+		MuleContext muleContext = new DefaultMuleContext(new DefaultMuleConfiguration(), null, null, null, nm );
+		
 		FileInputStream is = new FileInputStream(zipFile);
-		MuleMessage msg = new DefaultMuleMessage(is);
+		MuleMessage msg = MuleUtil.createMuleMessage(is, muleContext);
 		UnzipTransformer transformer = new UnzipTransformer();
 		if (filenamePattern != null) transformer.setFilenamePattern(filenamePattern);
 		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/zip/i2-input.txt");
