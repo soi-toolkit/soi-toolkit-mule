@@ -20,7 +20,7 @@ import org.mule.DefaultMuleMessage;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
-import org.mule.api.construct.FlowConstruct;
+import org.mule.api.service.Service;
 import org.mule.config.spring.SpringRegistry;
 import org.mule.context.notification.EndpointMessageNotification;
 import org.springframework.context.ApplicationContext;
@@ -46,8 +46,8 @@ public class MuleUtil {
 	 */
 	public static String getServiceName(MuleEventContext event) {
         // Mule 2.2 implementation
-		// Service    service = (event == null)? null : event.getService();
-        FlowConstruct service = (event == null)? null : event.getFlowConstruct();
+		Service    service = (event == null)? null : event.getService();
+        // FlowConstruct service = (event == null)? null : event.getFlowConstruct();
         String        name    = (service == null)?  "" : service.getName();
         return name;
 	}
@@ -61,8 +61,8 @@ public class MuleUtil {
 	 */
 	public static MuleMessage createMuleMessage(Object message, MuleContext muleContext) {
         // Mule 2.2 implementation
-		// return new DefaultMuleMessage(message);
-		return new DefaultMuleMessage(message, muleContext);
+		return new DefaultMuleMessage(message);
+		// return new DefaultMuleMessage(message, muleContext);
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class MuleUtil {
 	 */
 	public static String getEndpointName(EndpointMessageNotification notification) {
         // Mule 2.2 implementation
-		// return notification.getEndpoint().getName();
-		return notification.getEndpoint();
+		return notification.getEndpoint().getName();
+		// return notification.getEndpoint();
 	}
 	
 }
