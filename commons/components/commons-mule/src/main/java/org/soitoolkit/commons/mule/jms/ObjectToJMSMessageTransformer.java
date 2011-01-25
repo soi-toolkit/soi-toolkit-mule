@@ -53,7 +53,7 @@ public class ObjectToJMSMessageTransformer extends ObjectToJMSMessage {
 	}
 
 	@Override
-	protected void setJmsProperties(MuleMessage message, Message msg) throws JMSException {
+	public void setJmsProperties(MuleMessage message, Message msg) throws JMSException {
 
 		// Remove some common http-related properties that otherwise cause warnings to be written to the log.
 		// TODO: These properties should be removed earlier in the processing by the specific transport 
