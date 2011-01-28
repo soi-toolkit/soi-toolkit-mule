@@ -74,7 +74,7 @@
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-					moveToPattern="#[ORIGINALNAME]"
+					moveToPattern="#[header:originalFilename]"
 					transformer-refs="objToStr logMsgIn">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</file:inbound-endpoint>
@@ -157,7 +157,7 @@
 					<file:outbound-endpoint 
 						path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[ORIGINALNAME]"
+						outputPattern="#[header:originalFilename]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
@@ -167,7 +167,7 @@
 					<ftp:outbound-endpoint
 						address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[ORIGINALNAME]"
+						outputPattern="#[header:originalFilename]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
@@ -204,7 +204,7 @@
 						name="${service}-outbound-endpoint"
 						address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[ORIGINALNAME]"
+						outputPattern="#[header:originalFilename]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
