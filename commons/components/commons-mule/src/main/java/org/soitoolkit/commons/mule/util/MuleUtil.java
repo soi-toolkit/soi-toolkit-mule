@@ -33,7 +33,14 @@ import org.springframework.context.ApplicationContext;
  */
 public class MuleUtil {
 
-	public static Object getSpringBean(MuleContext muleContext, String beanName) {
+	/**
+     * Hidden constructor.
+     */
+    private MuleUtil() {
+        throw new UnsupportedOperationException("Not allowed to create an instance of this class");
+    }
+
+    public static Object getSpringBean(MuleContext muleContext, String beanName) {
 	    ApplicationContext ac = (ApplicationContext)muleContext.getRegistry().lookupObject(SpringRegistry.SPRING_APPLICATION_CONTEXT);				
 	    return ac.getBean(beanName);
 	}	
