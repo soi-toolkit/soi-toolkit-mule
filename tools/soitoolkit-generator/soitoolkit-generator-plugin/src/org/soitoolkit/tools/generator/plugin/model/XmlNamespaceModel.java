@@ -195,7 +195,7 @@ public class XmlNamespaceModel {
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
 		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/vm/2.2    http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd\n");
+		sb.append("\t\thttp://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd\n");
 		sb.append("\t\thttp://www.mulesource.org/schema/mule/ftp/2.2   http://www.mulesource.org/schema/mule/ftp/2.2/mule-ftp.xsd\n");
 		sb.append("\t\thttp://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd\n");
 		sb.append("\t\thttp://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd\n");
