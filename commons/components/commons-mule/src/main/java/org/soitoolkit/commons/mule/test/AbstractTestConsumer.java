@@ -21,7 +21,6 @@ import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
 
 /**
  * Base class for test consumer of services based on the servlet-transport
@@ -36,6 +35,8 @@ abstract public class AbstractTestConsumer {
 	/**
      * Address based on usage of the servlet-transport
      * 
+     * TODO: Do we need this method here? MuleServers already have this code... Should it be moved to another place not related to test-consumers?
+     * 
      * @param serviceUriPropertyName
      * @return
      */
@@ -45,9 +46,17 @@ abstract public class AbstractTestConsumer {
 	    return url;    	
     }
 
+    private static final String CLASSPATH_PROTOCOL = "classpath:";
+    private static final int    CLASSPATH_PROTOCOL_LEN = CLASSPATH_PROTOCOL.length();
     protected URL createEndpointUrlFromServiceAddress(String serviceAddress) {
         try {
-            return new URL(serviceAddress + "?wsdl");
+        	// TODO: Could be more elegant according to: http://stackoverflow.com/questions/861500/url-to-load-resources-from-the-classpath-in-java
+        	if (serviceAddress.startsWith(CLASSPATH_PROTOCOL)) {
+        		serviceAddress = serviceAddress.substring(CLASSPATH_PROTOCOL_LEN);
+        		return getClass().getResource(serviceAddress);
+        	} else {
+        		return new URL(serviceAddress + "?wsdl");
+        	}
         } catch (MalformedURLException e) {
             throw new RuntimeException("Malformed URL Exception: " + e.getMessage());
         }
