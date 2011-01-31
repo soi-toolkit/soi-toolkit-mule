@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ServiceDescriptorModel;
+import org.soitoolkit.tools.generator.plugin.model.XmlNamespaceModel;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -53,10 +54,12 @@ public class DefaultModelImpl implements IModel {
 	private TransformerEnum transformerType;
 	
 	private ServiceDescriptorModel serviceDescriptorModel;
+	private XmlNamespaceModel xmlNamespaceModel;
 
 	private Map<String, Object> extentions = new HashMap<String, Object>();
 	
 	private GroovyShell groovyShell;
+
 	
 	/**
 	 * @param groupId
@@ -80,7 +83,8 @@ public class DefaultModelImpl implements IModel {
 		this.transformerType = transformerType;
 
 		serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
-
+		xmlNamespaceModel = new XmlNamespaceModel(this);
+		
 		groovy.lang.Binding binding = new Binding();
 		binding.setVariable("m", this);
     	groovyShell = new GroovyShell(getClass().getClassLoader(), binding);
@@ -110,6 +114,12 @@ public class DefaultModelImpl implements IModel {
 	 */
 	public ServiceDescriptorModel getSd() {
 		return serviceDescriptorModel;
+	}
+	
+	@Override
+	public XmlNamespaceModel getXmlNamespace() {
+		// TODO Auto-generated method stub
+		return xmlNamespaceModel;
 	}
 	
 	/* (non-Javadoc)

@@ -26,6 +26,8 @@ public interface IModel {
 
 	public Object resolveParameter(String parameterName, Object defaultValue);
 
+	public XmlNamespaceModel getXmlNamespace();
+
 	public ServiceDescriptorModel getSd();
 
 	public Map<String, Object> getExt();

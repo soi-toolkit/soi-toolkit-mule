@@ -1,32 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <mule 
-	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:vm="http://www.mulesource.org/schema/mule/vm/2.2"
-	xmlns:file="http://www.mulesource.org/schema/mule/file/2.2"
-	xmlns:ftp="http://www.mulesource.org/schema/mule/ftp/2.2"
-	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
-	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
-	xmlns:email="http://www.mulesource.org/schema/mule/email/2.2"
-	xmlns:imap="http://www.mulesource.org/schema/mule/imap/2.2"
-	xmlns:pop3="http://www.mulesource.org/schema/mule/pop3/2.2"
-	xmlns:smtp="http://www.mulesource.org/schema/mule/smtp/2.2"
-	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-		http://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
-		http://www.mulesource.org/schema/mule/vm/2.2    http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd
-		http://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd
-		http://www.mulesource.org/schema/mule/ftp/2.2   http://www.mulesource.org/schema/mule/ftp/2.2/mule-ftp.xsd
-		http://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd
-		http://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
-		http://www.mulesource.org/schema/mule/email/2.2 http://www.mulesource.org/schema/mule/email/2.2/mule-email.xsd
-		http://www.mulesource.org/schema/mule/imap/2.2  http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd
-		http://www.mulesource.org/schema/mule/pop3/2.2  http://www.mulesource.org/schema/mule/pop3/2.2/mule-pop3.xsd
-		http://www.mulesource.org/schema/mule/smtp/2.2  http://www.mulesource.org/schema/mule/smtp/2.2/mule-smtp.xsd
-		http://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd">
+${xmlNamespace.onewayService}
 
 	<!-- TODO: Add service specific definitions here -->
     <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>

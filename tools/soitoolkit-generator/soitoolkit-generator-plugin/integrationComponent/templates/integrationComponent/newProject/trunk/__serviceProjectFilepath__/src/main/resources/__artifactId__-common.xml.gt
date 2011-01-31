@@ -1,41 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <mule 
-	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
-<% if (jdbc) { %>
-	xmlns:jdbc="http://www.mulesource.org/schema/mule/jdbc/2.2"
-<% } %>
-<% if (servlet) { %>
-	xmlns:servlet="http://www.mulesource.org/schema/mule/servlet/2.2"
-<% } %>
-<% if (imap) { %>
-	xmlns:imap="http://www.mulesource.org/schema/mule/imap/2.2"	
-<% } %>  
-<% if (pop3) { %>
-	xmlns:pop3="http://www.mulesource.org/schema/mule/pop3/2.2"	
-<% } %>  
-	xmlns:management="http://www.mulesource.org/schema/mule/management/2.2"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-		http://www.mulesource.org/schema/mule/core/2.2       http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
-		http://www.mulesource.org/schema/mule/jms/2.2        http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd
-<% if (jdbc) { %>
-		http://www.mulesource.org/schema/mule/jdbc/2.2       http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd
-<% } %>
-<% if (servlet) { %>
-		http://www.mulesource.org/schema/mule/servlet/2.2    http://www.mulesource.org/schema/mule/servlet/2.2/mule-servlet.xsd
-<% } %>
-<% if (pop3) { %>
-		http://www.mulesource.org/schema/mule/pop3/2.2       http://www.mulesource.org/schema/mule/pop3/2.2/mule-pop3.xsd
-<% } %>  
-<% if (imap) { %>
-		http://www.mulesource.org/schema/mule/imap/2.2       http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd
-<% } %>  
-		http://www.mulesource.org/schema/mule/management/2.2 http://www.mulesource.org/schema/mule/management/2.2/mule-management.xsd
-	">
+${xmlNamespace.common}
 
 	<spring:bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<spring:property name="ignoreResourceNotFound" value="true" />
