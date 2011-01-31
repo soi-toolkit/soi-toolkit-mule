@@ -20,10 +20,7 @@ import javax.net.ssl.TrustManager;
 
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.transport.Conduit;
-import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.mule.transport.cxf.transport.MuleUniversalConduit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +46,6 @@ public class SoapUtil {
      * @param client
      */
 	public static void disableTlsServerCertificateCheck(Client client) {
-		
-		if (client.getConduit() instanceof MuleUniversalConduit) {
-			MuleUniversalConduit muc = (MuleUniversalConduit)client.getConduit();
-			Destination d = muc.getBackChannel();
-		}
 		
 		if (!(client.getConduit() instanceof HTTPConduit)) {
 			log.warn("Conduit not of type HTTPConduit (" + client.getConduit().getClass().getName() + ") , skip disabling server certification validation.");
