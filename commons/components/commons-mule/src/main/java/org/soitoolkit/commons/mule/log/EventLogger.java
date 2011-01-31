@@ -90,7 +90,7 @@ public class EventLogger implements MuleContextAware {
 	private static final String LOG_EVENT_ERROR = "logEvent-error";
 	private static final String LOG_STRING = MSG_ID + 
 		"\n** {}.start ***********************************************************" +
-		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nPayload={}\nBusinessContextId={}\nExtraInfo={}" + 
+		"\nIntegrationScenarioId={}\nContractId={}\nLogMessage={}\nServiceImpl={}\nHost={} ({})\nComponentId={}\nEndpoint={}\nMessageId={}\nBusinessCorrelationId={}\nBusinessContextId={}\nExtraInfo={}\nPayload={}" + 
 		"{}" + // Placeholder for stack trace info if an error is logged
 		"\n** {}.end *************************************************************";
 
@@ -270,7 +270,7 @@ public class EventLogger implements MuleContextAware {
 				stackTrace.append('\n').append("\t at ").append(stLine);
 			}
 		}
-		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, payload, businessContextIdString, extraInfoString, stackTrace.toString(), logEventName});
+		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, businessContextIdString, extraInfoString, payload, stackTrace.toString(), logEventName});
 	}
 	
 	private String businessContextIdToString(List<BusinessContextId> businessContextIds) {
@@ -463,7 +463,7 @@ public class EventLogger implements MuleContextAware {
 				Set names = message.getPropertyNames();
 				for (Object object : names) {
 					Object value = message.getProperty(object.toString());
-					log.debug(object + " = " + value);
+					log.debug(object + " = " + value + " (" + object.getClass().getName() + ")");
 				}
 			}
 			
@@ -510,13 +510,18 @@ public class EventLogger implements MuleContextAware {
 		
 		// Also add any business contexts from message properties
 		if (propertyBusinessContextId != null) {
-			String[] nameValueArr = propertyBusinessContextId.split("=");
-			String name = nameValueArr[0];
-			String value = (nameValueArr.length > 1) ? nameValueArr[1] : "";
-			BusinessContextId bxid = new BusinessContextId();
-			bxid.setName(name);
-			bxid.setValue(value);
-			lri.getBusinessContextId().add(bxid);
+			String[] propertyArr = propertyBusinessContextId.split(",");
+			
+			for (String property : propertyArr) {
+				String[] nameValueArr = property.split("=");
+				String name = nameValueArr[0];
+				String value = (nameValueArr.length > 1) ? nameValueArr[1] : "";
+				BusinessContextId bxid = new BusinessContextId();
+				bxid.setName(name);
+				bxid.setValue(value);
+				lri.getBusinessContextId().add(bxid);				
+			}
+			
 		}
 		
 
