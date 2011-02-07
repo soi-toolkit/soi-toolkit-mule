@@ -26,49 +26,39 @@ public class UpdateTool {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		new UpdateTool().updateDefaultParentPom();
+		String newVersion = "0.3.1";
 
+		UpdateTool ut = new UpdateTool();
+		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.7-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.1-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.1.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@url",     "features/org.soitoolkit.generator.feature_" + newVersion + ".jar");
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml", null, null, "/feature/@version",      newVersion);
 	}
 
-	public void updateSourceFiles() throws IOException {
-//		String srcFolder = projFolder + "/src/main/resources/";
-//		String key       = gu.getModel().getLowercaseJavaService() + "-export-query";
-//		String table     = gu.getModel().getUppercaseService() + "_EXPORT_TB";
-//
-//		PrintWriter out = null;
-//		try {
-//			String file = ""; // outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
-//			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
-//			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
-//
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		} finally {
-//			if (out != null) {out.close();}
-//		}
-    }
-
-	private void updateDefaultParentPom() {
-		String trunkFolder = "../../..";
-		File file = new File(trunkFolder + "/commons/poms/default-parent/pom.xml");
+	public void updateXmlTextNodeContent(String trunkFolder, String filename, String nsPrefix, String namespace, String xPath, String newContent) {
+		File file = new File(trunkFolder + "/" + filename);
 
 		InputStream content = null;
 		String xml = null;
 		try {
 
-			
-			System.err.println(file.exists() + ": " + file.getCanonicalPath());
 
 			content = new FileInputStream(file);
 			Document doc = createDocument(content);
 
 			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("ns",   "http://maven.apache.org/POM/4.0.0");
-
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:project/ns:properties/ns:soitoolkit.version");
+			if (namespace != null) {
+				namespaceMap.put(nsPrefix, namespace);
+			}
+			
+			NodeList rootList = getXPathResult(doc, namespaceMap, xPath);
 			Node root = rootList.item(0);
-		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName() + "=" + root.getTextContent()));		    
+			System.err.println(filename + ": " + xPath + " = " + ((root == null) ? "NULL" : root.getTextContent()));		    
 		    
 //		    appendXmlFragment(root, xmlFragment);
 			
@@ -94,7 +84,7 @@ public class UpdateTool {
 		}
 		*/
 		
-	    System.err.println("### UPDATED: " + file);
+//	    System.err.println("### UPDATED: " + file);
 	
 	}
 
