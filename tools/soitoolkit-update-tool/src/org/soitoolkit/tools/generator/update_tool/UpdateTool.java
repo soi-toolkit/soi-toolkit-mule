@@ -1,6 +1,21 @@
+/* 
+ * Licensed to the soi-toolkit project under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.soitoolkit.tools.generator.update_tool;
 
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.appendXmlFragment;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXml;
@@ -19,6 +34,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Updates soi-toolkit version number in xml-files that mavens release plugin does not update automatically.
+ * 
+ * @author magnus larsson
+ *
+ */
 public class UpdateTool {
 
 	/**
@@ -47,23 +68,30 @@ public class UpdateTool {
 		String xml = null;
 		try {
 
-
+			// Get the current content from the xml-file
 			content = new FileInputStream(file);
 			Document doc = createDocument(content);
 
+			// Setup namespace if specified
 			Map<String, String> namespaceMap = new HashMap<String, String>();
 			if (namespace != null) {
 				namespaceMap.put(nsPrefix, namespace);
 			}
-			
+
+			// Lookup the text-node and print its current value
 			NodeList rootList = getXPathResult(doc, namespaceMap, xPath);
 			Node root = rootList.item(0);
-			System.err.println(filename + ": " + xPath + " = " + ((root == null) ? "NULL" : root.getTextContent()));		    
-		    
-//		    appendXmlFragment(root, xmlFragment);
 			
+			if (root == null) {
+				throw new RuntimeException("Can't find " + xPath + " in file " + file.getCanonicalFile());
+			}
+			System.err.println(filename + ": " + xPath + ": " + root.getTextContent() + " --> " + newContent);		    
+
+			// Update it value
+			root.setTextContent(newContent);
+
+			// Get the new total xml content as a string
 			xml = getXml(doc);
-//			System.err.println(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -71,7 +99,7 @@ public class UpdateTool {
 			if (content != null) {try {content.close();} catch (IOException e) {}}
 		}
 
-		/*
+		// Update the file with the new content
 		PrintWriter pw = null;
 		try {
 			pw = openFileForOverwrite(file);
@@ -82,18 +110,9 @@ public class UpdateTool {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
-		*/
-		
-//	    System.err.println("### UPDATED: " + file);
-	
 	}
 
 	private PrintWriter openFileForOverwrite(File file) throws IOException {
-
-		// TODO: Replace with sl4j!
-		System.err.println("Overwrite file: " + file);
-
 	    return new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
 	}
-
 }
