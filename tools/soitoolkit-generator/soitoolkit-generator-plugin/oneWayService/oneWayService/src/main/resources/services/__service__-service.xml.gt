@@ -49,7 +49,7 @@ ${xmlNamespace.onewayService}
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-					moveToPattern="#[header:originalFilename]"
+					moveToPattern="#[ORIGINALNAME]"
 					transformer-refs="objToStr logMsgIn">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</file:inbound-endpoint>
@@ -132,7 +132,7 @@ ${xmlNamespace.onewayService}
 					<file:outbound-endpoint 
 						path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[header:originalFilename]"
+						outputPattern="#[ORIGINALNAME]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
@@ -142,7 +142,7 @@ ${xmlNamespace.onewayService}
 					<ftp:outbound-endpoint
 						address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[header:originalFilename]"
+						outputPattern="#[ORIGINALNAME]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
@@ -179,7 +179,7 @@ ${xmlNamespace.onewayService}
 						name="${service}-outbound-endpoint"
 						address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
 <% if (inboundEndpointFilebased) { %>
-						outputPattern="#[header:originalFilename]"
+						outputPattern="#[ORIGINALNAME]"
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
