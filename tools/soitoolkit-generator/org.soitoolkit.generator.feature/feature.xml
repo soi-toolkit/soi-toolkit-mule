@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
   Licensed to the soi-toolkit project under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,10 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<feature
-      id="org.soitoolkit.generator.feature"
-      label="soi-toolkit generator feature"
-      version="0.3.1">
+<feature id="org.soitoolkit.generator.feature" label="soi-toolkit generator feature" version="0.3.1">
 
    <description url="http://soi-toolkit.org">
       [Enter Feature Description here.]
@@ -44,11 +41,6 @@
       <import plugin="org.junit4"/>
    </requires>
 
-   <plugin
-         id="soi_toolkit_generator_plugin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="soi_toolkit_generator_plugin" install-size="0" unpack="false" version="0.0.0"/>
 
 </feature>
