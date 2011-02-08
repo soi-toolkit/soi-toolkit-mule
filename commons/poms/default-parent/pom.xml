@@ -60,7 +60,7 @@
     <!-- dependency versions - please keep list alphabetically ordered -->
     <!-- ************************************************************* -->
     <log4j.version>1.2.16</log4j.version>
-    <slf4j.version>1.5.11</slf4j.version>
+    <slf4j.version>1.6.1</slf4j.version>
     
     <!-- ********************************************************* -->
     <!-- plugin versions - please keep list alphabetically ordered -->
@@ -124,7 +124,12 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>${slf4j.version}</version>
-      </dependency>      
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${slf4j.version}</version>
+      </dependency>
       <!-- TODO: add slf4j's JCL-bridge (jcl-over-slf4j.jar) when
         JCL has been excluded from classpath - is currently in -->
     </dependencies>

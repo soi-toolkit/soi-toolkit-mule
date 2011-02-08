@@ -33,7 +33,7 @@
     <!-- The SOI-toolkit default Mule-version with dependencies -->
     <dependency>
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-      <artifactId>soitoolkit-mule-2.2.1-dependencies</artifactId>
+      <artifactId>soitoolkit-mule-3.1.0-dependencies</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>      
     </dependency>
@@ -54,6 +54,10 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
 
 		<!-- junit -->
 		<dependency>
@@ -73,5 +77,16 @@
 			<version>1.3.1</version>
       		<scope>provided</scope>      
 		</dependency>
+
+		<!--  Can't be test-scope since src/main/java/org/soitoolkit/commons/mule/test/ServletContainerWithMuleReceiverServlet.java depends on it -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<scope>provided</scope>
+			<version>6.1.11</version>
+		</dependency>
+
+
+
 	</dependencies>
 </project>

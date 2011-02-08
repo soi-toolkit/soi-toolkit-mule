@@ -164,11 +164,13 @@
 			<artifactId>mule-transport-servlet</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
+<!-- 
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-jersey</artifactId>
 			<version>${mule-transport-jersey.version}</version>
 		</dependency>
+ -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-cxf</artifactId>
