@@ -31,40 +31,40 @@ public class XmlNamespaceModel {
 	 */
 	public String getCommon() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
-		sb.append("\txmlns:jms=\"http://www.mulesource.org/schema/mule/jms/2.2\"\n");
+		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		if (model.isJdbc()) {
-			sb.append("\txmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\"\n");
+			sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
 		}
 		if (model.isServlet()) {
-			sb.append("\txmlns:servlet=\"http://www.mulesource.org/schema/mule/servlet/2.2\"\n");
+			sb.append("\txmlns:servlet=\"http://www.mulesoft.org/schema/mule/servlet\"\n");
 		}
 		if (model.isImap()) {
-			sb.append("\txmlns:imap=\"http://www.mulesource.org/schema/mule/imap/2.2\"\n");
+			sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
 		}
 		if (model.isPop3()) {
-			sb.append("\txmlns:pop3=\"http://www.mulesource.org/schema/mule/pop3/2.2\"\n");
+			sb.append("\txmlns:pop3=\"http://www.mulesoft.org/schema/mule/pop3\"\n");
 		}
-		sb.append("\txmlns:management=\"http://www.mulesource.org/schema/mule/management/2.2\"\n");
+		sb.append("\txmlns:management=\"http://www.mulesoft.org/schema/mule/management\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2       http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jms/2.2        http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms        http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		if (model.isJdbc()) {
-			sb.append("\t\thttp://www.mulesource.org/schema/mule/jdbc/2.2       http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd\n");
+			sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc       http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
 		}
 		if (model.isServlet()) {
-			sb.append("\t\thttp://www.mulesource.org/schema/mule/servlet/2.2    http://www.mulesource.org/schema/mule/servlet/2.2/mule-servlet.xsd\n");
+			sb.append("\t\thttp://www.mulesoft.org/schema/mule/servlet    http://www.mulesoft.org/schema/mule/servlet/3.1/mule-servlet.xsd\n");
 		}
 		if (model.isPop3()) {
-			sb.append("\t\thttp://www.mulesource.org/schema/mule/pop3/2.2       http://www.mulesource.org/schema/mule/pop3/2.2/mule-pop3.xsd\n");
+			sb.append("\t\thttp://www.mulesoft.org/schema/mule/pop3       http://www.mulesoft.org/schema/mule/pop3/3.1/mule-pop3.xsd\n");
 		}
 		if (model.isImap()) {
-			sb.append("\t\thttp://www.mulesource.org/schema/mule/imap/2.2       http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd\n");
+			sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap       http://www.mulesoft.org/schema/mule/imap/3.1/mule-imap.xsd\n");
 		}
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/management/2.2 http://www.mulesource.org/schema/mule/management/2.2/mule-management.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/3.1/mule-management.xsd\n");
 		sb.append("\t\">");
 		
 		return sb.toString();
@@ -76,12 +76,12 @@ public class XmlNamespaceModel {
 	 */
 	public String getServicesOnlyConfig() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
 		sb.append("\t\">");
 		
 		return sb.toString();
@@ -93,14 +93,14 @@ public class XmlNamespaceModel {
 	 */
 	public String getJdbcConnector() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
-		sb.append("\txmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\"\n");
+		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jdbc/2.2 http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
 		sb.append("\t\">");
 		
 		return sb.toString();
@@ -112,12 +112,12 @@ public class XmlNamespaceModel {
 	 */
 	public String getTeststubsAndServicesConfig() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
 		sb.append("\t\">");
 		
 		return sb.toString();
@@ -129,12 +129,12 @@ public class XmlNamespaceModel {
 	 */
 	public String getTeststubsOnlyConfig() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
 		sb.append("\t\">");
 		
 		return sb.toString();
@@ -146,32 +146,32 @@ public class XmlNamespaceModel {
 	 */
 	public String getOnewayService() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
-		sb.append("\txmlns:vm=\"http://www.mulesource.org/schema/mule/vm/2.2\"\n");
-		sb.append("\txmlns:file=\"http://www.mulesource.org/schema/mule/file/2.2\"\n");
-		sb.append("\txmlns:ftp=\"http://www.mulesource.org/schema/mule/ftp/2.2\"\n");
-		sb.append("\txmlns:sftp=\"http://www.mulesource.org/schema/mule/sftp/2.2\"\n");
-		sb.append("\txmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\"\n");
-		sb.append("\txmlns:email=\"http://www.mulesource.org/schema/mule/email/2.2\"\n");
-		sb.append("\txmlns:imap=\"http://www.mulesource.org/schema/mule/imap/2.2\"\n");
-		sb.append("\txmlns:pop3=\"http://www.mulesource.org/schema/mule/pop3/2.2\"\n");
-		sb.append("\txmlns:smtp=\"http://www.mulesource.org/schema/mule/smtp/2.2\"\n");
-		sb.append("\txmlns:jms=\"http://www.mulesource.org/schema/mule/jms/2.2\"\n");
+		sb.append("\txmlns:vm=\"http://www.mulesoft.org/schema/mule/vm\"\n");
+		sb.append("\txmlns:file=\"http://www.mulesoft.org/schema/mule/file\"\n");
+		sb.append("\txmlns:ftp=\"http://www.mulesoft.org/schema/mule/ftp\"\n");
+// FIXME		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
+		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
+		sb.append("\txmlns:email=\"http://www.mulesoft.org/schema/mule/email\"\n");
+		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
+		sb.append("\txmlns:pop3=\"http://www.mulesoft.org/schema/mule/pop3\"\n");
+		sb.append("\txmlns:smtp=\"http://www.mulesoft.org/schema/mule/smtp\"\n");
+		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/vm/2.2    http://www.mulesource.org/schema/mule/vm/2.2/mule-vm.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/ftp/2.2   http://www.mulesource.org/schema/mule/ftp/2.2/mule-ftp.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/email/2.2 http://www.mulesource.org/schema/mule/email/2.2/mule-email.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/imap/2.2  http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/pop3/2.2  http://www.mulesource.org/schema/mule/pop3/2.2/mule-pop3.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/smtp/2.2  http://www.mulesource.org/schema/mule/smtp/2.2/mule-smtp.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/vm      http://www.mulesoft.org/schema/mule/vm/3.1/mule-vm.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/file    http://www.mulesoft.org/schema/mule/file/3.1/mule-file.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/ftp     http://www.mulesoft.org/schema/mule/ftp/3.1/mule-ftp.xsd\n");
+// FIXME		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/email   http://www.mulesoft.org/schema/mule/email/3.1/mule-email.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap    http://www.mulesoft.org/schema/mule/imap/3.1/mule-imap.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pop3    http://www.mulesoft.org/schema/mule/pop3/3.1/mule-pop3.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/smtp    http://www.mulesoft.org/schema/mule/smtp/3.1/mule-smtp.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		sb.append("\t\">");
 
 		return sb.toString();
@@ -183,24 +183,24 @@ public class XmlNamespaceModel {
 	 */
 	public String getOnewayTeststubService() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
-		sb.append("\txmlns:file=\"http://www.mulesource.org/schema/mule/file/2.2\"\n");
-		sb.append("\txmlns:ftp=\"http://www.mulesource.org/schema/mule/ftp/2.2\"\n");
-		sb.append("\txmlns:sftp=\"http://www.mulesource.org/schema/mule/sftp/2.2\"\n");
-		sb.append("\txmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\"\n");
-		sb.append("\txmlns:imap=\"http://www.mulesource.org/schema/mule/imap/2.2\"\n");
-		sb.append("\txmlns:jms=\"http://www.mulesource.org/schema/mule/jms/2.2\"\n");
+		sb.append("\txmlns:file=\"http://www.mulesoft.org/schema/mule/file\"\n");
+		sb.append("\txmlns:ftp=\"http://www.mulesoft.org/schema/mule/ftp\"\n");
+// FIXME		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
+		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
+		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
+		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/file/2.2  http://www.mulesource.org/schema/mule/file/2.2/mule-file.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/ftp/2.2   http://www.mulesource.org/schema/mule/ftp/2.2/mule-ftp.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/sftp/2.2  http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jdbc/2.2  http://www.mulesource.org/schema/mule/jdbc/2.2/mule-jdbc.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/imap/2.2  http://www.mulesource.org/schema/mule/imap/2.2/mule-imap.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/file    http://www.mulesoft.org/schema/mule/file/3.1/mule-file.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/ftp     http://www.mulesoft.org/schema/mule/ftp/3.1/mule-ftp.xsd\n");
+// FIXME		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap    http://www.mulesoft.org/schema/mule/imap/3.1/mule-imap.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		sb.append("\t\">");
 
 		return sb.toString();
@@ -212,17 +212,17 @@ public class XmlNamespaceModel {
 	 */
 	public String getReqRespService() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-		sb.append("\txmlns:jdbc=\"http://www.mulesource.org/schema/mule/vm/2.2\"\n");
-		sb.append("\txmlns:cxf=\"http://www.mulesource.org/schema/mule/cxf/2.2\"\n");
-		sb.append("\txmlns:jms=\"http://www.mulesource.org/schema/mule/jms/2.2\"\n");
+		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/vm\"\n");
+		sb.append("\txmlns:cxf=\"http://www.mulesoft.org/schema/mule/cxf\"\n");
+		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txmlns:smooks=\"http://www.muleforge.org/smooks/schema/mule-module-smooks/1.2\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/cxf/2.2   http://www.mulesource.org/schema/mule/cxf/2.2/mule-cxf.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/cxf     http://www.mulesoft.org/schema/mule/cxf/3.1/mule-cxf.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.muleforge.org/smooks/schema/mule-module-smooks/1.2 http://dist.muleforge.org/smooks/schema/mule-module-smooks/1.2/mule-module-smooks.xsd\n");
 		sb.append("\t\">");
 
@@ -235,14 +235,14 @@ public class XmlNamespaceModel {
 	 */
 	public String getReqRespTeststubService() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\txmlns=\"http://www.mulesource.org/schema/mule/core/2.2\"\n");
+		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
-		sb.append("\txmlns:jms=\"http://www.mulesource.org/schema/mule/jms/2.2\"\n");
+		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
-		sb.append("\t\thttp://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/core/2.2  http://www.mulesource.org/schema/mule/core/2.2/mule.xsd\n");
-		sb.append("\t\thttp://www.mulesource.org/schema/mule/jms/2.2   http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		sb.append("\t\">");
 
 		return sb.toString();
