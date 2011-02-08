@@ -16,14 +16,14 @@
   limitations under the License.
 -->
 <mule
-	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:wmq="http://www.mulesource.org/schema/mule/ee/wmq/2.2"
+	xmlns:wmq="http://www.mulesoft.org/schema/mule/ee/wmq"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.mulesource.org/schema/mule/ee/wmq/2.2  http://www.mulesource.org/schema/mule/ee/wmq/2.2/mule-wmq-ee.xsd
-    http://www.mulesource.org/schema/mule/core/2.2    http://www.mulesource.org/schema/mule/core/2.2/mule.xsd">
+    http://www.mulesoft.org/schema/mule/ee/wmq  http://www.mulesoft.org/schema/mule/ee/wmq/3.1/mule-wmq-ee.xsd
+    http://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd">
 
   <spring:beans>
     <spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml"/>
@@ -56,7 +56,9 @@
 		disableTemporaryReplyToDestinations="true"
 		maxRedelivery="10">
     
-    <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+<!-- 
+		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+ -->
 
     <!--
     <ee:retry-forever-policy />

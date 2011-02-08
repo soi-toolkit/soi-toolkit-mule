@@ -16,18 +16,20 @@
   limitations under the License.
 -->
 <mule 
-	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:sftp="http://www.mulesource.org/schema/mule/sftp/2.2"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
 	xsi:schemaLocation="
-		http://www.mulesource.org/schema/mule/core/2.2   http://www.mulesource.org/schema/mule/core/2.2/mule.xsd
-		http://www.mulesource.org/schema/mule/sftp/2.2   http://www.mulesource.org/schema/mule/sftp/2.2/mule-sftp.xsd">
+		http://www.mulesoft.org/schema/mule/core   http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd
+		http://www.mulesoft.org/schema/mule/sftp   http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd">
 
 	<sftp:connector 
 		name="soitoolkit-sftp-connector" 
 		identityFile="${SOITOOLKIT_SFTP_IDENTITYFILE}" 
 		passphrase="${SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE}">
+<!-- 
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+ -->
 	</sftp:connector>
 
 </mule>

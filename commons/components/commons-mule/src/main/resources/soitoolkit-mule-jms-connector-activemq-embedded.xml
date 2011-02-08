@@ -16,15 +16,15 @@
   limitations under the License.
 -->
 <mule 
-	xmlns="http://www.mulesource.org/schema/mule/core/2.2"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:jms="http://www.mulesource.org/schema/mule/jms/2.2"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
 	xmlns:amq="http://activemq.apache.org/schema/core"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-		http://www.mulesource.org/schema/mule/core/2.2 http://www.mulesource.org/schema/mule/core/2.2/mule.xsd 
-		http://www.mulesource.org/schema/mule/jms/2.2  http://www.mulesource.org/schema/mule/jms/2.2/mule-jms.xsd
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd 
+		http://www.mulesoft.org/schema/mule/jms  http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd
 		http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"> 
 
     <spring:beans>
@@ -69,7 +69,9 @@
 		numberOfConsumers="2"
 		specification="1.1"
 		maxRedelivery="-1">
+<!-- 
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+ -->
 	</jms:connector>
 		
 </mule>
