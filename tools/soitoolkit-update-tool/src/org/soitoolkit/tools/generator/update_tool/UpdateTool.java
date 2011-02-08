@@ -47,18 +47,23 @@ public class UpdateTool {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		String newVersion = "0.4.0-SNAPSHOT";
+		String newVersion = "0.4.0"; // specified as "n.n.n"
+		boolean isSnapshot = true; // true or false
 
 		UpdateTool ut = new UpdateTool();
-		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.7-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.1-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.1.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", newVersion);
-		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@version", newVersion);
+		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.7-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.1-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.1.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@version", newVersion); // site.xml file requires strict "n.n.n" versions so no snapshot info can be added
 		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@url",     "features/org.soitoolkit.generator.feature_" + newVersion + ".jar");
-		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml", null, null, "/feature/@version",      newVersion);
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml", null, null, "/feature/@version",      newVersion); // feature.xml file requires strict "n.n.n" versions so no snapshot info can be added
+	}
+
+	public String getNewVersion(String newVersion, boolean isSnapshot) {
+		return newVersion + (isSnapshot ? "-SNAPSHOT" : "");
 	}
 
 	public void updateXmlTextNodeContent(String trunkFolder, String filename, String nsPrefix, String namespace, String xPath, String newContent) {
