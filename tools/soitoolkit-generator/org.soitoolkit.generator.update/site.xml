@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
   Licensed to the soi-toolkit project under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -19,8 +19,8 @@
    <description name="soi-toolkit update site" url="http://soi-toolkit.googlecode.com/svn/eclipse-update-site">
       soi-toolkit update site
    </description>
-   <feature url="features/org.soitoolkit.generator.feature_0.3.1.jar" id="org.soitoolkit.generator.feature" version="0.3.1">
+   <feature id="org.soitoolkit.generator.feature" url="features/org.soitoolkit.generator.feature_0.4.0.jar" version="0.4.0">
       <category name="soitoolkit.generator"/>
    </feature>
-   <category-def name="soitoolkit.generator" label="soi-toolkit generator"/>
+   <category-def label="soi-toolkit generator" name="soitoolkit.generator"/>
 </site>

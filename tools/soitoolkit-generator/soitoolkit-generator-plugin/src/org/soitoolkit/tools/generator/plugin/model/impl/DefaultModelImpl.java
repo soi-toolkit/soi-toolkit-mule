@@ -39,7 +39,7 @@ import org.soitoolkit.tools.generator.plugin.util.XmlUtil;
 
 public class DefaultModelImpl implements IModel {
 
-	private static final String SOITOOLKIT_VERSION = "0.3.1-SNAPSHOT";
+	private static final String SOITOOLKIT_VERSION = "0.4.0-SNAPSHOT";
 
 	private String groupId;
 	private String artifactId;

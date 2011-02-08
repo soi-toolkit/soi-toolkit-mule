@@ -1,6 +1,21 @@
+/* 
+ * Licensed to the soi-toolkit project under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.soitoolkit.tools.generator.update_tool;
 
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.appendXmlFragment;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXml;
@@ -19,6 +34,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Updates soi-toolkit version number in xml-files that mavens release plugin does not update automatically.
+ * 
+ * @author magnus larsson
+ *
+ */
 public class UpdateTool {
 
 	/**
@@ -26,54 +47,56 @@ public class UpdateTool {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		new UpdateTool().updateDefaultParentPom();
+		String newVersion = "0.4.0"; // specified as "n.n.n"
+		boolean isSnapshot = true; // true or false
 
+		UpdateTool ut = new UpdateTool();
+		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.5-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-2.2.7-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.0.1-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "commons/poms/mule-dependencies/mule-3.1.0-dependencies/pom.xml", "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:parent/ns:version", ut.getNewVersion(newVersion, isSnapshot));
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@version", newVersion); // site.xml file requires strict "n.n.n" versions so no snapshot info can be added
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.update/site.xml",     null, null, "/site/feature/@url",     "features/org.soitoolkit.generator.feature_" + newVersion + ".jar");
+		ut.updateXmlTextNodeContent("../..", "tools/soitoolkit-generator/org.soitoolkit.generator.feature/feature.xml", null, null, "/feature/@version",      newVersion); // feature.xml file requires strict "n.n.n" versions so no snapshot info can be added
 	}
 
-	public void updateSourceFiles() throws IOException {
-//		String srcFolder = projFolder + "/src/main/resources/";
-//		String key       = gu.getModel().getLowercaseJavaService() + "-export-query";
-//		String table     = gu.getModel().getUppercaseService() + "_EXPORT_TB";
-//
-//		PrintWriter out = null;
-//		try {
-//			String file = ""; // outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
-//			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
-//			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
-//
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		} finally {
-//			if (out != null) {out.close();}
-//		}
-    }
+	public String getNewVersion(String newVersion, boolean isSnapshot) {
+		return newVersion + (isSnapshot ? "-SNAPSHOT" : "");
+	}
 
-	private void updateDefaultParentPom() {
-		String trunkFolder = "../../..";
-		File file = new File(trunkFolder + "/commons/poms/default-parent/pom.xml");
+	public void updateXmlTextNodeContent(String trunkFolder, String filename, String nsPrefix, String namespace, String xPath, String newContent) {
+		File file = new File(trunkFolder + "/" + filename);
 
 		InputStream content = null;
 		String xml = null;
 		try {
 
-			
-			System.err.println(file.exists() + ": " + file.getCanonicalPath());
-
+			// Get the current content from the xml-file
 			content = new FileInputStream(file);
 			Document doc = createDocument(content);
 
+			// Setup namespace if specified
 			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("ns",   "http://maven.apache.org/POM/4.0.0");
+			if (namespace != null) {
+				namespaceMap.put(nsPrefix, namespace);
+			}
 
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:project/ns:properties/ns:soitoolkit.version");
+			// Lookup the text-node and print its current value
+			NodeList rootList = getXPathResult(doc, namespaceMap, xPath);
 			Node root = rootList.item(0);
-		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName() + "=" + root.getTextContent()));		    
-		    
-//		    appendXmlFragment(root, xmlFragment);
 			
+			if (root == null) {
+				throw new RuntimeException("Can't find " + xPath + " in file " + file.getCanonicalFile());
+			}
+			System.err.println(filename + ": " + xPath + ": " + root.getTextContent() + " --> " + newContent);		    
+
+			// Update it value
+			root.setTextContent(newContent);
+
+			// Get the new total xml content as a string
 			xml = getXml(doc);
-//			System.err.println(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -81,7 +104,7 @@ public class UpdateTool {
 			if (content != null) {try {content.close();} catch (IOException e) {}}
 		}
 
-		/*
+		// Update the file with the new content
 		PrintWriter pw = null;
 		try {
 			pw = openFileForOverwrite(file);
@@ -92,18 +115,9 @@ public class UpdateTool {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
-		*/
-		
-	    System.err.println("### UPDATED: " + file);
-	
 	}
 
 	private PrintWriter openFileForOverwrite(File file) throws IOException {
-
-		// TODO: Replace with sl4j!
-		System.err.println("Overwrite file: " + file);
-
 	    return new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
 	}
-
 }
