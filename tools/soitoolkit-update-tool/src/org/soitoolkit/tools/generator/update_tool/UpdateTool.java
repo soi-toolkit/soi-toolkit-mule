@@ -47,7 +47,7 @@ public class UpdateTool {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		String newVersion = "0.3.1";
+		String newVersion = "0.4.0-SNAPSHOT";
 
 		UpdateTool ut = new UpdateTool();
 		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", newVersion);

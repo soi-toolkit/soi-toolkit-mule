@@ -19,7 +19,7 @@
    <description name="soi-toolkit update site" url="http://soi-toolkit.googlecode.com/svn/eclipse-update-site">
       soi-toolkit update site
    </description>
-   <feature id="org.soitoolkit.generator.feature" url="features/org.soitoolkit.generator.feature_0.3.1.jar" version="0.3.1">
+   <feature id="org.soitoolkit.generator.feature" url="features/org.soitoolkit.generator.feature_0.4.0.jar" version="0.4.0">
       <category name="soitoolkit.generator"/>
    </feature>
    <category-def label="soi-toolkit generator" name="soitoolkit.generator"/>
