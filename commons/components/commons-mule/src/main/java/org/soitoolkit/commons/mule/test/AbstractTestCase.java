@@ -31,7 +31,7 @@ import org.mule.api.context.notification.EndpointMessageNotificationListener;
 import org.mule.api.context.notification.ExceptionNotificationListener;
 import org.mule.api.context.notification.ServerNotification;
 // FIXME: Mule 3.1, no clue what we will get in case of exceptions...
-import org.mule.api.service.ServiceException;
+// import org.mule.api.service.ServiceException;
 import org.mule.context.notification.ComponentMessageNotification;
 import org.mule.context.notification.EndpointMessageNotification;
 import org.mule.context.notification.ExceptionNotification;
@@ -440,14 +440,14 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 					// Only care about ExceptionNotification
 					// FIXME: Mule 3.1, no clue what we will get in case of exceptions...
-//					System.err.println("### AbstractTestCase.dispatchAndWaitForException(...) received an notification of type: " + notification.getClass().getName());
+					System.err.println("### AbstractTestCase.dispatchAndWaitForException(...) received an notification of type: " + notification.getClass().getName());
 					if (notification instanceof ExceptionNotification) {
 						ExceptionNotification exceptionNotification = (ExceptionNotification)notification;
 
 						// Only handle ServiceExceptions
 						// TODO: Should probably also need to be able to handle ConnectorExceptions
 // FIXME: Mule 3.1, no clue what we will get in case of exceptions...
-/* FIXME: Mule 3.1, STARTS HERE */
+/* FIXME: Mule 3.1, STARTS HERE * /
 						if (exceptionNotification.getSource() instanceof ServiceException) {
 							ServiceException exception = (ServiceException)exceptionNotification.getSource();
 							int    action  = exceptionNotification.getAction();
@@ -463,7 +463,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 								if (logger.isDebugEnabled()) logger.debug("Unexpected exception (" + exception.getMessage() + ") occurred on service: " + serviceName  + ", continue to wait for exception the right service...");							
 							}
 						}
-/* FIXME: Mule 3.1, ENDS HERE */
+/ * FIXME: Mule 3.1, ENDS HERE */
 					}
 				}
 			};

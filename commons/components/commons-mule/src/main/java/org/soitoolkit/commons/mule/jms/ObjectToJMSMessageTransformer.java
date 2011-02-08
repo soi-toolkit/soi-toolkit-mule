@@ -39,7 +39,7 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
 public class ObjectToJMSMessageTransformer extends ObjectToJMSMessage {
 	
 	@Override
-	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
+	public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
 		// Add the capability to transform a XMLStreamReader to a String
 		Object payload = message.getPayload();
@@ -49,7 +49,7 @@ public class ObjectToJMSMessageTransformer extends ObjectToJMSMessage {
 			message.setPayload(payload);
 		}
 
-		return super.transform(message, outputEncoding);
+		return super.transformMessage(message, outputEncoding);
 	}
 
 	@Override

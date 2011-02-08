@@ -142,6 +142,8 @@ public class EventLogger implements MuleContextAware {
 		String      logMessage,
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
+
+// FIXME		System.err.println("### EventLogger.logInfoEvent(): messageLogger.isInfoEnabled() = " + messageLogger.isInfoEnabled());
 		
 		if (messageLogger.isInfoEnabled()) {
 			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, businessContextId, extraInfo, message.getPayload(), null);
@@ -160,6 +162,8 @@ public class EventLogger implements MuleContextAware {
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
 
+// FIXME		System.err.println("### EventLogger.logErrorEvent()");
+
 		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), businessContextId, extraInfo, message.getPayload(), error);
 		
 		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
@@ -174,6 +178,8 @@ public class EventLogger implements MuleContextAware {
 		Object      payload,
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
+
+// FIXME		System.err.println("### EventLogger.logErrorEvent()");
 
 		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), businessContextId, extraInfo, payload, error);
 
@@ -270,7 +276,7 @@ public class EventLogger implements MuleContextAware {
 				stackTrace.append('\n').append("\t at ").append(stLine);
 			}
 		}
-		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, businessContextIdString, extraInfoString, payload, stackTrace.toString(), logEventName});
+		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, businessContextIdString, extraInfoString, payload, stackTrace.toString(), logEventName}).toString();
 	}
 	
 	private String businessContextIdToString(List<BusinessContextId> businessContextIds) {

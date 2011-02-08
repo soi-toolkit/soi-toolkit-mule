@@ -18,7 +18,7 @@ package org.soitoolkit.commons.mule.error;
 
 import java.util.Map;
 
-import org.mule.DefaultExceptionStrategy;
+//import org.mule.DefaultExceptionStrategy;
 import org.mule.api.MessagingException;
 import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
@@ -33,18 +33,18 @@ import org.soitoolkit.commons.mule.log.EventLogger;
  * @author Magnus Larsson
  *
  */
-public class ExceptionHandler extends DefaultExceptionStrategy {
+public class ExceptionHandler { // extends DefaultExceptionStrategy {
 
 	private static final EventLogger eventLogger = new EventLogger();
 
 	@SuppressWarnings("unchecked")
-	@Override
+//	@Override
 	protected void logException(Throwable t) {
 //		No need to double log this type of errors
 //		super.logException(t);
 
 		// Inject the MuleContext in the EventLogger since we are creating the instance
-		eventLogger.setMuleContext(muleContext);
+//		eventLogger.setMuleContext(muleContext);
 		
         MuleException muleException = ExceptionHelper.getRootMuleException(t);
         if (muleException != null)
@@ -63,10 +63,10 @@ public class ExceptionHandler extends DefaultExceptionStrategy {
         }
 	}
 
-	@Override
+//	@Override
 	protected void logFatal(MuleMessage message, Throwable t) {
 //		This type of fatal error (i.e. problem with the error handling itself) is best to log both with Mule's standard error-logging and our own
-		super.logFatal(message, t);
+//		super.logFatal(message, t);
 
 		eventLogger.logErrorEvent(t, message, null, null);
 	}
