@@ -25,8 +25,12 @@ import javax.jms.TextMessage;
 import javax.sql.DataSource;
 
 import org.mule.api.MuleMessage;
+import org.mule.api.routing.CouldNotRouteOutboundMessageException;
 import org.mule.api.transformer.TransformerException;
+import org.mule.api.transformer.TransformerMessagingException;
 import org.mule.transport.email.MailProperties;
+import org.mule.transport.file.FileConnector;
+import org.mule.transport.ftp.FtpConnector;
 import org.mule.transport.sftp.SftpConnector;
 
 import org.soitoolkit.commons.mule.jdbc.JdbcScriptEngine;
@@ -351,8 +355,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
         // Send a poisoned message to the in-queue and verify that the expected exception occurs in the ESB
         Exception exception = dispatchAndWaitForException("jms://" + IN_QUEUE, message, null, 2000);
-        assertEquals(TransformerException.class, exception.getClass());
-        assertEquals(expectedErrMsg, exception.getMessage());
+        assertTrue(exception instanceof CouldNotRouteOutboundMessageException);
+        assertTrue(exception.getCause() instanceof TransformerMessagingException);
+        assertTrue(exception.getCause().getCause() instanceof TransformerException);
+        assertEquals(expectedErrMsg, exception.getCause().getCause().getMessage());
 
         // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
         try {
