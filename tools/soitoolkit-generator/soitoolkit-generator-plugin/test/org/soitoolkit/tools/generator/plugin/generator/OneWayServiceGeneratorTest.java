@@ -18,8 +18,8 @@ package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_3_1_0;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
+import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
@@ -138,11 +138,19 @@ public class OneWayServiceGeneratorTest {
 
 	private void performMavenBuild(String groupId, String artifactId) throws IOException {
 		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
+
+		boolean testOk = false;
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		try {
+			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+			testOk = true;
+		} finally {
+			// Always try to create eclipsefiles and test reports 
+			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
+		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+		if (testOk) SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 }
