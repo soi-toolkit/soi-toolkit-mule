@@ -16,7 +16,7 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 	private boolean mustBeDisplayed = false;
 	
-	private MuleVersionEnum muleVersion = MULE_2_2_7;
+	private MuleVersionEnum muleVersion = MULE_3_1_0;
 	
 	private Combo muleVersionCombo;
 	private Button genServiceButton;
@@ -218,8 +218,12 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //		fileButton.setSelection(true);
 //		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
 //		ftpButton.setSelection(true);
+		
+		// FIXME. Disable the sftp transport for now...
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
-		sftpButton.setSelection(true);
+		sftpButton.setSelection(false); // true);
+		sftpButton.setEnabled(false);
+
 //		pop3Button = SwtUtil.createCheckboxButton(container, null, i++, "POP3");
 //		pop3Button.setSelection(true);
 //		imapButton = SwtUtil.createCheckboxButton(container, null, i++, "IMAP");
@@ -256,7 +260,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //				containerText.setText(container.getFullPath().toString());
 //			}
 //		}
-		muleVersionCombo.select(MULE_2_2_7.ordinal());
+		muleVersionCombo.select(MULE_3_1_0.ordinal());
 	}
 
 	/**

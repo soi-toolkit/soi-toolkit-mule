@@ -17,9 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
@@ -66,23 +64,11 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	@Test
-	public void testRequestResponseServices221() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse221", MULE_2_2_1);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-221", MULE_2_2_1);
+	public void testRequestResponseServices310() throws IOException {
+		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse310", MULE_3_1_0);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-310", MULE_3_1_0);
 	}
 
-	@Test
-	public void testRequestResponseServices225() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse225", MULE_2_2_5);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-225", MULE_2_2_5);
-	}
-
-	@Test
-	public void testRequestResponseServices227() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse227", MULE_2_2_7);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-227", MULE_2_2_7);
-	}
-	
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		TransportEnum[] inboundTransports  = {SOAP};
 		TransportEnum[] outboundTransports = {JMS}; 

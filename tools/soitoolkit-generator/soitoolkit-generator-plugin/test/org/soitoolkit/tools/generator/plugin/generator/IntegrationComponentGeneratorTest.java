@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
 
 public class IntegrationComponentGeneratorTest {
 
-	private static final MuleVersionEnum MULE_VERSION = MULE_2_2_5;
+	private static final MuleVersionEnum MULE_VERSION = MULE_3_1_0;
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String PROJECT = "ordermgm";	

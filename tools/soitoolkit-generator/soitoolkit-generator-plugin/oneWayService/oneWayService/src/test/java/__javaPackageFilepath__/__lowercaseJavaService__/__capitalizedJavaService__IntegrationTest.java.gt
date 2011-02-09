@@ -86,11 +86,11 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private AbstractJmsTestUtil jmsUtil = null;
 	
 <% if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
-	private static final String smtpHost = rb.getString("IMAPTOFILE_SMTP_HOST");
-	private static final int    smtpPort = Integer.parseInt(rb.getString("IMAPTOFILE_SMTP_PORT"));
-	private static final String from     = rb.getString("IMAPTOFILE_INBOUND_EMAIL_TEST_FROM");
-	private static final String to       = rb.getString("IMAPTOFILE_INBOUND_EMAIL_TO");
-	private static final String subject  = rb.getString("IMAPTOFILE_INBOUND_EMAIL_SUBJECT");
+	private static final String smtpHost = rb.getString("${uppercaseService}_SMTP_HOST");
+	private static final int    smtpPort = Integer.parseInt(rb.getString("${uppercaseService}_SMTP_PORT"));
+	private static final String from     = rb.getString("${uppercaseService}_INBOUND_EMAIL_TEST_FROM");
+	private static final String to       = rb.getString("${uppercaseService}_INBOUND_EMAIL_TO");
+	private static final String subject  = rb.getString("${uppercaseService}_INBOUND_EMAIL_SUBJECT");
 <% } %> 
 	
 	/**
@@ -238,13 +238,13 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		// Setup inbound endpoint for file-transport
         String inboundEndpoint = "file://" + IN_FOLDER;
 		String filename        = "testfile.txt";
-		props.put(SftpConnector.PROPERTY_FILENAME, filename);
+		props.put(FileConnector.PROPERTY_FILENAME, filename);
 
 <% } else if (inboundTransport=="FTP") { %>
 		// Setup inbound endpoint for file-transport
         String inboundEndpoint = "ftp://" + IN_FOLDER;
 		String filename        = "testfile.txt";
-		props.put(SftpConnector.PROPERTY_FILENAME, filename);
+		props.put(FtpConnector.PROPERTY_FILENAME, filename);
 
 <% } else if (inboundTransport=="SFTP") { %>
 		// Setup inbound endpoint for sftp

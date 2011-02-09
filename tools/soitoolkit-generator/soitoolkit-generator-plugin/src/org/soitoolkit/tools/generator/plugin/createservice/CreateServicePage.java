@@ -224,8 +224,8 @@ public class CreateServicePage extends WizardPage {
 					outboundTransportCombo.setItems (new String [] {"JMS"}); // "SOAP", "REST", "JMS", "JDBC"});
 					break;
 				case MEP_ONE_WAY:
-					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
-					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "SMTP"}); // "FTP", 
+					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "SFTP", // "FTP", 
+					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "SMTP"}); // "SFTP", // "FTP", 
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
 					inboundTransportCombo.setItems  (new String [] {"JMS"});
@@ -518,16 +518,16 @@ public class CreateServicePage extends WizardPage {
 //		case 4: 
 //			t = TransportEnum.FTP;
 //			break;
+//		case 4: 
+//			t = TransportEnum.SFTP;
+//			break;
 		case 4: 
-			t = TransportEnum.SFTP;
-			break;
-		case 5: 
 			t = TransportEnum.SERVLET;
 			break;
-		case 6: 
+		case 5: 
 			t = TransportEnum.POP3;
 			break;
-		case 7: 
+		case 6: 
 			t = TransportEnum.IMAP;
 			break;
 		}
@@ -595,10 +595,10 @@ public class CreateServicePage extends WizardPage {
 //		case 4: 
 //			t = TransportEnum.FTP;
 //			break;
+//		case 4: 
+//			t = TransportEnum.SFTP;
+//			break;
 		case 4: 
-			t = TransportEnum.SFTP;
-			break;
-		case 5: 
 			t = TransportEnum.SMTP;
 			break;
 		}

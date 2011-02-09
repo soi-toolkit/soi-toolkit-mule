@@ -17,9 +17,8 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_1;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_5;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_2_2_7;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
+import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.MULE_3_1_0;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
@@ -66,26 +65,16 @@ public class OneWayServiceGeneratorTest {
 	}
 
 	@Test
-	public void testOneWayServices221() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway221", MULE_2_2_1);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-221", MULE_2_2_1);
-	}
-
-	@Test
-	public void testOneWayServices225() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway225", MULE_2_2_5);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-225", MULE_2_2_5);
-	}
-
-	@Test
-	public void testOneWayServices227() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway227", MULE_2_2_7);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-227", MULE_2_2_7);
+	public void testOneWayServices310() throws IOException {
+		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway310", MULE_3_1_0);
+//		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-310", MULE_3_1_0);
 	}
 	
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
+//		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
+//		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
+		TransportEnum[] inboundTransports  = {VM, JMS, FILE, IMAP}; // FTP, POP3
+		TransportEnum[] outboundTransports = {VM, JMS, FILE}; // FTP, 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
@@ -108,8 +97,8 @@ public class OneWayServiceGeneratorTest {
 		TRANSPORTS.add(JDBC);
 		TRANSPORTS.add(FILE);
 		TRANSPORTS.add(FTP);
-		TRANSPORTS.add(SFTP);
-		TRANSPORTS.add(SERVLET);
+//		TRANSPORTS.add(SFTP);
+//		TRANSPORTS.add(SERVLET);
 		TRANSPORTS.add(POP3);
 		TRANSPORTS.add(IMAP);
 		TRANSPORTS.add(SMTP);
