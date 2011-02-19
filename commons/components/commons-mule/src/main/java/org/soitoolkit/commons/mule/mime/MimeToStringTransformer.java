@@ -26,6 +26,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.api.transport.PropertyScope;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 
@@ -48,9 +49,9 @@ public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
         Object payload = message.getPayload();
 
-        String contentType = (String)message.getProperty("Content-Type");
+        String contentType = (String)message.getProperty("Content-Type", PropertyScope.INBOUND);
         if (contentType == null) {
-        	contentType = (String)message.getProperty("content-type");
+        	contentType = (String)message.getProperty("content-type", PropertyScope.INBOUND);
         }
         
         if (contentType.startsWith("application/x-www-form-urlencoded")) {
