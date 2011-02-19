@@ -19,7 +19,9 @@ package org.soitoolkit.commons.mule.test;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.mule.api.MuleContext;
 import org.mule.transport.servlet.MuleReceiverServlet;
+import org.mule.transport.servlet.MuleServletContextListener;
 
 /**
  * Minimal servlet container (based on jetty) that enables 
@@ -35,7 +37,9 @@ public class ServletContainerWithMuleReceiverServlet {
     protected int httpPort = -1;
     protected String contextPath = null;
     protected String muleReceiverServletUri = null;
-
+    protected MuleContext muleContext = null;
+    protected String muleServerId = null;
+    
     // The underlying jetty servlet container
 	protected Server httpServer = null;
     
@@ -46,10 +50,12 @@ public class ServletContainerWithMuleReceiverServlet {
 	 * @param contextPath
 	 * @param muleReceiverServletUri
 	 */
-	public ServletContainerWithMuleReceiverServlet(int httpPort, String contextPath, String muleReceiverServletUri) {
+	public ServletContainerWithMuleReceiverServlet(int httpPort, String contextPath, String muleReceiverServletUri, MuleContext muleContext, String muleServerId) {
 	    this.httpPort = httpPort ;
 	    this.contextPath = contextPath;
 	    this.muleReceiverServletUri = muleReceiverServletUri;
+	    this.muleContext = muleContext;
+	    this.muleServerId = muleServerId;
 	}
 	
 	/**
@@ -63,7 +69,10 @@ public class ServletContainerWithMuleReceiverServlet {
         if (path.equals("")) path = "/";
         
         Context c = new Context(httpServer, path, Context.SESSIONS);
-        c.addServlet(new ServletHolder(new MuleReceiverServlet()), muleReceiverServletUri + "/*");
+        c.addEventListener(new MuleServletContextListener(muleContext, muleServerId));
+
+        MuleReceiverServlet servlet = new MuleReceiverServlet();
+		c.addServlet(new ServletHolder(servlet), muleReceiverServletUri + "/*");
 
         httpServer.start();
 	}

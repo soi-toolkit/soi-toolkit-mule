@@ -78,7 +78,7 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
         log.info("Startup Servlet container with Mule Receiver Servlet...");
 
         // Startup the servlet container and the mule receiver servlet once mule servlet transport is ready
-		servletContainer = new ServletContainerWithMuleReceiverServlet(httpPort, contextPath, muleReceiverServletUri);
+		servletContainer = new ServletContainerWithMuleReceiverServlet(httpPort, contextPath, muleReceiverServletUri, muleServer.getMuleContext(), muleServerId);
         servletContainer.start();
 	}
 

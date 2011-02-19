@@ -24,20 +24,30 @@ package org.soitoolkit.commons.mule.test;
  */
 public abstract class AbstractTestCaseWithServletEngine extends AbstractTestCase {
 
+    protected int httpPort = -1;
+    protected String contextPath = null;
+    protected String muleReceiverServletUri = null;
+    protected String muleServerId = null;
+
 	private ServletContainerWithMuleReceiverServlet servletContainer = null;
 
+	
 	public AbstractTestCaseWithServletEngine(String muleServerId, int httpPort, String contextPath, String muleReceiverServletUri) {
 		super();
 
-		// Before launching Mule ESB set its server id
+	    this.httpPort = httpPort ;
+	    this.contextPath = contextPath;
+	    this.muleReceiverServletUri = muleReceiverServletUri;
+	    this.muleServerId = muleServerId;
+
+	    // Before launching Mule ESB set its server id
 		System.setProperty("mule.serverId", muleServerId);
-		
-		servletContainer = new ServletContainerWithMuleReceiverServlet(httpPort, contextPath, muleReceiverServletUri);
     }
 
     @Override
     protected void doSetUp() throws Exception {
         super.doSetUp();
+		servletContainer = new ServletContainerWithMuleReceiverServlet(httpPort, contextPath, muleReceiverServletUri, muleContext, muleServerId);
         servletContainer.start();
     }
 
