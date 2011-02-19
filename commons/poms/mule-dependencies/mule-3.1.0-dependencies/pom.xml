@@ -50,7 +50,6 @@
 		<cxf.version>2.1.2</cxf.version>
  -->
     
-		<mule-transport-sftp.version>2.2.1-RC3</mule-transport-sftp.version>
 		<mule-transport-jersey.version>1.1.3</mule-transport-jersey.version>
 		<mule-module-commonretrypolicies>3.0.0</mule-module-commonretrypolicies>
 		<jersey.version>1.0</jersey.version>
@@ -196,17 +195,10 @@
 			<artifactId>mule-transport-quartz</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
-		<!-- Exclude dependency to file-transport since it is to an old version -->
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-sftp</artifactId>
-			<version>${mule-transport-sftp.version}</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>org.mule.transports</groupId>
-            		<artifactId>mule-transport-file</artifactId>
-            	</exclusion>
-            </exclusions>
+			<version>${mule.version}</version>
 		</dependency>
 
 		<!-- Dependencies for JAXB -->

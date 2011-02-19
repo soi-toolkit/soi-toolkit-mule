@@ -152,7 +152,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:vm=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txmlns:file=\"http://www.mulesoft.org/schema/mule/file\"\n");
 		sb.append("\txmlns:ftp=\"http://www.mulesoft.org/schema/mule/ftp\"\n");
-// FIXME		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
+		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
 		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
 		sb.append("\txmlns:email=\"http://www.mulesoft.org/schema/mule/email\"\n");
 		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
@@ -165,7 +165,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/vm      http://www.mulesoft.org/schema/mule/vm/3.1/mule-vm.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/file    http://www.mulesoft.org/schema/mule/file/3.1/mule-file.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/ftp     http://www.mulesoft.org/schema/mule/ftp/3.1/mule-ftp.xsd\n");
-// FIXME		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/email   http://www.mulesoft.org/schema/mule/email/3.1/mule-email.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap    http://www.mulesoft.org/schema/mule/imap/3.1/mule-imap.xsd\n");
@@ -188,7 +188,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txmlns:file=\"http://www.mulesoft.org/schema/mule/file\"\n");
 		sb.append("\txmlns:ftp=\"http://www.mulesoft.org/schema/mule/ftp\"\n");
-// FIXME		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
+		sb.append("\txmlns:sftp=\"http://www.mulesoft.org/schema/mule/sftp\"\n");
 		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
 		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
@@ -197,7 +197,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/file    http://www.mulesoft.org/schema/mule/file/3.1/mule-file.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/ftp     http://www.mulesoft.org/schema/mule/ftp/3.1/mule-ftp.xsd\n");
-// FIXME		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/sftp    http://www.mulesoft.org/schema/mule/sftp/3.1/mule-sftp.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/3.1/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap    http://www.mulesoft.org/schema/mule/imap/3.1/mule-imap.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");

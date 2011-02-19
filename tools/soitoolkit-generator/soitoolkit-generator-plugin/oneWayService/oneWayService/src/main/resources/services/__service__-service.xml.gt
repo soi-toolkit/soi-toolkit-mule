@@ -42,7 +42,8 @@ ${xmlNamespace.onewayService}
 
 <% } else if (inboundTransport=="SERVLET") { %> 
 				<inbound-endpoint address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_SERVLET_URI}"
-					synchronous="true" transformer-refs="createCorrId mimeToStr"
+					exchange-pattern="request-response"
+					transformer-refs="createCorrId mimeToStr"
 					responseTransformer-refs="logReqIn" />
 
 <% } else if (inboundTransport=="FILE") { %> 
@@ -161,13 +162,13 @@ ${xmlNamespace.onewayService}
 						port="${dollarSymbol}{${uppercaseService}_SMTP_PORT}"
 						from="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_FROM}"
 						to="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_TEST_TO}"
-						subject="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_SUBJECT}"
-						transformer-refs="${lowercaseJavaService}Transformer logMsgOut">
+						subject="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_SUBJECT}">
+						<transformer ref="${lowercaseJavaService}Transformer logMsgOut"/>
 						<email:string-to-email-transformer/>
 					</smtp:outbound-endpoint>
-<% } %> 
+<% } %>
 				</pass-through-router>
-			</outbound>					
+			</outbound>
 		</service>
 
 <% if (outboundTransport=="SFTP") { %> 

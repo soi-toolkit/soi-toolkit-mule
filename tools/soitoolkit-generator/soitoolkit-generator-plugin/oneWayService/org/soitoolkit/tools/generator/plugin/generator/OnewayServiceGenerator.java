@@ -42,6 +42,9 @@ import org.w3c.dom.NodeList;
 
 public class OnewayServiceGenerator implements Generator {
 
+	private static final String NAMESPACE_CORE = "http://www.mulesoft.org/schema/mule/core";
+	private static final String NAMESPACE_JDBC = "http://www.mulesoft.org/schema/mule/jdbc";
+	
 	GeneratorUtil gu;
 	
 	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
@@ -311,8 +314,8 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter out = null;
 		try {
 			String file = outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -330,9 +333,9 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter out = null;
 		try {
 			String file = outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key          + "\" value=\"INSERT INTO  " + table + "(ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])\"/>");
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key_teststub + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"http://www.mulesource.org/schema/mule/jdbc/2.2\" key=\"" + key_teststub + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key          + "\" value=\"INSERT INTO  " + table + "(ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])\"/>");
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -367,8 +370,8 @@ public class OnewayServiceGenerator implements Generator {
 			Document doc = createDocument(content);
 
 			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("ns",   "http://www.mulesource.org/schema/mule/core/2.2");
-			namespaceMap.put("jdbc", "http://www.mulesource.org/schema/mule/jdbc/2.2");
+			namespaceMap.put("ns",   NAMESPACE_CORE);
+			namespaceMap.put("jdbc", NAMESPACE_JDBC);
 
 			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:mule/jdbc:connector");
 			Node root = rootList.item(0);

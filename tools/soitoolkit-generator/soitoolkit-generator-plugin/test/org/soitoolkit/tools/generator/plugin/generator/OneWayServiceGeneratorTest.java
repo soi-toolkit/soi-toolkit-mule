@@ -71,10 +71,8 @@ public class OneWayServiceGeneratorTest {
 	}
 	
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-//		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
-//		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
-		TransportEnum[] inboundTransports  = {VM, JMS, FILE, IMAP}; // FTP, POP3
-		TransportEnum[] outboundTransports = {VM, JMS, FILE}; // FTP, 
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
@@ -97,8 +95,8 @@ public class OneWayServiceGeneratorTest {
 		TRANSPORTS.add(JDBC);
 		TRANSPORTS.add(FILE);
 		TRANSPORTS.add(FTP);
-//		TRANSPORTS.add(SFTP);
-//		TRANSPORTS.add(SERVLET);
+		TRANSPORTS.add(SFTP);
+		TRANSPORTS.add(SERVLET);
 		TRANSPORTS.add(POP3);
 		TRANSPORTS.add(IMAP);
 		TRANSPORTS.add(SMTP);
