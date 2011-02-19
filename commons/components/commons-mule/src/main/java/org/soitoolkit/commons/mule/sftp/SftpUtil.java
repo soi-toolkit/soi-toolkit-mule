@@ -73,7 +73,9 @@ public class SftpUtil {
 			try {
 				Service service = muleContext.getRegistry().lookupService(
 						serviceName);
-				service.stop();
+//				logServiceStatus(service);
+//				service.stop();
+//				logServiceStatus(service);
 				services.add(service);
 			} catch (Exception e) {
 				logger.error("Error '" + e.getMessage()
@@ -90,8 +92,14 @@ public class SftpUtil {
 
 		// We are done, startup the services again so that the test can begin...
 		for (Service service : services) {
-			service.start();
+//			logServiceStatus(service);
+//			service.start();
+//			logServiceStatus(service);
 		}
+	}
+
+	private static void logServiceStatus(Service service) {
+		System.err.println(service.getName() + " started: " + service.isStarted() + ", stopped: " + service.isStopped() + ", paused: " + service.isPaused());
 	}
 
 	/**
