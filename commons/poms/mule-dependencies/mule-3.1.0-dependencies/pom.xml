@@ -200,6 +200,12 @@
 			<artifactId>mule-transport-sftp</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
+		<!-- FIXME. Temporary dep to jsch until mulesoft update sftp-transport to use central maven repo -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.44-1</version>
+        </dependency>
 
 		<!-- Dependencies for JAXB -->
 		<dependency>
