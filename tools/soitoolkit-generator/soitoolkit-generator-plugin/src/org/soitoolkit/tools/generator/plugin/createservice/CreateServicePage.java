@@ -311,7 +311,7 @@ public class CreateServicePage extends WizardPage {
 		});		
 
 		label = new Label(container, SWT.NULL); // Filler in column 2
-		
+
 //	}
 //
 //	private void addTextFields(Composite parent) {
@@ -434,8 +434,11 @@ public class CreateServicePage extends WizardPage {
 		
 		// Validate Transformer-type, do no allow smooks for oneway's right now.
 		int ttIdx = transformerType.value;
-		if (mepIdx == 1 && ttIdx == 1) {
-			updateStatus("Smooks based transformers are currently not supported for oneway message exchange patterns");
+		// ISSUE 96. Waiting for the smooks module to be released for mule 3.
+		// if (mepIdx == 1 && ttIdx == 1) {
+		if (ttIdx == 1) {
+			// updateStatus("Smooks based transformers are currently not supported for oneway message exchange patterns");
+			updateStatus("Smooks based transformers are currently not supported for mule 3.x");
 			return;
 		}
 		
