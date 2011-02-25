@@ -91,6 +91,8 @@ ${xmlNamespace.common}
 			"/>
 	</custom-transformer>
 
+    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+
 	<custom-transformer name="mimeToStr" class="org.soitoolkit.commons.mule.mime.MimeToStringTransformer" />
 
     <custom-transformer name="logMsgIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
