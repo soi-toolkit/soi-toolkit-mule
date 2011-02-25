@@ -11,7 +11,30 @@ ${xmlNamespace.reqRespService}
 	<smooks:transformer name="${lowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
 	<smooks:transformer name="${lowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
 <% } %> 
-    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+
+<!-- 
+    <flow name="soapToJmsUsingJava-service">
+<% if (inboundTransport=="SOAP") { %>
+        <inbound-endpoint
+            address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
+            exchange-pattern="request-response"
+            transformer-refs="logReqIn"
+            responseTransformer-refs="createSoapFaultIfException logRespOut">
+        </inbound-endpoint>
+        <cxf:proxy-service 
+            service="sampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+        </cxf:proxy-service>
+<% } %> 
+		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+<% if (outboundTransport=="JMS") { %>
+			<outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" />
+			<inbound-endpoint  address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${lowercaseJavaService}ResponseTransformer"/>
+		</request-reply>
+<% } %> 
+    </flow>
+ -->
 
 	<model name="${service}-model">
 	
@@ -20,24 +43,24 @@ ${xmlNamespace.reqRespService}
 		<service name="${service}-service">
             <inbound>
 <% if (inboundTransport=="SOAP") { %>
-                <cxf:inbound-endpoint 
-                	address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
-                    wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl"
-                    serviceName="sampleService"
-                    namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1"                 
-                    proxy="true" 
-                    synchronous="true"
-                    applyTransformersToProtocol="false"
-                    transformer-refs="logReqIn"
-                    responseTransformer-refs="createSoapFaultIfException logRespOut"
-                />
+		        <inbound-endpoint
+		            address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
+		            exchange-pattern="request-response"
+		            transformer-refs="logReqIn"
+		            responseTransformer-refs="createSoapFaultIfException logRespOut">
+			        <cxf:proxy-service 
+			            service="sampleService"
+			            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
+			            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+			        </cxf:proxy-service>
+		        </inbound-endpoint>
 <% } %> 
             </inbound>
 
 			<outbound>
 				<pass-through-router>
 <% if (outboundTransport=="JMS") { %>
-                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" synchronous="true"/>
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" exchange-pattern="request-response"/>
                     <reply-to address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />                                                             
 <% } %> 
 				</pass-through-router>
@@ -50,4 +73,5 @@ ${xmlNamespace.reqRespService}
 <% } %> 
 		</service>
 	</model>
+    
 </mule>
