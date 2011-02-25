@@ -126,7 +126,7 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
     		// Skip logging if service name starts with "_cxfServiceComponent" (Mule 2.2.1) or ends with "_cxfComponent" (Mule 2.2.5) and endpoint contains "?wsdl" or "?xsd", then it's just tons of WSDL and XSD lookup calls, nothing to log...
             MuleEventContext event       = RequestContext.getEventContext();
             String           serviceName = MuleUtil.getServiceName(event);
-    		if (serviceName != null && (serviceName.startsWith("_cxfServiceComponent") || serviceName.endsWith("_cxfComponent"))) {
+    		if (serviceName != null) { // FIXME: Mule 3.1 Does not have these services... && (serviceName.startsWith("_cxfServiceComponent") || serviceName.endsWith("_cxfComponent"))) {
         	    EndpointURI      endpointURI = event.getEndpointURI();
     			if (endpointURI != null) {
     				String ep = endpointURI.toString();
