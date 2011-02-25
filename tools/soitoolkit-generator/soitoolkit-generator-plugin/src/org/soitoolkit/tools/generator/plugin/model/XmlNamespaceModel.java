@@ -214,6 +214,7 @@ public class XmlNamespaceModel {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
+		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txmlns:cxf=\"http://www.mulesoft.org/schema/mule/cxf\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");

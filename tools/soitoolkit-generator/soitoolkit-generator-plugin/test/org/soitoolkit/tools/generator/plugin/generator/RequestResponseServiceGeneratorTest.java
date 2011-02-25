@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
+import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 
 import java.io.IOException;
@@ -78,7 +79,7 @@ public class RequestResponseServiceGeneratorTest {
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
 				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.JAVA);
-				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
+//				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
 			}
 		}
 
@@ -113,6 +114,23 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	private void performMavenBuild(String groupId, String artifactId) throws IOException {
+		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
+
+		boolean testOk = false;
+		
+		try {
+			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+			testOk = true;
+		} finally {
+			// Always try to create eclipsefiles and test reports 
+			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
+		}
+		
+		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
+		if (testOk) SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+	}
+
+	private void performMavenBuild_old(String groupId, String artifactId) throws IOException {
 		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");

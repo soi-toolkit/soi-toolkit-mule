@@ -67,7 +67,7 @@ public class OneWayServiceGeneratorTest {
 	@Test
 	public void testOneWayServices310() throws IOException {
 		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway310", MULE_3_1_0);
-//		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-310", MULE_3_1_0);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-310", MULE_3_1_0);
 	}
 	
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
