@@ -60,7 +60,7 @@
 
 	<!-- Message logging -->
 	<logger name="org.soitoolkit.commons.mule.messageLogger">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	
 	<root>
