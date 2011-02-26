@@ -49,6 +49,7 @@ import org.mule.api.config.MuleConfiguration;
 import org.mule.api.context.MuleContextAware;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.transformer.TransformerException;
+import org.mule.api.transport.PropertyScope;
 import org.mule.module.xml.stax.ReversibleXMLStreamReader;
 import org.mule.transport.jms.JmsConnector;
 import org.mule.transport.jms.JmsMessageUtils;
@@ -460,18 +461,18 @@ public class EventLogger implements MuleContextAware {
 
 			if (log.isDebugEnabled()) {
 				@SuppressWarnings("rawtypes")
-				Set names = message.getPropertyNames();
+				Set names = message.getPropertyNames(PropertyScope.INBOUND);
 				for (Object object : names) {
-					Object value = message.getProperty(object.toString());
+					Object value = message.getInboundProperty(object.toString());
 					log.debug(object + " = " + value + " (" + object.getClass().getName() + ")");
 				}
 			}
 			
 			messageId             = message.getUniqueId();
-			contractId            = message.getStringProperty(SOITOOLKIT_CONTRACT_ID, "");
-			businessCorrelationId = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "");
-			integrationScenarioId = message.getStringProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
-			propertyBusinessContextId = message.getStringProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
+			contractId            = message.getInboundProperty(SOITOOLKIT_CONTRACT_ID, "");
+			businessCorrelationId = message.getInboundProperty(SOITOOLKIT_CORRELATION_ID, "");
+			integrationScenarioId = message.getInboundProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
+			propertyBusinessContextId = message.getInboundProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
 		}
 
 		String componentId = getServerId();

@@ -40,7 +40,7 @@ public class SaveCorrelationIdTransformer extends AbstractMessageAwareTransforme
 	}
 
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
-		String correlationId = message.getStringProperty(SOITOOLKIT_CORRELATION_ID, "Missing " + SOITOOLKIT_CORRELATION_ID);
+		String correlationId = message.getInboundProperty(SOITOOLKIT_CORRELATION_ID, "Missing " + SOITOOLKIT_CORRELATION_ID);
 		CorrelationIdStore.setCorrelationId(id, correlationId);
 
 		if(logger.isDebugEnabled()) logger.debug("Saved property in threadLocal variable: " + SOITOOLKIT_CORRELATION_ID + " = " + correlationId);
