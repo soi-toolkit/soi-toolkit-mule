@@ -33,15 +33,13 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
 
 	private static Logger log = LoggerFactory.getLogger(MuleServerWithServletContainer.class);
 	
-	private static final int WAITTIME_MULE_SERVLET_TRANSPORT = 5000;
+	private static final int WAITTIME_MULE_SERVLET_TRANSPORT = 10000;
 
 	// Configuration parameters set by the constructor
     protected int httpPort = -1;
     protected String contextPath = null;
     protected String muleReceiverServletUri = null;
     
-    // The underlying mule server and servlet container
-	MuleServer muleServer = null;
 	ServletContainerWithMuleReceiverServlet servletContainer = null;
 
 	/**
@@ -72,8 +70,10 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
     	// First startup Mule...
     	super.start();
 		
+    	System.err.println("### START TO SLEEP");
         // Wait for a while so that mule and its servlet transport gets time to get started
     	Thread.sleep(getWaittimeMuleServletTransport());
+    	System.err.println("### SLEEP DONE");
 
         log.info("Startup Servlet container with Mule Receiver Servlet...");
 
