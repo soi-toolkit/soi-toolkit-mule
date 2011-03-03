@@ -164,6 +164,8 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 
 		final MuleVersionEnum muleVersion = page2.getMuleVersion();
 
+		raiseSecurityNotice(transports);
+		
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
@@ -189,6 +191,34 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			return false;
 		}
 		return true;
+	}
+
+	private void raiseSecurityNotice(final List<TransportEnum> transports) {
+		boolean sftpSelected = false;
+		boolean jdbcSelected = false;
+		String transportString = null;
+		for (TransportEnum transportEnum : transports) {
+			if (transportEnum == TransportEnum.JDBC) {
+				jdbcSelected = true;
+				if (transportString == null) {
+					transportString = "JDBC";
+				} else {
+					transportString += " and JDBC";					
+				}
+			}
+			if (transportEnum == TransportEnum.SFTP) {
+				sftpSelected = true;
+				if (transportString == null) {
+					transportString = "SFTP";
+				} else {
+					transportString += " and SFTP";					
+				}
+			}
+		}
+
+		if (jdbcSelected || sftpSelected) {
+			MessageDialog.openInformation(getShell(), "Security Notice", "Security related properties for " + transportString + " will be created in the security-property-file in the src/environment folder. Please update these properties to reflect your environment and protect the information accordingly, e.g. don't commit your credential information to subversion!");
+		}
 	}
 	
 	/**

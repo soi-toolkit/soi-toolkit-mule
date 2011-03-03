@@ -18,7 +18,6 @@ package soi_toolkit_generator_plugin.preferences;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -68,8 +67,6 @@ public class SoiToolkiGeneratorPreferencePage
 		addField(new StringFieldEditor(PreferenceConstants.P_GROOVY_MODEL, "Custom Groovy model:", getFieldEditorParent()));
 
 		addField(new StringFieldEditor(PreferenceConstants.P_SFTP_ROOT_FOLDER,         "Default SFTP root folder:", getFieldEditorParent()));
-		addField(new FileFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_FILE,         "SFTP private key file:", getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.P_SFTP_IDENTITY_PASSPHRASE, "SFTP private key passphrase:", getFieldEditorParent()));
 		
 //		addField(
 //			new BooleanFieldEditor(

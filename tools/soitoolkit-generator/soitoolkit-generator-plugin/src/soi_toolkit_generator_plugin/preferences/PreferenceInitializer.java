@@ -39,16 +39,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_GROOVY_MODEL, PreferencesUtil.getCustomGroovyModelImpl());
 		store.setDefault(PreferenceConstants.P_ECLIPSE_GOAL, "eclipse:m2eclipse");
 		store.setDefault(PreferenceConstants.P_SFTP_ROOT_FOLDER, PreferencesUtil.getDefaultSftpRootFolder());
-		store.setDefault(PreferenceConstants.P_SFTP_IDENTITY_FILE, PreferencesUtil.getDefaultSftpIdentityFile());
-		store.setDefault(PreferenceConstants.P_SFTP_IDENTITY_PASSPHRASE, PreferencesUtil.getDefaultSftpIdentityPassphrase());
 		
 /*
     static public String getDefaultRootFolder() {
     static public String getMavenHome() {
 	static public String getCustomGroovyModelImpl() {
     static public String getDefaultSftpRootFolder() {
-    static public String getDefaultSftpIdentityFile() {
-    static public String getDefaultSftpIdentityPassphrase() {
  */
 	}
 
