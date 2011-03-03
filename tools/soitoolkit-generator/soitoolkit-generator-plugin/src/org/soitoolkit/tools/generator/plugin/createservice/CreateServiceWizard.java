@@ -39,14 +39,25 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 import org.soitoolkit.tools.generator.plugin.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.generator.RequestResponseServiceGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
@@ -134,7 +145,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	 */
 	private void doFinish(String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceName, IProgressMonitor monitor) throws CoreException {
 
-		monitor.beginTask("Creating " + serviceName, 3);
+		monitor.beginTask("Creating " + serviceName, 4);
 		
 		final PrintStream ps = new PrintStream(new OutputStream() {
 			@Override
@@ -207,11 +218,43 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 //		});
 
 		monitor.worked(1);
+		monitor.setTaskName("Organize Imports...");
+//		doOrganizeImports(resource);
+
+		monitor.worked(1);
 		monitor.setTaskName("Refresh workspace...");
 		ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+
 		monitor.worked(1);
 	}
 
+	private void doOrganizeImports(IResource project) {
+		System.err.println("CreateServiceWizard.doOrganizeImports() START");
+		boolean skip = false;
+		if (!skip) {
+//			Shell s = getShell();
+//			PlatformUI.getWorkbench();
+//			IWizard w = page.getWizard();
+//			IObjectActionDelegate od;
+//			IWorkbenchPart wp;
+//			PlatformUI.getWorkbench().getDisplay();
+
+			try {
+				IWorkbench wb = PlatformUI.getWorkbench();
+				IWorkbenchWindow awba = wb.getActiveWorkbenchWindow();
+				IWorkbenchPage apage = awba.getActivePage();
+				IWorkbenchPart apart = apage.getActivePart();
+				IWorkbenchSite wbs = apart.getSite();
+				OrganizeImportsAction oia = new OrganizeImportsAction(wbs);
+				oia.run(new StructuredSelection(project));
+			} catch (Throwable e) {
+				System.err.println("CreateServiceWizard.doOrganizeImports() ERROR");
+				e.printStackTrace();
+			}
+		}
+		System.err.println("CreateServiceWizard.doOrganizeImports() DONE");
+	}
+	
 	private InputStream getPomAsInputStream(IResource resource)
 			throws CoreException {
 		IContainer container = (IContainer)resource;
