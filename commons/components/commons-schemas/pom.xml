@@ -74,6 +74,15 @@
 									</extraargs>
 								</wsdlOption>
 
+								<wsdlOption>
+									<wsdl>${schema.path}/org/soitoolkit/commons/servicemodel/v1/jaxb-gen-only.wsdl</wsdl>
+									<extraargs>
+										<extraarg>-validate</extraarg>
+										<extraarg>-p</extraarg>
+										<extraarg>urn:org.soitoolkit.commons.servicemodel.schema:v1=org.soitoolkit.commons.servicemodel.schema.v1</extraarg>
+									</extraargs>
+								</wsdlOption>
+
 							</wsdlOptions>
 						</configuration>
 						<goals>

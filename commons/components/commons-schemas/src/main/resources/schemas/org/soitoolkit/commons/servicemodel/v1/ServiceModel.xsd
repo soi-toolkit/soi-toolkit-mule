@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="urn:org.soitoolkit.commons.servicemodel.schema:v1"
+	xmlns:tns="urn:org.soitoolkit.commons.servicemodel.schema:v1" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" 
+	version="1.0">
+
+	<xsd:element name="serviceModel" type="tns:ServiceModelType" />
+
+	<!-- 
+		ServiceModelType
+	  -->
+    <xsd:complexType name="ServiceModelType">
+    	<xsd:sequence>
+    		<xsd:element name="messageFlow"       maxOccurs="unbounded" type="tns:MessageFlowType"/>
+    		<xsd:element name="domain"            maxOccurs="unbounded" type="tns:DomainType"/>
+    		<xsd:element name="messageType"       maxOccurs="unbounded" type="tns:MessageTypeType"/>
+    		<xsd:element name="service"           maxOccurs="unbounded" type="tns:ServiceType"/>
+    		<xsd:element name="contract"          maxOccurs="unbounded" type="tns:ContractType"/>
+    		<xsd:element name="softwareComponent" maxOccurs="unbounded" type="tns:SoftwareComponentType"/>
+
+    		<xsd:element name="endpoint"          maxOccurs="unbounded" type="tns:EndpointType"/>
+    		<xsd:element name="resourceManager"   maxOccurs="unbounded" type="tns:ResourceManagerType"/>
+    		<xsd:element name="applicationServer" maxOccurs="unbounded" type="tns:ApplicationServerType"/>
+    		<xsd:element name="host"              maxOccurs="unbounded" type="tns:HostType"/>
+
+     		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    
+	<!-- 
+		MessageFlowType
+	  -->
+    <xsd:complexType name="MessageFlowType">
+    	<xsd:sequence>
+			<xsd:element name="description" type="xsd:string"/>
+			<xsd:element name="contract"    type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"      type="xsd:ID"/>
+    	<xsd:attribute name="name"    type="xsd:string"/>
+    	<xsd:attribute name="version" type="xsd:string"/>    	
+    </xsd:complexType>
+    
+	<!-- 
+		DomainType
+	  -->
+    <xsd:complexType name="DomainType">
+    	<xsd:sequence>
+			<xsd:element name="service" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"   type="xsd:ID"/>
+    	<xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    
+	<!-- 
+		MessageTypeType
+	  -->
+    <xsd:complexType name="MessageTypeType">
+    	<xsd:sequence>
+			<xsd:element name="description" type="xsd:string"/>
+			<xsd:element name="service"     type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"      type="xsd:ID"/>
+    	<xsd:attribute name="name"    type="xsd:string"/>
+    	<xsd:attribute name="version" type="xsd:string"/>    	
+    </xsd:complexType>
+    
+	<!-- 
+		ServiceType
+	  -->
+    <xsd:complexType name="ServiceType">
+    	<xsd:sequence>
+			<xsd:element name="specification"   type="xsd:string"/>
+			<xsd:element name="domain"          type="xsd:IDREF" minOccurs="0" />
+			<xsd:element name="producer"        type="xsd:IDREF"/>
+			<xsd:element name="contract"        type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="endpoint"        type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="reuqestMessage"  type="xsd:IDREF"/>
+			<xsd:element name="responseMessage" type="xsd:IDREF" minOccurs="0" />
+			<xsd:element name="faultMessage"    type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded" />
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"      type="xsd:ID"/>
+    	<xsd:attribute name="name"    type="xsd:string"/>
+    	<xsd:attribute name="version" type="xsd:string"/>    	
+    </xsd:complexType>
+    
+	<!-- 
+		ContractType
+	  -->
+    <xsd:complexType name="ContractType">
+    	<xsd:sequence>
+ 			<xsd:element name="sla"         type="xsd:string"/>
+			<xsd:element name="service"     type="xsd:IDREF"/>
+			<xsd:element name="consumer"    type="xsd:IDREF"/>
+			<xsd:element name="messageFlow" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+    	
+    	<xsd:attribute name="id"      type="xsd:ID"/>
+    	<xsd:attribute name="name"    type="xsd:string"/>
+    	<xsd:attribute name="version" type="xsd:string"/>
+    </xsd:complexType>
+    
+	<!-- 
+		SoftwareComponentType
+	  -->
+    <xsd:complexType name="SoftwareComponentType">
+    	<xsd:sequence>
+			<xsd:element name="service"  type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="contract" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"      type="xsd:ID"/>
+    	<xsd:attribute name="name"    type="xsd:string"/>
+    	<xsd:attribute name="version" type="xsd:string"/>
+    </xsd:complexType>
+
+
+	<!-- 
+		EndpointType
+	  -->
+    <xsd:complexType name="EndpointType">
+    	<xsd:sequence>
+			<xsd:element name="url"             type="xsd:string"/>
+			<xsd:element name="service"         type="xsd:IDREF"/> 
+			<xsd:element name="resourceManager" type="xsd:IDREF"/> 
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id" type="xsd:ID"/>
+    	<xsd:attribute name="version" type="xsd:string"/>    	
+    </xsd:complexType>
+
+	<!-- 
+		ResourceManagerType
+	  -->
+    <xsd:complexType name="ResourceManagerType">
+    	<xsd:sequence>
+			<xsd:element name="typeOfResourceManager" type="xsd:string"/>
+			<xsd:element name="environment"           type="xsd:string"/>
+			<xsd:element name="endpoints"             type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="host"                  type="xsd:IDREF"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id" type="xsd:ID"/>
+    	<xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+	<!-- 
+		ApplicationServerType
+	  -->
+    <xsd:complexType name="ApplicationServerType">
+    	<xsd:sequence>
+			<xsd:element name="typeOfApplicationServer" type="xsd:string"/>
+			<xsd:element name="environment"             type="xsd:string"/>
+			<xsd:element name="softwareComponents"      type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="host"                    type="xsd:IDREF"/> 
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id" type="xsd:ID"/>
+    	<xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+	<!-- 
+		HostType
+	  -->
+    <xsd:complexType name="HostType">
+    	<xsd:sequence>
+			<xsd:element name="applicationServers" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="resourceManagers"   type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+
+    		<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+
+    	<xsd:attribute name="id"        type="xsd:ID"/>
+    	<xsd:attribute name="ipAddress" type="xsd:string"/>
+    	<xsd:attribute name="name"      type="xsd:string"/>
+    </xsd:complexType>
+    
+</xsd:schema>
