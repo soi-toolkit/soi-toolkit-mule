@@ -211,7 +211,7 @@ public class CreateComponentStartPage extends WizardPage {
 		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
 		artifactIdText.setText("sample1");
 		groupIdText.setText("org.sample");
-		versionText.setText("1.0-SNAPSHOT");
+		versionText.setText("1.0.0-SNAPSHOT");
 		rootFolderText.setText(prefs.getString(P_DEFAULT_ROOT_FOLDER));
 		mavenHomeText.setText(prefs.getString(P_MAVEN_HOME));
 		customGroovyModelImplText.setText(prefs.getString(P_GROOVY_MODEL));

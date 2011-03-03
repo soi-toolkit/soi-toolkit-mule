@@ -28,7 +28,7 @@ public class SystemUtil {
 	// Build command used by generator tests
 	private static final String OFFLINE = ""; // If you want to speed things up a bit and already have everything in your local repo: " -o";
 	public static final String BUILD_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install" + OFFLINE;
-	public static final String ECLIPSE_AND_TEST_REPORT_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " eclipse:m2eclipse surefire-report:report -DshowSuccess=false" + OFFLINE; // -Dmaven.test.failure.ignore=true";
+	public static final String ECLIPSE_AND_TEST_REPORT_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " eclipse:m2eclipse surefire-report:report -DshowSuccess=false -DskipTests" + OFFLINE; // -Dmaven.test.failure.ignore=true";
 	public static final String CLEAN_COMMAND = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " clean";
 
 	static class ThreadedStreamReader extends Thread {

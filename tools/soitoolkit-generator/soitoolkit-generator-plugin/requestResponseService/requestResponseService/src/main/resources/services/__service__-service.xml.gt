@@ -13,7 +13,7 @@ ${xmlNamespace.reqRespService}
 <% } %> 
 
 <!-- 
-    <flow name="soapToJmsUsingJava-service">
+    <flow name="${service}-flow">
 <% if (inboundTransport=="SOAP") { %>
         <inbound-endpoint
             address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"

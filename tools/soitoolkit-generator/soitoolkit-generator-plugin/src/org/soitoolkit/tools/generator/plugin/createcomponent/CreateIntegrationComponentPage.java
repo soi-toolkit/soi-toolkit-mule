@@ -219,10 +219,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
 //		ftpButton.setSelection(true);
 		
-		// FIXME. Disable the sftp transport for now...
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
-		sftpButton.setSelection(false); // true);
-		sftpButton.setEnabled(false);
+		sftpButton.setSelection(true);
 
 //		pop3Button = SwtUtil.createCheckboxButton(container, null, i++, "POP3");
 //		pop3Button.setSelection(true);

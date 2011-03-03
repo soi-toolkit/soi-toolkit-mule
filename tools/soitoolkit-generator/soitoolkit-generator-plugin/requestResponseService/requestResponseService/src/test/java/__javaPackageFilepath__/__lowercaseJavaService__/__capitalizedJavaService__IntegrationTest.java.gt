@@ -95,8 +95,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWi
 		try {
 	    	String id = TEST_ID_FAULT_INVALID_ID;
 	    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
-			consumer.callService(id);
-	        fail("expected fault");
+			Object response = consumer.callService(id);
+	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
 	    } catch (SOAPFaultException e) {
 	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
 	    }
@@ -108,8 +108,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWi
         try {
 	    	String id = TEST_ID_FAULT_TIMEOUT;
 	    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
-			consumer.callService(id);
-	        fail("expected fault");
+			Object response = consumer.callService(id);
+	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
         } catch (SOAPFaultException e) {
             assertTrue("Unexpected error message: " + e.getMessage(), e.getMessage().startsWith(EXPECTED_ERR_TIMEOUT_MSG));
         }
