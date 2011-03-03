@@ -22,7 +22,7 @@ import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
-import org.mule.transformer.AbstractMessageAwareTransformer;
+import org.mule.transformer.AbstractMessageTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,22 +33,27 @@ import org.slf4j.LoggerFactory;
  * @author Magnus Larsson
  *
  */
-public class CreateSoapFaultIfExceptionTransformer extends AbstractMessageAwareTransformer {
+public class CreateSoapFaultIfExceptionTransformer extends AbstractMessageTransformer {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     static String SOAP_FAULT_V11 = 
-		"<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
-		"  <faultcode>soap:Server</faultcode>\n" + 
-		"  <faultstring>{0}</faultstring>\n" +
-		"  <faultactor>{1}</faultactor>\n" +
-		"  <detail>\n" +
-		"    {2}\n" +
-		"  </detail>\n" + 
-		"</soap:Fault>";
+    	"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\">\n" +
+    	"  <soapenv:Header/>" + 
+    	"  <soapenv:Body>" + 
+		"    <soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
+		"      <faultcode>soap:Server</faultcode>\n" + 
+		"      <faultstring>{0}</faultstring>\n" +
+		"      <faultactor>{1}</faultactor>\n" +
+		"      <detail>\n" +
+		"        {2}\n" +
+		"      </detail>\n" + 
+		"    </soap:Fault>" + 
+		"  </soapenv:Body>" + 
+		"</soapenv:Envelope>";
     
     @Override
-    public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
     	logger.debug("transform() called");
     		
@@ -63,14 +68,15 @@ public class CreateSoapFaultIfExceptionTransformer extends AbstractMessageAwareT
         }
 
 		logger.debug("ExceptionPayload detected as well, let's create a SOAP-FAULT!");
-    	
+
     	String soapFault = createSoapFaultFromExceptionPayload(ep);
     	logger.debug("Created soapFault: {}", soapFault);
 
         // Now the exception payload is transformed to a SOAP-Fault, remove the ExceptionPayload!
 		logger.debug("Set ExceptionPayload to null and outbound http.status=500");
         message.setExceptionPayload(null);
-    	message.setProperty("http.status", 500, PropertyScope.OUTBOUND);
+//        message.removeProperty("http.status", PropertyScope.OUTBOUND);
+        message.setProperty("http.status", 500, PropertyScope.OUTBOUND);
         message.setPayload(soapFault);
         return message;
 	        
