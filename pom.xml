@@ -312,9 +312,14 @@ TODO: should be removed?
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <!-- The id must be "attach-sources" to override plugin-config from
+                Sonatypes parent, otherwise the sorce-jar will be attached
+                twice during a release (if the release-plugin is used).
+                See issue #100: http://code.google.com/p/soi-toolkit/issues/detail?id=100
+            -->
+            <id>attach-sources</id>
             <goals>
-              <goal>jar</goal>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
