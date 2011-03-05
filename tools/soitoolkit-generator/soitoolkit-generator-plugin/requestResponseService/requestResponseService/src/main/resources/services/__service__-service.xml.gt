@@ -59,7 +59,11 @@ ${xmlNamespace.reqRespService}
 
 			<outbound>
 				<pass-through-router>
-<% if (outboundTransport=="JMS") { %>
+<% if (outboundTransport=="SOAP") { %>
+                    <outbound-endpoint address="http://localhost:8080/requestResponse310/services/soaptojmsusingjava/v1" exchange-pattern="request-response">
+                        <cxf:proxy-client />
+                    </outbound-endpoint>
+<% } else if (outboundTransport=="JMS") { %>
                     <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" exchange-pattern="request-response"/>
                     <reply-to address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />                                                             
 <% } %> 

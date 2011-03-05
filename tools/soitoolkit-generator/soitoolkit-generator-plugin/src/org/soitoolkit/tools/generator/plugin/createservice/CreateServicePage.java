@@ -220,8 +220,8 @@ public class CreateServicePage extends WizardPage {
 
 				switch (MepEnum.get(c.getSelectionIndex())) {
 				case MEP_REQUEST_RESPONSE:
-					inboundTransportCombo.setItems  (new String [] {"SOAP"});
-					outboundTransportCombo.setItems (new String [] {"JMS"}); // "SOAP", "REST", "JMS", "JDBC"});
+					inboundTransportCombo.setItems  (new String [] {"SOAP"}); // "REST"});
+					outboundTransportCombo.setItems (new String [] {"SOAP", "JMS"}); // "REST", "JMS", "JDBC"});
 					break;
 				case MEP_ONE_WAY:
 					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
@@ -539,7 +539,7 @@ public class CreateServicePage extends WizardPage {
 
 	private TransportEnum getSelectedRequestResponseInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"JMS"});
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"SOAP"});
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
@@ -551,10 +551,13 @@ public class CreateServicePage extends WizardPage {
 
 	private TransportEnum getSelectedPublishSubscribeInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"JMS"});
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"SOAP", "JMS"});
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
+			t = TransportEnum.SOAP;
+			break;
+		case 1: 
 			t = TransportEnum.JMS;
 			break;
 		}
