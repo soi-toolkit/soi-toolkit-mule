@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.model.impl;
 
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.capitalize;
+import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.initialLowerCase;
 import static org.soitoolkit.tools.generator.plugin.model.impl.ModelUtil.makeJavaName;
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 import groovy.lang.Binding;
@@ -221,6 +222,12 @@ public class DefaultModelImpl implements IModel {
 		return getJavaService().toLowerCase();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getInitialLowercaseJavaService()
+	 */
+	public String getInitialLowercaseJavaService() {
+		return initialLowerCase(getJavaService());		
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getSoitoolkitVersion()

@@ -60,6 +60,8 @@ public interface IModel {
 
 	public String getLowercaseJavaService();
 
+	public String getInitialLowercaseJavaService();
+
 	public String getSoitoolkitVersion();
 
 	public String getSuperpomGroupId();

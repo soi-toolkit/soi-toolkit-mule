@@ -17,6 +17,11 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractTransf
 	@Override
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
+<% if (outboundTransport=="SOAP") { %>
+		log.debug("Transforming payload: {}", src);
+		
+		return src;
+<% } else { %>
 		StringTokenizer st = new StringTokenizer((String)src, ",");
 		String msgType = st.nextToken().trim();
 		String value = st.nextToken().trim();
@@ -42,6 +47,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractTransf
 		}
 
 		return xml;
+<% } %>
 	}
 
 	private String createSoapFault(String errorMessage) {

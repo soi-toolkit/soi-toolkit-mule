@@ -5,6 +5,14 @@ ${xmlNamespace.reqRespTeststubService}
 
 	<!-- TODO: Add teststub-service specific definitions here -->
 
+<% if (outboundTransport=="SOAP") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+           address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+           component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+           type="jax-ws" />
+
+<% } else { %> 
 	<model name="${service}-teststub-model">
 
         <service name="${service}-teststub-service">
@@ -23,5 +31,6 @@ ${xmlNamespace.reqRespTeststubService}
         </service>
 
 	</model>
+<% } %> 
 
 </mule>

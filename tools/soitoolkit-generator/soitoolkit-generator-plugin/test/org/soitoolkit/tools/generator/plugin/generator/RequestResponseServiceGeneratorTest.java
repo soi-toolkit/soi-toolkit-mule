@@ -72,7 +72,7 @@ public class RequestResponseServiceGeneratorTest {
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
 		TransportEnum[] inboundTransports  = {SOAP};
-		TransportEnum[] outboundTransports = {JMS}; 
+		TransportEnum[] outboundTransports = {SOAP, JMS}; 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 

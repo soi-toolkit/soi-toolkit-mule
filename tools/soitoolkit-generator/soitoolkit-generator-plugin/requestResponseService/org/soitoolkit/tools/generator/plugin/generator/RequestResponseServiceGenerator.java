@@ -124,6 +124,7 @@ public class RequestResponseServiceGenerator implements Generator {
 			cfg = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
 			sec = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getSecurityPropertyFile());
 
+			String artifactId     = gu.getModel().getArtifactId();
 			String service        = gu.getModel().getUppercaseService();
 		    String serviceName    = gu.getModel().getLowercaseService();
 
@@ -135,6 +136,11 @@ public class RequestResponseServiceGenerator implements Generator {
 		    if (inboundTransport == SOAP) {
 			    cfg.println(service + "_INBOUND_URI=" + serviceName + "/v1");
 		    }
+
+		    if (outboundTransport == SOAP) {
+			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+		    }
+
 		    
 		    if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + gu.getModel().getJmsRequestQueue());

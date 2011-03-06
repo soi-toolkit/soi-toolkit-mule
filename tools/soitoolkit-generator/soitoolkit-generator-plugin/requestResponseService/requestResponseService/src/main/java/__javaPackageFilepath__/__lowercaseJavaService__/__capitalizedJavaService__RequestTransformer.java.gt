@@ -19,11 +19,17 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractTransfo
 	@Override
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
+<% if (outboundTransport=="SOAP") { %>
+		log.debug("Transforming payload: {}", src);
+		
+		return src;
+<% } else { %>
 		log.debug("Transforming xml payload: {}", src);
 		Sample s = (Sample) jaxbUtil.unmarshal(src);
 		
 		String csv = "msg-0001-req," + s.getId();
 
 		return csv;
+<% } %>
 	}
 }

@@ -5,11 +5,11 @@ ${xmlNamespace.reqRespService}
 
 	<!-- TODO: Add service specific definitions here -->
 <% if (transformerType=="JAVA") { %>
-    <custom-transformer name="${lowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
-    <custom-transformer name="${lowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+    <custom-transformer name="${initialLowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+    <custom-transformer name="${initialLowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
 <% } else { %>     
-	<smooks:transformer name="${lowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
-	<smooks:transformer name="${lowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
+	<smooks:transformer name="${initialLowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
+	<smooks:transformer name="${initialLowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
 <% } %> 
 
 <!-- 
@@ -29,8 +29,8 @@ ${xmlNamespace.reqRespService}
 <% } %> 
 		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
 <% if (outboundTransport=="JMS") { %>
-			<outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" />
-			<inbound-endpoint  address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${lowercaseJavaService}ResponseTransformer"/>
+			<outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr ${initialLowercaseJavaService}RequestTransformer strToJms logReqOut" />
+			<inbound-endpoint  address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${initialLowercaseJavaService}ResponseTransformer"/>
 		</request-reply>
 <% } %> 
     </flow>
@@ -60,18 +60,23 @@ ${xmlNamespace.reqRespService}
 			<outbound>
 				<pass-through-router>
 <% if (outboundTransport=="SOAP") { %>
-                    <outbound-endpoint address="http://localhost:8080/requestResponse310/services/soaptojmsusingjava/v1" exchange-pattern="request-response">
+                    <outbound-endpoint 
+                    	address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+                    	exchange-pattern="request-response"
+                    	responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+                    	transformer-refs="objToStr ${initialLowercaseJavaService}RequestTransformer logReqOut"
+                    	responseTransformer-refs="logRespIn ${initialLowercaseJavaService}ResponseTransformer">
                         <cxf:proxy-client />
                     </outbound-endpoint>
 <% } else if (outboundTransport=="JMS") { %>
-                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr ${lowercaseJavaService}RequestTransformer strToJms logReqOut" exchange-pattern="request-response"/>
+                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr ${initialLowercaseJavaService}RequestTransformer strToJms logReqOut" exchange-pattern="request-response"/>
                     <reply-to address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />                                                             
 <% } %> 
 				</pass-through-router>
 			</outbound>
 <% if (outboundTransport=="JMS") { %>
             <async-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
-                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${lowercaseJavaService}ResponseTransformer"/>
+                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${initialLowercaseJavaService}ResponseTransformer"/>
                 <single-async-reply-router/>
             </async-reply>      
 <% } %> 

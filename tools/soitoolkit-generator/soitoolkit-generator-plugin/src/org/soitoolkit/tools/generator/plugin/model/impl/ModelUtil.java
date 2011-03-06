@@ -30,7 +30,12 @@ public class ModelUtil {
     static public String capitalize(String name) {
 		return name.substring(0,1).toUpperCase() + name.substring(1);
 	}
+    
+    static public String initialLowerCase(String name) {
+		return name.substring(0,1).toLowerCase() + name.substring(1);
+	}
 
+        
 	static public String makeJavaName(String name) {
 		
 		if (name == null) {
