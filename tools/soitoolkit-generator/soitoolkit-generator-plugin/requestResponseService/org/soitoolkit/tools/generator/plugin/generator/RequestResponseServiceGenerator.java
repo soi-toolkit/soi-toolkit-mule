@@ -126,7 +126,7 @@ public class RequestResponseServiceGenerator implements Generator {
 
 			String artifactId     = gu.getModel().getArtifactId();
 			String service        = gu.getModel().getUppercaseService();
-		    String serviceName    = gu.getModel().getLowercaseService();
+		    String serviceName    = gu.getModel().getInitialLowercaseService();
 
 			// Print header for this service's properties
 		    cfg.println("");

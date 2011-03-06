@@ -54,6 +54,8 @@ public interface IModel {
 
 	public String getLowercaseService();
 
+	public String getInitialLowercaseService();
+
 	public String getUppercaseService();
 
 	public String getCapitalizedJavaService();
@@ -127,4 +129,5 @@ public interface IModel {
     // Property files
     public String getConfigPropertyFile();
 	public String getSecurityPropertyFile();
+
 }

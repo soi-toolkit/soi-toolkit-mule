@@ -201,6 +201,14 @@ public class DefaultModelImpl implements IModel {
 	public String getLowercaseService() {
 		return getService().toLowerCase();
 	}
+
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getInitialLowercaseService()
+	 */
+	public String getInitialLowercaseService() {
+		return initialLowerCase(getService());
+	}
+
 	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getUppercaseService()
 	 */
