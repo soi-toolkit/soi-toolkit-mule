@@ -16,7 +16,7 @@
  */
 package org.soitoolkit.commons.mule.test;
 
-import org.mule.MuleServer;
+import org.mule.api.MuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
 
 	private static Logger log = LoggerFactory.getLogger(MuleServerWithServletContainer.class);
 	
-	private static final int WAITTIME_MULE_SERVLET_TRANSPORT = 10000;
+	private static final int WAITTIME_MULE_SERVLET_TRANSPORT = 500;
 
 	// Configuration parameters set by the constructor
     protected int httpPort = -1;
@@ -70,10 +70,23 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
     	// First startup Mule...
     	super.start();
 		
-    	System.err.println("### START TO SLEEP");
+    	boolean muleStarted = false;
+    	
         // Wait for a while so that mule and its servlet transport gets time to get started
-    	Thread.sleep(getWaittimeMuleServletTransport());
-    	System.err.println("### SLEEP DONE");
+    	while (!muleStarted) {
+    		MuleContext mc = muleServer.getMuleContext();
+    		log.debug("MuleContext = {}", mc);
+    		if (mc != null) {
+    			if (log.isDebugEnabled()) { 
+	    			log.debug("Mule isInitialising = " + mc.isInitialising());
+	    			log.debug("Mule isInitialised  = " + mc.isInitialised());
+	    			log.debug("Mule isStarting     = " + mc.isStarting());
+	    			log.debug("Mule isStarted      = " + mc.isStarted());
+    			}
+    	    	muleStarted = mc.isStarted();
+    		}
+	    	Thread.sleep(getWaittimeMuleServletTransport());
+    	}
 
         log.info("Startup Servlet container with Mule Receiver Servlet...");
 
