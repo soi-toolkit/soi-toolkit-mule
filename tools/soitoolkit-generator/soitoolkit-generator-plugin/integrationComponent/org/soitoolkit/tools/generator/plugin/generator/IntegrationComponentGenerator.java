@@ -19,6 +19,7 @@ package org.soitoolkit.tools.generator.plugin.generator;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 
@@ -26,10 +27,10 @@ public class IntegrationComponentGenerator implements Generator {
 
 	GeneratorUtil gu;
 	
-	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, String folderName) {
+	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, String folderName) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, deploymentModel, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
 	}
 		
     public void startGenerator() {
@@ -63,22 +64,30 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/__securityPropertyFile__.properties.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/environment/__configPropertyFile__.properties.gt");
 
-		// TODO: Refactor to reusable schema-project?
+		// Support for the mule deployment model
+	    if (gu.getModel().isStandaloneDeployModel()) {
+	    	gu.generateContentAndCreateFile("trunk/__standaloneProjectFilepath__/pom.xml.gt");
+			gu.generateContentAndCreateFile("trunk/__standaloneProjectFilepath__/src/main/app/mule-deploy.properties.gt");
+			gu.generateContentAndCreateFile("trunk/__teststubStandaloneProjectFilepath__/pom.xml.gt");
+			gu.generateContentAndCreateFile("trunk/__teststubStandaloneProjectFilepath__/src/main/app/mule-deploy.properties.gt");
+	    }
 		
-		// TODO: Refactor to reusable war-project + some mule-stuff?
-		gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/pom.xml.gt");
-		gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/META-INF/MANIFEST.MF.gt");
-		gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/web.xml.gt");
-		gu.generateFolder("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/classes");
-		gu.generateFolder("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/lib");
-		gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/index.jsp.gt");
-
-		gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/pom.xml.gt");
-		gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/META-INF/MANIFEST.MF.gt");
-		gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/web.xml.gt");
-		gu.generateFolder("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/classes");
-		gu.generateFolder("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/lib");
-		gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/index.jsp.gt");
+		// Support for the war deployment model
+	    if (gu.getModel().isWarDeployModel()) {
+			gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/pom.xml.gt");
+			gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/META-INF/MANIFEST.MF.gt");
+			gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/web.xml.gt");
+			gu.generateFolder("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/classes");
+			gu.generateFolder("trunk/__webProjectFilepath__/src/main/webapp/WEB-INF/lib");
+			gu.generateContentAndCreateFile("trunk/__webProjectFilepath__/src/main/webapp/index.jsp.gt");
+	
+			gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/pom.xml.gt");
+			gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/META-INF/MANIFEST.MF.gt");
+			gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/web.xml.gt");
+			gu.generateFolder("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/classes");
+			gu.generateFolder("trunk/__teststubWebProjectFilepath__/src/main/webapp/WEB-INF/lib");
+			gu.generateContentAndCreateFile("trunk/__teststubWebProjectFilepath__/src/main/webapp/index.jsp.gt");
+	    }
 
     }
 }

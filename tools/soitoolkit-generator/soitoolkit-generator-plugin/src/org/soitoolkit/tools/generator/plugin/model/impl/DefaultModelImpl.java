@@ -32,6 +32,7 @@ import java.util.Map;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ServiceDescriptorModel;
 import org.soitoolkit.tools.generator.plugin.model.XmlNamespaceModel;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -49,6 +50,7 @@ public class DefaultModelImpl implements IModel {
 	private String service;
 
 	private MuleVersionEnum     muleVersion;
+	private DeploymentModelEnum deploymentModel;
 	private List<TransportEnum> transports;
 	private TransportEnum inboundTransport;
 	private TransportEnum outboundTransport;
@@ -67,17 +69,19 @@ public class DefaultModelImpl implements IModel {
 	 * @param artifactId
 	 * @param version
 	 * @param service
+	 * @param deploymentModel 
 	 * @param transports
 	 * @param serviceDescriptor
 	 * @param operations
 	 */
-	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceDescriptor, List<String> operations) {
+	public void initModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceDescriptor, List<String> operations) {
 
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
 		this.service = service;
 		this.muleVersion = muleVersion;
+		this.deploymentModel = deploymentModel;
 		this.transports = transports;
 		this.inboundTransport = inboundTransport;
 		this.outboundTransport = outboundTransport;
@@ -307,6 +311,34 @@ public class DefaultModelImpl implements IModel {
 	}
 	
 	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getStandaloneProject()
+	 */
+	public String getStandaloneProject() {
+		return getArtifactId() + "-standalone";
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getStandaloneProjectFilepath()
+	 */
+	public String getStandaloneProjectFilepath() {
+		return getStandaloneProject();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getTeststubStandaloneProject()
+	 */
+	public String getTeststubStandaloneProject() {
+		return getArtifactId() + "-teststub-standalone";
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getTeststubStandaloneProjectFilepath()
+	 */
+	public String getTeststubStandaloneProjectFilepath() {
+		return getTeststubStandaloneProject();
+	}
+
+	/* (non-Javadoc)
 	 * @see org.soitoolkit.tools.generator.plugin.model.IModel#getWebProject()
 	 */
 	public String getWebProject() {
@@ -387,7 +419,18 @@ public class DefaultModelImpl implements IModel {
     	return muleVersion.getPomSuffix();
     }
 
-    // Transports
+    // Deploy Model
+	@Override
+	public boolean isStandaloneDeployModel() {
+		return deploymentModel == DeploymentModelEnum.STANDALONE_DEPLOY;
+	}
+
+	@Override
+	public boolean isWarDeployModel() {
+		return deploymentModel == DeploymentModelEnum.WAR_DEPLOY;
+	}
+
+	// Transports
 	@Override
 	public boolean isSftp() {
 		return isTransportSelected(TransportEnum.SFTP);
@@ -534,4 +577,5 @@ public class DefaultModelImpl implements IModel {
 		// Ok, the grpId is really suffixed with the artifactId, let's return true :-)
 		return true;
 	}
+
 }

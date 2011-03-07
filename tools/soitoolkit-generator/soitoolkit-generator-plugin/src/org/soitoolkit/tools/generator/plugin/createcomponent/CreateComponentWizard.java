@@ -51,6 +51,7 @@ import org.soitoolkit.tools.generator.plugin.generator.SchemaComponentGenerator;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
 import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -164,12 +165,14 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 
 		final MuleVersionEnum muleVersion = page2.getMuleVersion();
 
+		final DeploymentModelEnum deploymentModel = page2.getDeploymentModel();
+		
 		raiseSecurityNotice(transports);
 		
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(mavenHome, mavenEclipseGoalType, componentType, artifactId, groupId, version, muleVersion, transports, folderName, monitor);
+					doFinish(mavenHome, mavenEclipseGoalType, componentType, artifactId, groupId, version, muleVersion, transports, deploymentModel, folderName, monitor);
 				} catch (CoreException e) {
 					e.printStackTrace();
 					throw new InvocationTargetException(e);
@@ -228,9 +231,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	 * @param folderName2 
 	 * @param componentType 
 	 * @param transports 
+	 * @param deploymentModel 
 	 */
 
-	private void doFinish(String mavenHome, int mavenEclipseGoalType, int componentType, String artifactId, String groupId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, String folderName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String mavenHome, int mavenEclipseGoalType, int componentType, String artifactId, String groupId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, DeploymentModelEnum deploymentModel, String folderName, IProgressMonitor monitor) throws CoreException {
 
 		// create a sample folder
 		monitor.beginTask("Starting the generator...", 3);
@@ -255,7 +259,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
-				new IntegrationComponentGenerator(out, groupId, artifactId, version, muleVersion, transports, folderName).startGenerator();
+				new IntegrationComponentGenerator(out, groupId, artifactId, version, muleVersion, deploymentModel, transports, folderName).startGenerator();
 				break;
 
 			case SD_SCHEMA_COMPONENT:
@@ -286,7 +290,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
-				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null);
+				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
 				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");
 				openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
 				openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");

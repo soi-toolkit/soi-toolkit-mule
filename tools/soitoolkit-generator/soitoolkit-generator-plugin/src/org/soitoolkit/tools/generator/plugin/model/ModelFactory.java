@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -93,7 +94,7 @@ public class ModelFactory {
      * @return the new model instance
 	 */
     public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) {
-		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, null, inboundTransport, outboundTransport, transformerType, null, null);
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, null, null, inboundTransport, outboundTransport, transformerType, null, null);
 	}
 
     /**
@@ -103,10 +104,11 @@ public class ModelFactory {
 	 * @param artifactId
 	 * @param version
 	 * @param service
+     * @param deploymentModel 
      * @return the new model instance
 	 */
-    public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports) {
-		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, transports, null, null, TransformerEnum.JAVA, null, null);
+    public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports) {
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, deploymentModel, transports, null, null, TransformerEnum.JAVA, null, null);
 	}
 
 	/**
@@ -121,7 +123,7 @@ public class ModelFactory {
      * @return the new model instance
      */
     public static IModel newModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String serviceDescriptor, List<String> operations) {
-		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, transports, null, null, TransformerEnum.JAVA, serviceDescriptor, operations);
+		return doCreateNewModel(groupId, artifactId, version, service, muleVersion, null, transports, null, null, TransformerEnum.JAVA, serviceDescriptor, operations);
     }
 
 	/**
@@ -131,14 +133,15 @@ public class ModelFactory {
 	 * @param artifactId
 	 * @param version
 	 * @param service
+	 * @param deploymentModel 
 	 * @param serviceDescriptor
 	 * @param operations
      * @return the new model instance
      */
-    private static IModel doCreateNewModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceDescriptor, List<String> operations) {
+    private static IModel doCreateNewModel(String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceDescriptor, List<String> operations) {
 		try {
 	    	DefaultModelImpl m = (DefaultModelImpl)modelClass.newInstance();
-	    	m.initModel(groupId, artifactId, version, service, muleVersion, transports, inboundTransport, outboundTransport, transformerType, serviceDescriptor, operations);
+	    	m.initModel(groupId, artifactId, version, service, muleVersion, deploymentModel, transports, inboundTransport, outboundTransport, transformerType, serviceDescriptor, operations);
 	    	System.err.println("### New model-class: " + m.getClass().getName());
 	    	return m;
 		} catch (Exception e) {

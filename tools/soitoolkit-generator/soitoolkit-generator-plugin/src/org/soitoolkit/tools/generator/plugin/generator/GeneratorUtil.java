@@ -40,6 +40,7 @@ import javax.script.ScriptException;
 
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -89,13 +90,14 @@ public class GeneratorUtil {
 	 * @param artifactId
 	 * @param version
 	 * @param service
+	 * @param deploymentModel 
 	 * @param transports
 	 * @param templateFolder
 	 * @param outputFolder
 	 */
-	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, List<TransportEnum> transports, String templateFolder, String outputFolder) {
+	public GeneratorUtil(PrintStream ps, String groupId, String artifactId, String version, String service, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, String templateFolder, String outputFolder) {
 
-		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, transports);
+		model = ModelFactory.newModel(groupId, artifactId, version, service, muleVersion, deploymentModel, transports);
 
 		init(ps, templateFolder, outputFolder); // , outputRootFolderModelExpression);			
 		

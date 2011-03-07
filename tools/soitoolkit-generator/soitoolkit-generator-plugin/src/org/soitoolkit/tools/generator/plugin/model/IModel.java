@@ -82,6 +82,12 @@ public interface IModel {
 	public String getSchemaProject();
 	public String getSchemaProjectFilepath();
 
+	public String getStandaloneProject();
+	public String getStandaloneProjectFilepath();
+
+	public String getTeststubStandaloneProject();
+	public String getTeststubStandaloneProjectFilepath();
+	
 	public String getWebProject();
 	public String getWebProjectFilepath();
 
@@ -106,6 +112,10 @@ public interface IModel {
 
     // Mule version
     public String getMuleVersion();
+    
+    // Deploy Model
+    public boolean isStandaloneDeployModel();
+    public boolean isWarDeployModel();
 
     // Transports
     public boolean isJms();

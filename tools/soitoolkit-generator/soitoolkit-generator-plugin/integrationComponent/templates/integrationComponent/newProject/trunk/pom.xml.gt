@@ -46,8 +46,13 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 
 	<modules>
 		<module>${serviceProjectFilepath}</module>
+<% if (standaloneDeployModel) { %>
+		<module>${standaloneProjectFilepath}</module>
+		<module>${teststubStandaloneProjectFilepath}</module>		
+<% } else if (warDeployModel) { %>
 		<module>${webProjectFilepath}</module>
 		<module>${teststubWebProjectFilepath}</module>		
+<% } %>
 	</modules>
 
 </project>

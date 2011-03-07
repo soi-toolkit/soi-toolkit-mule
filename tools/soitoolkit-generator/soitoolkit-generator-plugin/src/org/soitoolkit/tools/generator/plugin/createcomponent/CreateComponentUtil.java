@@ -28,7 +28,7 @@ public class CreateComponentUtil {
 //	public static final int IM_SCHEMA_COMPONENT = 3;
 
 	public static String getComponentProjectName(int componentType, String groupId, String artifactId) {
-		IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null);
+		IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
 		String projectFolderName = null;
 		ComponentEnum compEnum = ComponentEnum.get(componentType);
 		switch (compEnum) {

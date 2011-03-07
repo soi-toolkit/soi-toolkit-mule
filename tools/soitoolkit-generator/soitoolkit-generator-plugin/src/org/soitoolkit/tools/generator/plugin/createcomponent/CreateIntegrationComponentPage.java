@@ -16,7 +16,9 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
+import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
+import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +36,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
+import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -76,13 +82,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	}
 
 	private boolean mustBeDisplayed = false;
-	
 	private MuleVersionEnum muleVersion = MULE_3_1_0;
 	
 	private Combo muleVersionCombo;
-	private Button genServiceButton;
-//	private Button genSchemaButton;
-	private Button genWarButton;
+	private ValueHolder<Integer> deploymentModelType = new ValueHolder<Integer>(STANDALONE_DEPLOY.ordinal());
 	private Button vmButton;
 	private Button jmsButton;
 	private Button jdbcButton;
@@ -119,7 +122,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		layout.numColumns = 1;
 		layout.verticalSpacing = 9;
 
-		FocusListener fokusListener = new FocusListener() {
+		FocusListener focusListener = new FocusListener() {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -133,7 +136,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 			}
 		};
 		
-		container.addFocusListener(fokusListener);
+		container.addFocusListener(focusListener);
 //		Label label = new Label(container, SWT.NULL);
 //		label.setText("&Container:");
 //
@@ -180,28 +183,21 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		muleVersionCombo.addSelectionListener(muleVersionComboListener);
 
 
-		// Gen service, schema and war modules button
-		label = new Label(container, SWT.NULL);
-		label.setText("Select modules in the integration component:");
+		// Select deployment model
+		addRadioButtons(
+			EnumUtil.getLabels(DeploymentModelEnum.values()), 
+			"Deployment model:", 
+			deploymentModelType, container, new Listener () {
+				public void handleEvent (Event e) {
+					dialogChanged();
+				}
+			}
+		);
 
-		// Service module is mandatory, should not be selectable
-		genServiceButton = SwtUtil.createCheckboxButton(container, null,-1, "Service module");
-		genServiceButton.setSelection(true);
-		genServiceButton.setEnabled(false);
-
-//		// TODO: Make genSchemaButton selectable
-//		genSchemaButton = SwtUtil.createCheckboxButton(container, null,-1, "Schema module");
-//		genSchemaButton.setSelection(false);
-//		genSchemaButton.setEnabled(false);
-
-		// TODO: Make genWarButton selectable
-		genWarButton = SwtUtil.createCheckboxButton(container, null,-1, "War and Teststub War");
-		genWarButton.setSelection(true);
-		genWarButton.setEnabled(false);
 		
 		// CheckBoxes for transports
 		label = new Label(container, SWT.NULL);
-		label.setText("Select &transports used by the component:");
+		label.setText("Transports:");
 
 		int i = 0;
 		// Jms transport is mandatory for logging, should not be selectable
@@ -284,32 +280,19 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	 */
 
 	private void dialogChanged() {
-//		IResource container = ResourcesPlugin.getWorkspace().getRoot()
-//				.findMember(new Path(getContainerName()));
 
-//		if (getContainerName().length() == 0) {
-//			updateStatus("File container must be specified");
-//			return;
-//		}
-//		if (container == null
-//				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
-//			updateStatus("File container must exist");
-//			return;
-//		}
-//		if (!container.isAccessible()) {
-//			updateStatus("Project must be writable");
-//			return;
-//		}
-//		if (folderName.replace('\\', '/').indexOf('/', 1) > 0) {
-//			updateStatus("Folder name must be valid");
-//			return;
-//		}
+		if (servletButton != null) {
+			if (deploymentModelType.value == STANDALONE_DEPLOY.ordinal()) {
+				servletButton.setSelection(false);
+				servletButton.setEnabled(false);
+				servletButton.setText("Servlet transport disabled, only supported with war deploy model");
+			} else {
+				servletButton.setSelection(true);
+				servletButton.setEnabled(true);
+				servletButton.setText("Servlet");
+			}
+		}
 		
-//		if (muleVersion != MULE_2_2_5) {
-//			updateStatus("Only supported Mule version for now is: " + MULE_2_2_5.getLabel());
-//			return;
-//		}
-
 		updateStatus(null);
 	}
 
@@ -330,8 +313,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		return muleVersion;
 	}
 
-	public boolean isGenWarSelected() {
-		return genWarButton.getSelection();
+	public DeploymentModelEnum getDeploymentModel() {
+		return DeploymentModelEnum.get(deploymentModelType.value);
 	}
 
 	public List<TransportEnum> getTransports() {

@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.WAR_DEPLOY;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.CLEAN_COMMAND;
@@ -95,7 +96,7 @@ public class RequestResponseServiceGeneratorTest {
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
-		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, WAR_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(projectFolder));
 	}
 
@@ -106,7 +107,7 @@ public class RequestResponseServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null);
+		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
 		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
 		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
