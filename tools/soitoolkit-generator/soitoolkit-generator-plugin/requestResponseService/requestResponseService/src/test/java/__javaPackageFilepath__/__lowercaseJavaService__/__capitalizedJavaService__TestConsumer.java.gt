@@ -1,6 +1,6 @@
 package ${javaPackage}.${lowercaseJavaService};
 
-import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddressForServletTransport;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +17,7 @@ public class ${capitalizedJavaService}TestConsumer {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestConsumer.class);
 
-	public static final String DEFAULT_SERVICE_ADDRESS = getAddressForServletTransport("${uppercaseService}_INBOUND_URI");
+	public static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
 	public static final int NO_OF_CALLS = 2; // 5
 	
 	private SampleInterface _service = null;

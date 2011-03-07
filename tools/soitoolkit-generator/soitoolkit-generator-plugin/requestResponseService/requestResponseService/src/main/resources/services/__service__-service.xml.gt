@@ -16,7 +16,7 @@ ${xmlNamespace.reqRespService}
     <flow name="${service}-flow">
 <% if (inboundTransport=="SOAP") { %>
         <inbound-endpoint
-            address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
             exchange-pattern="request-response"
             transformer-refs="logReqIn"
             responseTransformer-refs="createSoapFaultIfException logRespOut">
@@ -44,7 +44,7 @@ ${xmlNamespace.reqRespService}
             <inbound>
 <% if (inboundTransport=="SOAP") { %>
 		        <inbound-endpoint
-		            address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_URI}"
+		            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 		            exchange-pattern="request-response"
 		            transformer-refs="logReqIn"
 		            responseTransformer-refs="createSoapFaultIfException logRespOut">

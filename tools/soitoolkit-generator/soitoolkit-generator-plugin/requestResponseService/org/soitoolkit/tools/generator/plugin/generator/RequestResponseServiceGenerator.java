@@ -134,7 +134,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    cfg.println("# TODO: Update to reflect your settings");
 
 		    if (inboundTransport == SOAP) {
-			    cfg.println(service + "_INBOUND_URI=" + serviceName + "/v1");
+			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
 		    }
 
 		    if (outboundTransport == SOAP) {

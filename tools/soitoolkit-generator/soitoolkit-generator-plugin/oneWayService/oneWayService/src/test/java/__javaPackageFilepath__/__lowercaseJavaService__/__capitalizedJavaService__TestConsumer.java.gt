@@ -1,7 +1,7 @@
 package ${javaPackage}.${lowercaseJavaService};
 
 import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
-import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddressForServletTransport;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 
 import java.io.File;
 
@@ -13,7 +13,7 @@ public class ${capitalizedJavaService}TestConsumer {
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestReceiver.class);
 
 	public static void main(String[] args) {
-		String url       = getAddressForServletTransport("${uppercaseService}_INBOUND_SERVLET_URI");
+		String url       = getAddress("${uppercaseService}_INBOUND_URL");
     	String inputFile = "src/test/resources/testfiles/${service}-input.txt";
 		int timeout      = 5000;
 

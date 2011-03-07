@@ -140,7 +140,7 @@ public class OnewayServiceGenerator implements Generator {
 
 		    // Servlet properties
 		    if (inboundTransport == SERVLET) {
-			    cfg.println(service + "_INBOUND_SERVLET_URI=" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/inbound");
 		    }
 
 		    // File properties

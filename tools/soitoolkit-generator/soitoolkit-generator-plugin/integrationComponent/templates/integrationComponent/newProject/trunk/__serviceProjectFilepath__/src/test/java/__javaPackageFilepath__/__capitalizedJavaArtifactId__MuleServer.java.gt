@@ -40,15 +40,23 @@ public class ${capitalizedJavaArtifactId}MuleServer {
     /**
      * Address based on usage of the servlet-transport and a config-property for the URI-part
      * 
-     * @param serviceUriPropertyName
+     * @param serviceUrlPropertyName
      * @return
      */
-    public static String getAddressForServletTransport(String serviceUriPropertyName) {
+    public static String getAddress(String serviceUrlPropertyName) {
 
         ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
-	    String uri  = rb.getString(serviceUriPropertyName);
 
-	    String url = "http://localhost:" + HTTP_PORT + CONTEXT_PATH + MULE_SERVLET_URI + "/" + uri;
+        String url  = rb.getString(serviceUrlPropertyName);
+
+        if (!url.startsWith("servlet://")) {
+    	    logger.info("Non servlet URL: {}", url);
+        	return url;
+        }
+        
+        String uri = url.substring("servlet://".length());
+        
+	    url = "http://localhost:" + HTTP_PORT + CONTEXT_PATH + MULE_SERVLET_URI + "/" + uri;
 	    logger.info("Servlet URL: {}", url);
 	    return url;
     }	

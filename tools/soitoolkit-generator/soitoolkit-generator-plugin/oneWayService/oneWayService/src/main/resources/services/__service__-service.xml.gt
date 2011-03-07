@@ -41,7 +41,7 @@ ${xmlNamespace.onewayService}
             	</jdbc:inbound-endpoint>
 
 <% } else if (inboundTransport=="SERVLET") { %> 
-				<inbound-endpoint address="servlet://${dollarSymbol}{${uppercaseService}_INBOUND_SERVLET_URI}"
+				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 					exchange-pattern="request-response"
 					transformer-refs="createCorrId mimeToStr"
 					responseTransformer-refs="logReqIn" />

@@ -2,7 +2,7 @@ package ${javaPackage}.${lowercaseJavaService};
 
 <% if (inboundTransport=="SERVLET") { %>
 import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
-import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddressForServletTransport;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.CONTEXT_PATH;
@@ -258,7 +258,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		props.put(SftpConnector.PROPERTY_FILENAME, filename);
 
 <% } else if (inboundTransport=="SERVLET") { %>
-		final String url       = getAddressForServletTransport("${uppercaseService}_INBOUND_SERVLET_URI");
+		final String url       = getAddress("${uppercaseService}_INBOUND_URL");
 		Dispatcher dispatcher = new Dispatcher() {
 			public void doDispatch() {
 				sendFileAsMultipartHttpPost(url, new File(inputFile), false, timeout);
