@@ -1,6 +1,9 @@
 package ${javaPackage}.${lowercaseJavaService};
 
-<% if (inboundTransport=="SERVLET") { %>
+<% if (inboundTransport=="HTTP") { %>
+import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
+<% } else if (inboundTransport=="SERVLET") { %>
 import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
@@ -257,11 +260,11 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		String filename        = "testfile.txt";
 		props.put(SftpConnector.PROPERTY_FILENAME, filename);
 
-<% } else if (inboundTransport=="SERVLET") { %>
+<% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %>
 		final String url       = getAddress("${uppercaseService}_INBOUND_URL");
 		Dispatcher dispatcher = new Dispatcher() {
 			public void doDispatch() {
-				sendFileAsMultipartHttpPost(url, new File(inputFile), false, timeout);
+				sendFileAsMultipartHttpPost(url, new File(inputFile), "payload", false, timeout);
 			}
 		};
 
@@ -279,7 +282,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		props.put(MailProperties.SUBJECT_PROPERTY, subject);
 <% } %>
 
-<% if (inboundTransport=="SERVLET") { %>
+<% if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %>
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
 		MuleMessage reply = dispatchAndWaitForServiceComponent(dispatcher, receivingService, timeout);
 

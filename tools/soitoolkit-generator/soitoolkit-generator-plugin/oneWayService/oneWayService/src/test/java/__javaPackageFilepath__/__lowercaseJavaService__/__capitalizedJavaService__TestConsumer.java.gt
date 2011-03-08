@@ -18,6 +18,6 @@ public class ${capitalizedJavaService}TestConsumer {
 		int timeout      = 5000;
 
 		log.info("Post message to: {}, {} chars", url, inputFile.length());
-    	sendFileAsMultipartHttpPost(url, new File(inputFile), false, timeout);
+    	sendFileAsMultipartHttpPost(url, new File(inputFile), "payload", false, timeout);
 	}
 }

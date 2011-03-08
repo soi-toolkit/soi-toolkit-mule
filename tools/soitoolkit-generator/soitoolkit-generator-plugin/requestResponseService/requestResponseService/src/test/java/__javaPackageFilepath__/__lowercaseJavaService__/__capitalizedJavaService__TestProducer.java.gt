@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<% if (outboundTransport=="SOAP") { %>
+<% if (outboundTransport=="SOAPHTTP") { %>
 import javax.jws.WebService;
 
 import org.soitoolkit.refapps.sd.sample.schema.v1.Sample;

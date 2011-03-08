@@ -68,7 +68,7 @@ public class OnewayServiceGenerator implements Generator {
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
 		
 	    // Servlet test consumer (performs a mime multipart hppt post)
-	    if (inboundTransport == SERVLET) {
+	    if (inboundTransport == SERVLET || inboundTransport == HTTP) {
 			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestConsumer.java.gt");
 	    }
 
@@ -102,6 +102,7 @@ public class OnewayServiceGenerator implements Generator {
 			cfg = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
 			sec = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getSecurityPropertyFile());
 
+			String artifactId     = gu.getModel().getArtifactId();
 			String service        = gu.getModel().getUppercaseService();
 		    String serviceName    = gu.getModel().getLowercaseService();
 			String fileRootFolder = PreferencesUtil.getDefaultFileRootFolder();
@@ -136,6 +137,11 @@ public class OnewayServiceGenerator implements Generator {
 		    }
 		    if (outboundTransport == JMS) {
 			    cfg.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());
+		    }
+		    		    
+		    // Http properties
+		    if (inboundTransport == HTTP) {
+			    cfg.println(service + "_INBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "/inbound");
 		    }
 
 		    // Servlet properties

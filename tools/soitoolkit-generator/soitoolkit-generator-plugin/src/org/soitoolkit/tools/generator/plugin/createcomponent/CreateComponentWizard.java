@@ -292,8 +292,16 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			case INTEGRATION_COMPONENT:
 				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
 				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");
-				openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
-				openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");
+				
+				if (deploymentModel == DeploymentModelEnum.STANDALONE_DEPLOY) {
+					openProject(path + "/trunk/" + m.getStandaloneProjectFilepath() + "/.project");
+					openProject(path + "/trunk/" + m.getTeststubStandaloneProjectFilepath() + "/.project");
+				}
+
+				if (deploymentModel == DeploymentModelEnum.WAR_DEPLOY) {
+					openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
+					openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");
+				}
 				break;
 
 			case SD_SCHEMA_COMPONENT:

@@ -70,10 +70,12 @@ public class OneWayServiceGeneratorTest {
 		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway310", MULE_3_1_0);
 		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-310", MULE_3_1_0);
 	}
-	
+
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
+//		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
+//		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
+		TransportEnum[] inboundTransports  = {HTTP, SERVLET}; // FTP, POP3
+		TransportEnum[] outboundTransports = {VM}; // FTP, 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
@@ -119,7 +121,7 @@ public class OneWayServiceGeneratorTest {
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
 		int expectedNoOfFiles = 10;
-		if (inboundTransport == SERVLET) {
+		if (inboundTransport == HTTP || inboundTransport == SERVLET) {
 			expectedNoOfFiles++;
 		}
 		if (inboundTransport == JDBC) {

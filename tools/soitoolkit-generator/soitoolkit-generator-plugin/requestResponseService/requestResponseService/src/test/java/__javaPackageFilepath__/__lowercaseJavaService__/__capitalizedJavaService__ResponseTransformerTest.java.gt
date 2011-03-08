@@ -16,7 +16,7 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 
 		// Specify input and expected result 
 		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv");
-<% if (outboundTransport=="SOAP") { %>
+<% if (outboundTransport=="SOAPHTTP") { %>
 		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv"); // No transformation is done by default so use input also as expected...
 <% } else { %>
 		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-expected-result.xml");
@@ -34,7 +34,7 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 		assertEquals(expectedResult, result);
 	}
 
-<% if (outboundTransport!="SOAP") { %>
+<% if (outboundTransport!="SOAPHTTP") { %>
 	@Test
 	public void testTransformer_fault() throws Exception {
 

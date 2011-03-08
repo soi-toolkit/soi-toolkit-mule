@@ -40,7 +40,7 @@ ${xmlNamespace.onewayService}
 <% } %> 
             	</jdbc:inbound-endpoint>
 
-<% } else if (inboundTransport=="SERVLET") { %> 
+<% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
 				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 					exchange-pattern="request-response"
 					transformer-refs="createCorrId mimeToStr"

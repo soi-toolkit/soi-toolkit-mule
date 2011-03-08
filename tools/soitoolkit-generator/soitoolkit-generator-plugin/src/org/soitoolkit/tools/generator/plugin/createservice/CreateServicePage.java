@@ -220,11 +220,11 @@ public class CreateServicePage extends WizardPage {
 
 				switch (MepEnum.get(c.getSelectionIndex())) {
 				case MEP_REQUEST_RESPONSE:
-					inboundTransportCombo.setItems  (new String [] {"SOAP"}); // "REST"});
-					outboundTransportCombo.setItems (new String [] {"SOAP", "JMS"}); // "REST", "JMS", "JDBC"});
+					inboundTransportCombo.setItems  (new String [] {"SOAP/HTTP", "SOAP/Servlet"}); // "REST"});
+					outboundTransportCombo.setItems (new String [] {"SOAP/HTTP", "JMS"}); // "REST", "JMS", "JDBC"});
 					break;
 				case MEP_ONE_WAY:
-					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
+					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "Servlet (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
 					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "SMTP"}); // "FTP", 
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
@@ -503,7 +503,7 @@ public class CreateServicePage extends WizardPage {
 	
 	public TransportEnum getSelectedOneWayInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "SFTP", "HTTP (Multipart POST)", "Servlet (Multipart POST)", "POP3", "IMAP"}); // "FTP", 
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
@@ -525,12 +525,15 @@ public class CreateServicePage extends WizardPage {
 			t = TransportEnum.SFTP;
 			break;
 		case 5: 
-			t = TransportEnum.SERVLET;
+			t = TransportEnum.HTTP;
 			break;
 		case 6: 
-			t = TransportEnum.POP3;
+			t = TransportEnum.SERVLET;
 			break;
 		case 7: 
+			t = TransportEnum.POP3;
+			break;
+		case 8: 
 			t = TransportEnum.IMAP;
 			break;
 		}
@@ -539,11 +542,14 @@ public class CreateServicePage extends WizardPage {
 
 	private TransportEnum getSelectedRequestResponseInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"SOAP"});
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"SOAP/HTTP", "SOAP/Servlet"});
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
-			t = TransportEnum.SOAP;
+			t = TransportEnum.SOAPHTTP;
+			break;
+		case 1: 
+			t = TransportEnum.SOAPSERVLET;
 			break;
 		}
 		return t;
@@ -551,13 +557,10 @@ public class CreateServicePage extends WizardPage {
 
 	private TransportEnum getSelectedPublishSubscribeInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"SOAP", "JMS"});
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"JMS"});
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
-			t = TransportEnum.SOAP;
-			break;
-		case 1: 
 			t = TransportEnum.JMS;
 			break;
 		}
@@ -612,11 +615,14 @@ public class CreateServicePage extends WizardPage {
 	}
 
 	private TransportEnum getSelectedRequestResponseOutboundTransport() {
-		
-		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"JMS"}); // "SOAP", "REST", "JMS", "JDBC"});
+
+		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"SOAP/HTTP", "JMS"}); // "REST", "JDBC"});
 		TransportEnum t = null;
-		switch (selectedInboundTransport) {
+		switch (selectedOutboundTransport) {
 		case 0: 
+			t = TransportEnum.SOAPHTTP;
+			break;
+		case 1: 
 			t = TransportEnum.JMS;
 			break;
 		}

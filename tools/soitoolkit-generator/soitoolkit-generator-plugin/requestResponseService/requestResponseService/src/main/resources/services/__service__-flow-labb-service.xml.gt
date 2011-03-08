@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.reqRespService}
+
+	<!-- TODO: Add service specific definitions here -->
+<% if (transformerType=="JAVA") { %>
+    <custom-transformer name="${initialLowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+    <custom-transformer name="${initialLowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+<% } else { %>     
+	<smooks:transformer name="${initialLowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
+	<smooks:transformer name="${initialLowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
+<% } %> 
+
+    <flow name="${service}-flow">
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
+        <inbound-endpoint
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="logReqIn"
+            responseTransformer-refs="createSoapFaultIfException logRespOut">
+        </inbound-endpoint>
+        <cxf:proxy-service 
+            service="sampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+        </cxf:proxy-service>
+<% } %> 
+		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+<% if (outboundTransport=="JMS") { %>
+			<outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr ${initialLowercaseJavaService}RequestTransformer strToJms logReqOut" />
+			<inbound-endpoint  address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${initialLowercaseJavaService}ResponseTransformer"/>
+		</request-reply>
+<% } %> 
+    </flow>
+
+</mule>

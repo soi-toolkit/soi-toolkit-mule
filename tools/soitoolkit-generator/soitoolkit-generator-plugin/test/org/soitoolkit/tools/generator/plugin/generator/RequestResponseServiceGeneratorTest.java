@@ -72,8 +72,8 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {SOAP};
-		TransportEnum[] outboundTransports = {SOAP, JMS}; 
+		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPSERVLET};
+		TransportEnum[] outboundTransports = {SOAPHTTP, JMS}; 
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
 
@@ -92,7 +92,7 @@ public class RequestResponseServiceGeneratorTest {
 
 		TRANSPORTS.add(JMS);
 		TRANSPORTS.add(SERVLET);
-		TRANSPORTS.add(SOAP);
+		TRANSPORTS.add(SOAPHTTP);
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));

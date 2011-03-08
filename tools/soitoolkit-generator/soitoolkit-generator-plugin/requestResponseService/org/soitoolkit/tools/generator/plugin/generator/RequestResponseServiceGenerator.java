@@ -17,7 +17,8 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SOAP;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SOAPHTTP;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.plugin.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.appendXmlFragment;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
@@ -133,16 +134,18 @@ public class RequestResponseServiceGenerator implements Generator {
 		    cfg.println("# Properties for service \"" + gu.getModel().getService() + "\"");
 		    cfg.println("# TODO: Update to reflect your settings");
 
-		    if (inboundTransport == SOAP) {
+		    if (inboundTransport == SOAPHTTP) {
+			    cfg.println(service + "_INBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "/v1");
+
+		    } else if (inboundTransport == SOAPSERVLET) {
 			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
 		    }
 
-		    if (outboundTransport == SOAP) {
-			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "-teststub/v1");
-		    }
-
 		    
-		    if (outboundTransport == JMS) {
+		    if (outboundTransport == SOAPHTTP) {
+			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+
+		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + gu.getModel().getJmsRequestQueue());
 			    cfg.println(service + "_RESPONSE_QUEUE=" + gu.getModel().getJmsResponseQueue());
 		    }

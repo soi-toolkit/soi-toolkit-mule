@@ -5,7 +5,7 @@ ${xmlNamespace.reqRespTeststubService}
 
 	<!-- TODO: Add teststub-service specific definitions here -->
 
-<% if (outboundTransport=="SOAP") { %>
+<% if (outboundTransport=="SOAPHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
         address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
