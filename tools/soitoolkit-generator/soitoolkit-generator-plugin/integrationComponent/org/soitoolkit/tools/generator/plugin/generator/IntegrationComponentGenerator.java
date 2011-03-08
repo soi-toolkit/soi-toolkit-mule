@@ -38,7 +38,7 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("branches");
 		gu.generateFolder("tags");
 		gu.generateContentAndCreateFile("trunk/pom.xml.gt");
-		
+
 		// TODO: Refactor to a reusable java-project generator + some mule-stuff?
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/pom.xml.gt");
 		// TODO: Add code for standard monitorService!
@@ -67,9 +67,9 @@ public class IntegrationComponentGenerator implements Generator {
 		// Support for the mule deployment model
 	    if (gu.getModel().isStandaloneDeployModel()) {
 	    	gu.generateContentAndCreateFile("trunk/__standaloneProjectFilepath__/pom.xml.gt");
-			gu.generateContentAndCreateFile("trunk/__standaloneProjectFilepath__/src/main/app/mule-deploy.properties.gt");
+			gu.generateContentAndCreateFile("trunk/__standaloneProjectFilepath__/src/main/app/mule-config.xml.gt");
 			gu.generateContentAndCreateFile("trunk/__teststubStandaloneProjectFilepath__/pom.xml.gt");
-			gu.generateContentAndCreateFile("trunk/__teststubStandaloneProjectFilepath__/src/main/app/mule-deploy.properties.gt");
+			gu.generateContentAndCreateFile("trunk/__teststubStandaloneProjectFilepath__/src/main/app/mule-config.xml.gt");
 	    }
 		
 		// Support for the war deployment model
