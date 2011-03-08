@@ -47,6 +47,10 @@ public class MimeUtil {
     }
 
 	public static String sendFileAsMultipartHttpPost(String targetURL, File targetFile, boolean expectHeader, int timeoutMs) {
+		return sendFileAsMultipartHttpPost(targetURL, targetFile, targetFile.getName(), expectHeader, timeoutMs);
+    }
+
+	public static String sendFileAsMultipartHttpPost(String targetURL, File targetFile, String partName, boolean expectHeader, int timeoutMs) {
 		
 		logger.debug("Send file {} to url {}", targetFile.getAbsolutePath(), targetURL);
 
@@ -59,7 +63,7 @@ public class MimeUtil {
         try {
             
             Part[] parts = {
-                new FilePart(targetFile.getName(), targetFile)
+                new FilePart(partName, targetFile)
             };
 
             filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));

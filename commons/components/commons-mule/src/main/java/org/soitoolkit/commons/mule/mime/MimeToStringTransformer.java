@@ -28,6 +28,7 @@ import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
 import org.mule.transformer.AbstractMessageAwareTransformer;
+import org.soitoolkit.commons.mule.core.ObjectToStringTransformer;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 
 /**
@@ -39,6 +40,8 @@ import org.soitoolkit.commons.mule.util.MiscUtil;
  */
 public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
 
+	private ObjectToStringTransformer o2s = new ObjectToStringTransformer();
+	
 	public MimeToStringTransformer()
     {
         registerSourceType(Object.class);
@@ -65,8 +68,9 @@ public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
         	payload=MiscUtil.convertStreamToString((InputStream)payload);
         	if (logger.isInfoEnabled()) logger.info("Found payload of type text/xml");
         } else {
-			if (logger.isDebugEnabled()) logger.debug("*** UNKNOWN CONTENT-TYPE FOUND: " + contentType);
-			payload = payload.toString();
+			logger.warn("*** UNKNOWN CONTENT-TYPE FOUND: " + contentType + ", PAYLOAD-TYPE: " + payload.getClass().getName());
+			// Last resort
+			payload = o2s.transform(payload, outputEncoding);
         }
         
         return payload;
