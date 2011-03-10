@@ -22,6 +22,8 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mule.api.MuleContext;
 import org.mule.transport.servlet.MuleReceiverServlet;
 import org.mule.transport.servlet.MuleServletContextListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Minimal servlet container (based on jetty) that enables 
@@ -32,6 +34,8 @@ import org.mule.transport.servlet.MuleServletContextListener;
  *
  */
 public class ServletContainerWithMuleReceiverServlet {
+
+	private static Logger log = LoggerFactory.getLogger(MuleServerWithServletContainer.class);
 
 	// Configuration parameters set by the constructor
     protected int httpPort = -1;
@@ -75,6 +79,10 @@ public class ServletContainerWithMuleReceiverServlet {
 		c.addServlet(new ServletHolder(servlet), muleReceiverServletUri + "/*");
 
         httpServer.start();
+
+        if (log.isInfoEnabled()) {
+        	log.info("Mule Receiver Servlet available at: http://localhost:{}{}{}", new String[] {Integer.toString(httpPort), contextPath, muleReceiverServletUri});
+        }
 	}
 
 	/**
