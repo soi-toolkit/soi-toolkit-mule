@@ -135,7 +135,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    cfg.println("# TODO: Update to reflect your settings");
 
 		    if (inboundTransport == SOAPHTTP) {
-			    cfg.println(service + "_INBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "/v1");
+			    cfg.println(service + "_INBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "/v1");
 
 		    } else if (inboundTransport == SOAPSERVLET) {
 			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
@@ -143,7 +143,7 @@ public class RequestResponseServiceGenerator implements Generator {
 
 		    
 		    if (outboundTransport == SOAPHTTP) {
-			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "-teststub/v1");
 
 		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + gu.getModel().getJmsRequestQueue());

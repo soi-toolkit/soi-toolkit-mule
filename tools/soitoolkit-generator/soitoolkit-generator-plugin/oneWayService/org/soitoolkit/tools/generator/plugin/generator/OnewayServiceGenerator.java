@@ -141,7 +141,7 @@ public class OnewayServiceGenerator implements Generator {
 		    		    
 		    // Http properties
 		    if (inboundTransport == HTTP) {
-			    cfg.println(service + "_INBOUND_URL=http://localhost:8090/" + artifactId + "/services/" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "/inbound");
 		    }
 
 		    // Servlet properties

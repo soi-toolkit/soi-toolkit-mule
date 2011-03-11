@@ -1,9 +1,11 @@
 package ${javaPackage}.${lowercaseJavaService};
 
+<% if (inboundTransport=="SOAPSERVLET") { %>
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.CONTEXT_PATH;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET_URI;
+<% } %> 
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestConsumer.DEFAULT_SERVICE_ADDRESS;
 
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_OK;
@@ -17,12 +19,21 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+
+<% if (inboundTransport=="SOAPSERVLET") { %>
 import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
+<% } else { %> 
+import org.soitoolkit.commons.mule.test.AbstractTestCase;
+<% } %> 
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
 import org.soitoolkit.refapps.sd.sample.wsdl.v1.Fault;
 
+<% if (inboundTransport=="SOAPSERVLET") { %>
 public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
+<% } else { %> 
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
+<% } %> 
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
@@ -38,10 +49,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWi
 	private AbstractJmsTestUtil jmsUtil = null;
 	
     public ${capitalizedJavaService}IntegrationTest() {
-    	
+<% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
-
+<% } %> 
     	// TODO: Should this be placed in the baseclass?
     	
     	// Only start up Mule once to make the tests run faster...
