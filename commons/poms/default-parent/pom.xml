@@ -109,7 +109,7 @@
     <dependencies>
       <!-- ****************************************************** -->
       <!-- dependencies - please keep list alphabetically ordered -->
-      <!-- *****************^************************************ -->
+      <!-- ****************************************************** -->
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
