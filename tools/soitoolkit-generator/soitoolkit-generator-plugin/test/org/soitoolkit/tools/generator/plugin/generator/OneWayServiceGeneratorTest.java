@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.WAR_DEPLOY;
+import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.*;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
@@ -35,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -67,17 +68,22 @@ public class OneWayServiceGeneratorTest {
 
 	@Test
 	public void testOneWayServices310() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator", "oneway310", MULE_3_1_0);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-310", MULE_3_1_0);
+		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA310",         MULE_3_1_0, STANDALONE_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-310", MULE_3_1_0, STANDALONE_DEPLOY);
+
+		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD310",         MULE_3_1_0, WAR_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-310", MULE_3_1_0, WAR_DEPLOY);
 	}
 
-	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-//		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, SERVLET, IMAP}; // FTP, POP3
-//		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP, SMTP}; // FTP, 
-		TransportEnum[] inboundTransports  = {HTTP, SERVLET}; // FTP, POP3
-		TransportEnum[] outboundTransports = {VM}; // FTP, 
+	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, HTTP}; //, IMAP}; // FTP, POP3
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP}; //, SMTP}; // FTP, 
 
-		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
+		if (deploymentModel == WAR_DEPLOY) {
+			inboundTransports  = new TransportEnum[] {VM, JMS, JDBC, FILE, SFTP, HTTP, SERVLET}; //, IMAP}; // FTP, POP3
+		}
+		
+		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
@@ -90,7 +96,10 @@ public class OneWayServiceGeneratorTest {
 		performMavenBuild(groupId, artifactId);
 	}
 
-	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
+	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+		
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 54 : 66;
+		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		TRANSPORTS.add(VM);
@@ -99,15 +108,17 @@ public class OneWayServiceGeneratorTest {
 		TRANSPORTS.add(FILE);
 		TRANSPORTS.add(FTP);
 		TRANSPORTS.add(SFTP);
-		TRANSPORTS.add(SERVLET);
+		if (deploymentModel == WAR_DEPLOY) {
+			TRANSPORTS.add(SERVLET);
+		}
 		TRANSPORTS.add(POP3);
 		TRANSPORTS.add(IMAP);
 		TRANSPORTS.add(SMTP);
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
-		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, WAR_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 66, SystemUtil.countFiles(projectFolder));
+		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, deploymentModel, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
 	private void createOneWayService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {

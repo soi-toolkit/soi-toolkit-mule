@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.WAR_DEPLOY;
 import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.SystemUtil.BUILD_COMMAND;
@@ -35,6 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
+import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
@@ -67,15 +69,22 @@ public class RequestResponseServiceGeneratorTest {
 
 	@Test
 	public void testRequestResponseServices310() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator", "requestResponse310", MULE_3_1_0);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-Tests-310", MULE_3_1_0);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA310",          MULE_3_1_0, STANDALONE_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-310", MULE_3_1_0, STANDALONE_DEPLOY);
+
+		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD310",          MULE_3_1_0, WAR_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-310", MULE_3_1_0, WAR_DEPLOY);
 	}
 
-	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
-		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPSERVLET};
+	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+		TransportEnum[] inboundTransports  = {SOAPHTTP};
 		TransportEnum[] outboundTransports = {SOAPHTTP, JMS}; 
 
-		createEmptyIntegrationComponent(groupId, artifactId, muleVersion);	
+		if (deploymentModel == WAR_DEPLOY) {
+			inboundTransports  = new TransportEnum[] {SOAPHTTP, SOAPSERVLET};
+		}
+
+		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
@@ -87,17 +96,22 @@ public class RequestResponseServiceGeneratorTest {
 		performMavenBuild(groupId, artifactId);
 	}
 
-	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion) throws IOException {
+	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+		
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 49 : 61;
+
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		TRANSPORTS.add(JMS);
-		TRANSPORTS.add(SERVLET);
 		TRANSPORTS.add(SOAPHTTP);
+		if (deploymentModel == WAR_DEPLOY) {
+			TRANSPORTS.add(SERVLET);
+		}
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
-		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, WAR_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 61, SystemUtil.countFiles(projectFolder));
+		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, deploymentModel, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
 	private void createRequestResponseService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
@@ -131,6 +145,7 @@ public class RequestResponseServiceGeneratorTest {
 		if (testOk) SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
+	@SuppressWarnings("unused")
 	private void performMavenBuild_old(String groupId, String artifactId) throws IOException {
 		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
 		
