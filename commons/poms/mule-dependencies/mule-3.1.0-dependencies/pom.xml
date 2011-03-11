@@ -44,9 +44,7 @@
 		<activemq.version>5.2.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
         <xbean.version>3.4</xbean.version>
-		<mule-transport-jersey.version>1.1.3</mule-transport-jersey.version>
 		<mule-module-commonretrypolicies>3.0.0</mule-module-commonretrypolicies>
-		<jersey.version>1.0</jersey.version>
 	    <derby.version>10.6.2.1</derby.version>
     	<hsql.version>1.8.0.7</hsql.version>
 		<jetty.version>6.1.11</jetty.version>    	
@@ -157,16 +155,14 @@
 			<artifactId>mule-transport-servlet</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-jersey</artifactId>
-			<version>${mule-transport-jersey.version}</version>
-		</dependency>
- -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-cxf</artifactId>
+			<version>${mule.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-jersey</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
 		<dependency>
@@ -218,13 +214,6 @@
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>servlet-api-2.5</artifactId>
 			<version>${jetty.version}</version>
-		</dependency>
-
-		<!-- Dependencies for the Jersey transport-->
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
-			<version>${jersey.version}</version>
 		</dependency>
 
 		<!-- Dependencies for the JMS transport-->
