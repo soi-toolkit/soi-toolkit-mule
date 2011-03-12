@@ -6,7 +6,7 @@ import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET_URI;
 <% } %> 
-import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestConsumer.DEFAULT_SERVICE_ADDRESS;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_OK;
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
@@ -40,6 +40,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 	private static final long   SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Response timed out (" + SERVICE_TIMOUT_MS + "ms) waiting for message response id ";
+
+	private static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
 
 <% if (outboundTransport=="JMS") { %>
 	private static final String REQUEST_QUEUE   = rb.getString("${uppercaseService}_REQUEST_QUEUE");

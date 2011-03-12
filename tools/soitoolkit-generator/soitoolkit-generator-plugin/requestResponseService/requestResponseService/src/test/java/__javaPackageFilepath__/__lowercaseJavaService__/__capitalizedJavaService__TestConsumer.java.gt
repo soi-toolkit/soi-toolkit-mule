@@ -17,38 +17,24 @@ public class ${capitalizedJavaService}TestConsumer {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestConsumer.class);
 
-	public static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
-	public static final int NO_OF_CALLS = 2; // 5
-	
 	private SampleInterface _service = null;
 
 	public static void main(String[] args) throws Fault {
+		String serviceAddress = getAddress("${uppercaseService}_INBOUND_URL");
 		String personnummer = "1234567890";
-		String serviceAddress = DEFAULT_SERVICE_ADDRESS;
-		if (args.length > 0) {
-			serviceAddress = args[0];
-		}
 
-		executeTestCall(personnummer, serviceAddress);
-	}
-
-	private static void executeTestCall(String personnummer, String serviceAddress) throws Fault {
 		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(serviceAddress);
-		System.out.println("Consumer connecting to "  + serviceAddress);
-		System.out.println("Warmup call...");
-		consumer.callService(personnummer);
-		System.out.println("Actual calls...");
-		for (int i = 0; i < NO_OF_CALLS; i++) {
-			long ts = System.currentTimeMillis();
-			SampleResponse response = consumer.callService(personnummer);
-			ts = System.currentTimeMillis() - ts;
-			System.out.println("Returned value = " + response.getValue() + " ( in " + ts + " ms.)");
-		}
+		SampleResponse response = consumer.callService(personnummer);
+		log.info("Returned value = " + response.getValue());
 	}
 	
 	public ${capitalizedJavaService}TestConsumer(String serviceAddress) {
-		_service = new SampleService(
-			createEndpointUrlFromServiceAddress(serviceAddress)).getSamplePort();
+        try {
+            URL url =  new URL(serviceAddress + "?wsdl");
+            _service = new SampleService(url).getSamplePort();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Malformed URL Exception: " + e.getMessage());
+        }
 	}
 	
 	public SampleResponse callService(String id) throws Fault {
@@ -57,12 +43,4 @@ public class ${capitalizedJavaService}TestConsumer {
 		request.setId(id);
 		return _service.sample(request);
 	}
-
-    protected URL createEndpointUrlFromServiceAddress(String serviceAddress) {
-        try {
-            return new URL(serviceAddress + "?wsdl");
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Malformed URL Exception: " + e.getMessage());
-        }
-    }
 }
