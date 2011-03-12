@@ -30,6 +30,19 @@ ${xmlNamespace.reqRespTeststubService}
 
         </service>
 
+<% if (inboundTransport=="SOAPSERVLET" && outboundTransport=="JMS") { %>
+		<!-- With SOAP/Servlet as inbound and JMS as outbound it seems that <cxf:proxy-client> is required starting with Mule 3.1.1???!!!??? -->        
+		<service name="${service}-teststub-fix-service">
+			<outbound>
+				<pass-through-router>
+                    <outbound-endpoint address="vm://out">
+                        <cxf:proxy-client />
+                    </outbound-endpoint>
+				</pass-through-router>
+			</outbound>
+		</service>
+<% } %> 
+
 	</model>
 <% } %> 
 

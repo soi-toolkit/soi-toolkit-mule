@@ -69,11 +69,11 @@ public class RequestResponseServiceGeneratorTest {
 
 	@Test
 	public void testRequestResponseServices310() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA310",          MULE_3_1_0, STANDALONE_DEPLOY);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-310", MULE_3_1_0, STANDALONE_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA310",          MULE_3_1_1, STANDALONE_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-310", MULE_3_1_1, STANDALONE_DEPLOY);
 
-		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD310",          MULE_3_1_0, WAR_DEPLOY);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-310", MULE_3_1_0, WAR_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD310",          MULE_3_1_1, WAR_DEPLOY);
+		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-310", MULE_3_1_1, WAR_DEPLOY);
 	}
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {

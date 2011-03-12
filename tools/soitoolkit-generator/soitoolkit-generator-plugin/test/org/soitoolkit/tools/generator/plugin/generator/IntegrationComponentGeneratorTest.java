@@ -38,7 +38,7 @@ import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
 
 public class IntegrationComponentGeneratorTest {
 
-	private static final MuleVersionEnum MULE_VERSION = MULE_3_1_0;
+	private static final MuleVersionEnum MULE_VERSION = MULE_3_1_1;
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String PROJECT = "ordermgm";	

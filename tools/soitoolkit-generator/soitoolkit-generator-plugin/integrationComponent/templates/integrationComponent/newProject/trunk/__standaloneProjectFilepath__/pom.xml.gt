@@ -38,13 +38,9 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 <artifactId>maven-mule-plugin</artifactId>
                 <version>1.6</version>
                 <extensions>true</extensions>
-                <!-- Include mule-dependencies that doesn't come with Mule 3.1.0 otherwise we can't install to a vanilla Mule 3.1.0 installation -->
+                <!-- Include mule-dependencies that doesn't come with Mule 3.1.1 otherwise we can't install to a vanilla Mule 3.1.1 installation -->
 			    <configuration>
 			        <inclusions>
-			            <inclusion>
-							<groupId>org.mule.transports</groupId>
-							<artifactId>mule-transport-sftp</artifactId>
-			            </inclusion>
 			            <inclusion>
 							<groupId>org.mule.modules</groupId>
 							<artifactId>commonretrypolicies</artifactId>

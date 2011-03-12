@@ -68,11 +68,11 @@ public class OneWayServiceGeneratorTest {
 
 	@Test
 	public void testOneWayServices310() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA310",         MULE_3_1_0, STANDALONE_DEPLOY);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-310", MULE_3_1_0, STANDALONE_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA310",         MULE_3_1_1, STANDALONE_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-310", MULE_3_1_1, STANDALONE_DEPLOY);
 
-		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD310",         MULE_3_1_0, WAR_DEPLOY);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-310", MULE_3_1_0, WAR_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD310",         MULE_3_1_1, WAR_DEPLOY);
+		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-310", MULE_3_1_1, WAR_DEPLOY);
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {

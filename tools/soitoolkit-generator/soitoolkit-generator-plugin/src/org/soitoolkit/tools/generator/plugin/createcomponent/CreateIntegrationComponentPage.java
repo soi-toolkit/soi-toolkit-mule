@@ -82,7 +82,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	}
 
 	private boolean mustBeDisplayed = false;
-	private MuleVersionEnum muleVersion = MULE_3_1_0;
+	private MuleVersionEnum muleVersion = MULE_3_1_1;
 	
 	private Combo muleVersionCombo;
 	private ValueHolder<Integer> deploymentModelType = new ValueHolder<Integer>(STANDALONE_DEPLOY.ordinal());
@@ -197,7 +197,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		
 		// CheckBoxes for transports
 		label = new Label(container, SWT.NULL);
-		label.setText("Transports:");
+		label.setText("Connectors:");
 
 		int i = 0;
 		// Jms transport is mandatory for logging, should not be selectable
@@ -254,7 +254,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //				containerText.setText(container.getFullPath().toString());
 //			}
 //		}
-		muleVersionCombo.select(MULE_3_1_0.ordinal());
+		muleVersionCombo.select(MULE_3_1_1.ordinal());
 	}
 
 	/**
