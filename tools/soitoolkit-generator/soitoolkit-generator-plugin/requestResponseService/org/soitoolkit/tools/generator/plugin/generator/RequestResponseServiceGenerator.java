@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.w3c.dom.Document;
@@ -44,17 +45,19 @@ import org.w3c.dom.NodeList;
 public class RequestResponseServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
+	IModel m;
 	
 	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
 		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, transformerType, "/requestResponseService", folderName);
+		m = gu.getModel();
 	}
 		
     public void startGenerator() {
 
-    	System.err.println("### A BRAND NEW REQUEST-RESPONSE-SERVICE IS ON ITS WAY..., INB: " + gu.getModel().getInboundTransport() + ", OUTB: " + gu.getModel().getOutboundTransport() + ", TRANSFORMER: " + gu.getModel().getTransformerType());
-		TransportEnum inboundTransport  = TransportEnum.valueOf(gu.getModel().getInboundTransport());
-		TransportEnum outboundTransport = TransportEnum.valueOf(gu.getModel().getOutboundTransport());
-		TransformerEnum transformerType = TransformerEnum.valueOf(gu.getModel().getTransformerType());
+    	System.err.println("### A BRAND NEW REQUEST-RESPONSE-SERVICE IS ON ITS WAY..., INB: " + m.getInboundTransport() + ", OUTB: " + m.getOutboundTransport() + ", TRANSFORMER: " + m.getTransformerType());
+		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
+		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
+		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 
     	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
     	if (transformerType == TransformerEnum.SMOOKS) {
@@ -122,20 +125,20 @@ public class RequestResponseServiceGenerator implements Generator {
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
 		try {
-			cfg = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
-			sec = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getSecurityPropertyFile());
+			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
+			sec = openPropertyFileForAppend(gu.getOutputFolder(), m.getSecurityPropertyFile());
 
-			String artifactId     = gu.getModel().getArtifactId();
-			String service        = gu.getModel().getUppercaseService();
-		    String serviceName    = gu.getModel().getInitialLowercaseService();
+			String artifactId     = m.getArtifactId();
+			String service        = m.getUppercaseService();
+		    String serviceName    = m.getInitialLowercaseService();
 
 			// Print header for this service's properties
 		    cfg.println("");
-		    cfg.println("# Properties for service \"" + gu.getModel().getService() + "\"");
+		    cfg.println("# Properties for service \"" + m.getService() + "\"");
 		    cfg.println("# TODO: Update to reflect your settings");
 
 		    if (inboundTransport == SOAPHTTP) {
-			    cfg.println(service + "_INBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "/v1");
+			    cfg.println(service + "_INBOUND_URL=http://localhost:" + m.getHttpPort() + "/" + artifactId + "/services/" + serviceName + "/v1");
 
 		    } else if (inboundTransport == SOAPSERVLET) {
 			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
@@ -143,11 +146,11 @@ public class RequestResponseServiceGenerator implements Generator {
 
 		    
 		    if (outboundTransport == SOAPHTTP) {
-			    cfg.println(service + "_OUTBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+			    cfg.println(service + "_OUTBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-teststub/v1");
 
 		    } else if (outboundTransport == JMS) {
-			    cfg.println(service + "_REQUEST_QUEUE="  + gu.getModel().getJmsRequestQueue());
-			    cfg.println(service + "_RESPONSE_QUEUE=" + gu.getModel().getJmsResponseQueue());
+			    cfg.println(service + "_REQUEST_QUEUE="  + m.getJmsRequestQueue());
+			    cfg.println(service + "_RESPONSE_QUEUE=" + m.getJmsResponseQueue());
 		    }
 		    
 		} catch (IOException e) {

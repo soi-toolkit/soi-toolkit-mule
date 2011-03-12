@@ -110,6 +110,11 @@ public interface IModel {
     public String getJmsLogInfoQueue();
     public String getJmsLogErrorQueue();
 
+    // HTTP ports...
+    public String getServletPort();
+    public String getHttpPort();
+    public String getHttpTeststubPort();
+    
     // Mule version
     public String getMuleVersion();
     

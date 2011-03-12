@@ -16,7 +16,7 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 
 	public static final String MULE_SERVER_ID   = "${artifactId}";
 <% if (servlet) { %>
-	public static final int    HTTP_PORT        = 8080;
+	public static final int    HTTP_PORT        = ${servletPort};
 	public static final String CONTEXT_PATH     = "/${artifactId}";
 	public static final String MULE_SERVLET_URI = "/services";
 <% } %> 

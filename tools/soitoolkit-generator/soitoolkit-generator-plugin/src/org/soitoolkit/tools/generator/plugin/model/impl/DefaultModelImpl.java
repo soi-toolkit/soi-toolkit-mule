@@ -414,7 +414,25 @@ public class DefaultModelImpl implements IModel {
     	return "SOITOOLKIT.LOG.ERROR"; 
     }
 
-    // Mule version
+
+    // HTTP ports...
+	@Override
+	public String getServletPort() {
+		return "8080";
+	}
+
+	@Override
+	public String getHttpPort() {
+		return "8081";
+	}
+
+	@Override
+	public String getHttpTeststubPort() {
+		return "8082";
+	}
+
+
+	// Mule version
     public String getMuleVersion() {
     	return muleVersion.getPomSuffix();
     }

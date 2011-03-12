@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.plugin.model.IModel;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
@@ -46,16 +47,18 @@ public class OnewayServiceGenerator implements Generator {
 	private static final String NAMESPACE_JDBC = "http://www.mulesoft.org/schema/mule/jdbc";
 	
 	GeneratorUtil gu;
+	IModel m;
 	
 	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
 		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, transformerType, "/oneWayService", folderName);
+		m = gu.getModel();
 	}
 		
     public void startGenerator() {
 
-    	System.err.println("### A BRAND NEW ONE-WAY-SERVICE IS ON ITS WAY..., INB: " + gu.getModel().getInboundTransport() + ", OUTB: " + gu.getModel().getOutboundTransport());
-		TransportEnum inboundTransport  = TransportEnum.valueOf(gu.getModel().getInboundTransport());
-		TransportEnum outboundTransport = TransportEnum.valueOf(gu.getModel().getOutboundTransport());
+    	System.err.println("### A BRAND NEW ONE-WAY-SERVICE IS ON ITS WAY..., INB: " + m.getInboundTransport() + ", OUTB: " + m.getOutboundTransport());
+		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
+		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 
     	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
@@ -99,12 +102,12 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
 		try {
-			cfg = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getConfigPropertyFile());
-			sec = openPropertyFileForAppend(gu.getOutputFolder(), gu.getModel().getSecurityPropertyFile());
+			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
+			sec = openPropertyFileForAppend(gu.getOutputFolder(), m.getSecurityPropertyFile());
 
-			String artifactId     = gu.getModel().getArtifactId();
-			String service        = gu.getModel().getUppercaseService();
-		    String serviceName    = gu.getModel().getLowercaseService();
+			String artifactId     = m.getArtifactId();
+			String service        = m.getUppercaseService();
+		    String serviceName    = m.getLowercaseService();
 			String fileRootFolder = PreferencesUtil.getDefaultFileRootFolder();
 			String ftpRootFolder  = PreferencesUtil.getDefaultFtpRootFolder();
 			String sftpRootFolder = PreferencesUtil.getDefaultSftpRootFolder();
@@ -112,36 +115,36 @@ public class OnewayServiceGenerator implements Generator {
 
 			// Print header for this service's properties
 		    cfg.println("");
-		    cfg.println("# Properties for service \"" + gu.getModel().getService() + "\"");
+		    cfg.println("# Properties for service \"" + m.getService() + "\"");
 		    cfg.println("# TODO: Update to reflect your settings");
 
 		    if (inboundTransport == POP3 || inboundTransport == IMAP) {
 				// Print header for this service's properties if any security related properties are required
 			    sec.println("");
-			    sec.println("# Security related properties for service \"" + gu.getModel().getService() + "\"");
+			    sec.println("# Security related properties for service \"" + m.getService() + "\"");
 			    sec.println("# TODO: Update to reflect your settings");
 		    }
 		    
 		    // VM properties
 		    if (inboundTransport == VM) {
-			    cfg.println(service + "_IN_VM_QUEUE="  + gu.getModel().getJmsInQueue());
+			    cfg.println(service + "_IN_VM_QUEUE="  + m.getJmsInQueue());
 		    }
 		    if (outboundTransport == VM) {
-			    cfg.println(service + "_OUT_VM_QUEUE=" + gu.getModel().getJmsOutQueue());
+			    cfg.println(service + "_OUT_VM_QUEUE=" + m.getJmsOutQueue());
 		    }
 
 		    // JMS properties
 		    if (inboundTransport == JMS) {
-			    cfg.println(service + "_IN_QUEUE="  + gu.getModel().getJmsInQueue());
-			    cfg.println(service + "_DL_QUEUE="  + gu.getModel().getJmsDLQueue());
+			    cfg.println(service + "_IN_QUEUE="  + m.getJmsInQueue());
+			    cfg.println(service + "_DL_QUEUE="  + m.getJmsDLQueue());
 		    }
 		    if (outboundTransport == JMS) {
-			    cfg.println(service + "_OUT_QUEUE=" + gu.getModel().getJmsOutQueue());
+			    cfg.println(service + "_OUT_QUEUE=" + m.getJmsOutQueue());
 		    }
 		    		    
 		    // Http properties
 		    if (inboundTransport == HTTP) {
-			    cfg.println(service + "_INBOUND_URL=http://localhost:8081/" + artifactId + "/services/" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_URL=http://localhost:" + m.getHttpPort() + "/" + artifactId + "/services/" + serviceName + "/inbound");
 		    }
 
 		    // Servlet properties
@@ -184,14 +187,14 @@ public class OnewayServiceGenerator implements Generator {
 		    }
 
 		    // Properties common to all filebased transports
-		    if (gu.getModel().isInboundEndpointFilebased() || gu.getModel().isOutboundEndpointFilebased()) {
+		    if (m.isInboundEndpointFilebased() || m.isOutboundEndpointFilebased()) {
 		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
 		    }
-		    if (gu.getModel().isOutboundEndpointFilebased()) {
+		    if (m.isOutboundEndpointFilebased()) {
 			    cfg.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
 			    
 		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
-				if (!gu.getModel().isInboundEndpointFilebased()) {
+				if (!m.isInboundEndpointFilebased()) {
 			    	cfg.println(service + "_OUTBOUND_FILE=outfile.txt");
 			    }
 		    }
@@ -251,12 +254,12 @@ public class OnewayServiceGenerator implements Generator {
 	}
 	
 	private void updateSqlDdlFilesAddExportTable() {
-		String tbPrefix = gu.getModel().getUppercaseService() + "_EXPORT";
+		String tbPrefix = m.getUppercaseService() + "_EXPORT";
 		updateSqlDdlFiles(tbPrefix);		
 	}
 
 	private void updateSqlDdlFilesAddImportTable() {
-		String tbPrefix = gu.getModel().getUppercaseService() + "_IMPORT";
+		String tbPrefix = m.getUppercaseService() + "_IMPORT";
 		updateSqlDdlFiles(tbPrefix);		
 	}
 	
@@ -275,7 +278,7 @@ public class OnewayServiceGenerator implements Generator {
 	private void updateCreateSqlDdlFiles(String tbPrefix, String outFolder) {
 		PrintWriter out = null;
 		try {
-			out = openFileForAppend(outFolder + gu.getModel().getArtifactId() + "-db-create-tables.sql");
+			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-create-tables.sql");
 			out.println("CREATE TABLE " + tbPrefix + "_TB (ID VARCHAR(32), VALUE VARCHAR(128), CONSTRAINT " + tbPrefix + "_PK PRIMARY KEY (ID));");
 
 		} catch (IOException e) {
@@ -289,7 +292,7 @@ public class OnewayServiceGenerator implements Generator {
 	private void updateDropSqlDdlFiles(String tbPrefix, String outFolder) {
 		PrintWriter out = null;
 		try {
-			out = openFileForAppend(outFolder + gu.getModel().getArtifactId() + "-db-drop-tables.sql");
+			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-drop-tables.sql");
 			out.println("DROP TABLE " + tbPrefix + "_TB;");
 
 		} catch (IOException e) {
@@ -303,7 +306,7 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter out = null;
 		try {
 			// Just ensure that the file is created, don't insert any testdata for now...
-			out = openFileForAppend(outFolder + gu.getModel().getArtifactId() + "-db-insert-testdata.sql");
+			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-insert-testdata.sql");
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -314,12 +317,12 @@ public class OnewayServiceGenerator implements Generator {
 
 	private void updateJdbcConnectorFileWithExportSql() {
 		String outFolder = gu.getOutputFolder() + "/src/main/resources/";
-		String key       = gu.getModel().getLowercaseJavaService() + "-export-query";
-		String table     = gu.getModel().getUppercaseService() + "_EXPORT_TB";
+		String key       = m.getLowercaseJavaService() + "-export-query";
+		String table     = m.getUppercaseService() + "_EXPORT_TB";
 
 		PrintWriter out = null;
 		try {
-			String file = outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
+			String file = outFolder + m.getArtifactId() + "-jdbc-connector.xml";
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
 
@@ -332,13 +335,13 @@ public class OnewayServiceGenerator implements Generator {
 
 	private void updateJdbcConnectorFileWithImportSql() {
 		String outFolder    = gu.getOutputFolder() + "/src/main/resources/";
-		String key          = gu.getModel().getLowercaseJavaService() + "-import-query";
-		String key_teststub = gu.getModel().getLowercaseJavaService() + "-teststub-export-query";
-		String table        = gu.getModel().getUppercaseService() + "_IMPORT_TB";
+		String key          = m.getLowercaseJavaService() + "-import-query";
+		String key_teststub = m.getLowercaseJavaService() + "-teststub-export-query";
+		String table        = m.getUppercaseService() + "_IMPORT_TB";
 
 		PrintWriter out = null;
 		try {
-			String file = outFolder + gu.getModel().getArtifactId() + "-jdbc-connector.xml";
+			String file = outFolder + m.getArtifactId() + "-jdbc-connector.xml";
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key          + "\" value=\"INSERT INTO  " + table + "(ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
