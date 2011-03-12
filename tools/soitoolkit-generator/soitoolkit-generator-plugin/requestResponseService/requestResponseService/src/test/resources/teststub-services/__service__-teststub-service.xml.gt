@@ -8,7 +8,7 @@ ${xmlNamespace.reqRespTeststubService}
 <% if (outboundTransport=="SOAPHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
-        address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}" 
         component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
         type="jax-ws" />
 
