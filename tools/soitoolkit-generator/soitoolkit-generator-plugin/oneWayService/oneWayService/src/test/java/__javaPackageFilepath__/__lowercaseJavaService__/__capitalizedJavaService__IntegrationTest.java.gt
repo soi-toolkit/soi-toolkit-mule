@@ -171,7 +171,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		// TODO: Also reset the archive
         SftpUtil.initEndpointDirectories(
 	    	muleContext,
-	    	new String[] {"${service}-sender-service"},
+	    	new String[] {"${service}-service"},
 			new String[] {"${service}-inbound-endpoint"});		
 <% } %> 
 		
@@ -255,7 +255,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% } else if (inboundTransport=="SFTP") { %>
 		// Setup inbound endpoint for sftp
-        String inFolder        = rb.getString("${uppercaseService}_SENDER_SFTP_ADDRESS");
+        String inFolder        = rb.getString("${uppercaseService}_INBOUND_SFTP_FOLDER");
         String inboundEndpoint = "sftp://" + inFolder;
 		String filename        = "testfile.txt";
 		props.put(SftpConnector.PROPERTY_FILENAME, filename);

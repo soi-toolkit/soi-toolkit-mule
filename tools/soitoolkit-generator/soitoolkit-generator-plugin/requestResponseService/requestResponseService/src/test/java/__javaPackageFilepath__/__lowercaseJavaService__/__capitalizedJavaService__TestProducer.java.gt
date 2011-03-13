@@ -27,7 +27,7 @@ public class ${capitalizedJavaService}TestProducer implements SampleInterface {
 
 	public SampleResponse sample(Sample request) throws Fault {
 
-		log.info("${capitalizedJavaService}TestReceiver received the request: {}", request);
+		log.info("${capitalizedJavaService}TestProducer received the request: {}", request);
 
 		String id = request.getId();
 
@@ -68,7 +68,7 @@ public class ${capitalizedJavaService}TestProducer {
 
     public Object process(String csvRequest) {
 
-		log.info("${capitalizedJavaService}TestReceiver received the request: {}", csvRequest);
+		log.info("${capitalizedJavaService}TestProducer received the request: {}", csvRequest);
 
 		StringTokenizer st = new StringTokenizer((String)csvRequest, ",");
 		String msgType = st.nextToken().trim();

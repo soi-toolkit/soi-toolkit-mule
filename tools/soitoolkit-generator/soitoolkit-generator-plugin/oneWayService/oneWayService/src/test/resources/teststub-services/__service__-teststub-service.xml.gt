@@ -39,9 +39,9 @@ ${xmlNamespace.onewayTeststubService}
 
 <% } else if (outboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
-					address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
-					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_RECEIVER_POLLING_MS}"
-					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_TESTSTUB_RECEIVER_SIZECHECK_MS}"
+					address="sftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_SIZECHECK_MS}"
 					tempDir="sending"
 					useTempFileTimestampSuffix="true"
 					transformer-refs="objToStr">

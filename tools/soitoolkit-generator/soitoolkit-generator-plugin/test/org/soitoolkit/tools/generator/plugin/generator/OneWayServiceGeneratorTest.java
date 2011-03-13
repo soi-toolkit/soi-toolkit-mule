@@ -79,6 +79,7 @@ public class OneWayServiceGeneratorTest {
 		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, SFTP, HTTP}; //, IMAP}; // FTP, POP3
 		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, SFTP}; //, SMTP}; // FTP, 
 
+		// FIXME, ADD SERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports  = new TransportEnum[] {VM, JMS, JDBC, FILE, SFTP, HTTP, SERVLET}; //, IMAP}; // FTP, POP3
 		}

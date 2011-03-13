@@ -80,6 +80,7 @@ public class RequestResponseServiceGeneratorTest {
 		TransportEnum[] inboundTransports  = {SOAPHTTP};
 		TransportEnum[] outboundTransports = {SOAPHTTP, JMS}; 
 
+		// FIXME, ADD SOAPSERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports  = new TransportEnum[] {SOAPHTTP, SOAPSERVLET};
 		}

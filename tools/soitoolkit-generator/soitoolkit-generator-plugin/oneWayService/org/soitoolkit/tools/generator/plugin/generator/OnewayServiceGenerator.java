@@ -70,9 +70,9 @@ public class OnewayServiceGenerator implements Generator {
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
 		
-	    // Servlet test consumer (performs a mime multipart hppt post)
+	    // Servlet test sender (performs a mime multipart http post)
 	    if (inboundTransport == SERVLET || inboundTransport == HTTP) {
-			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestConsumer.java.gt");
+			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestSender.java.gt");
 	    }
 
 //		TODO: Wait with attachments... 	    
@@ -176,14 +176,15 @@ public class OnewayServiceGenerator implements Generator {
 		    
 		    // SFTP properties
 		    if (inboundTransport == SFTP) {
-				cfg.println(service + "_SENDER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/sender");
-			    cfg.println(service + "_SENDER_POLLING_MS=1000");
-			    cfg.println(service + "_SENDER_SIZECHECK_MS=500");
+				cfg.println(service + "_INBOUND_SFTP_FOLDER=" + sftpRootFolder + "/" + serviceName + "/inbound");
+			    cfg.println(service + "_INBOUND_SFTP_POLLING_MS=1000");
+			    cfg.println(service + "_INBOUND_SFTP_SIZECHECK_MS=500");
 		    }
 		    if (outboundTransport == SFTP) {
-			    cfg.println(service + "_RECEIVER_SFTP_ADDRESS=" + sftpRootFolder + "/" + serviceName + "/receiver");
-			    cfg.println(service + "_TESTSTUB_RECEIVER_POLLING_MS=1000");
-			    cfg.println(service + "_TESTSTUB_RECEIVER_SIZECHECK_MS=500");
+			    cfg.println(service + "_OUTBOUND_SFTP_FOLDER=${" + service + "_TESTSTUB_INBOUND_SFTP_FOLDER}");
+			    cfg.println(service + "_TESTSTUB_INBOUND_SFTP_FOLDER=" + sftpRootFolder + "/" + serviceName + "/outbound");
+			    cfg.println(service + "_TESTSTUB_INBOUND_SFTP_POLLING_MS=1000");
+			    cfg.println(service + "_TESTSTUB_INBOUND_SFTP_SIZECHECK_MS=500");
 		    }
 
 		    // Properties common to all filebased transports

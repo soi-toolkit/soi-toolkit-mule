@@ -8,9 +8,9 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ${capitalizedJavaService}TestConsumer {
+public class ${capitalizedJavaService}TestSender {
 
-	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestReceiver.class);
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestSender.class);
 
 	public static void main(String[] args) {
 		String url       = getAddress("${uppercaseService}_INBOUND_URL");

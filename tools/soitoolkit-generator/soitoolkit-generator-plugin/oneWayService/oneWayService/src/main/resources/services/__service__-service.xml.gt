@@ -16,7 +16,7 @@ ${xmlNamespace.onewayService}
 	
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
 
-		<service name="${service}-sender-service">
+		<service name="${service}-service">
             <inbound>
 
 <% if (inboundTransport=="VM") { %>
@@ -70,9 +70,9 @@ ${xmlNamespace.onewayService}
 <% } else if (inboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
 					name="${service}-inbound-endpoint"
-					address="sftp://${dollarSymbol}{${uppercaseService}_SENDER_SFTP_ADDRESS}"
-					pollingFrequency="${dollarSymbol}{${uppercaseService}_SENDER_POLLING_MS}"
-					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_SENDER_SIZECHECK_MS}"
+					address="sftp://${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_SIZECHECK_MS}"
 					tempDir="sending"
 					useTempFileTimestampSuffix="true"
 					archiveDir="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
@@ -180,7 +180,7 @@ ${xmlNamespace.onewayService}
 				<pass-through-router>
 					<sftp:outbound-endpoint
 						name="${service}-outbound-endpoint"
-						address="sftp://${dollarSymbol}{${uppercaseService}_RECEIVER_SFTP_ADDRESS}"
+						address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
 						outputPattern="#[header:originalFilename]"
 <% } else { %> 
