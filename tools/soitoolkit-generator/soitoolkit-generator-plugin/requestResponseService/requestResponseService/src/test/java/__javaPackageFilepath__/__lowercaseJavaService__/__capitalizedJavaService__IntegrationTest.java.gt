@@ -127,7 +127,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
         } catch (SOAPFaultException e) {
 /*
-			ISSUE 92: PROBLEM WITH ERROR HANDLING, NULL IS RETURNED INSTEAD OF A RELEVANT ERROR MESSAGE, SEE http://code.google.com/p/soi-toolkit/issues/detail?id=92
+			ISSUE 116: PROBLEM WITH ERROR HANDLING, NULL IS RETURNED INSTEAD OF A RELEVANT ERROR MESSAGE, SEE http://code.google.com/p/soi-toolkit/issues/detail?id=116
             assertTrue("Unexpected error message: " + e.getMessage(), e.getMessage().startsWith(EXPECTED_ERR_TIMEOUT_MSG));
 */
         	assertNull(e.getMessage());
