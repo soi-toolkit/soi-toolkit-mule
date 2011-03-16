@@ -160,14 +160,16 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		final int mavenEclipseGoalType = page.getMavenEclipseGoalType();
 		
 		
-		ComponentEnum compEnum = ComponentEnum.get(componentType);
-		final List<TransportEnum> transports = (compEnum == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
+		ComponentEnum compTypeEnum = ComponentEnum.get(componentType);
+		final List<TransportEnum> transports = (compTypeEnum == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
 
 		final MuleVersionEnum muleVersion = page2.getMuleVersion();
 
 		final DeploymentModelEnum deploymentModel = page2.getDeploymentModel();
 		
-		raiseSecurityNotice(transports);
+		if (compTypeEnum == INTEGRATION_COMPONENT) {
+			raiseSecurityNotice(transports);
+		}
 		
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
