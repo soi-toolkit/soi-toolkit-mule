@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: soi_toolkit_generator_plugin
 Bundle-SymbolicName: soi_toolkit_generator_plugin; singleton:=true
-Bundle-Version: 0.4.1
+Bundle-Version: 0.4.1.SNAPSHOT_2011-03-17_1339
 Bundle-Activator: soi_toolkit_generator_plugin.Activator
 Bundle-Vendor: Callista Enterprise AB
 Require-Bundle: org.eclipse.ui,
