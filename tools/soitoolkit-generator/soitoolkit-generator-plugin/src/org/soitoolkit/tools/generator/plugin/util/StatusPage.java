@@ -87,9 +87,11 @@ public class StatusPage extends WizardPage {
 			new Runnable() {
 				public void run() {
 					if (statusTextArea != null) {
-						statusTextArea.append(line + '\n'); 
-						// TODO: Display the last line, the following did not help :-)
-						// statusTextArea.setCaretOffset(statusTextArea.getCharCount());
+//						statusTextArea.append(line + '\n'); 
+//						// TODO: Display the last line, the following did not help :-)
+//						// statusTextArea.setCaretOffset(statusTextArea.getCharCount());
+						
+						statusTextArea.setText(line + '\n' + statusTextArea.getText()); 
 					}
 				}
 			}
