@@ -87,10 +87,6 @@ public class StatusPage extends WizardPage {
 			new Runnable() {
 				public void run() {
 					if (statusTextArea != null) {
-//						statusTextArea.append(line + '\n'); 
-//						// TODO: Display the last line, the following did not help :-)
-//						// statusTextArea.setCaretOffset(statusTextArea.getCharCount());
-						
 						statusTextArea.setText(line + '\n' + statusTextArea.getText()); 
 					}
 				}
@@ -108,27 +104,11 @@ public class StatusPage extends WizardPage {
 		layout.numColumns = 1;
 		layout.verticalSpacing = 9;
 
-
-//		Label label = new Label(container, SWT.NULL);
-//		label.setText("&Container:");
-//
-//		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
-//		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-//		containerText.setLayoutData(gd);
-//		containerText.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				dialogChanged();
-//			}
-//		});
-
 		statusTextArea = new StyledText(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
 				| SWT.H_SCROLL);
 		statusTextArea.setLayoutData(new GridData(GridData.FILL_BOTH
 				| GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 		statusTextArea.setEditable(false);
-		
-		// TODO: How to pack?
-//		container.pack();
 		
 		initialize();
 		dialogChanged();
