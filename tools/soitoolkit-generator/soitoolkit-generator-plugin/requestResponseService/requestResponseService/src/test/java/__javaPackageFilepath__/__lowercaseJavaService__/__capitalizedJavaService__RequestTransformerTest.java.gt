@@ -15,7 +15,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
 
 		// Specify input and expected result 
 		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-input.xml");
-<% if (outboundTransport=="SOAPHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="RESTHTTP") { %>
 		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-input.xml"); // No transformation is done by default so use input also as expected...
 <% } else { %>
 		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-request-expected-result.csv");

@@ -1,3 +1,1 @@
-<sampleResponse xmlns="urn:org.soitoolkit.refapps.sd.sample.schema:v1">
-	<value>Value1234567890</value>
-</sampleResponse>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sampleResponse xmlns="urn:org.soitoolkit.refapps.sd.sample.schema:v1"><value>Value1234567890</value></sampleResponse>

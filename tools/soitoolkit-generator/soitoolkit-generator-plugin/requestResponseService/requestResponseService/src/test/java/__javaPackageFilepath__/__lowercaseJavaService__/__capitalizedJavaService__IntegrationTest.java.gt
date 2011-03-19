@@ -49,14 +49,14 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
 	private AbstractJmsTestUtil jmsUtil = null;
-	
+
     public ${capitalizedJavaService}IntegrationTest() {
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } %> 
     	// TODO: Should this be placed in the baseclass?
-    	
+
     	// Only start up Mule once to make the tests run faster...
     	// Set to false if tests interfere with each other when Mule is started only once.
         setDisposeManagerPerSuite(true);
@@ -113,6 +113,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	    } catch (SOAPFaultException e) {
 <% if (outboundTransport=="SOAPHTTP") { %>
 	    	assertEquals("Invalid status code: 500", e.getMessage());
+<% } else if (outboundTransport=="RESTHTTP") { %>
+	    	assertEquals("Internal Server Error, code: 500", e.getMessage());
 <% } else if (outboundTransport=="JMS") { %>
 	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
 <% } %> 

@@ -16,9 +16,7 @@
  */
 package org.soitoolkit.tools.generator.plugin.generator;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SOAPHTTP;
-import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.SOAPSERVLET;
+import static org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum.*;
 import static org.soitoolkit.tools.generator.plugin.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.appendXmlFragment;
 import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
@@ -70,10 +68,16 @@ public class RequestResponseServiceGenerator implements Generator {
 
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-input.xml.gt");
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-expected-result.csv.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.csv.gt");
+	    if (outboundTransport == RESTHTTP) {
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.rest.gt");
+	    } else {
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.csv.gt");
+	    }
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-expected-result.xml.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-input.csv.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-expected-result.xml.gt");
+	    if (outboundTransport == JMS) {
+	    	gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-input.csv.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-expected-result.xml.gt");
+	    }
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformerTest.java.gt");
@@ -148,6 +152,11 @@ public class RequestResponseServiceGenerator implements Generator {
 		    if (outboundTransport == SOAPHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
 			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+	
+		    } else if (outboundTransport == RESTHTTP) {
+			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
+			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/rest-teststub");
+
 		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + m.getJmsRequestQueue());
 			    cfg.println(service + "_RESPONSE_QUEUE=" + m.getJmsResponseQueue());
@@ -189,7 +198,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
-			System.err.println(xml);
+//			System.err.println(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);

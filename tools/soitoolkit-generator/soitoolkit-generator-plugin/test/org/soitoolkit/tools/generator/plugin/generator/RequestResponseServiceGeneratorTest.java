@@ -78,7 +78,7 @@ public class RequestResponseServiceGeneratorTest {
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		TransportEnum[] inboundTransports  = {SOAPHTTP};
-		TransportEnum[] outboundTransports = {SOAPHTTP, JMS}; 
+		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
 
 		// FIXME, ADD SOAPSERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
@@ -125,7 +125,8 @@ public class RequestResponseServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
 		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
+//		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
+		int expectedNoOfFiles = (outboundTransport == JMS) ? 17 : 15;
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 

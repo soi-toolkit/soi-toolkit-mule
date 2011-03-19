@@ -19,7 +19,7 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractTransfo
 	@Override
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
-<% if (outboundTransport=="SOAPHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="RESTHTTP") { %>
 		log.debug("Transforming payload: {}", src);
 		
 		return src;

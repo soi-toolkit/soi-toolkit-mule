@@ -6,6 +6,12 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<% if (outboundTransport=="RESTHTTP") { %>
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+<% } %>
 <% if (outboundTransport=="SOAPHTTP") { %>
 import javax.jws.WebService;
 
@@ -47,6 +53,43 @@ public class ${capitalizedJavaService}TestProducer implements SampleInterface {
 		SampleResponse response = new SampleResponse();
 		response.setValue("Value" + id);
 		return response;
+	}
+}
+
+<% } else if (outboundTransport=="RESTHTTP") { %>
+
+@Path("/sample")
+public class ${capitalizedJavaService}TestProducer {
+
+	public static final String TEST_ID_OK               = "1234567890";
+	public static final String TEST_ID_FAULT_INVALID_ID = "-1";
+	public static final String TEST_ID_FAULT_TIMEOUT    = "0";
+	
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
+	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+	private static final long SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
+
+    @GET
+    @Produces("text/plain")
+    @Path("{id}")
+	public String sample(@PathParam("id")String id) {
+    	
+		log.info("${capitalizedJavaService}TestProducer received the request: {}", id);
+
+		// Return an error-message if invalid id
+		if (TEST_ID_FAULT_INVALID_ID.equals(id)) {
+			throw new RuntimeException("Invalid Id: " + id);
+		}
+
+		// Force a timeout if zero Id
+        if (TEST_ID_FAULT_TIMEOUT.equals(id)) {
+	    	try {
+				Thread.sleep(SERVICE_TIMOUT_MS + 1000);
+			} catch (InterruptedException e) {}
+        }
+
+        // Produce the response
+		return "Value" + id;
 	}
 }
 

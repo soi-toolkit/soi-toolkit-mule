@@ -12,6 +12,13 @@ ${xmlNamespace.reqRespTeststubService}
         component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
         type="jax-ws" />
 
+<% } else if (outboundTransport=="RESTHTTP") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    type="jax-rs" />
+
 <% } else { %> 
 	<model name="${service}-teststub-model">
 
@@ -25,13 +32,15 @@ ${xmlNamespace.reqRespTeststubService}
                     responseTransformer-refs="strToJms"/>
 <% } %> 
             </inbound>
-
             <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
-
         </service>
+	</model>
+<% } %> 
 
-<% if (inboundTransport=="SOAPSERVLET" && outboundTransport=="JMS") { %>
-		<!-- ISSUE 117. With SOAP/Servlet as inbound and JMS as outbound it seems that <cxf:proxy-client> is required starting with Mule 3.1.1, see SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->        
+
+<% if (inboundTransport=="SOAPSERVLET" && outboundTransport!="SOAPHTTP") { %>
+	<model name="${service}-teststub-fix-model">
+		<!-- ISSUE 117. With SOAP/Servlet as inbound and not SOAP/HTTP as outbound it seems that <cxf:proxy-client> is required starting with Mule 3.1.1, see SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->        
 		<service name="${service}-teststub-fix-service">
 			<outbound>
 				<pass-through-router>
@@ -41,9 +50,8 @@ ${xmlNamespace.reqRespTeststubService}
 				</pass-through-router>
 			</outbound>
 		</service>
-<% } %> 
-
 	</model>
 <% } %> 
+
 
 </mule>
