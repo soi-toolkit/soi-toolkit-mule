@@ -20,20 +20,17 @@ import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
 
 import java.util.Map;
 
-import org.mule.RequestContext;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleContext;
-import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.context.MuleContextAware;
-import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.transformer.TransformerException;
 import org.mule.transformer.AbstractMessageAwareTransformer;
+import org.mule.transport.http.HttpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
-import org.soitoolkit.commons.mule.util.MuleUtil;
 
 
 /**
@@ -123,20 +120,30 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
     			return message;
     		}
 
-    		// Skip logging if service name starts with "_cxfServiceComponent" (Mule 2.2.1) or ends with "_cxfComponent" (Mule 2.2.5) and endpoint contains "?wsdl" or "?xsd", then it's just tons of WSDL and XSD lookup calls, nothing to log...
-            MuleEventContext event       = RequestContext.getEventContext();
-            String           serviceName = MuleUtil.getServiceName(event);
-    		if (serviceName != null) { // FIXME: Mule 3.1 Does not have these services... && (serviceName.startsWith("_cxfServiceComponent") || serviceName.endsWith("_cxfComponent"))) {
-        	    EndpointURI      endpointURI = event.getEndpointURI();
-    			if (endpointURI != null) {
-    				String ep = endpointURI.toString();
-    				if ((ep.contains("?wsdl")) || (ep.contains("?xsd"))) {
-    	    			log.debug("Skip logging message, CXF ...?WSDL/XSD call detected!");
-    					return message;
-    				}
-    			}
-    		}
+    		// Skip logging requests like http://...?wsdl and ...?xsd
 
+    		// Pre-historic logic for Mule v2.2.1, v2.2.5 and v3.1:
+//    		// Skip logging if service name starts with "_cxfServiceComponent" (Mule 2.2.1) or ends with "_cxfComponent" (Mule 2.2.5) and endpoint contains "?wsdl" or "?xsd", then it's just tons of WSDL and XSD lookup calls, nothing to log...
+//            MuleEventContext event       = RequestContext.getEventContext();
+//            String           serviceName = MuleUtil.getServiceName(event);
+//    		if (serviceName != null) { // FIXME: Mule 3.1 Does not have these services... && (serviceName.startsWith("_cxfServiceComponent") || serviceName.endsWith("_cxfComponent"))) {
+//        	    EndpointURI      endpointURI = event.getEndpointURI();
+//    			if (endpointURI != null) {
+//    				String ep = endpointURI.toString();
+//    				if ((ep.contains("?wsdl")) || (ep.contains("?xsd"))) {
+//    	    			log.debug("Skip logging message, CXF ...?WSDL/XSD call detected!");
+//    					return message;
+//    				}
+//    			}
+//    		}
+    		String httpReq = message.getInboundProperty(HttpConnector.HTTP_REQUEST_PROPERTY);
+    		if (httpReq != null) {
+				if ((httpReq.endsWith("?wsdl")) || (httpReq.contains("?xsd"))) {
+	    			log.debug("Skip logging message, CXF ...?WSDL/XSD call detected!");
+					return message;
+	    		}
+    		}
+    		
     		switch (logLevel) {
 			case INFO:
 			case DEBUG:
