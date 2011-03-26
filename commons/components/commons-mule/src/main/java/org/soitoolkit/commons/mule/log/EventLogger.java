@@ -78,6 +78,8 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
  */
 public class EventLogger implements MuleContextAware {
 
+	private static final String CAUSE_EXCEPTION_HEADER = "CauseException";
+
 	private static final Logger messageLogger = LoggerFactory.getLogger("org.soitoolkit.commons.mule.messageLogger");
 
 	private static final Logger log = LoggerFactory.getLogger(EventLogger.class);
@@ -268,7 +270,12 @@ public class EventLogger implements MuleContextAware {
 
 			stackTrace.append('\n').append("Stacktrace=").append(ex).append(": ").append(msg);
 			for (String stLine : st) {
-				stackTrace.append('\n').append("\t at ").append(stLine);
+				if (stLine.startsWith(CAUSE_EXCEPTION_HEADER)) {
+					stackTrace.append("\n\n").append(stLine);
+					
+				} else {
+					stackTrace.append("\n\t at ").append(stLine);
+				}
 			}
 		}
 		return MessageFormatter.arrayFormat(LOG_STRING, new String[] {logEventName, integrationScenarioId, contractId, logMessage, serviceImplementation, HOST_NAME, HOST_IP, componentId, endpoint, messageId, businessCorrelationId, businessContextIdString, extraInfoString, payload, stackTrace.toString(), logEventName}).getMessage();
@@ -552,7 +559,30 @@ public class EventLogger implements MuleContextAware {
 			for (int i = 0; i < stArr.length; i++) {
 				stList.add(stArr[i].toString());
 			}
+			
+			if (exception.getCause() != null) {
+				Throwable ce = exception.getCause();
+				stList.add(CAUSE_EXCEPTION_HEADER + ": " + ce.getMessage());
+				StackTraceElement[] ceStArr = ce.getStackTrace();
+				for (int i = 0; i < ceStArr.length; i++) {
+					stList.add(ceStArr[i].toString());
+				}
+			}
+
 			lme.getStackTrace().addAll(stList);
+
+			//			if (exception instanceof MuleException) {
+//				MuleException de = (MuleException)exception;
+//				System.err.println("Cause: " + de.getCause());
+//				StackTraceElement[] st = de.getCause().getStackTrace();
+//				for (int i = 0; i < st.length; i++) {
+////					stList.add(st[i].toString());
+//					System.err.println(st[i].toString());
+//				}
+////				System.err.println("Detailed: " + de.getDetailedMessage());
+////				System.err.println("Summary: " + de.getSummaryMessage());
+////				System.err.println("Verbose: " + de.getVerboseMessage());
+//			}
 			
 			lm.setException(lme);
 		}
