@@ -16,13 +16,18 @@
  */
 package org.soitoolkit.commons.mule.util;
 
+import java.io.IOException;
+
 import org.mule.DefaultMuleMessage;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.construct.FlowConstruct;
+import org.mule.api.endpoint.EndpointBuilder;
+import org.mule.api.endpoint.ImmutableEndpoint;
 import org.mule.config.spring.SpringRegistry;
 import org.mule.context.notification.EndpointMessageNotification;
+import org.mule.module.client.MuleClient;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -82,6 +87,34 @@ public class MuleUtil {
         // Mule 2.2 implementation
 		// return notification.getEndpoint().getName();
 		return notification.getEndpoint();
+	}
+
+	/**
+	 * Lookup an ImmutableEndpoint based on its name
+	 * 
+	 * @param muleContext
+	 * @param endpointName
+	 * @return
+	 * @throws IOException
+	 */
+	public static ImmutableEndpoint getImmutableEndpoint(MuleContext muleContext, String endpointName) throws IOException {
+		ImmutableEndpoint endpoint = null;
+
+		Object o = muleContext.getRegistry().lookupObject(endpointName);
+		if (o instanceof ImmutableEndpoint) {
+			// For Inbound and Outbound Endpoints
+			endpoint = (ImmutableEndpoint) o;
+
+		} else if (o instanceof EndpointBuilder) {
+			// For Endpoint-references
+			EndpointBuilder eb = (EndpointBuilder) o;
+			try {
+				endpoint = eb.buildInboundEndpoint();
+			} catch (Exception e) {
+				throw new IOException(e.getMessage());
+			}
+		}
+		return endpoint;
 	}
 	
 }

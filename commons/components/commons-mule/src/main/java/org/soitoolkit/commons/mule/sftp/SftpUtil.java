@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.commons.mule.sftp;
 
+import static org.soitoolkit.commons.mule.util.MuleUtil.getImmutableEndpoint;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,11 +25,9 @@ import java.util.List;
 
 import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
-import org.mule.api.endpoint.EndpointBuilder;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.endpoint.ImmutableEndpoint;
 import org.mule.api.service.Service;
-import org.mule.module.client.MuleClient;
 import org.mule.transport.sftp.SftpClient;
 import org.mule.transport.sftp.SftpConnector;
 import org.slf4j.Logger;
@@ -113,18 +113,17 @@ public class SftpUtil {
 	 * @throws com.jcraft.jsch.SftpException
 	 */
 	public static void initEndpointDirectory(MuleContext muleContext, String endpointName) throws MuleException, IOException, SftpException {
-		MuleClient muleClient = new MuleClient(muleContext);
-		SftpClient sftpClient = getSftpClient(muleClient, endpointName);
+		SftpClient sftpClient = getSftpClient(muleContext, endpointName);
 		try {
 			ChannelSftp channelSftp = sftpClient.getChannelSftp();
 			try {
-				recursiveDelete(muleClient, sftpClient, endpointName, "");
+				recursiveDelete(muleContext, sftpClient, endpointName, "");
 			} catch (IOException e) {
 				if (logger.isErrorEnabled())
 					logger.error("Failed to recursivly delete endpoint " + endpointName, e);
 			}
 
-			String path = getPathByEndpoint(muleClient, sftpClient, endpointName);
+			String path = getPathByEndpoint(muleContext, sftpClient, endpointName);
 			mkDirs(channelSftp, path);
 		} finally {
 			sftpClient.disconnect();
@@ -135,9 +134,8 @@ public class SftpUtil {
 
 	
 	public static String[] getFilesInEndpoint(MuleContext muleContext, String endpointName, String subDirectory) throws IOException, MuleException {
-        MuleClient muleClient = new MuleClient(muleContext);
-    	SftpClient sftpClient = getSftpClient(muleClient, endpointName);
-        ImmutableEndpoint tEndpoint = (ImmutableEndpoint) muleClient.getProperty(endpointName);
+    	SftpClient sftpClient = getSftpClient(muleContext, endpointName);
+        ImmutableEndpoint tEndpoint = getImmutableEndpoint(muleContext, endpointName);
         try {
       	String path = tEndpoint.getEndpointURI().getPath();
       	if (subDirectory != null) {
@@ -159,9 +157,8 @@ public class SftpUtil {
     }
     
 	public static String getSftpFileContent(MuleContext muleContext, String endpointName, String file) throws MuleException, IOException {
-        MuleClient muleClient = new MuleClient(muleContext);
-    	SftpClient sftpClient = getSftpClient(muleClient, endpointName);
-        ImmutableEndpoint tEndpoint = (ImmutableEndpoint) muleClient.getProperty(endpointName);
+    	SftpClient sftpClient = getSftpClient(muleContext, endpointName);
+        ImmutableEndpoint tEndpoint = getImmutableEndpoint(muleContext, endpointName);
         try {
           	String path = tEndpoint.getEndpointURI().getPath();
             sftpClient.changeWorkingDirectory(sftpClient.getAbsolutePath(path));      	
@@ -202,14 +199,14 @@ public class SftpUtil {
 	 * Returns a SftpClient that is logged in to the sftp server that the
 	 * endpoint is configured against.
 	 * 
-	 * @param muleClient
+	 * @param muleContext
 	 * @param endpointName
 	 * @return
 	 * @throws IOException
 	 */
-	static protected SftpClient getSftpClient(MuleClient muleClient,
+	static protected SftpClient getSftpClient(MuleContext muleContext,
 			String endpointName) throws IOException {
-		ImmutableEndpoint endpoint = getImmutableEndpoint(muleClient,
+		ImmutableEndpoint endpoint = getImmutableEndpoint(muleContext,
 				endpointName);
 		EndpointURI endpointURI = endpoint.getEndpointURI();
 		SftpClient sftpClient = new SftpClient(endpointURI.getHost());
@@ -235,41 +232,11 @@ public class SftpUtil {
 		return sftpClient;
 	}
 
-	static protected String getPathByEndpoint(MuleClient muleClient,
-			SftpClient sftpClient, String endpointName) {
-		ImmutableEndpoint endpoint = (ImmutableEndpoint) muleClient
-				.getProperty(endpointName);
+	static protected String getPathByEndpoint(MuleContext muleContext, SftpClient sftpClient, String endpointName) throws IOException {
+		ImmutableEndpoint endpoint = getImmutableEndpoint(muleContext, endpointName);
 		EndpointURI endpointURI = endpoint.getEndpointURI();
 
 		return sftpClient.getAbsolutePath(endpointURI.getPath());
-	}
-
-	static protected ImmutableEndpoint getImmutableEndpoint(
-			MuleClient muleClient, String endpointName) throws IOException {
-		ImmutableEndpoint endpoint = null;
-
-		Object o = muleClient.getProperty(endpointName);
-		if (o instanceof ImmutableEndpoint) {
-			// For Inbound and Outbound Endpoints
-			endpoint = (ImmutableEndpoint) o;
-
-		} else if (o instanceof EndpointBuilder) {
-			// For Endpoint-references
-			EndpointBuilder eb = (EndpointBuilder) o;
-			try {
-				endpoint = eb.buildInboundEndpoint();
-			} catch (Exception e) {
-				throw new IOException(e.getMessage());
-			}
-		}
-		return endpoint;
-	}
-
-	static protected EndpointURI getUriByEndpointName(MuleClient muleClient,
-			String endpointName) throws IOException {
-		ImmutableEndpoint endpoint = getImmutableEndpoint(muleClient,
-				endpointName);
-		return endpoint.getEndpointURI();
 	}
 
 	/**
@@ -282,10 +249,8 @@ public class SftpUtil {
 	 * @param relativePath
 	 * @throws IOException
 	 */
-	static protected void recursiveDelete(MuleClient muleClient,
-			SftpClient sftpClient, String endpointName, String relativePath)
-			throws IOException {
-		EndpointURI endpointURI = getUriByEndpointName(muleClient, endpointName);
+	static protected void recursiveDelete(MuleContext muleContext, SftpClient sftpClient, String endpointName, String relativePath) throws IOException {
+		EndpointURI endpointURI = getImmutableEndpoint(muleContext, endpointName).getEndpointURI();
 		String path = endpointURI.getPath() + relativePath;
 
 		try {
@@ -298,7 +263,7 @@ public class SftpUtil {
 			// Delete all sub-directories
 			String[] directories = sftpClient.listDirectories();
 			for (String directory : directories) {
-				recursiveDelete(muleClient, sftpClient, endpointName,
+				recursiveDelete(muleContext, sftpClient, endpointName,
 						relativePath + "/" + directory);
 			}
 

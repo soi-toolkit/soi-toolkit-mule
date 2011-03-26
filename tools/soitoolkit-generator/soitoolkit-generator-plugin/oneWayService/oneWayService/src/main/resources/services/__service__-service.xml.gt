@@ -59,6 +59,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (inboundTransport=="FTP") { %> 
 				<ftp:inbound-endpoint 
+					name="${service}-inbound-endpoint"
 					address="ftp://${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					binary="false"
@@ -143,6 +144,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (outboundTransport=="FTP") { %> 
 					<ftp:outbound-endpoint
+						name="${service}-outbound-endpoint"
 						address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
 						outputPattern="#[header:originalFilename]"
@@ -182,7 +184,11 @@ ${xmlNamespace.onewayService}
 						name="${service}-outbound-endpoint"
 						address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
+<% if (inboundTransport=="FTP") { %> 
+						outputPattern="#[header:INBOUND:originalFilename]"
+<% } else { %> 
 						outputPattern="#[header:originalFilename]"
+<% } %> 
 <% } else { %> 
 						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
