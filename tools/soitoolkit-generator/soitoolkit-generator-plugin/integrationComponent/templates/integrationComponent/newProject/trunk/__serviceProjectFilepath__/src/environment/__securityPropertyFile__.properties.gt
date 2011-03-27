@@ -8,9 +8,17 @@ SOITOOLKIT_JDBC_USR=APP
 SOITOOLKIT_JDBC_PWD=pwd
 <% } %>  
 
+<% if (ftp) { %>
+# Properties for the ftp-transport
+# TODO: Update to reflect your settings
+SOITOOLKIT_FTP_USERNAME=${defaultFtpUsername}
+SOITOOLKIT_FTP_PASSWORD=${defaultFtpPassword}
+<% } %>  
+
 <% if (sftp) { %>
 # Properties for the default soitoolkit-sftp-connector
 # TODO: Update to reflect your settings
+SOITOOLKIT_SFTP_USERNAME=${defaultSftpUsername}
 SOITOOLKIT_SFTP_IDENTITYFILE=${defaultSftpIdentityFile}
 SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=${defaultSftpIdentityPassphrase}
-<% } %>  
+<% } %>

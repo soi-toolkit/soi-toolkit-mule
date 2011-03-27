@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.jms.JMSException;
@@ -43,6 +42,7 @@ import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.AbstractTestCase;
 <% } %> 
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.commons.mule.test.Dispatcher;
 import org.soitoolkit.commons.mule.util.MiscUtil;
@@ -63,7 +63,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
-	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+
 <% if (inboundTransport=="VM") { %>
 	private static final String IN_VM_QUEUE = rb.getString("${uppercaseService}_IN_VM_QUEUE");
 <% } %> 

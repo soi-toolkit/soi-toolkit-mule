@@ -383,6 +383,17 @@ public class DefaultModelImpl implements IModel {
 		return getJavaPackage().replace('.', '/');
 	}
 
+	public String getDefaultFtpUsername() {
+    	return PreferencesUtil.getDefaultFtpUsername();
+    }
+	public String getDefaultFtpPassword() {
+    	return PreferencesUtil.getDefaultFtpPassword();
+    }
+
+	
+	public String getDefaultSftpUsername() {
+    	return PreferencesUtil.getDefaultSftpUsername();
+    }
     public String getDefaultSftpIdentityFile() {
     	return PreferencesUtil.getDefaultSftpIdentityFile();
     }
@@ -449,6 +460,11 @@ public class DefaultModelImpl implements IModel {
 	}
 
 	// Transports
+	@Override
+	public boolean isFtp() {
+		return isTransportSelected(TransportEnum.FTP);
+	}
+
 	@Override
 	public boolean isSftp() {
 		return isTransportSelected(TransportEnum.SFTP);

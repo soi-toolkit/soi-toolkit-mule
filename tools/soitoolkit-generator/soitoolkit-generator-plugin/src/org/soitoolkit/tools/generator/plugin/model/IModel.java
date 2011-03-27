@@ -97,8 +97,11 @@ public interface IModel {
 	public String getJavaPackage();
 	public String getJavaPackageFilepath();
 	
-    public String getDefaultSftpIdentityFile();
+	public String getDefaultFtpUsername();
+	public String getDefaultFtpPassword();
 
+	public String getDefaultSftpUsername();
+	public String getDefaultSftpIdentityFile();
     public String getDefaultSftpIdentityPassphrase();
 
     // JMS Naming...
@@ -125,6 +128,7 @@ public interface IModel {
     // Transports
     public boolean isJms();
     public boolean isJdbc();
+	public boolean isFtp();
 	public boolean isSftp();
 	public boolean isServlet();
     public boolean isPop3();

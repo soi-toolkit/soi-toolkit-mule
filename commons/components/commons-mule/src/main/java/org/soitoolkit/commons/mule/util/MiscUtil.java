@@ -291,7 +291,7 @@ public class MiscUtil {
      * @param resource a resource bundle to convert.
      * @return Properties a properties version of the resource bundle.
      */
-    static private Properties convertResourceBundleToProperties(ResourceBundle resource) {
+    static Properties convertResourceBundleToProperties(ResourceBundle resource) {
         Properties properties = new Properties();
 
         Enumeration<String> keys = resource.getKeys();

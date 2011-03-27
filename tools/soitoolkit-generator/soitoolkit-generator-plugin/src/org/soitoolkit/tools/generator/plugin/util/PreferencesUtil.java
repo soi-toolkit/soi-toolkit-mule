@@ -46,11 +46,23 @@ public class PreferencesUtil {
     }
     
     static public String getDefaultFtpRootFolder() {
-    	return get("ftp_root_folder", "muletest1:muletest1@localhost/~/ftp");
+    	return get("ftp_root_folder", "${SOITOOLKIT_FTP_USERNAME}:${SOITOOLKIT_FTP_PASSWORD}@localhost/~/ftp");
+    }
+    
+	static public String getDefaultFtpUsername() {
+    	return get("ftp_default_usr", "muletest1");
+    }
+	
+	static public String getDefaultFtpPassword() {
+    	return get("ftp_default_pwd", "muletest1");
+    }
+
+	static public String getDefaultSftpUsername() {
+    	return get("sftp_default_usr", "muletest1");
     }
     
     static public String getDefaultSftpRootFolder() {
-    	return get("sftp_root_folder", "muletest1@localhost/~/sftp");
+    	return get("sftp_root_folder", "${SOITOOLKIT_SFTP_USERNAME}@localhost/~/sftp");
     }
     
     static public String getDefaultSftpIdentityFile() {

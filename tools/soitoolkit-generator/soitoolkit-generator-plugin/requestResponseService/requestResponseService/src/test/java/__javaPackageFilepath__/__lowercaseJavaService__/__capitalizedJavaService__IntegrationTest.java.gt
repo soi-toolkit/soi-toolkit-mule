@@ -12,8 +12,6 @@ import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Te
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_TIMEOUT;
 
-import java.util.ResourceBundle;
-
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -25,9 +23,11 @@ import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.AbstractTestCase;
 <% } %> 
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
 import org.soitoolkit.refapps.sd.sample.wsdl.v1.Fault;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 <% if (inboundTransport=="SOAPSERVLET") { %>
 public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
@@ -36,7 +36,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
-	private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
 
 	private static final long   SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Response timed out (" + SERVICE_TIMOUT_MS + "ms) waiting for message response id ";
