@@ -199,6 +199,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	}
 
 	private void raiseSecurityNotice(final List<TransportEnum> transports) {
+		boolean ftpSelected  = false;
 		boolean sftpSelected = false;
 		boolean jdbcSelected = false;
 		String transportString = null;
@@ -211,6 +212,14 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 					transportString += " and JDBC";					
 				}
 			}
+			if (transportEnum == TransportEnum.FTP) {
+				sftpSelected = true;
+				if (transportString == null) {
+					transportString = "FTP";
+				} else {
+					transportString += " and FTP";					
+				}
+			}
 			if (transportEnum == TransportEnum.SFTP) {
 				sftpSelected = true;
 				if (transportString == null) {
@@ -221,7 +230,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			}
 		}
 
-		if (jdbcSelected || sftpSelected) {
+		if (jdbcSelected || ftpSelected || sftpSelected) {
 			MessageDialog.openInformation(getShell(), "Security Notice", "Security related properties for " + transportString + " will be created in the security-property-file in the src/environment folder. Please update these properties to reflect your environment and protect the information accordingly, e.g. don't commit your credential information to subversion!");
 		}
 	}

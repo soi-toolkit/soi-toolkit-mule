@@ -210,10 +210,12 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		jdbcButton.setSelection(true);
 		servletButton = SwtUtil.createCheckboxButton(container, null, i++, "Servlet");
 		servletButton.setSelection(true);
+
 //		fileButton = SwtUtil.createCheckboxButton(container, null, i++, "File");
 //		fileButton.setSelection(true);
-//		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
-//		ftpButton.setSelection(true);
+
+		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
+		ftpButton.setSelection(true);
 		
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
 		sftpButton.setSelection(true);
