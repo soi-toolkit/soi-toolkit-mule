@@ -166,10 +166,12 @@ public class OnewayServiceGenerator implements Generator {
 
 		    // FTP properties
 		    if (inboundTransport == FTP) {
+		    	cfg.println("# URL for tests with embeddded FTP-server, replace with something like ${FTP_USERNAME}:${FTP_PASSWORD}@ftphost/~/path");
 				cfg.println(service + "_INBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/inbound");
 			    cfg.println(service + "_INBOUND_POLLING_MS=1000");
 		    }
 		    if (outboundTransport == FTP) {
+		    	cfg.println("# URL for tests with embeddded FTP-server, replace with something like ${FTP_USERNAME}:${FTP_PASSWORD}@ftphost/~/path");
 				cfg.println(service + "_OUTBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/outbound");
 			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
 		    }		    

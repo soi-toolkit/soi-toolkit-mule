@@ -46,7 +46,7 @@ public class PreferencesUtil {
     }
     
     static public String getDefaultFtpRootFolder() {
-    	return get("ftp_root_folder", "${SOITOOLKIT_FTP_USERNAME}:${SOITOOLKIT_FTP_PASSWORD}@localhost/~/ftp");
+    	return get("ftp_root_folder", "${SOITOOLKIT_FTP_USERNAME}:${SOITOOLKIT_FTP_PASSWORD}@localhost:8021/ftp");
     }
     
 	static public String getDefaultFtpUsername() {

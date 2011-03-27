@@ -136,6 +136,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
 		"${artifactId}-jdbc-connector.xml," +
 <% } %>  
+<% if (inboundTransport=="FTP" || outboundTransport=="FTP") { %>
+		"soitoolkit-mule-ftp-connector-embedded.xml," + 
+<% } %>  
 		"${artifactId}-common.xml," +
 		"services/${service}-service.xml," +
 		"teststub-services/${service}-teststub-service.xml";

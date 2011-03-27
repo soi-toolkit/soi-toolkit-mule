@@ -24,6 +24,10 @@
 		http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/Level.html
 	-->
 
+	<logger name="org.mockftpserver">
+		<level value="ERROR" />
+	</logger>
+
 	<logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<level value="TRACE" />
 	</logger>

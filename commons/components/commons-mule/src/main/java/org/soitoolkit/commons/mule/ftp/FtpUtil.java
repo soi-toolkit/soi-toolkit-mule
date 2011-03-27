@@ -63,7 +63,10 @@ public class FtpUtil {
 	
 			try {
 				if (path.startsWith("/~/")) {
-					path = path.substring(3); // Strip off the leading "/~/"
+					path = path.substring(3); // Strip off the leading "/~/" to apply the command to the home-folder
+				
+				} else if (path.startsWith("/")) {
+					path = path.substring(1); // Strip off the leading "/" to apply the command to the home-folder
 				}
 				recursiveDeleteDirectory(ftpClient, path);
 				recursiveCreateDirectory(ftpClient, path);

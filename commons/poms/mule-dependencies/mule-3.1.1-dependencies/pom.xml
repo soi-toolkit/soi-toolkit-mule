@@ -317,6 +317,20 @@
       <artifactId>jtds</artifactId>
       <version>1.2.4</version>
     </dependency>
+
+    <!--
+      FTP test dependencies.
+      TODO: these should really have test-scope, see:
+      http://code.google.com/p/soi-toolkit/issues/detail?id=61
+    -->
+		<dependency>
+			<groupId>org.mockftpserver</groupId>
+			<artifactId>MockFtpServer</artifactId>
+			<version>2.2</version>
+<!-- 
+			<scope>test</scope>
+ -->
+		</dependency>
     
 	</dependencies>
 </project>
