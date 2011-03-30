@@ -87,12 +87,12 @@ public class OneWayServiceGeneratorTest {
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, SFTP, HTTP}; //, IMAP}; // POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP, SFTP}; //, SMTP};  
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP}; // Waiting for embedded SFTP: SFTP, //, IMAP}; // POP3
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP}; // Waiting for embedded SFTP: SFTP, //, SMTP};  
 
 		// FIXME, ADD SERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
-			inboundTransports  = new TransportEnum[] {VM, JMS, JDBC, FILE, FTP, SFTP, HTTP, SERVLET}; //, IMAP}; // POP3
+			inboundTransports  = new TransportEnum[] {VM, JMS, JDBC, FILE, FTP, HTTP, SERVLET}; // Waiting for embedded SFTP: SFTP, //, IMAP}; // POP3
 		}
 		
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
