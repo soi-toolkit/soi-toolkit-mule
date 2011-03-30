@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayService}
+
+	<!-- TODO: Add service specific definitions here -->
+    <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
+<% if (inboundTransport=="JDBC") { %>
+    <custom-transformer name="${lowercaseJavaService}ExportFromDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
+<% } %> 
+<% if (outboundTransport=="JDBC") { %>
+    <custom-transformer name="${lowercaseJavaService}ImportToDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
+<% } %> 
+
+	<model name="${service}-model">
+	
+		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+
+		<service name="${service}-service">
+            <inbound>
+
+<% if (inboundTransport=="VM") { %>
+                <inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
+<% if (serviceTransactional) { %>
+					<vm:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+				</inbound-endpoint>
+
+<% } else if (inboundTransport=="JMS") { %>
+                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
+<% if (serviceTransactional) { %>
+					<jms:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+				</inbound-endpoint>
+
+<% } else if (inboundTransport=="JDBC") { %> 
+            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="${lowercaseJavaService}ExportFromDb">
+<% if (serviceTransactional) { %>
+					<jdbc:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+            	</jdbc:inbound-endpoint>
+
+<% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
+				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+					exchange-pattern="request-response"
+					transformer-refs="createCorrId mimeToStr"
+					responseTransformer-refs="logReqIn" />
+
+<% } else if (inboundTransport=="FILE") { %> 
+				<file:inbound-endpoint
+					path="${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					moveToPattern="#[header:originalFilename]"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</file:inbound-endpoint>
+
+<% } else if (inboundTransport=="FTP") { %> 
+				<ftp:inbound-endpoint 
+					name="${service}-inbound-endpoint"
+					address="ftp://${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+					binary="false"
+					passive="true"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</ftp:inbound-endpoint>			
+
+<% } else if (inboundTransport=="SFTP") { %> 
+				<sftp:inbound-endpoint
+					name="${service}-inbound-endpoint"
+					address="sftp://${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_SIZECHECK_MS}"
+					tempDir="sending"
+					useTempFileTimestampSuffix="true"
+					archiveDir="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					archiveTempReceivingDir="receiving"
+					archiveTempSendingDir="sending"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</sftp:inbound-endpoint>			
+
+<% } else if (inboundTransport=="POP3") { %> 
+				<pop3:inbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_POP3_HOST}" 
+					port="${dollarSymbol}{${uppercaseService}_POP3_PORT}"
+					user="${dollarSymbol}{${uppercaseService}_POP3_USR}" 
+					password="${dollarSymbol}{${uppercaseService}_POP3_PWD}" 
+					transformer-refs="logMsgIn">
+					<email:email-to-string-transformer/>
+				</pop3:inbound-endpoint>		
+
+<% } else if (inboundTransport=="IMAP") { %> 
+				<imap:inbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_IMAP_HOST}" 
+					port="${dollarSymbol}{${uppercaseService}_IMAP_PORT}"
+					user="${dollarSymbol}{${uppercaseService}_IMAP_USR}" 
+					password="${dollarSymbol}{${uppercaseService}_IMAP_PWD}" 
+					transformer-refs="logMsgIn">
+					<email:email-to-string-transformer/>
+				</imap:inbound-endpoint>		
+<% } %> 
+            </inbound>
+            
+			<outbound>
+				<pass-through-router>
+<% if (outboundTransport=="VM") { %>
+                    <outbound-endpoint 
+                    	address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
+                    	transformer-refs="${lowercaseJavaService}Transformer logMsgOut">
+<% if (serviceTransactional) { %>
+						<vm:transaction action="ALWAYS_JOIN" />
+<% } %> 
+					</outbound-endpoint>
+
+<% } else if (outboundTransport=="JMS") { %>
+                    <outbound-endpoint 
+                    	address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
+                    	transformer-refs="${lowercaseJavaService}Transformer strToJms logMsgOut">
+<% if (serviceTransactional) { %>
+						<jms:transaction action="ALWAYS_JOIN" />
+<% } %> 
+					</outbound-endpoint>
+
+<% } else if (outboundTransport=="JDBC") { %>
+            		<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="${lowercaseJavaService}Transformer ${lowercaseJavaService}ImportToDb">
+<% if (serviceTransactional) { %>
+						<jdbc:transaction action="ALWAYS_JOIN" />
+<% } %> 
+					</jdbc:outbound-endpoint>
+
+<% } else if (outboundTransport=="FILE") { %> 
+					<file:outbound-endpoint 
+						path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+						outputPattern="#[header:originalFilename]"
+<% } else { %> 
+						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+                    	transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
+
+<% } else if (outboundTransport=="FTP") { %> 
+					<ftp:outbound-endpoint
+						name="${service}-outbound-endpoint"
+						address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+						outputPattern="#[header:originalFilename]"
+<% } else { %> 
+						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+                        binary="false"
+                        passive="true"
+                        transformer-refs="${lowercaseJavaService}Transformer logMsgOut" />                                        
+
+<% } else if (outboundTransport=="SFTP") { %> 
+					<outbound-endpoint address="vm://${service}-service" />
+
+<% } else if (outboundTransport=="SMTP") { %> 
+					<smtp:outbound-endpoint 
+						host="${dollarSymbol}{${uppercaseService}_SMTP_HOST}" 
+						port="${dollarSymbol}{${uppercaseService}_SMTP_PORT}"
+						from="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_FROM}"
+						to="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_TEST_TO}"
+						subject="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_SUBJECT}">
+						<transformer ref="${lowercaseJavaService}Transformer logMsgOut"/>
+						<email:string-to-email-transformer/>
+					</smtp:outbound-endpoint>
+<% } %>
+				</pass-through-router>
+			</outbound>
+		</service>
+
+<% if (outboundTransport=="SFTP") { %> 
+		<service name="${service}-receiver-service">
+			<inbound>
+				<inbound-endpoint address="vm://${service}-service" />
+			</inbound>
+			<outbound>
+				<pass-through-router>
+					<sftp:outbound-endpoint
+						name="${service}-outbound-endpoint"
+						address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+<% if (inboundTransport=="FTP") { %> 
+						outputPattern="#[header:INBOUND:originalFilename]"
+<% } else { %> 
+						outputPattern="#[header:originalFilename]"
+<% } %> 
+<% } else { %> 
+						outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+						tempDir="receiving"
+						useTempFileTimestampSuffix="true"
+						duplicateHandling="addSeqNo"
+						transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
+				</pass-through-router>
+			</outbound>
+
+        </service>
+
+		<service name="${service}-resend-from-archive-service">
+			<inbound>
+				<file:inbound-endpoint
+					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_ARCHIVE_RESEND_POLLING_MS}"
+				/>
+			</inbound>
+			<outbound>
+				<pass-through-router>
+					<outbound-endpoint address="vm://${service}-service" />
+				</pass-through-router>
+			</outbound>
+		</service>		
+<% } %> 
+	</model>
+
+</mule>

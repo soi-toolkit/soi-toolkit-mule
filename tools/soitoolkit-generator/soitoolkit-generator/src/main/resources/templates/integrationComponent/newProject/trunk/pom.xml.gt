@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
+[soi-toolkit.gen.version=${soitoolkitVersion}]
+[soi-toolkit.gen.type=integrationComponent]
+[soi-toolkit.gen.createDate=${xmlTimestamp}]
+[soi-toolkit.gen.artifactId=${artifactId}]
+-->
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>${superpomGroupId}</groupId>
+		<artifactId>${superpomArtifactId}</artifactId>
+		<version>${superpomVersion}</version>
+	</parent>
+	
+	<groupId>${groupId}</groupId>
+	<artifactId>${parentPom}</artifactId>
+	<version>${version}</version>
+	<packaging>pom</packaging>
+	<name>${parentPom}</name>
+
+	<scm>
+		<connection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</connection>
+		<developerConnection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</developerConnection>
+		<url>https://my-subversion-server/svn/${integrationComponentProject}/trunk</url>
+	</scm>
+	
+	<distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot Repository</name>
+            <url>http://my-maven-repo-server/repositories/snapshots</url>
+        </snapshotRepository>  
+        <repository>
+            <id>releases</id>
+            <name>Release Repository</name>
+            <url>http://my-maven-repo-server/repositories/releases</url>
+        </repository>
+    </distributionManagement>
+
+	<modules>
+		<module>${serviceProjectFilepath}</module>
+<% if (standaloneDeployModel) { %>
+		<module>${standaloneProjectFilepath}</module>
+		<module>${teststubStandaloneProjectFilepath}</module>		
+<% } else if (warDeployModel) { %>
+		<module>${webProjectFilepath}</module>
+		<module>${teststubWebProjectFilepath}</module>		
+<% } %>
+	</modules>
+
+</project>
