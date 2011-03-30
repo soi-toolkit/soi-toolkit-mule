@@ -16,9 +16,9 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import org.soitoolkit.tools.generator.plugin.model.IModel;
-import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.ModelFactory;
+import org.soitoolkit.tools.generator.model.enums.ComponentEnum;
 
 public class CreateComponentUtil {
 

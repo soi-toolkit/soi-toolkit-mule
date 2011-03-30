@@ -16,11 +16,11 @@
  */
 package org.soitoolkit.tools.generator.plugin.createservice;
 
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getFirstValue;
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.plugin.util.XmlUtil.lookupParameterValue;
+import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
+import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
+import static org.soitoolkit.tools.generator.util.XmlUtil.getFirstValue;
+import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
+import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,25 +45,21 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
-import org.soitoolkit.tools.generator.plugin.generator.OnewayServiceGenerator;
-import org.soitoolkit.tools.generator.plugin.generator.RequestResponseServiceGenerator;
-import org.soitoolkit.tools.generator.plugin.model.IModel;
-import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.enums.TransformerEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.ModelFactory;
+import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
+import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.OnewayServiceGenerator;
+import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
 import org.w3c.dom.Document;
 
 

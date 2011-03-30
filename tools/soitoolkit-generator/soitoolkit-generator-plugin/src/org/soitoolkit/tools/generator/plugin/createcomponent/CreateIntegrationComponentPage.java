@@ -16,8 +16,8 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
-import static org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum.*;
+import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
+import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_1_1;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import java.util.ArrayList;
@@ -39,10 +39,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
-import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
+import org.soitoolkit.tools.generator.model.enums.EnumUtil;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
 

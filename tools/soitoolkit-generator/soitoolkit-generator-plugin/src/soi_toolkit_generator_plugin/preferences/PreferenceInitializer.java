@@ -18,7 +18,7 @@ package soi_toolkit_generator_plugin.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.soitoolkit.tools.generator.plugin.util.PreferencesUtil;
+import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
 import soi_toolkit_generator_plugin.Activator;
 

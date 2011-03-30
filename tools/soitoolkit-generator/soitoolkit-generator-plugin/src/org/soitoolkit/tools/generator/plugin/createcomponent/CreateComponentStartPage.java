@@ -16,10 +16,10 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
+import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.UTILITY_COMPONENT;
+import static org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
-import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.UTILITY_COMPONENT;
-import static org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_DEFAULT_ROOT_FOLDER;
 import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_ECLIPSE_GOAL;
@@ -49,10 +49,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.EnumUtil;
-import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
+import org.soitoolkit.tools.generator.model.ModelFactory;
+import org.soitoolkit.tools.generator.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.model.enums.EnumUtil;
+import org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.plugin.util.ValueHolder;
 

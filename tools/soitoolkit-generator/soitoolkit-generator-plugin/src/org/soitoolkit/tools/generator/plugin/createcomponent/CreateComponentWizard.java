@@ -16,8 +16,8 @@
  */
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
+import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
-import static org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -46,18 +46,18 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
-import org.soitoolkit.tools.generator.plugin.generator.IntegrationComponentGenerator;
-import org.soitoolkit.tools.generator.plugin.generator.SchemaComponentGenerator;
-import org.soitoolkit.tools.generator.plugin.model.IModel;
-import org.soitoolkit.tools.generator.plugin.model.ModelFactory;
-import org.soitoolkit.tools.generator.plugin.model.enums.ComponentEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.DeploymentModelEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.MavenEclipseGoalEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.MuleVersionEnum;
-import org.soitoolkit.tools.generator.plugin.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.ModelFactory;
+import org.soitoolkit.tools.generator.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
+import org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.IntegrationComponentGenerator;
+import org.soitoolkit.tools.generator.SchemaComponentGenerator;
 import org.soitoolkit.tools.generator.plugin.util.StatusPage;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
-import org.soitoolkit.tools.generator.plugin.util.SystemUtil;
+import org.soitoolkit.tools.generator.util.SystemUtil;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
