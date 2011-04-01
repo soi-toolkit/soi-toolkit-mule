@@ -22,9 +22,6 @@ import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -66,6 +63,8 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT, "1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
 		
+/* FIXME: How do we launch maven in cloudbees Jeniks servers???
+
 		System.out.println("*** EnvVars:");
 		Map<String, String> env = System.getenv();
 		Set<Entry<String, String>> envSet = env.entrySet();
@@ -91,7 +90,8 @@ public class SchemaComponentGeneratorTest {
 
 		System.out.println("*** mvn -version:");
 		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER + "/trunk");
-
+*/
+		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
