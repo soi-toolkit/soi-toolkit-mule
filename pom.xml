@@ -92,7 +92,9 @@
 	<modules>
 		<module>commons</module>
 		<module>refapps</module>
+<!-- 
 		<module>tools</module>
+ -->
 	</modules>
 
 	<repositories>
