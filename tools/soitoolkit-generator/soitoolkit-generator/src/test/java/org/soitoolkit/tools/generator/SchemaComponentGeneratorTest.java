@@ -22,6 +22,9 @@ import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -63,6 +66,25 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT, "1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
 		
+		System.out.println("*** EnvVars:");
+		Map<String, String> env = System.getenv();
+		Set<Entry<String, String>> envSet = env.entrySet();
+		for (Entry<String, String> entry : envSet) {
+			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
+		
+		System.out.println("\n*** Properties:");
+		Set<Entry<Object, Object>> propSet = System.getProperties().entrySet();
+		for (Entry<Object, Object> entry : propSet) {
+			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
+		
+		System.out.println("*** whereis mvn:");
+		SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER + "/trunk");
+
+		System.out.println("*** mvn -version:");
+		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER + "/trunk");
+
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
