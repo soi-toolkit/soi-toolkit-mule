@@ -79,6 +79,13 @@ public class SchemaComponentGeneratorTest {
 			System.out.println(entry.getKey() + "=" + entry.getValue());
 		}
 		
+		String home = "/Users/magnuslarsson";
+		home = "/home/hudson";
+		home = "/home/soi-toolkit/hudson_home";
+
+		System.out.println("*** ls " + home + "/.hudson");
+		SystemUtil.executeCommand("ls " + home + "/.hudson", home);
+		
 		System.out.println("*** whereis mvn:");
 		SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER + "/trunk");
 
