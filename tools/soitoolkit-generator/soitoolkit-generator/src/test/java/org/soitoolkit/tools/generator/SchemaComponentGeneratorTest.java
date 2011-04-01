@@ -81,7 +81,7 @@ public class SchemaComponentGeneratorTest {
 		
 		String home = "/Users/magnuslarsson";
 		home = "/home/hudson";
-		home = "/home/soi-toolkit/hudson_home";
+//		home = "/home/soi-toolkit/hudson_home";
 
 		System.out.println("*** ls " + home + "/.hudson");
 		SystemUtil.executeCommand("ls " + home + "/.hudson", home);
