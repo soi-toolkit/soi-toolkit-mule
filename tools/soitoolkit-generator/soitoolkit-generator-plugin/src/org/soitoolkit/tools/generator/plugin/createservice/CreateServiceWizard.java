@@ -16,11 +16,7 @@
  */
 package org.soitoolkit.tools.generator.plugin.createservice;
 
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getFirstValue;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
+import static org.soitoolkit.tools.generator.util.PomUtil.extractGroupIdAndArtifactIdFromPom;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,12 +51,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.soitoolkit.tools.generator.model.IModel;
-import org.soitoolkit.tools.generator.model.ModelFactory;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
-import org.w3c.dom.Document;
 
 
 /**
@@ -257,22 +251,6 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		IFile file = container.getFile(new Path("pom.xml"));
 		InputStream content = file.getContents();
 		return content;
-	}
-
-	private IModel extractGroupIdAndArtifactIdFromPom(InputStream content) {
-		String nsPrefix = "ns";
-		String nsURI = "http://maven.apache.org/POM/4.0.0";
-		Document doc = createDocument(content);
-
-		String docComment = getDocumentComment(doc);
-		// TODO: Extract as constant...
-		String artifactId = lookupParameterValue("soi-toolkit.gen.artifactId", docComment);
-
-		String parentGroupId = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:parent/ns:groupId/text()"));
-		String groupId       = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
-		if (groupId == null) groupId = parentGroupId;
-		
-		return ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
 	}
 
 	private void throwCoreException(String message) throws CoreException {

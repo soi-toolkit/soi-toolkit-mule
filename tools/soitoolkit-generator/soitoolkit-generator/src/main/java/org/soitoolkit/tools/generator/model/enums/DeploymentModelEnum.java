@@ -34,8 +34,8 @@ public enum DeploymentModelEnum implements ILabeledEnum {
 
 	public static String allowedLabelValues() {
 		String allowedLabelValues = "";
-		for (DeploymentModelEnum muleVersion : values()) {
-			allowedLabelValues += muleVersion.getLabel() + " ";
+		for (DeploymentModelEnum allowedValue : values()) {
+			allowedLabelValues += allowedValue.getLabel() + " ";
 		}
 	    return allowedLabelValues;
 	}

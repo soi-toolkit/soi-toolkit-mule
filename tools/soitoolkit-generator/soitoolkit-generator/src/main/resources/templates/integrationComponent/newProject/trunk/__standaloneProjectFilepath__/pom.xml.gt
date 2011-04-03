@@ -2,7 +2,7 @@
 <!-- 
 DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
 [soi-toolkit.gen.version=${soitoolkitVersion}]
-[soi-toolkit.gen.type=war]
+[soi-toolkit.gen.type=standalone]
 [soi-toolkit.gen.createDate=${xmlTimestamp}]
 [soi-toolkit.gen.artifactId=${artifactId}]
 -->
