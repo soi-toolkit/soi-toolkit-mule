@@ -23,6 +23,23 @@ public enum MuleVersionEnum implements ILabeledEnum {
 		return values()[ordinal];
 	}
 
+	public static MuleVersionEnum getByLabel(String label) {
+	    for(MuleVersionEnum e : values()) {
+	        if(e.getPomSuffix().equals(label)){
+	            return e;
+	        }
+	    }
+	    return null;
+	}
+	
+	public static String allowedLabelValues() {
+		String allowedLabelValues = "";
+		for (MuleVersionEnum muleVersion : values()) {
+			allowedLabelValues += muleVersion.getPomSuffix() + " ";
+		}
+	    return allowedLabelValues;
+	}
+	
 	private String label;
 	private MuleVersionEnum(String label) {
 		this.label = label;

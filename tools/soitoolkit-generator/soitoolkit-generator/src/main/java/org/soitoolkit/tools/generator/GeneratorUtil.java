@@ -316,13 +316,13 @@ public class GeneratorUtil {
 	}
 
 	private void logWarn(String msg) {
-		if (logLevel >= LOG_WARN) ps.println("WARN: " + msg);
+		if (logLevel >= LOG_WARN) ps.println("[WARN] " + msg);
 	}
 	private void logInfo(String msg) {
-		if (logLevel >= LOG_INFO) ps.println("INFO: " + msg);
+		if (logLevel >= LOG_INFO) ps.println("[INFO] " + msg);
 	}
 	private void logDebug(String msg) {
-		if (logLevel >= LOG_DEBUG) ps.println("DEBUG: " + msg);
+		if (logLevel >= LOG_DEBUG) ps.println("[DEBUG] " + msg);
 	}
 
 	/*

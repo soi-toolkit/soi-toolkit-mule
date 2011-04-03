@@ -52,7 +52,6 @@ public class ModelFactory {
     		throw new IllegalArgumentException("Modelclass, " + modelClass.getName() + ", is not a subtype of " + DefaultModelImpl.class.getName());
     	}
 		ModelFactory.modelClass = (Class<DefaultModelImpl>)modelClass;
-    	System.err.println("### Set model-class: " + ModelFactory.modelClass.getName());
 	}
 
     /**
@@ -142,7 +141,6 @@ public class ModelFactory {
 		try {
 	    	DefaultModelImpl m = (DefaultModelImpl)modelClass.newInstance();
 	    	m.initModel(groupId, artifactId, version, service, muleVersion, deploymentModel, transports, inboundTransport, outboundTransport, transformerType, serviceDescriptor, operations);
-	    	System.err.println("### New model-class: " + m.getClass().getName());
 	    	return m;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

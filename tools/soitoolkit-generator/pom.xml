@@ -25,13 +25,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.tools</groupId>
-	<artifactId>soitoolkit-tools</artifactId>
+	<artifactId>soitoolkit-generator-parent</artifactId>
 	<packaging>pom</packaging>
-	<name>soitoolkit-tools</name>
+	<name>soitoolkit-generator-parent</name>
     <url>http://soi-toolkit.org</url>
 
 	<modules>
 		<module>soitoolkit-generator</module>
+		<module>soitoolkit-generator-maven-plugin</module>
 	</modules>
 
 </project>

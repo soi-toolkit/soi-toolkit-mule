@@ -17,12 +17,29 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum DeploymentModelEnum implements ILabeledEnum { 
-	STANDALONE_DEPLOY("Standalone deploy"), WAR_DEPLOY("War Deploy");
+	STANDALONE_DEPLOY("Standalone"), WAR_DEPLOY("War");
 
 	public static DeploymentModelEnum get(int ordinal) {
 		return values()[ordinal];
 	}
 
+	public static DeploymentModelEnum getByLabel(String label) {
+	    for(DeploymentModelEnum e : values()) {
+	        if(e.getLabel().equals(label)){
+	            return e;
+	        }
+	    }
+	    return null;
+	}
+
+	public static String allowedLabelValues() {
+		String allowedLabelValues = "";
+		for (DeploymentModelEnum muleVersion : values()) {
+			allowedLabelValues += muleVersion.getLabel() + " ";
+		}
+	    return allowedLabelValues;
+	}
+		
 	private String label;
 	private DeploymentModelEnum(String label) {
 		this.label = label;

@@ -1,6 +1,7 @@
 package org.soitoolkit.tools.generator.model;
 
 import org.soitoolkit.tools.generator.model.impl.DefaultModelImpl;
+import org.soitoolkit.tools.generator.model.IModel;
 
 public class GroovyModelImpl extends DefaultModelImpl implements IModel {
 
