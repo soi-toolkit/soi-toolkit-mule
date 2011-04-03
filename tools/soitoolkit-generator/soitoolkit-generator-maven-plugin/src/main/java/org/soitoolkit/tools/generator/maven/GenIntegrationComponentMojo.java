@@ -107,6 +107,7 @@ public class GenIntegrationComponentMojo extends AbstractMojo {
         getLog().info("=========================================");
         getLog().info("");
         getLog().info("ARGUMENTS:");
+        getLog().info("(change an arg by suppling: -Darg=value):");
         getLog().info("");
         getLog().info("outDir=" + outDir.getPath());
 //        getLog().info("outDir=" + outDir.getAbsolutePath());
