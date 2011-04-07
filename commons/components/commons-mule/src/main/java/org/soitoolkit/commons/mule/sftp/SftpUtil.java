@@ -29,6 +29,7 @@ import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.endpoint.ImmutableEndpoint;
 import org.mule.api.service.Service;
 import org.mule.transport.sftp.SftpClient;
+import org.mule.transport.sftp.SftpConnectionFactory;
 import org.mule.transport.sftp.SftpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,6 +209,15 @@ public class SftpUtil {
 			String endpointName) throws IOException {
 		ImmutableEndpoint endpoint = getImmutableEndpoint(muleContext,
 				endpointName);
+		
+		try {
+			SftpClient sftpClient = SftpConnectionFactory.createClient(endpoint);
+			return sftpClient;
+		} catch (Exception e) {
+			throw new RuntimeException("Login failed", e);
+		}
+
+/*		
 		EndpointURI endpointURI = endpoint.getEndpointURI();
 		SftpClient sftpClient = new SftpClient(endpointURI.getHost());
 
@@ -230,6 +240,7 @@ public class SftpUtil {
 			}
 		}
 		return sftpClient;
+*/
 	}
 
 	static protected String getPathByEndpoint(MuleContext muleContext, SftpClient sftpClient, String endpointName) throws IOException {
