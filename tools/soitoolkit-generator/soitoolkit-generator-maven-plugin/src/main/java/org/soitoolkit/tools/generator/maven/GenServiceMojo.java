@@ -16,7 +16,13 @@
  */
 package org.soitoolkit.tools.generator.maven;
 
+import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_TYPE_KEY;
+import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_TYPE_SERVICE;
 import static org.soitoolkit.tools.generator.util.PomUtil.extractGroupIdAndArtifactIdFromPom;
+import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
+import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
+import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +38,7 @@ import org.soitoolkit.tools.generator.model.enums.MepEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.w3c.dom.Document;
 
 /**
  * Goal for creating an new Integration Component
@@ -59,14 +66,14 @@ public class GenServiceMojo extends AbstractMojo {
 
 	/**
      * InboundTransport.
-     * @parameter expression="${inboundTransport}" default-value="SOAP/HTTP"
+     * @parameter expression="${inboundTransport}" default-value="SOAPHTTP"
      * @required
      */
     private String inboundTransport;
 
 	/**
      * InboundTransport.
-     * @parameter expression="${outboundTransport}" default-value="SOAP/HTTP"
+     * @parameter expression="${outboundTransport}" default-value="SOAPHTTP"
      * @required
      */
     private String outboundTransport;
@@ -78,6 +85,11 @@ public class GenServiceMojo extends AbstractMojo {
      */
     private File outDir;
 
+    private static String[] allowedRequestReplyInboundTransport  = new String[] {"SOAPHTTP","SOAPSERVLET"};
+    private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP","RESTHTTP","JMS"};
+    private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "SERVLET", "POP3", "IMAP"};
+    private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "SMTP"};
+    
     public void execute() throws MojoExecutionException {
     	
         getLog().info("");
@@ -116,11 +128,10 @@ public class GenServiceMojo extends AbstractMojo {
         getLog().info("");
 
         MepEnum mepEnum = initMep(messageExchangePattern);
-        TransportEnum inboundTransportEnum = TransportEnum.SOAPHTTP;
-        TransportEnum outboundTransportEnum = TransportEnum.SOAPHTTP;
+        TransportEnum inboundTransportEnum  = initInboundTransport (mepEnum, inboundTransport);
+        TransportEnum outboundTransportEnum = initOutboundTransport(mepEnum, outboundTransport);
 
         Generator g = null;
-
         switch (mepEnum) {
 		case MEP_REQUEST_RESPONSE:
 			g = new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
@@ -130,10 +141,12 @@ public class GenServiceMojo extends AbstractMojo {
 			g = new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;
 
+		case MEP_PUBLISH_SUBSCRIBE:
+			throw new MojoExecutionException("Message Exchange Pattern [" + messageExchangePattern + "] not yet supported");
+
 		default:
 			break;
 		}
-
 		g.startGenerator();
     }
 
@@ -142,6 +155,16 @@ public class GenServiceMojo extends AbstractMojo {
 		try {
 			InputStream pomIs = new FileInputStream(pomFile);
 			m = extractGroupIdAndArtifactIdFromPom(pomIs);
+
+			// Validate the presence of GENERATOR_TYPE_SERVICE in pom.xml
+			Document doc = createDocument(new FileInputStream(pomFile));
+			String docComment = getDocumentComment(doc);
+			String type = lookupParameterValue(GEN_METADATA_TYPE_KEY, docComment);
+			
+			if (!type.equals(GEN_METADATA_TYPE_SERVICE)) {
+				throw new MojoExecutionException("Invalid type of maven pom.xml-file (" + pomFile + "), missing the metadata: " +  GEN_METADATA_TYPE_KEY + "=" + GEN_METADATA_TYPE_SERVICE + ", found unexpected metadata: " +  GEN_METADATA_TYPE_KEY + "=" + type);
+			}
+			
 		} catch (FileNotFoundException e) {
 			throw new MojoExecutionException("Maven pom.xml-file not found at: " + pomFile, e);
 		}
@@ -153,13 +176,42 @@ public class GenServiceMojo extends AbstractMojo {
 		try {
 			mepEnum = MepEnum.getByLabel(mep);
 		} catch (Exception e) {
-			throw new MojoExecutionException("Invalid Message Exchange Pattern: " + mep + ", allowed values: " + MuleVersionEnum.allowedLabelValues(), e);
+			throw new MojoExecutionException("Invalid Message Exchange Pattern: " + mep + ", allowed values: " + MepEnum.allowedLabelValues(), e);
 		}
 		if (mepEnum == null) {
-			throw new MojoExecutionException("Invalid Message Exchange Pattern: " + mep + ", allowed values: " + MuleVersionEnum.allowedLabelValues());
+			throw new MojoExecutionException("Invalid Message Exchange Pattern: " + mep + ", allowed values: " + MepEnum.allowedLabelValues());
 		}
 		return mepEnum;
 	}
 
+	private TransportEnum initInboundTransport(MepEnum mepEnum, String inboundTransport2) throws MojoExecutionException {
+		return getTransport(inboundTransport, "inbound", (mepEnum == MepEnum.MEP_ONE_WAY) ? allowedOneWayInboundTransport : allowedRequestReplyInboundTransport);
+	}
+	
+	private TransportEnum initOutboundTransport(MepEnum mepEnum, String outboundTransport) throws MojoExecutionException {
+		return getTransport(outboundTransport, "outbound", (mepEnum == MepEnum.MEP_ONE_WAY) ? allowedOneWayOutboundTransport : allowedRequestReplyOutboundTransport);
+	}
 
+	private TransportEnum getTransport(String transport, String direction, String[] allowedTransports) throws MojoExecutionException {
+		TransportEnum transportEnum = null;
+
+		for (String allowedTransport : allowedTransports) {
+			if (allowedTransport.equals(transport)) {
+				transportEnum = TransportEnum.valueOf(transport);
+			}
+		}
+		if (transportEnum == null) {
+			throw new MojoExecutionException("Invalid " + direction + " transport: " + transport + ", allowed values: " + getAllowedTransports(allowedTransports));
+		}
+		return transportEnum;
+	}
+	
+	private String getAllowedTransports(String[] allowedTransports) {
+		String allowedTransportsStr = "";
+		for (String allowedTransport : allowedTransports) {
+			allowedTransportsStr += allowedTransport + " ";
+		}
+	    return allowedTransportsStr;
+	}
+	
 }

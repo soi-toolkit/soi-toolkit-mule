@@ -77,7 +77,7 @@ public class GenIntegrationComponentMojo extends AbstractMojo {
 
 	/**
      * Connectors.
-     * @parameter expression="${connectors}" default-value="JDBC,FTP,SFTP" // Servlet
+     * @parameter expression="${connectors}" default-value="JDBC,FTP,SFTP" // SERVLET
      * @required
      */
     private String connectors;
@@ -96,7 +96,7 @@ public class GenIntegrationComponentMojo extends AbstractMojo {
      */
     private File outDir;
 
-    private static String[] allowedConnectors = new String[] {"JDBC","FTP","SFTP","Servlet"};
+    private static String[] allowedConnectors = new String[] {"JDBC","FTP","SFTP","SERVLET"};
     
     public void execute() throws MojoExecutionException {
 
