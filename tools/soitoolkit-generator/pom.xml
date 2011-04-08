@@ -24,7 +24,7 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.soitoolkit.tools</groupId>
+	<groupId>org.soitoolkit.tools.generator</groupId>
 	<artifactId>soitoolkit-generator-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>soitoolkit-generator-parent</name>
