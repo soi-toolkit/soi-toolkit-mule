@@ -17,7 +17,19 @@
 package org.soitoolkit.tools.generator;
 
 public interface Generator {
+	
+	public static final String GEN_METADATA_ARTIFACT_ID_KEY = "soi-toolkit.gen.artifactId";
+	public static final String GEN_METADATA_TYPE_KEY        = "soi-toolkit.gen.type";
 
+	public static final String GEN_METADATA_TYPE_INTEGRATION_COMPONENT         = "integrationComponent";
+	public static final String GEN_METADATA_TYPE_STANDALONE                    = "standalone";
+	public static final String GEN_METADATA_TYPE_TESTSTUB_STANDALONE           = "teststubStandalone";
+	public static final String GEN_METADATA_TYPE_WAR                           = "war";
+	public static final String GEN_METADATA_TYPE_TESTSTUB_WAR                  = "teststubWar";
+	public static final String GEN_METADATA_TYPE_SERVICE                       = "services";
+
+	public static final String GEN_METADATA_TYPE_SERVICE_DESCRIPTION_COMPONENT = "schemas";
+	
     public void startGenerator();
 
 }

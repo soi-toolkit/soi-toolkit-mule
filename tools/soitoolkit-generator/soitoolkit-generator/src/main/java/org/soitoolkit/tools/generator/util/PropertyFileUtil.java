@@ -34,7 +34,7 @@ public class PropertyFileUtil {
 		String propFile = outputFolder + "/src/environment/" + propertyFile + ".properties";
 
 		// TODO: Replace with sl4j!
-		System.err.println("Appending to property file: " + propFile);
+		System.err.println("[INFO] Appending to property file: " + propFile);
 		
 	    return new PrintWriter(new BufferedWriter(new FileWriter(propFile, true)));
 	}

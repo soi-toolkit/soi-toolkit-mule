@@ -57,7 +57,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		
     public void startGenerator() {
 
-    	System.err.println("### A BRAND NEW REQUEST-RESPONSE-SERVICE IS ON ITS WAY..., INB: " + m.getInboundTransport() + ", OUTB: " + m.getOutboundTransport() + ", TRANSFORMER: " + m.getTransformerType());
+    	gu.logInfo("Creates a Request/Response-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
@@ -180,7 +180,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		String xml = null;
 		try {
 			
-//		    System.err.println("### ADD: " + xmlFragment + " to " + file);
+			gu.logDebug("Add: " + xmlFragment + " to " + file);
 			content = new FileInputStream(file);
 			
 			Document doc = createDocument(content);
@@ -191,19 +191,16 @@ public class RequestResponseServiceGenerator implements Generator {
 			// First verify that the dependency does not exist already
 			NodeList testList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies/ns:dependency/ns:artifactId[.='" + artifactId + "']");
 			if (testList.getLength() > 0) {
-				// TODO: Replace with sl4j!
-				System.err.println("### Fragment already exists, bail out!!!");
+				gu.logDebug("Fragment already exists, bail out!!!");
 				return;
 			}
 			
 			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:project/ns:dependencies");
 			Node root = rootList.item(0);
-//		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName()));		    
 		    
 		    appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
-//			System.err.println(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -221,14 +218,11 @@ public class RequestResponseServiceGenerator implements Generator {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
-	
-//	    System.err.println("### UPDATED: " + file);
 	}
 
 	private PrintWriter openFileForOverwrite(String filename) throws IOException {
 
-		// TODO: Replace with sl4j!
-		System.err.println("Overwrite file: " + filename);
+		gu.logDebug("Overwrite file: " + filename);
 
 	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
 	}

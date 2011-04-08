@@ -65,7 +65,7 @@ public class SystemUtil {
 	            while ((line = br.readLine()) != null) {
 	                out.println(type + line);    
 	            }
-	            System.err.println("### ThreadedStreamReader terminates for type: " + type);
+	            System.err.println("[INFO] ThreadedStreamReader terminates for type: " + type);
             } catch (IOException ioe) {
                 ioe.printStackTrace();  
             }

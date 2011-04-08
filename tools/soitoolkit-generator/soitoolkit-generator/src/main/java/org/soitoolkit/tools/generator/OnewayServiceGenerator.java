@@ -68,7 +68,7 @@ public class OnewayServiceGenerator implements Generator {
 		
     public void startGenerator() {
 
-    	System.err.println("### A BRAND NEW ONE-WAY-SERVICE IS ON ITS WAY..., INB: " + m.getInboundTransport() + ", OUTB: " + m.getOutboundTransport());
+    	gu.logInfo("Creates a OneWay-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 
@@ -371,16 +371,14 @@ public class OnewayServiceGenerator implements Generator {
 
 	private PrintWriter openFileForAppend(String filename) throws IOException {
 
-		// TODO: Replace with sl4j!
-		System.err.println("Appending to file: " + filename);
+		gu.logDebug("Appending to file: " + filename);
 
 	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
 	}
 
 	private PrintWriter openFileForOverwrite(String filename) throws IOException {
 
-		// TODO: Replace with sl4j!
-		System.err.println("Overwrite file: " + filename);
+		gu.logDebug("Overwrite file: " + filename);
 
 	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
 	}
@@ -389,7 +387,7 @@ public class OnewayServiceGenerator implements Generator {
 		InputStream content = null;
 		String xml = null;
 		try {
-		    System.err.println("### ADD: " + xmlFragment + " to " + file);
+			gu.logDebug("Add: " + xmlFragment + " to " + file);
 			content = new FileInputStream(file);
 			Document doc = createDocument(content);
 
@@ -399,12 +397,11 @@ public class OnewayServiceGenerator implements Generator {
 
 			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:mule/jdbc:connector");
 			Node root = rootList.item(0);
-		    System.err.println("### ROOT NODE: " + ((root == null) ? " NULL" : root.getLocalName()));		    
+			gu.logDebug("Root node: " + ((root == null) ? " NULL" : root.getLocalName()));		    
 		    
 		    appendXmlFragment(root, xmlFragment);
 			
 			xml = getXml(doc);
-			System.err.println(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -423,8 +420,6 @@ public class OnewayServiceGenerator implements Generator {
 			if (pw != null) {pw.close();}
 		}
 	
-	    System.err.println("### UPDATED: " + file);
-	
+		gu.logInfo("Updated: " + file);
 	}
-	
 }

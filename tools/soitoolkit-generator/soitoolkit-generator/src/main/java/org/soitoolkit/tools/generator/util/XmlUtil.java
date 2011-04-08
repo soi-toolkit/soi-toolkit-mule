@@ -174,7 +174,6 @@ public class XmlUtil {
 	    fragmentNode = doc.importNode(fragmentNode, true);
 	    
 	    parent.appendChild(fragmentNode);
-//	    System.err.println("### ADDED: " + fragment + " node " + parent.getLocalName());
 	}
 
     public static String getXml(Document doc) {

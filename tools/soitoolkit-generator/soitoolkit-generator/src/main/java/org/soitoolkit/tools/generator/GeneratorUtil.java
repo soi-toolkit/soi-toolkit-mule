@@ -315,13 +315,13 @@ public class GeneratorUtil {
 		if (out != null) try {out.close();} catch (IOException ioe) {}
 	}
 
-	private void logWarn(String msg) {
+	public void logWarn(String msg) {
 		if (logLevel >= LOG_WARN) ps.println("[WARN] " + msg);
 	}
-	private void logInfo(String msg) {
+	public void logInfo(String msg) {
 		if (logLevel >= LOG_INFO) ps.println("[INFO] " + msg);
 	}
-	private void logDebug(String msg) {
+	public void logDebug(String msg) {
 		if (logLevel >= LOG_DEBUG) ps.println("[DEBUG] " + msg);
 	}
 

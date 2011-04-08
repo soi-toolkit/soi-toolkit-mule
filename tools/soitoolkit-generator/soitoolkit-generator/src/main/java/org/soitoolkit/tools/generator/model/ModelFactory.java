@@ -80,7 +80,7 @@ public class ModelFactory {
      */
 	public static void resetModelClass() {
 		ModelFactory.modelClass = DefaultModelImpl.class;
-    	System.err.println("### Reset model-class: " + ModelFactory.modelClass.getName());
+    	System.err.println("[INFO] Reset model-class: " + ModelFactory.modelClass.getName());
 	}
 
     /**

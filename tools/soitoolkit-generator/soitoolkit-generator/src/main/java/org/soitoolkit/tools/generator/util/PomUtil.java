@@ -21,6 +21,7 @@ import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
 import static org.soitoolkit.tools.generator.util.XmlUtil.getFirstValue;
 import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
 import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
+import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_ARTIFACT_ID_KEY;
 
 import java.io.InputStream;
 
@@ -37,14 +38,14 @@ public class PomUtil {
     }
 
 	public static IModel extractGroupIdAndArtifactIdFromPom(InputStream content) {
-		String nsPrefix = "ns";
-		String nsURI = "http://maven.apache.org/POM/4.0.0";
+
 		Document doc = createDocument(content);
 
 		String docComment = getDocumentComment(doc);
-		// TODO: Extract as constant...
-		String artifactId = lookupParameterValue("soi-toolkit.gen.artifactId", docComment);
+		String artifactId = lookupParameterValue(GEN_METADATA_ARTIFACT_ID_KEY, docComment);
 
+		String nsPrefix = "ns";
+		String nsURI = "http://maven.apache.org/POM/4.0.0";
 		String parentGroupId = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:parent/ns:groupId/text()"));
 		String groupId       = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
 		if (groupId == null) groupId = parentGroupId;
