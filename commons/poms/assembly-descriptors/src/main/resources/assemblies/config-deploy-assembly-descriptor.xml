@@ -1,0 +1,47 @@
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
+  <id>config-deploy</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>src/environment</directory>      
+      <includes>
+        <include>*.properties</include>
+        <include>*.xml</include>
+      </includes>
+      <!-- the dir below app.home must be named like the integration component,
+        not like the service-project, so we pick up the parents name here
+      -->
+      <outputDirectory>${project.parent.artifactId}/config</outputDirectory>
+      <useDefaultExcludes>true</useDefaultExcludes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <!-- we can't just create an empty dir, use one of the known files as a marker -->
+      <source>src/environment/log4j.xml</source>
+      <outputDirectory>${project.parent.artifactId}/logs</outputDirectory>
+      <destName>.deleteme</destName>
+    </file>
+  </files>  
+</assembly>
