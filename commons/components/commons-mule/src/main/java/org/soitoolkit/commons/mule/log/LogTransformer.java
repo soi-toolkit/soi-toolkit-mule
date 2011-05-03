@@ -17,6 +17,9 @@
 package org.soitoolkit.commons.mule.log;
 
 import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
 
 import java.util.Map;
 
@@ -72,9 +75,25 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	/*
 	 * Property logType 
 	 */
-	private String logType;
+	private String logType = "";
 	public void setLogType(String logType) {
 		this.logType = logType;
+	}
+
+	/*
+	 * Property integrationScenario 
+	 */
+	private String integrationScenario = "";
+	public void setIntegrationScenario(String integrationScenario) {
+		this.integrationScenario = integrationScenario;
+	}
+
+	/*
+	 * Property contractId 
+	 */
+	private String contractId = "";
+	public void setContractId(String contractId) {
+		this.contractId = contractId;
 	}
 
 	/*
@@ -148,13 +167,13 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 			case INFO:
 			case DEBUG:
 			case TRACE:
-				eventLogger.logInfoEvent(message, logType, null, extraInfo);
+				eventLogger.logInfoEvent(message, logType, integrationScenario, contractId, null, extraInfo);
 				break;
 
 			case FATAL:
 			case ERROR:
 			case WARNING:
-				eventLogger.logErrorEvent(new RuntimeException(logType), message, null, extraInfo);
+				eventLogger.logErrorEvent(new RuntimeException(logType), message, integrationScenario, contractId, null, extraInfo);
 				break;
 			}
 

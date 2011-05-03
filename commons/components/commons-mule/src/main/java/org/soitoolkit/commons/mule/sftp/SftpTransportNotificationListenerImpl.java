@@ -82,7 +82,7 @@ public class SftpTransportNotificationListenerImpl implements SftpTransportNotif
 			action += " (" + info + ")";
 		}
 
-		eventLogger.logInfoEvent(message, action, null, null);
+		eventLogger.logInfoEvent(message, action, null, null, null, null);
 	}
 
 }

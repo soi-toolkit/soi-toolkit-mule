@@ -143,11 +143,13 @@ public class EventLogger implements MuleContextAware {
 	public void logInfoEvent (
 		MuleMessage message,
 		String      logMessage,
+		String      integrationScenario, 
+		String      contractId, 
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
 		
 		if (messageLogger.isInfoEnabled()) {
-			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, businessContextId, extraInfo, message.getPayload(), null);
+			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, integrationScenario, contractId, businessContextId, extraInfo, message.getPayload(), null);
 			
 			String xmlString = JAXB_UTIL.marshal(logEvent);
 			dispatchInfoEvent(xmlString);
@@ -160,10 +162,12 @@ public class EventLogger implements MuleContextAware {
 	public void logErrorEvent (
 		Throwable   error,
 		MuleMessage message,
+		String      integrationScenario, 
+		String      contractId, 
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
 
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), businessContextId, extraInfo, message.getPayload(), error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), integrationScenario, contractId, businessContextId, extraInfo, message.getPayload(), error);
 		
 		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
 		messageLogger.error(logMsg);
@@ -178,7 +182,7 @@ public class EventLogger implements MuleContextAware {
 		Map<String, String> businessContextId,
 		Map<String, String> extraInfo) {
 
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), businessContextId, extraInfo, payload, error);
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), null, null, businessContextId, extraInfo, payload, error);
 
 		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
 		messageLogger.error(logMsg);
@@ -436,7 +440,7 @@ public class EventLogger implements MuleContextAware {
 		LogLevelType logLevel,
 		MuleMessage message, 
 		String logMessage,
-		Map<String, String> businessContextId,
+		String argIntegrationScenario, String argContractId, Map<String, String> businessContextId,
 		Map<String, String> extraInfo,
 		Object payload,
 		Throwable exception) {
@@ -480,6 +484,16 @@ public class EventLogger implements MuleContextAware {
 			businessCorrelationId = message.getInboundProperty(SOITOOLKIT_CORRELATION_ID, "");
 			integrationScenarioId = message.getInboundProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
 			propertyBusinessContextId = message.getInboundProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
+			
+			// Override contract id from the message properties with the supplied one from the log-call, if any
+			if (argContractId != null && argContractId.length() > 0) {
+				contractId = argContractId;
+			}
+
+			// Override contract id from the message properties with the supplied one from the log-call, if any
+			if (argIntegrationScenario != null && argIntegrationScenario.length() > 0) {
+				integrationScenarioId = argIntegrationScenario;
+			}
 		}
 
 		String componentId = getServerId();
