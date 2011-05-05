@@ -24,6 +24,7 @@ import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
 import org.mule.api.context.MuleContextAware;
 import org.mule.config.ExceptionHelper;
+import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
@@ -59,15 +60,23 @@ public class ExceptionHandler implements MuleContextAware { // extends DefaultEx
         {
         	if (muleException instanceof MessagingException) {
         		MessagingException me = (MessagingException)muleException;
-            	eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
-
+            	//eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
+        		EventLogMessage elm = new EventLogMessage();
+        		elm.setMuleMessage(me.getMuleMessage());
+        		eventLogger.logErrorEvent(muleException, elm);
         	} else {
                 Map<String, Object> info = ExceptionHelper.getExceptionInfo(muleException);
-            	eventLogger.logErrorEvent(muleException, info.get("Payload"), null, null);
+            	//eventLogger.logErrorEvent(muleException, info.get("Payload"), null, null);
+        		EventLogMessage elm = new EventLogMessage();
+        		//elm.setMuleMessage(message);
+        		eventLogger.logErrorEvent(muleException, info.get("Payload"), elm);
         	}
         	
         } else {
-        	eventLogger.logErrorEvent(t, (Object)null, null, null);
+        	//eventLogger.logErrorEvent(t, (Object)null, null, null);
+    		EventLogMessage elm = new EventLogMessage();
+    		//elm.setMuleMessage(message);	
+    		eventLogger.logErrorEvent(t, elm);        	
         }
 	}
 
@@ -76,7 +85,10 @@ public class ExceptionHandler implements MuleContextAware { // extends DefaultEx
 //		This type of fatal error (i.e. problem with the error handling itself) is best to log both with Mule's standard error-logging and our own
 //		super.logFatal(message, t);
 
-		eventLogger.logErrorEvent(t, message, null, null);
+		//eventLogger.logErrorEvent(t, message, null, null);
+		EventLogMessage elm = new EventLogMessage();
+		elm.setMuleMessage(message);		
+		eventLogger.logErrorEvent(t, elm);		
 	}
 
 }

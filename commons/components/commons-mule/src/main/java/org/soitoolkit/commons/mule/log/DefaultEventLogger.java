@@ -65,6 +65,7 @@ import org.soitoolkit.commons.logentry.schema.v1.LogMessageType;
 import org.soitoolkit.commons.logentry.schema.v1.LogMetadataInfoType;
 import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType;
 import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType.BusinessContextId;
+import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
@@ -120,6 +121,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	}
 
 	public DefaultEventLogger() {
+		log.debug("constructor");
 	}
 
 
@@ -141,7 +143,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		this.jaxbToXml  = jaxbToXml;
 	}
 
-	public void logInfoEvent (
+	private void logInfoEvent (
 		MuleMessage message,
 		String      logMessage,
 		String      integrationScenario, 
@@ -160,7 +162,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		}
 	}
 
-	public void logErrorEvent (
+	private void logErrorEvent (
 		Throwable   error,
 		MuleMessage message,
 		String      integrationScenario, 
@@ -177,7 +179,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		dispatchErrorEvent(xmlString);
 	}
 
-	public void logErrorEvent (
+	private void logErrorEvent (
 		Throwable   error,
 		Object      payload,
 		Map<String, String> businessContextId,
@@ -195,13 +197,19 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 
 	//----------------
 	
-	private void dispatchInfoEvent(String msg) {
+	/**
+	 * Hook for sub-classes.
+	 */
+	protected void dispatchInfoEvent(String msg) {
 		dispatchEvent("SOITOOLKIT.LOG.INFO", msg);
 //		dispatchEvent("vm://soitoolkit-info-log", msg);
 //		dispatchEvent("soitoolkit-info-log-endpoint", msg);
 	}
 
-	private void dispatchErrorEvent(String msg) {
+	/**
+	 * Hook for sub-classes.
+	 */	
+	protected void dispatchErrorEvent(String msg) {
 		dispatchEvent("SOITOOLKIT.LOG.ERROR", msg);
 //		dispatchEvent("vm://soitoolkit-error-log", msg);
 //		dispatchEvent("soitoolkit-error-log-endpoint", msg);
@@ -231,7 +239,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		return s;
 	}
 
-	public void sendOneTextMessage(Session session, String queueName, String message) {
+	private void sendOneTextMessage(Session session, String queueName, String message) {
 
         MessageProducer publisher = null;
 
@@ -628,6 +636,21 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		
 		// We are actually done :-)
 		return logEvent;
+	}
+
+	public void logInfoEvent(EventLogMessage elm) {
+		logInfoEvent(elm.getMuleMessage(), elm.getLogMessage(), elm.getIntegrationScenario(),
+				elm.getContractId(), elm.getBusinessContextId(), elm.getExtraInfo());		
+	}
+
+	public void logErrorEvent(Throwable error, EventLogMessage elm) {
+		logErrorEvent(error, elm.getMuleMessage(), elm.getIntegrationScenario(),
+				elm.getContractId(), elm.getBusinessContextId(), elm.getExtraInfo());
+	}
+
+	public void logErrorEvent(Throwable error, Object payload,
+			EventLogMessage elm) {
+		logErrorEvent(error, payload, elm.getBusinessContextId(), elm.getExtraInfo());
 	}
 
 }

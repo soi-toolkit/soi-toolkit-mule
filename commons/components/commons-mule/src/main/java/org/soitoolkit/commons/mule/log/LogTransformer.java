@@ -33,6 +33,7 @@ import org.mule.transport.http.HttpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
+import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
 
@@ -173,20 +174,62 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 			case INFO:
 			case DEBUG:
 			case TRACE:
-				eventLogger.logInfoEvent(message, logType, integrationScenario, contractId, null, extraInfo);
+				//eventLogger.logInfoEvent(message, logType, integrationScenario, contractId, null, extraInfo);
+				EventLogMessage infoMsg = new EventLogMessage();
+				infoMsg.setMuleMessage(message);
+				infoMsg.setLogMessage(logType);
+				infoMsg.setIntegrationScenario(integrationScenario);
+				infoMsg.setContractId(contractId);
+				//elm.setBusinessContextId(null); // will be used in a near future ...
+				infoMsg.setExtraInfo(extraInfo);
+				
+				eventLogger.logInfoEvent(infoMsg);
 				break;
 
 			case FATAL:
 			case ERROR:
 			case WARNING:
-				eventLogger.logErrorEvent(new RuntimeException(logType), message, integrationScenario, contractId, null, extraInfo);
+				//eventLogger.logErrorEvent(new RuntimeException(logType), message, integrationScenario, contractId, null, extraInfo);
+				EventLogMessage errorMsg = new EventLogMessage();
+				errorMsg.setMuleMessage(message);
+				//errorMsg.setLogMessage(logType);
+				errorMsg.setIntegrationScenario(integrationScenario);
+				errorMsg.setContractId(contractId);
+				//elm.setBusinessContextId(null); // will be used in a near future ...
+				errorMsg.setExtraInfo(extraInfo);
+				
+				eventLogger.logErrorEvent(new RuntimeException(logType), errorMsg);
 				break;
 			}
 
 			return message;
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			// be specific about where logging failed, failure might be data-related
+			StringBuilder errMsg = new StringBuilder();
+			errMsg.append("failed to log event, logType: ");
+			errMsg.append(logType);
+			errMsg.append(", integrationScenario: ");
+			errMsg.append(integrationScenario);
+			errMsg.append(", contractId: ");
+			errMsg.append(contractId);
+			errMsg.append(", extraInfo: ");
+			if (extraInfo != null) {
+				for (String key : extraInfo.keySet()) {
+					errMsg.append("\n  key: ");
+					errMsg.append(key);
+					errMsg.append(", value: ");
+					errMsg.append(extraInfo.get(key));
+				}
+			}
+			else {
+				errMsg.append("null");
+			}
+						
+			log.error(errMsg.toString(), e);
+			
+			// TODO: should we really re-throw in cases like this where logging have failed? or
+			// should we continue and don't let logging fail message flow?
+			throw new RuntimeException(errMsg.toString(), e);
 		}
     }
 }

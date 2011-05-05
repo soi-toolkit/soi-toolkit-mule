@@ -16,32 +16,32 @@
  */
 package org.soitoolkit.commons.mule.api.log;
 
-import java.util.Map;
-
-import org.mule.api.MuleMessage;
-
 public interface EventLogger {
 
-	public void logInfoEvent(MuleMessage message, String logMessage,
-			String integrationScenario, String contractId,
-			Map<String, String> businessContextId, Map<String, String> extraInfo);
-
-	public void logErrorEvent(Throwable error, MuleMessage message,
-			String integrationScenario, String contractId,
-			Map<String, String> businessContextId, Map<String, String> extraInfo);
-
-	// TODO:
-	// 1. försök förena payload här med MuleMessage --> en method
-	// 2. alt om ej görbart: exponera i metod istf command-obj --> två
-	// err-methods
-	public void logErrorEvent(Throwable error, Object payload,
-			Map<String, String> businessContextId, Map<String, String> extraInfo);
-
+	/*
+	 * public void logInfoEvent(MuleMessage message, String logMessage, String
+	 * integrationScenario, String contractId, Map<String, String>
+	 * businessContextId, Map<String, String> extraInfo);
+	 */
+	/*
+	 * public void logErrorEvent(Throwable error, MuleMessage message, String
+	 * integrationScenario, String contractId, Map<String, String>
+	 * businessContextId, Map<String, String> extraInfo);
+	 */
+	/*
+	 * public void logErrorEvent(Throwable error, Object payload, Map<String,
+	 * String> businessContextId, Map<String, String> extraInfo);
+	 */
 	/*
 	 * //TODO: ugly but required by LogTransformer ... public void
 	 * setJaxbToXml(JaxbObjectToXmlTransformer jaxbToXml);
 	 */
-	// public void logInfoEvent(LogMessage
-	// public void logErrorEvent(Throwable error, LogMessage
+
+	public void logInfoEvent(EventLogMessage eventLogMessage);
+
+	public void logErrorEvent(Throwable error, EventLogMessage eventLogMessage);
+
+	public void logErrorEvent(Throwable error, Object payload,
+			EventLogMessage eventLogMessage);
 
 }

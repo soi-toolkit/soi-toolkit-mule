@@ -24,6 +24,7 @@ import org.mule.transport.sftp.notification.SftpTransportNotification;
 import org.mule.transport.sftp.notification.SftpTransportNotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
@@ -83,7 +84,11 @@ public class SftpTransportNotificationListenerImpl implements SftpTransportNotif
 			action += " (" + info + ")";
 		}
 
-		eventLogger.logInfoEvent(message, action, null, null, null, null);
+		//eventLogger.logInfoEvent(message, action, null, null, null, null);
+		EventLogMessage elm = new EventLogMessage();
+		elm.setMuleMessage(message);
+		elm.setLogMessage(action);		
+		eventLogger.logInfoEvent(elm);
 	}
 
 }

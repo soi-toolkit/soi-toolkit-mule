@@ -23,6 +23,7 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.config.ExceptionHelper;
 import org.mule.exception.DefaultServiceExceptionStrategy;
+import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
@@ -51,16 +52,25 @@ public class ServiceExceptionStrategy extends DefaultServiceExceptionStrategy {
         {
         	if (muleException instanceof MessagingException) {
         		MessagingException me = (MessagingException)muleException;
-            	eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
+            	//eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
+        		EventLogMessage elm = new EventLogMessage();
+        		elm.setMuleMessage(me.getMuleMessage());
+        		eventLogger.logErrorEvent(muleException, elm);                
 
         	} else {
                 @SuppressWarnings("unchecked")
 				Map<String, Object> info = ExceptionHelper.getExceptionInfo(muleException);
-            	eventLogger.logErrorEvent(muleException, info.get("Payload"), null, null);
+            	//eventLogger.logErrorEvent(muleException, info.get("Payload"), null, null);
+        		EventLogMessage elm = new EventLogMessage();
+        		//elm.setMuleMessage(message);
+        		eventLogger.logErrorEvent(muleException, info.get("Payload"), elm);                
         	}
         	
         } else {
-        	eventLogger.logErrorEvent(t, (Object)null, null, null);
+        	//eventLogger.logErrorEvent(t, (Object)null, null, null);
+    		EventLogMessage elm = new EventLogMessage();
+    		//elm.setMuleMessage(message);		
+    		eventLogger.logErrorEvent(t, null, elm);
         }
 	}
 }
