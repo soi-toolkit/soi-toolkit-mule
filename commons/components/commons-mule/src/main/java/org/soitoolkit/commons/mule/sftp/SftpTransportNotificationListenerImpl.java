@@ -24,7 +24,8 @@ import org.mule.transport.sftp.notification.SftpTransportNotification;
 import org.mule.transport.sftp.notification.SftpTransportNotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.soitoolkit.commons.mule.log.EventLogger;
+import org.soitoolkit.commons.mule.api.log.EventLogger;
+import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
 /**
  * SFTP Transport notification listener that uses the event-logger for logging
@@ -35,7 +36,7 @@ public class SftpTransportNotificationListenerImpl implements SftpTransportNotif
 
 	private static final Logger logger = LoggerFactory.getLogger(SftpTransportNotificationListenerImpl.class);
 
-	private static final EventLogger eventLogger = new EventLogger();
+	private EventLogger eventLogger;
 
 	public SftpTransportNotificationListenerImpl() {
 		logger.debug("SftpTransportNotificationListenerImpl Created");
@@ -50,7 +51,7 @@ public class SftpTransportNotificationListenerImpl implements SftpTransportNotif
 		this.muleContext = muleContext;
 
 		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
-		eventLogger.setMuleContext(this.muleContext);
+		eventLogger = EventLoggerFactory.getEventLogger(muleContext);		
 	}
 	
 	public void onNotification(ServerNotification notification) {

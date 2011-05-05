@@ -18,12 +18,14 @@ package org.soitoolkit.commons.mule.error;
 
 import java.util.Map;
 
-//import org.mule.DefaultExceptionStrategy;
 import org.mule.api.MessagingException;
+import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
+import org.mule.api.context.MuleContextAware;
 import org.mule.config.ExceptionHelper;
-import org.soitoolkit.commons.mule.log.EventLogger;
+import org.soitoolkit.commons.mule.api.log.EventLogger;
+import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
 /**
  * FIXME: Needs to be reimplemented for Mule 3.1's MessagingExceptionHandler and SystemExceptionHandler-interface
@@ -33,9 +35,15 @@ import org.soitoolkit.commons.mule.log.EventLogger;
  * @author Magnus Larsson
  *
  */
-public class ExceptionHandler { // extends DefaultExceptionStrategy {
+public class ExceptionHandler implements MuleContextAware { // extends DefaultExceptionStrategy {
 
-	private static final EventLogger eventLogger = new EventLogger();
+	private EventLogger eventLogger;
+	
+	private MuleContext muleContext;
+	public void setMuleContext(MuleContext muleContext) {
+		this.muleContext = muleContext;
+		eventLogger = EventLoggerFactory.getEventLogger(muleContext);
+	}	
 
 	@SuppressWarnings("unchecked")
 //	@Override
@@ -70,4 +78,5 @@ public class ExceptionHandler { // extends DefaultExceptionStrategy {
 
 		eventLogger.logErrorEvent(t, message, null, null);
 	}
+
 }

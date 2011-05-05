@@ -33,6 +33,7 @@ import org.mule.transport.http.HttpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
+import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
 
 
@@ -49,7 +50,7 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 
 	private static final Logger log = LoggerFactory.getLogger(LogTransformer.class);
 
-	private final EventLogger eventLogger;
+	private EventLogger eventLogger;
 
 	// FIXME: Mule 3.1. To be removed since it's already in base class for Mule 3.1
 	/*
@@ -61,7 +62,11 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 		this.muleContext = muleContext;
 		
 		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
-		eventLogger.setMuleContext(this.muleContext);
+		eventLogger = EventLoggerFactory.getEventLogger(muleContext);
+		// TODO: this is an ugly workaround for injecting the jaxbObjToXml dependency ...
+		if (eventLogger instanceof DefaultEventLogger) {
+			((DefaultEventLogger) eventLogger).setJaxbToXml(jaxbObjectToXml);
+		}
 	}
 
 	/*
@@ -117,7 +122,7 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	}
 
 	public LogTransformer() {
-		eventLogger = new EventLogger();		
+		//eventLogger = new DefaultEventLogger();		
 	}
 
 	/**
@@ -125,8 +130,9 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	 * 
 	 * @param jaxbToXml
 	 */
+	private JaxbObjectToXmlTransformer jaxbObjectToXml;
 	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxbToXml) {
-		eventLogger.setJaxbToXml(jaxbToXml);
+		this.jaxbObjectToXml = jaxbToXml;
 	}
 	
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {

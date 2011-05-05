@@ -65,6 +65,7 @@ import org.soitoolkit.commons.logentry.schema.v1.LogMessageType;
 import org.soitoolkit.commons.logentry.schema.v1.LogMetadataInfoType;
 import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType;
 import org.soitoolkit.commons.logentry.schema.v1.LogRuntimeInfoType.BusinessContextId;
+import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.commons.mule.util.MuleUtil;
@@ -76,13 +77,13 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
  * @author Magnus Larsson
  *
  */
-public class EventLogger implements MuleContextAware {
+public class DefaultEventLogger implements EventLogger, MuleContextAware {
 
 	private static final String CAUSE_EXCEPTION_HEADER = "CauseException";
 
 	private static final Logger messageLogger = LoggerFactory.getLogger("org.soitoolkit.commons.mule.messageLogger");
 
-	private static final Logger log = LoggerFactory.getLogger(EventLogger.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultEventLogger.class);
 
 	// Creating JaxbUtil objects (i.e. JaxbContext objects)  are costly, so we only keep one instance.
 	// According to https://jaxb.dev.java.net/faq/index.html#threadSafety this should be fine since they are thread safe!
@@ -118,7 +119,7 @@ public class EventLogger implements MuleContextAware {
 		}
 	}
 
-	public EventLogger() {
+	public DefaultEventLogger() {
 	}
 
 

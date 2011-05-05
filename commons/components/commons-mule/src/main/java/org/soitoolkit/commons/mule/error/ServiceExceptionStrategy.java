@@ -23,7 +23,8 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.config.ExceptionHelper;
 import org.mule.exception.DefaultServiceExceptionStrategy;
-import org.soitoolkit.commons.mule.log.EventLogger;
+import org.soitoolkit.commons.mule.api.log.EventLogger;
+import org.soitoolkit.commons.mule.log.EventLoggerFactory;
 
 /**
  * Base exception handler that catch errors and log them using the event-logger.
@@ -33,11 +34,11 @@ import org.soitoolkit.commons.mule.log.EventLogger;
  */
 public class ServiceExceptionStrategy extends DefaultServiceExceptionStrategy {
 
-	private final EventLogger eventLogger = new EventLogger();
+	private final EventLogger eventLogger;
 
 	public ServiceExceptionStrategy(MuleContext muleContext) {
 		super(muleContext);
-		eventLogger.setMuleContext(muleContext);
+		eventLogger = EventLoggerFactory.getEventLogger(muleContext);
 	}
 
 	@Override
