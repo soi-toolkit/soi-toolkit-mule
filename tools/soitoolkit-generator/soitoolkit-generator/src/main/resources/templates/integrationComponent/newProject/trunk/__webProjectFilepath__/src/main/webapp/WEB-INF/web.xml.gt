@@ -42,7 +42,7 @@
 	<servlet>
 	    <servlet-name>myMuleServlet</servlet-name>
 	    <servlet-class>org.mule.transport.servlet.MuleReceiverServlet</servlet-class>
-	    <load-on-startup/>
+	    <load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 	    <servlet-name>myMuleServlet</servlet-name>
