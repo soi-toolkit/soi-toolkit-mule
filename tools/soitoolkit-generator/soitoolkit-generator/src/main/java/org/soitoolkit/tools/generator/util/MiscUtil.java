@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+
 public class MiscUtil {
 	/**
      * Hidden constructor.
@@ -63,5 +65,12 @@ public class MiscUtil {
         }
         return sb.toString();
     }
+
+     public static TransportEnum[] appendTransport(TransportEnum[] transports, TransportEnum newTransport) {
+		TransportEnum[] newArr = new TransportEnum[transports.length + 1];
+		System.arraycopy(transports, 0, newArr, 0, transports.length);
+		newArr[newArr.length - 1] = newTransport;
+		return newArr;
+	}
 
 }

@@ -26,6 +26,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
+import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
@@ -84,9 +85,8 @@ public class RequestResponseServiceGeneratorTest {
 		TransportEnum[] inboundTransports  = {SOAPHTTP};
 		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
 
-		// FIXME, ADD SOAPSERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
-			inboundTransports  = new TransportEnum[] {SOAPHTTP, SOAPSERVLET};
+			inboundTransports = appendTransport(inboundTransports, SOAPSERVLET);
 		}
 
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	

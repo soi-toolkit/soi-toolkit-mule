@@ -32,6 +32,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
+import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
@@ -88,11 +89,10 @@ public class OneWayServiceGeneratorTest {
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP}; // Waiting for embedded SFTP: SFTP, //, IMAP}; // POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP}; // Waiting for embedded SFTP: SFTP, //, SMTP};  
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP};       // Waiting for embedded SFTP: SFTP, //, SMTP};  
 
-		// FIXME, ADD SERVLET INSTEAD OF REDEFINE THE WHOLE ARRAY!!!
 		if (deploymentModel == WAR_DEPLOY) {
-			inboundTransports  = new TransportEnum[] {VM, JMS, JDBC, FILE, FTP, HTTP, SERVLET}; // Waiting for embedded SFTP: SFTP, //, IMAP}; // POP3
+			inboundTransports = appendTransport(inboundTransports, SERVLET);
 		}
 		
 		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
