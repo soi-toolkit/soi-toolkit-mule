@@ -20,7 +20,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="testSftpServer" class="org.soitoolkit.commons.mule.test.sftp.SftpServer"
-			init-method="startServer">
+			init-method="startServer" destroy-method="stopServer">
 		<property name="port" value="2222"/>
 	</bean>
 
