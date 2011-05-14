@@ -70,7 +70,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 						<!-- Plugin-dependency to a shared assembly-descriptor that creates the zip-file -->
 						<groupId>org.soitoolkit.commons.poms</groupId>
 						<artifactId>soitoolkit-assembly-descriptors</artifactId>
-						<version>${soitoolkit.version}</version>
+						<version>${dollarSymbol}{soitoolkit.version}</version>
 					</dependency>
 				</dependencies>
 				<executions>
