@@ -32,7 +32,7 @@
 	<properties>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<cxf-gen.version>2.3.1</cxf-gen.version>
-		<mule.version>3.2.0</mule.version>
+		<mule.version>3.2.0-SNAPSHOT</mule.version>
 		<cxf.version>2.3.1</cxf.version>
 		<jaxb-api.version>2.1</jaxb-api.version>		
 		<jaxb-impl.version>2.1.10</jaxb-impl.version>
