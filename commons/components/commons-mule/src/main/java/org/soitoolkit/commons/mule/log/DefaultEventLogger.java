@@ -490,7 +490,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			
 			messageId             = message.getUniqueId();
 			contractId            = message.getInboundProperty(SOITOOLKIT_CONTRACT_ID, "");
-			businessCorrelationId = message.getInboundProperty(SOITOOLKIT_CORRELATION_ID, "");
+			businessCorrelationId = message.getSessionProperty(SOITOOLKIT_CORRELATION_ID, "");
 			integrationScenarioId = message.getInboundProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
 			propertyBusinessContextId = message.getInboundProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
 			

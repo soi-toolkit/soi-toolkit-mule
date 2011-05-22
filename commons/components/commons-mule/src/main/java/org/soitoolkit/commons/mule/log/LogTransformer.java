@@ -17,11 +17,12 @@
 package org.soitoolkit.commons.mule.log;
 
 import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleContext;
@@ -103,6 +104,26 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	}
 
 	/*
+	 * Property businessContextId 
+	 * 
+     * <custom-transformer name="logKivReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+	 * 	<spring:property name="logType"  value="Received"/>
+	 * 	<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+	 *    <spring:property name="businessContextId">
+	 *      <spring:map>
+	 *        <spring:entry key="id1" value="123"/>
+	 *        <spring:entry key="id2" value="456"/>
+	 *      </spring:map>
+	 *    </spring:property>
+     * </custom-transformer>
+	 * 
+	 */
+	private Map<String, String> businessContextId;
+	public void setBusinessContextId(Map<String, String> businessContextId) {
+		this.businessContextId = businessContextId;
+	}
+
+	/*
 	 * Property extraInfo 
 	 * 
      * <custom-transformer name="logKivReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
@@ -170,6 +191,21 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	    		}
     		}
     		
+
+    		Map<String, String> evaluatedExtraInfo         = evaluateInfo(extraInfo, message);
+    		Map<String, String> evaluatedBusinessContextId = evaluateInfo(businessContextId, message);
+
+    		if (log.isDebugEnabled()) {
+	    		if (evaluatedBusinessContextId == null) {
+	    			log.debug("Null businessContextId");
+	    		} else {
+	    			Set<Entry<String, String>> es = evaluatedBusinessContextId.entrySet();
+	    			for (Entry<String, String> e : es) {
+	    				log.debug(e.getKey() + "=" + e.getValue());
+					}
+	    		}
+    		}
+    		
     		switch (logLevel) {
 			case INFO:
 			case DEBUG:
@@ -180,8 +216,8 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 				infoMsg.setLogMessage(logType);
 				infoMsg.setIntegrationScenario(integrationScenario);
 				infoMsg.setContractId(contractId);
-				//elm.setBusinessContextId(null); // will be used in a near future ...
-				infoMsg.setExtraInfo(extraInfo);
+				infoMsg.setBusinessContextId(evaluatedBusinessContextId);
+				infoMsg.setExtraInfo(evaluatedExtraInfo);
 				
 				eventLogger.logInfoEvent(infoMsg);
 				break;
@@ -195,8 +231,8 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 				//errorMsg.setLogMessage(logType);
 				errorMsg.setIntegrationScenario(integrationScenario);
 				errorMsg.setContractId(contractId);
-				//elm.setBusinessContextId(null); // will be used in a near future ...
-				errorMsg.setExtraInfo(extraInfo);
+				errorMsg.setBusinessContextId(evaluatedBusinessContextId);
+				errorMsg.setExtraInfo(evaluatedExtraInfo);
 				
 				eventLogger.logErrorEvent(new RuntimeException(logType), errorMsg);
 				break;
@@ -212,6 +248,15 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 			errMsg.append(integrationScenario);
 			errMsg.append(", contractId: ");
 			errMsg.append(contractId);
+			errMsg.append(", businessContextId: ");
+			if (businessContextId != null) {
+				for (String key : businessContextId.keySet()) {
+					errMsg.append("\n  key: ");
+					errMsg.append(key);
+					errMsg.append(", value: ");
+					errMsg.append(businessContextId.get(key));
+				}
+			}
 			errMsg.append(", extraInfo: ");
 			if (extraInfo != null) {
 				for (String key : extraInfo.keySet()) {
@@ -232,4 +277,43 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 			throw new RuntimeException(errMsg.toString(), e);
 		}
     }
+
+	private Map<String, String> evaluateInfo(Map<String, String> map, MuleMessage message) {
+		
+		if (map == null) return null;
+		
+		Set<Entry<String, String>> ei = map.entrySet();
+		Map<String, String> evaluatedMap = new HashMap<String, String>();
+		for (Entry<String, String> entry : ei) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			try {
+				if(muleContext.getExpressionManager().isValidExpression(value.toString())) {
+		        	String before = value;
+		        	Object eval = muleContext.getExpressionManager().evaluate(value.toString(), message);
+
+		        	if (eval == null) {
+		        		value = "UNKNOWN";
+
+		        	} else if (eval instanceof List) {
+		        		@SuppressWarnings("rawtypes")
+						List l = (List)eval;
+		        		value = l.get(0).toString();
+
+		        	} else {
+		        		value = eval.toString();
+		        	}
+		        	if (log.isDebugEnabled()) {
+		        		log.debug("Evaluated extra-info for key: " + key + ", " + before + " ==> " + value);
+		        	}
+		        }
+			} catch (Throwable ex) {
+				String errMsg = "Faild to evaluate expression: " + key + " = " + value;
+				log.warn(errMsg, ex);
+				value = errMsg + ", " + ex;
+			}
+		    evaluatedMap.put(key, value);
+		}
+		return evaluatedMap;
+	}
 }
