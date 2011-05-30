@@ -48,14 +48,17 @@ public class ServiceExceptionStrategy extends DefaultServiceExceptionStrategy {
 //		super.logException(t);
         
 		MuleException muleException = ExceptionHelper.getRootMuleException(t);
-        if (muleException != null)
-        {
+        if (muleException != null) {
+        	
         	if (muleException instanceof MessagingException) {
         		MessagingException me = (MessagingException)muleException;
             	//eventLogger.logErrorEvent(muleException, me.getMuleMessage(), null, null);
         		EventLogMessage elm = new EventLogMessage();
         		elm.setMuleMessage(me.getMuleMessage());
-        		eventLogger.logErrorEvent(muleException, elm);                
+        		
+        		Throwable ex = (me.getCause() == null ? me : me.getCause());
+
+        		eventLogger.logErrorEvent(ex, elm);                
 
         	} else {
                 @SuppressWarnings("unchecked")

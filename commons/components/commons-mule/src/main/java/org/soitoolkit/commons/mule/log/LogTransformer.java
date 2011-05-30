@@ -29,7 +29,8 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.context.MuleContextAware;
 import org.mule.api.transformer.TransformerException;
-import org.mule.transformer.AbstractMessageAwareTransformer;
+import org.mule.message.ExceptionMessage;
+import org.mule.transformer.AbstractMessageTransformer;
 import org.mule.transport.http.HttpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +46,11 @@ import org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer;
  * 
  * 1. logLevel, accepts the values: FATAL, ERROR, WARNING, INFO, DEBUG and TRACE. Defaults to INFO. 
  * 2. logType, any string, could be "req-in" for a inbound synchronous endpoint or "msg-out" of outbound asynchronous endpoint
+ * 3. ...
  * 
  * @author Magnus Larsson
  */
-public class LogTransformer extends AbstractMessageAwareTransformer implements MuleContextAware {
+public class LogTransformer extends AbstractMessageTransformer implements MuleContextAware {
 
 	private static final Logger log = LoggerFactory.getLogger(LogTransformer.class);
 
@@ -57,11 +59,14 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 	// FIXME: Mule 3.1. To be removed since it's already in base class for Mule 3.1
 	/*
 	 * Property muleContext 
-	 */
+	 * /
 	private MuleContext muleContext = null;
+	*/
+	@Override
 	public void setMuleContext(MuleContext muleContext) {
+		super.setMuleContext(muleContext);
+
 		log.debug("MuleContext injected");
-		this.muleContext = muleContext;
 		
 		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
 		eventLogger = EventLoggerFactory.getEventLogger(muleContext);
@@ -157,7 +162,8 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 		this.jaxbObjectToXml = jaxbToXml;
 	}
 	
-	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
+	@Override
+	public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
     	try {
 			// Skip logging if an error has occurred, then the error is logged by an error handler
@@ -192,8 +198,8 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
     		}
     		
 
-    		Map<String, String> evaluatedExtraInfo         = evaluateInfo(extraInfo, message);
-    		Map<String, String> evaluatedBusinessContextId = evaluateInfo(businessContextId, message);
+    		Map<String, String> evaluatedExtraInfo         = evaluateMapInfo(extraInfo, message);
+    		Map<String, String> evaluatedBusinessContextId = evaluateMapInfo(businessContextId, message);
 
     		if (log.isDebugEnabled()) {
 	    		if (evaluatedBusinessContextId == null) {
@@ -234,7 +240,17 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 				errorMsg.setBusinessContextId(evaluatedBusinessContextId);
 				errorMsg.setExtraInfo(evaluatedExtraInfo);
 				
-				eventLogger.logErrorEvent(new RuntimeException(logType), errorMsg);
+				if (message.getPayload() instanceof ExceptionMessage) {
+					ExceptionMessage me = (ExceptionMessage)message.getPayload();
+					Throwable ex = me.getException();
+					if (ex.getCause() != null) {
+						ex = ex.getCause();
+					}
+					eventLogger.logErrorEvent(ex, errorMsg);
+				} else {
+					String evaluatedLogType = evaluateValue("logType", logType, message);
+					eventLogger.logErrorEvent(new RuntimeException(evaluatedLogType), errorMsg);
+				}
 				break;
 			}
 
@@ -278,7 +294,7 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 		}
     }
 
-	private Map<String, String> evaluateInfo(Map<String, String> map, MuleMessage message) {
+	private Map<String, String> evaluateMapInfo(Map<String, String> map, MuleMessage message) {
 		
 		if (map == null) return null;
 		
@@ -287,33 +303,38 @@ public class LogTransformer extends AbstractMessageAwareTransformer implements M
 		for (Entry<String, String> entry : ei) {
 			String key = entry.getKey();
 			String value = entry.getValue();
-			try {
-				if(muleContext.getExpressionManager().isValidExpression(value.toString())) {
-		        	String before = value;
-		        	Object eval = muleContext.getExpressionManager().evaluate(value.toString(), message);
-
-		        	if (eval == null) {
-		        		value = "UNKNOWN";
-
-		        	} else if (eval instanceof List) {
-		        		@SuppressWarnings("rawtypes")
-						List l = (List)eval;
-		        		value = l.get(0).toString();
-
-		        	} else {
-		        		value = eval.toString();
-		        	}
-		        	if (log.isDebugEnabled()) {
-		        		log.debug("Evaluated extra-info for key: " + key + ", " + before + " ==> " + value);
-		        	}
-		        }
-			} catch (Throwable ex) {
-				String errMsg = "Faild to evaluate expression: " + key + " = " + value;
-				log.warn(errMsg, ex);
-				value = errMsg + ", " + ex;
-			}
+			value = evaluateValue(key, value, message);
 		    evaluatedMap.put(key, value);
 		}
 		return evaluatedMap;
+	}
+
+	private String evaluateValue(String key, String value, MuleMessage message) {
+		try {
+			if(muleContext.getExpressionManager().isValidExpression(value.toString())) {
+		    	String before = value;
+		    	Object eval = muleContext.getExpressionManager().evaluate(value.toString(), message);
+
+		    	if (eval == null) {
+		    		value = "UNKNOWN";
+
+		    	} else if (eval instanceof List) {
+		    		@SuppressWarnings("rawtypes")
+					List l = (List)eval;
+		    		value = l.get(0).toString();
+
+		    	} else {
+		    		value = eval.toString();
+		    	}
+		    	if (log.isDebugEnabled()) {
+		    		log.debug("Evaluated extra-info for key: " + key + ", " + before + " ==> " + value);
+		    	}
+		    }
+		} catch (Throwable ex) {
+			String errMsg = "Faild to evaluate expression: " + key + " = " + value;
+			log.warn(errMsg, ex);
+			value = errMsg + ", " + ex;
+		}
+		return value;
 	}
 }
