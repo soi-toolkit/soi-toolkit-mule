@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
  * the end of SSH_FXP_DATA packages that cause files fetched with SFTP to grow
  * one bytes at the end.
  * 
+ * See: https://issues.apache.org/jira/browse/SSHD-105
+ * 
  * @author hakan
  */
 public class Patched050SftpSubsystem extends SftpSubsystem {
