@@ -47,6 +47,7 @@
 		<mule-module-commonretrypolicies>3.0.0</mule-module-commonretrypolicies>
 	    <derby.version>10.6.2.1</derby.version>
     	<hsql.version>1.8.0.7</hsql.version>
+    	<!-- Used by servlet-api-2.5 -->
 		<jetty.version>6.1.11</jetty.version>    	
 	</properties>
 

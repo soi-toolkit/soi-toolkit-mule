@@ -19,7 +19,6 @@ package org.soitoolkit.tools.generator;
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_1_1;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
@@ -73,12 +72,16 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	@Test
-	public void testRequestResponseServices310() throws IOException {
-		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA310",          MULE_3_1_1, STANDALONE_DEPLOY);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-310", MULE_3_1_1, STANDALONE_DEPLOY);
+	public void testRequestResponseServices() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+		
+		for (int i = 0; i < muleVersions.length; i++) {
+			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 
-		doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD310",          MULE_3_1_1, WAR_DEPLOY);
-		doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-310", MULE_3_1_1, WAR_DEPLOY);
+			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+		}
 	}
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {

@@ -19,7 +19,6 @@ package org.soitoolkit.tools.generator;
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_1_1;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
@@ -79,12 +78,16 @@ public class OneWayServiceGeneratorTest {
 	}
 
 	@Test
-	public void testOneWayServices310() throws IOException {
-		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA310",         MULE_3_1_1, STANDALONE_DEPLOY);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-310", MULE_3_1_1, STANDALONE_DEPLOY);
+	public void testOneWayServices() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+		
+		for (int i = 0; i < muleVersions.length; i++) {
+			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 
-		doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD310",         MULE_3_1_1, WAR_DEPLOY);
-		doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-310", MULE_3_1_1, WAR_DEPLOY);
+			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+		}
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {

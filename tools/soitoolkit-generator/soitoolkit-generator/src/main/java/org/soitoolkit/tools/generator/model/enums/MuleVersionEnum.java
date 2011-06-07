@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum MuleVersionEnum implements ILabeledEnum { 
-	MULE_3_1_1("3.1.1"); 
+	MULE_3_1_2("3.1.2"); 
 	
 	public static MuleVersionEnum get(int ordinal) {
 		return values()[ordinal];
@@ -50,6 +50,16 @@ public enum MuleVersionEnum implements ILabeledEnum {
 
 	// For generators to point out the right pom-file...
 	public String getPomSuffix() {return label;}
+
+	// For ver no with only numbers...
+	public String getVerNoNumbersOnly() {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < label.length(); i++) {
+			char c = label.charAt(i);
+			if (Character.isDigit(c)) sb.append(c);
+		}
+		return sb.toString();
+	}
 
 }
 
