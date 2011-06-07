@@ -36,10 +36,14 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
+	
+<% if (outboundTransport=="JMS") { %>
 	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
-
 	private static final long   SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Response timed out (" + SERVICE_TIMOUT_MS + "ms) waiting for message response id ";
+<% } else { %> 
+	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Read timed out";
+<% } %> 
 
 	private static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
 
@@ -128,11 +132,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 			Object response = consumer.callService(id);
 	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
         } catch (SOAPFaultException e) {
-/*
-			ISSUE 116: PROBLEM WITH ERROR HANDLING, NULL IS RETURNED INSTEAD OF A RELEVANT ERROR MESSAGE, SEE http://code.google.com/p/soi-toolkit/issues/detail?id=116
             assertTrue("Unexpected error message: " + e.getMessage(), e.getMessage().startsWith(EXPECTED_ERR_TIMEOUT_MSG));
-*/
-        	assertNull(e.getMessage());
         }
 
 		// Sleep for a short time period  to allow the JMS response message to be delivered, otherwise ActiveMQ data store seems to be corrupt afterwards...
