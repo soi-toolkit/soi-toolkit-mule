@@ -16,6 +16,7 @@
  */
 package org.soitoolkit.commons.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -101,7 +102,8 @@ public class XPathUtil {
 
 	static public Document createDocument(String content) {
 		try {
-			return getBuilder().parse(content);
+			InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+			return getBuilder().parse(is);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
