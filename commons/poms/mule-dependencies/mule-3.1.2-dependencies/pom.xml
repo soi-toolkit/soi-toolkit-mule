@@ -44,6 +44,8 @@
 		<activemq.version>5.2.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
         <xbean.version>3.4</xbean.version>
+        
+		<mule-transport-restlet.version>1.3</mule-transport-restlet.version>
 		<mule-module-commonretrypolicies>3.0.0</mule-module-commonretrypolicies>
 	    <derby.version>10.6.2.1</derby.version>
     	<hsql.version>1.8.0.7</hsql.version>
@@ -190,6 +192,11 @@
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-quartz</artifactId>
 			<version>${mule.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-restlet</artifactId>
+			<version>${mule-transport-restlet.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.transports</groupId>

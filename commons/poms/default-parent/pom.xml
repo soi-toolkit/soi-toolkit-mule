@@ -103,6 +103,11 @@
 			<name>MuleForge Repository</name>
 			<url>http://repository.muleforge.org</url>
 		</repository>
+		<repository>
+			<id>mulesoft</id>
+			<name>MuleSoft Repository</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
+		</repository>
 	</repositories>
   
   <dependencyManagement>
