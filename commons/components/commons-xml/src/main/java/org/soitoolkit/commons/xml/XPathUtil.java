@@ -93,15 +93,26 @@ public class XPathUtil {
 
 	static public Document createDocument(InputStream content) {
 		try {
-			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-			domFactory.setNamespaceAware(true);
-			DocumentBuilder builder = domFactory.newDocumentBuilder();
-			Document doc = builder.parse(content);
-			return doc;
-
+			return getBuilder().parse(content);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	static public Document createDocument(String content) {
+		try {
+			return getBuilder().parse(content);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static DocumentBuilder getBuilder()
+			throws ParserConfigurationException {
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+		domFactory.setNamespaceAware(true);
+		DocumentBuilder builder = domFactory.newDocumentBuilder();
+		return builder;
 	}
 
 	static public String getDocumentComment(Document doc) {
@@ -164,9 +175,7 @@ public class XPathUtil {
 	  */
 	public static void appendXmlFragment(Node parent, String fragment) throws IOException, SAXException, ParserConfigurationException {
 
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-		domFactory.setNamespaceAware(true);
-		DocumentBuilder docBuilder = domFactory.newDocumentBuilder();
+		DocumentBuilder docBuilder = getBuilder();
 		Document doc = parent.getOwnerDocument();
 
 	    Node fragmentNode = docBuilder.parse(new InputSource(new StringReader(fragment))).getDocumentElement();
