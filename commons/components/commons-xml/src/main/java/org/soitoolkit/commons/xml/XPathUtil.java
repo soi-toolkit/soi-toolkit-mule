@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soitoolkit.tools.generator.util;
+package org.soitoolkit.commons.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class XmlUtil {
+public class XPathUtil {
 
     private static class MapNamespaceContext implements NamespaceContext {
         private Map<String, String> namespaceMap;
@@ -87,7 +87,7 @@ public class XmlUtil {
     /**
 	 * Hidden constructor.
 	 */
-	private XmlUtil() {
+	private XPathUtil() {
 		throw new UnsupportedOperationException("Not allowed to create an instance of this class");
 	}
 

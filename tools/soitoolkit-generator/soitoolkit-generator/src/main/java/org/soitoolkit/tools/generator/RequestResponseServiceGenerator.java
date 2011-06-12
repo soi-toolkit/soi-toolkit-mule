@@ -16,15 +16,15 @@
  */
 package org.soitoolkit.tools.generator;
 
+import static org.soitoolkit.commons.xml.XPathUtil.appendXmlFragment;
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
-import static org.soitoolkit.tools.generator.util.XmlUtil.appendXmlFragment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXml;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;

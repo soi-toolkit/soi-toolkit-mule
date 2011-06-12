@@ -38,6 +38,12 @@
       <scope>provided</scope>      
     </dependency>
   
+		<dependency>
+            <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-xml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- For the MonitorRestService -->
 		<dependency>
             <groupId>org.soitoolkit.commons.components</groupId>

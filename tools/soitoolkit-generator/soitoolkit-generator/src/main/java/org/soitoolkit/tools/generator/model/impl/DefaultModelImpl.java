@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.soitoolkit.commons.xml.XPathUtil;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ServiceDescriptorModel;
 import org.soitoolkit.tools.generator.model.XmlNamespaceModel;
@@ -40,7 +41,6 @@ import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
-import org.soitoolkit.tools.generator.util.XmlUtil;
 
 public class DefaultModelImpl implements IModel {
 
@@ -147,7 +147,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.model.IModel#getXmlTimestamp()
 	 */
 	public String getXmlTimestamp() {
-		return XmlUtil.convertDateToXmlDate(new Date()).toString();
+		return XPathUtil.convertDateToXmlDate(new Date()).toString();
 	}
 
 	/* (non-Javadoc)

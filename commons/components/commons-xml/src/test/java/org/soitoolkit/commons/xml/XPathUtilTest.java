@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soitoolkit.tools.generator.util;
-
+package org.soitoolkit.commons.xml;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getFirstValue;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getDocumentComment;
+import static org.soitoolkit.commons.xml.XPathUtil.getFirstValue;
+import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.lookupParameterValue;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -37,7 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-public class XmlUtilTest {
+public class XPathUtilTest {
 
 	private final String nsPrefix = "ns";
 	private final String nsURI = "http://maven.apache.org/POM/4.0.0";
@@ -75,7 +74,7 @@ public class XmlUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		InputStream content = getClass().getClassLoader().getResourceAsStream("org/soitoolkit/tools/generator/util/test-pom.xml");
+		InputStream content = getClass().getClassLoader().getResourceAsStream("test-pom.xml");
 		pomDoc = createDocument(content);
 	}
 
@@ -85,7 +84,7 @@ public class XmlUtilTest {
 
 	@Test
 	public void testXMLDate() {
-		System.err.println(XmlUtil.convertDateToXmlDate(new Date()));
+		System.err.println(XPathUtil.convertDateToXmlDate(new Date()));
 	}
 
 	@Test

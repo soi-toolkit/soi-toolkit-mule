@@ -16,9 +16,9 @@
  */
 package org.soitoolkit.tools.generator.update_tool;
 
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXml;
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 
 import java.io.BufferedWriter;
 import java.io.File;

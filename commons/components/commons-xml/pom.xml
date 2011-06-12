@@ -24,24 +24,19 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.soitoolkit.commons</groupId>
-	<artifactId>soitoolkit-commons</artifactId>
-	<packaging>pom</packaging>
-	<name>soitoolkit-commons</name>
+	<groupId>org.soitoolkit.commons.components</groupId>
+	<artifactId>soitoolkit-commons-xml</artifactId>
+	<name>soitoolkit-commons-xml</name>
     <url>http://soi-toolkit.org</url>
 
-	<modules>
 
-		<module>poms/default-parent</module>
-		<module>poms/assembly-descriptors</module>
-		<module>poms/schemas-jax-ws-dependencies</module>
-		<module>poms/mule-dependencies/mule-3.1.2-dependencies</module>
-		
-		<module>components/commons-schemas</module>
-		<module>components/commons-log</module>
-		<module>components/commons-mule</module>
-		<module>components/commons-xml</module>
-		
-	</modules>
-
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
 </project>

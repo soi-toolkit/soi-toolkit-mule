@@ -16,12 +16,12 @@
  */
 package org.soitoolkit.tools.generator.maven;
 
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getDocumentComment;
+import static org.soitoolkit.commons.xml.XPathUtil.lookupParameterValue;
 import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_TYPE_KEY;
 import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_TYPE_SERVICE;
 import static org.soitoolkit.tools.generator.util.PomUtil.extractGroupIdAndArtifactIdFromPom;
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
 
 import java.io.File;
 import java.io.FileInputStream;

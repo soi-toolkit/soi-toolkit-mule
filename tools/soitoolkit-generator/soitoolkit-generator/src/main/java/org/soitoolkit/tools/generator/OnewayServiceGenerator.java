@@ -16,6 +16,10 @@
  */
 package org.soitoolkit.tools.generator;
 
+import static org.soitoolkit.commons.xml.XPathUtil.appendXmlFragment;
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
@@ -28,10 +32,6 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
-import static org.soitoolkit.tools.generator.util.XmlUtil.appendXmlFragment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXml;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;

@@ -16,11 +16,11 @@
  */
 package org.soitoolkit.tools.generator.util;
 
-import static org.soitoolkit.tools.generator.util.XmlUtil.createDocument;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getDocumentComment;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getFirstValue;
-import static org.soitoolkit.tools.generator.util.XmlUtil.getXPathResult;
-import static org.soitoolkit.tools.generator.util.XmlUtil.lookupParameterValue;
+import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
+import static org.soitoolkit.commons.xml.XPathUtil.getDocumentComment;
+import static org.soitoolkit.commons.xml.XPathUtil.getFirstValue;
+import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.lookupParameterValue;
 import static org.soitoolkit.tools.generator.Generator.GEN_METADATA_ARTIFACT_ID_KEY;
 
 import java.io.InputStream;
