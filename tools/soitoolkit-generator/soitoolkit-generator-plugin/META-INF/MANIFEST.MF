@@ -18,4 +18,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/groovy-all-1.7.2.jar,
  lib/groovy-engine.jar,
  .,
+ lib/soitoolkit-commons-xml-0.4.1.jar,
  lib/soitoolkit-generator-0.4.1.jar
