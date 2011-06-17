@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: soi_toolkit_generator_plugin
 Bundle-SymbolicName: soi_toolkit_generator_plugin; singleton:=true
-Bundle-Version: 0.4.1
+Bundle-Version: 0.5.0
 Bundle-Activator: soi_toolkit_generator_plugin.Activator
 Bundle-Vendor: Callista Enterprise AB
 Require-Bundle: org.eclipse.ui,
@@ -18,4 +18,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/groovy-all-1.7.2.jar,
  lib/groovy-engine.jar,
  .,
- lib/soitoolkit-generator-0.4.1.jar
+ lib/soitoolkit-commons-xml-0.5.0-SNAPSHOT.jar,
+ lib/soitoolkit-generator-0.5.0-SNAPSHOT.jar
