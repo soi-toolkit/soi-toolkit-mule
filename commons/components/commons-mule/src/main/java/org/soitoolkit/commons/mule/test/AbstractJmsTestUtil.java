@@ -211,6 +211,7 @@ public abstract class AbstractJmsTestUtil {
  		}
 
  		for (int i = 0; i < queueNames.length; i++) {
+ 	 		logger.debug("Start to consume messages from queue {}", queueNames[i]);
  			List<Message> messages = consumeMessagesOnQueue(queueNames[i]);			
  			logger.debug("CONSUMED {} MESSAGES FROM QUEUE {}", messages.size(), queueNames[i]);
 		}
