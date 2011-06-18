@@ -367,10 +367,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
         // Send a poisoned message to the in-queue and verify that the expected exception occurs in the ESB
         Exception exception = dispatchAndWaitForException("jms://" + IN_QUEUE, message, null, 2000);
-        assertTrue(exception instanceof CouldNotRouteOutboundMessageException);
-        assertTrue(exception.getCause() instanceof TransformerMessagingException);
-        assertTrue(exception.getCause().getCause() instanceof TransformerException);
-        assertEquals(expectedErrMsg, exception.getCause().getCause().getMessage());
+        assertTrue(exception instanceof TransformerMessagingException);
+        assertTrue(exception.getCause() instanceof TransformerException);
+        assertEquals(expectedErrMsg, exception.getCause().getMessage());
 
         // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
         try {

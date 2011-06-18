@@ -12,13 +12,7 @@ ${xmlNamespace.onewayService}
     <custom-transformer name="${lowercaseJavaService}ImportToDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
 <% } %> 
 
-	<model name="${service}-model">
-	
-		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
-
-		<service name="${service}-service">
-            <inbound>
-
+		<flow name="${service}-service">
 <% if (inboundTransport=="VM") { %>
                 <inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
 <% if (serviceTransactional) { %>
@@ -44,7 +38,18 @@ ${xmlNamespace.onewayService}
 				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 					exchange-pattern="request-response"
 					transformer-refs="createCorrId mimeToStr"
-					responseTransformer-refs="logReqIn" />
+					responseTransformer-refs="logRespOut">
+			    
+			        <response>
+				        <script:transformer>
+				            <script:script engine="groovy">
+				            	return "OK"
+				            </script:script>
+				        </script:transformer>
+			        </response>
+				</inbound-endpoint>
+
+
 
 <% } else if (inboundTransport=="FILE") { %> 
 				<file:inbound-endpoint
@@ -103,10 +108,7 @@ ${xmlNamespace.onewayService}
 					<email:email-to-string-transformer/>
 				</imap:inbound-endpoint>		
 <% } %> 
-            </inbound>
-            
-			<outbound>
-				<pass-through-router>
+
 <% if (outboundTransport=="VM") { %>
                     <outbound-endpoint 
                     	address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
@@ -169,17 +171,14 @@ ${xmlNamespace.onewayService}
 						<email:string-to-email-transformer/>
 					</smtp:outbound-endpoint>
 <% } %>
-				</pass-through-router>
-			</outbound>
-		</service>
+			<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+
+		</flow>
 
 <% if (outboundTransport=="SFTP") { %> 
-		<service name="${service}-receiver-service">
-			<inbound>
+		<flow name="${service}-receiver-service">
 				<inbound-endpoint address="vm://${service}-service" />
-			</inbound>
-			<outbound>
-				<pass-through-router>
+
 					<sftp:outbound-endpoint
 						name="${service}-outbound-endpoint"
 						address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
@@ -196,26 +195,18 @@ ${xmlNamespace.onewayService}
 						useTempFileTimestampSuffix="true"
 						duplicateHandling="addSeqNo"
 						transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
-				</pass-through-router>
-			</outbound>
+        </flow>
 
-        </service>
-
-		<service name="${service}-resend-from-archive-service">
-			<inbound>
+		<flow name="${service}-resend-from-archive-service">
 				<file:inbound-endpoint
 					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_ARCHIVE_RESEND_POLLING_MS}"
 				/>
-			</inbound>
-			<outbound>
-				<pass-through-router>
+
 					<outbound-endpoint address="vm://${service}-service" />
-				</pass-through-router>
 			</outbound>
-		</service>		
+		</flow>		
 <% } %> 
-	</model>
 
 </mule>

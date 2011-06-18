@@ -18,16 +18,24 @@ package org.soitoolkit.commons.mule.mime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.ParseException;
 
+import org.mortbay.log.Log;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
 import org.mule.transformer.AbstractMessageAwareTransformer;
+import org.mule.transformer.AbstractMessageTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.core.ObjectToStringTransformer;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 
@@ -38,18 +46,19 @@ import org.soitoolkit.commons.mule.util.MiscUtil;
  * @author Magnus Larsson
  *
  */
-public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
+public class MimeToStringTransformer extends AbstractMessageTransformer {
+
+	private static final Logger log = LoggerFactory.getLogger(MimeToStringTransformer.class);
 
 	private ObjectToStringTransformer o2s = new ObjectToStringTransformer();
 	
 	public MimeToStringTransformer()
     {
         registerSourceType(Object.class);
-        setReturnClass(Object.class);
+        setReturnClass(String.class);
     }
 
-	@SuppressWarnings("unchecked")
-	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
+	public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
         Object payload = message.getPayload();
 
         String contentType = (String)message.getProperty("Content-Type", PropertyScope.INBOUND);
@@ -57,22 +66,46 @@ public class MimeToStringTransformer extends AbstractMessageAwareTransformer {
         	contentType = (String)message.getProperty("content-type", PropertyScope.INBOUND);
         }
         
-        if (contentType.startsWith("application/x-www-form-urlencoded")) {
-			payload = message.getPropertyNames().iterator().next(); //   MiscUtil.convertStreamToString((InputStream)payload);
-			if (logger.isInfoEnabled()) logger.info("Found payload of type x-www-form-urlencoded");
-        	
-        } else if (contentType.startsWith("multipart/form-data")) {
-        	payload = transformMultipartPayload(payload, contentType);
-			if (logger.isInfoEnabled()) logger.info("Found payload of type multipart/form-data payload");
-        } else if (contentType.startsWith("text/xml")) {
-        	payload=MiscUtil.convertStreamToString((InputStream)payload);
-        	if (logger.isInfoEnabled()) logger.info("Found payload of type text/xml");
-        } else {
-			logger.warn("*** UNKNOWN CONTENT-TYPE FOUND: " + contentType + ", PAYLOAD-TYPE: " + payload.getClass().getName());
+
+		try {
+			log.debug("Parsing contentType: {}", contentType);
+			ContentType ct = new ContentType(contentType);
+			String baseType = ct.getBaseType();
+			String charset = ct.getParameter("charset");
+			if (charset == null) charset = "UTF-8";
+			log.debug("Parse results: baseType = {}, charset = {}", baseType, charset);
+
+	        if (baseType.equals("application/x-www-form-urlencoded")) {
+				payload = message.getPropertyNames().iterator().next(); //   MiscUtil.convertStreamToString((InputStream)payload);
+				log.info("Found payload of type x-www-form-urlencoded");
+	        	
+	        } else if (baseType.equals("multipart/form-data")) {
+	        	payload = transformMultipartPayload(payload, contentType);
+				log.info("Found payload of type multipart/form-data payload");
+
+	        } else if (baseType.equals("text/xml")) {
+	        	payload = MiscUtil.convertStreamToString((InputStream)payload, charset);
+	        	log.info("Found payload of type text/xml");
+
+	        } else if (baseType.equals("application/octet-stream")) {
+	        	payload = MiscUtil.convertStreamToString((InputStream)payload, charset);
+	        	log.info("Found payload of type application/octet-stream: {}", payload);
+
+	        } else {
+				log.warn("*** UNKNOWN CONTENT-TYPE FOUND: {}, PAYLOAD-TYPE: {}", contentType, payload.getClass().getName());
+				// Last resort
+				payload = o2s.transform(payload, outputEncoding);
+	        }
+	        
+		} catch (ParseException e) {
+			e.printStackTrace();
+			log.warn("*** UNKNOWN CONTENT-TYPE FOUND: {}, PAYLOAD-TYPE: {}", contentType, payload.getClass().getName());
 			// Last resort
 			payload = o2s.transform(payload, outputEncoding);
-        }
+		}
         
+		
+		log.debug("Returning: {}", payload);
         return payload;
     }
 

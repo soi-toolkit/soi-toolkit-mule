@@ -5,10 +5,7 @@ ${xmlNamespace.onewayTeststubService}
 
 	<!-- TODO: Add teststub-service specific definitions here -->
 
-	<model name="${service}-teststub-model">
-
-        <service name="${service}-teststub-service">
-            <inbound>
+        <flow name="${service}-teststub-service">
 <% if (outboundTransport=="VM") { %>
                 <inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}"/>
 
@@ -56,12 +53,7 @@ ${xmlNamespace.onewayTeststubService}
 					password="${dollarSymbol}{${uppercaseService}_IMAP_TEST_PWD}"> 
 				</imap:inbound-endpoint>			
 <% } %> 
-            </inbound>
 
             <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
-
-        </service>
-
-	</model>
-
+        </flow>
 </mule>
