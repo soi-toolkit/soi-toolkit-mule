@@ -19,11 +19,24 @@ ${xmlNamespace.reqRespTeststubService}
 	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
 	    type="jax-rs" />
 
-<% } else { %> 
+<% } else if (outboundTransport=="JMS") { %>
+	<!-- ISSUE #155: JMS REPLY-TO DOESN'T WORK IN FLOWS IN MULE v3.1.2, SEE http://www.mulesoft.org/jira/browse/MULE-5307. FOR DETAILS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=155
+	     SO WE USE AN OLD_SCHOOL SERVICE UNTIL THEN -->
 	<model name="${service}-teststub-model">
-
         <service name="${service}-teststub-service">
             <inbound>
+                <inbound-endpoint 
+                	name="${service}-teststub-endpoint" 
+                	address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" 
+                	transformer-refs="jmsToStr"
+                    responseTransformer-refs="strToJms"/>
+            </inbound>
+            <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
+        </service>
+	</model>
+
+<% } else { %> 
+        <flow name="${service}-teststub-service">
 <% if (outboundTransport=="JMS") { %>
                 <inbound-endpoint 
                 	name="${service}-teststub-endpoint" 
@@ -31,16 +44,13 @@ ${xmlNamespace.reqRespTeststubService}
                 	transformer-refs="jmsToStr"
                     responseTransformer-refs="strToJms"/>
 <% } %> 
-            </inbound>
             <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
-        </service>
-	</model>
+        </flow>
 <% } %> 
 
-
 <% if (inboundTransport=="SOAPSERVLET" && outboundTransport!="SOAPHTTP") { %>
+	<!-- ISSUE 117. WITH A SOAP/SERVLET INBOUND ENDPOINT ASD NOT A SOAP/HTTP BASED OUTBOUND ENDPOINT IT SEEMS THAT A <cxf:proxy-client> IS REQUIRED IN THE CONFIG-FILE STARTING WITH MULE v3.1.1, FOR DETAIS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->
 	<model name="${service}-teststub-fix-model">
-		<!-- ISSUE 117. With SOAP/Servlet as inbound and not SOAP/HTTP as outbound it seems that <cxf:proxy-client> is required starting with Mule 3.1.1, see SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->        
 		<service name="${service}-teststub-fix-service">
 			<outbound>
 				<pass-through-router>
@@ -52,6 +62,4 @@ ${xmlNamespace.reqRespTeststubService}
 		</service>
 	</model>
 <% } %> 
-
-
 </mule>

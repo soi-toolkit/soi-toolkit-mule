@@ -20,8 +20,10 @@ ${xmlNamespace.reqRespTeststubService}
 	    type="jax-rs" />
 
 <% } else { %> 
-!!! jms-reply-to funkar inte i 3.1.1, se http://www.mulesoft.org/jira/browse/MULE-5307 !!!
-        <flow name="${service}-teststub-service">
+	<model name="${service}-teststub-model">
+
+        <service name="${service}-teststub-service">
+            <inbound>
 <% if (outboundTransport=="JMS") { %>
                 <inbound-endpoint 
                 	name="${service}-teststub-endpoint" 
@@ -29,8 +31,10 @@ ${xmlNamespace.reqRespTeststubService}
                 	transformer-refs="jmsToStr"
                     responseTransformer-refs="strToJms"/>
 <% } %> 
+            </inbound>
             <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
-        </flow>
+        </service>
+	</model>
 <% } %> 
 
 
