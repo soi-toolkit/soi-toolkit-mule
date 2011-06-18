@@ -30,7 +30,7 @@
     <spring:beans>
         <spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml"/>
 
-		<amq:broker id="broker" brokerName="localhost" persistent="true" useJmx="false" start="true" >
+		<amq:broker id="broker" brokerName="localhost" persistent="false" useJmx="false" start="true" >
 			<amq:destinationPolicy>
 				<amq:policyMap>
 					<amq:policyEntries>
