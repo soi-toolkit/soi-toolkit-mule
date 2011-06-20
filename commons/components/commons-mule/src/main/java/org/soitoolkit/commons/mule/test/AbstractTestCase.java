@@ -84,7 +84,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
     /**
      * Fix for Mule 2.2.2 where init of test timeout moved from setUp to
-     * constructor.
+     * constructor. 
      * This method MUST be called from the constructor of an inherited TestCase
      * to have any effect, calling this method from doSetUp() or any other
      * method is too late.
@@ -96,21 +96,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
         logger.info("Setting test timeout to (seconds): " + seconds);
         String strSeconds = String.valueOf(seconds);
         System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, strSeconds);
-
-    
-        // initTestTimeoutSecs();
-        Method initTimeoutMethod = null;
-        try {
-        	initTimeoutMethod = getClass().getMethod("initTestTimeoutSecs", null);
-        	initTimeoutMethod.invoke(this, null);
-		} catch (NoSuchMethodException e) {
-			// mule version < 2.2.2, do nothing
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	
+        initTestTimeoutSecs();	
     }
 
 	/**
