@@ -20,7 +20,7 @@ import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
 import org.soitoolkit.refapps.sd.sample.wsdl.v1.Fault;
 import org.soitoolkit.refapps.sd.sample.wsdl.v1.SampleInterface;
 
-@WebService
+@WebService(serviceName = "sampleService", portName = "samplePort", targetNamespace = "urn:org.soitoolkit.refapps.sd.sample.wsdl:v1", name = "sampleService")
 public class ${capitalizedJavaService}TestProducer implements SampleInterface {
 
 	public static final String TEST_ID_OK               = "1234567890";
