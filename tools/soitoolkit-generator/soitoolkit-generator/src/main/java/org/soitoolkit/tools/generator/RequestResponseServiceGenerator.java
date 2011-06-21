@@ -156,11 +156,11 @@ public class RequestResponseServiceGenerator implements Generator {
 		    
 		    if (outboundTransport == SOAPHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
-			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-teststub/v1");
+			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-soap-teststub/v1");
 	
 		    } else if (outboundTransport == RESTHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
-			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/rest-teststub");
+			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-rest-teststub/v1");
 
 		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + m.getJmsRequestQueue());
