@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow">
+    <flow entity-id="10a747d8-b1ef-4dea-abe3-0ee06eeffc5f">
+        <lane entity-id="270262ca-8bd6-4a2f-bfe9-3db71ddc7568">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="org.mule.tooling.ui.modules.core.endpoint.vmEndpoint" name="VM" entity-id="5e0a3d0b-c345-4131-8334-2eb1a5db624e">
+                <properties>
+                    <property value="" name="endpoint.address"/>
+                    <property value="" name="endpoint.exchange.pattern"/>
+                    <property value="in2" name="vm.path"/>
+                    <property value="" name="endpoint.connector.ref"/>
+                </properties>
+                <description>Facilitates intra-VM component communication.</description>
+            </endpoint>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="53cc063e-c174-4513-a4e1-dbad32939bdf">
+                <properties>
+                    <property value="HELLO!!!" name="logger.message"/>
+                    <property value="INFO" name="logger.level"/>
+                </properties>
+                <description>Performs logging using an expression that determines what should be logged.</description>
+            </pattern>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Custom Transformer" entity-id="b1e18ad0-d79e-474d-a8ab-c450c1144138">
+                <properties>
+                    <property value="org.ce.Ml2" name="custom.transformer.classname"/>
+                </properties>
+                <description>Transformer that delegates to a Java class.</description>
+            </pattern>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="org.mule.tooling.ui.modules.core.endpoint.vmEndpoint" name="VM" entity-id="1efa16b8-aa91-46ff-9a35-017e94cc4496">
+                <properties>
+                    <property value="" name="endpoint.address"/>
+                    <property value="" name="endpoint.exchange.pattern"/>
+                    <property value="out2" name="vm.path"/>
+                    <property value="" name="endpoint.connector.ref"/>
+                </properties>
+                <description>Facilitates intra-VM component communication.</description>
+            </endpoint>
+        </lane>
+    </flow>
+</mule-configuration>

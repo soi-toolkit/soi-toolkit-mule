@@ -16,7 +16,9 @@
  */
 package org.soitoolkit.tools.generator;
 
+import static org.soitoolkit.tools.generator.util.MiscUtil.convertStreamToString;
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.text.GStringTemplateEngine;
 import groovy.text.Template;
@@ -44,6 +46,7 @@ import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.model.impl.DefaultModelImpl;
 import org.soitoolkit.tools.generator.model.impl.ModelReadOnlyMap;
 
 public class GeneratorUtil {
@@ -145,13 +148,42 @@ public class GeneratorUtil {
 			logWarn("Couldn't generate code for template " + templateFile + ", skipping it");
 			return;
 		}
-		String filename = getFilename(templateFile);
+		String filename = getResolvedFilenameFromTemplateFilename(templateFile);
 		logDebug("Create file: " + filename + " size: " + content.length() + " characters");
 		createFile(filename, content);
 	}
 
+	@SuppressWarnings("rawtypes")
+	public void generateContentAndCreateFileUsingGroovyGenerator(URL groovySourceUrl, String targetFile) {
+		try {
+			Class groovyClass = getGroovyClass(groovySourceUrl);
+	    	if (!FileGenerator.class.isAssignableFrom(groovyClass)) {
+	    		throw new IllegalArgumentException("Groovy class, " + groovyClass.getName() + ", is not a subtype of " + FileGenerator.class.getName());
+	    	}
+	    	FileGenerator gen = (FileGenerator)groovyClass.newInstance();
+	    	String content = gen.generateFileContent(model);
+			
+	    	String filename = getResolvedFilename(targetFile);
+			logDebug("Create file: " + filename + " size: " + content.length() + " characters");
+			createFile(filename, content);
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Class getGroovyClass(URL url) throws IllegalArgumentException, IOException {
+    	String            groovyCode  = convertStreamToString(url.openStream());
+    	ClassLoader       parent      = ModelFactory.class.getClassLoader();
+    	GroovyClassLoader loader      = new GroovyClassLoader(parent);
+    	Class             groovyClass = loader.parseClass(groovyCode);
+
+    	return groovyClass;
+	}
+
 	public void copyContentAndCreateFile(String templateFile) {
-		String filename = getFilename(templateFile);
+		String filename = getResolvedFilenameFromTemplateFilename(templateFile);
 		logDebug("Create file: " + filename);
 		copyfile(templateFolder + "/" + templateFile, filename);
 	}
@@ -203,7 +235,36 @@ public class GeneratorUtil {
 	}
 
 	
-	private String getFilename(String templateFile) {
+	private String getResolvedFilenameFromTemplateFilename(String templateFile) {
+		int suffixSize = ".gt".length();
+		int endPos = templateFile.length() - suffixSize;
+		String filename = templateFile.substring(0, endPos);
+		return getResolvedFilename(filename);
+	}
+
+	
+	private String getResolvedFilename(String filenameWithVariables) {
+
+		// First resolve any variables in the filenam
+		String filename = resolveVariables(filenameWithVariables);
+		
+		// Separate the folder part of the filename, if any 
+		String folder = null;
+		int lastSepPos = filename.lastIndexOf('/');		
+		if (lastSepPos != -1) {
+			folder = filename.substring(0, lastSepPos);
+			filename = filename.substring(lastSepPos + 1);
+		}
+
+		// Now compute the target folder and filename, also ensure that all directories exists in the foldername
+		String fullFolderName = getFolderAndCreateIfMissing(folder);
+
+		filename = fullFolderName + "/" + filename;
+		logDebug("File [" + filenameWithVariables + "] resulted in target filename [" + filename + "]");
+		return filename;
+	}
+
+	private String org_getFilename(String templateFile) {
 
 		// First resolve any variables in the filenam of the template
 		templateFile = resolveVariables(templateFile);
@@ -364,5 +425,4 @@ public class GeneratorUtil {
 			throw new RuntimeException(e);
 		}
 	}
-
 }
