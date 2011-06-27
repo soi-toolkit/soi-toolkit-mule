@@ -2,17 +2,8 @@
 
 <mule 
 ${xmlNamespace.onewayService}
-
 	<!-- TODO: Add service specific definitions here -->
-    <custom-transformer name="${lowercaseJavaService}Transformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
-<% if (inboundTransport=="JDBC") { %>
-    <custom-transformer name="${lowercaseJavaService}ExportFromDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
-<% } %> 
-<% if (outboundTransport=="JDBC") { %>
-    <custom-transformer name="${lowercaseJavaService}ImportToDb" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
-<% } %> 
-
-		<flow name="${service}-service">
+	<flow name="${service}-service">
 <% if (inboundTransport=="VM") { %>
                 <vm:inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
 <% if (serviceTransactional) { %>
@@ -28,11 +19,12 @@ ${xmlNamespace.onewayService}
 				</jms:inbound-endpoint>
 
 <% } else if (inboundTransport=="JDBC") { %> 
-            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="${lowercaseJavaService}ExportFromDb">
+            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="logMsgIn">
 <% if (serviceTransactional) { %>
 					<jdbc:transaction action="ALWAYS_BEGIN" />
 <% } %> 
             	</jdbc:inbound-endpoint>
+                <custom-transformer class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
 
 <% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
 				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
@@ -48,8 +40,6 @@ ${xmlNamespace.onewayService}
 				        </script:transformer>
 			        </response>
 				</inbound-endpoint>
-
-
 
 <% } else if (inboundTransport=="FILE") { %> 
 				<file:inbound-endpoint
@@ -108,11 +98,12 @@ ${xmlNamespace.onewayService}
 					<email:email-to-string-transformer/>
 				</imap:inbound-endpoint>		
 <% } %> 
+                <custom-transformer class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Transformer"/>
 
 <% if (outboundTransport=="VM") { %>
                 <vm:outbound-endpoint 
                     address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
-                    transformer-refs="${lowercaseJavaService}Transformer logMsgOut">
+                    transformer-refs="logMsgOut">
 <% if (serviceTransactional) { %>
 					<vm:transaction action="ALWAYS_JOIN" />
 <% } %> 
@@ -121,14 +112,15 @@ ${xmlNamespace.onewayService}
 <% } else if (outboundTransport=="JMS") { %>
                 <jms:outbound-endpoint 
                     address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
-                    transformer-refs="${lowercaseJavaService}Transformer strToJms logMsgOut">
+                    transformer-refs="strToJms logMsgOut">
 <% if (serviceTransactional) { %>
 					<jms:transaction action="ALWAYS_JOIN" />
 <% } %> 
 				</jms:outbound-endpoint>
 
 <% } else if (outboundTransport=="JDBC") { %>
-            	<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="${lowercaseJavaService}Transformer ${lowercaseJavaService}ImportToDb">
+                <custom-transformer class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
+            	<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="logMsgOut">
 <% if (serviceTransactional) { %>
 					<jdbc:transaction action="ALWAYS_JOIN" />
 <% } %> 
@@ -142,7 +134,7 @@ ${xmlNamespace.onewayService}
 <% } else { %> 
 					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
-                    transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
+                    transformer-refs="logMsgOut"/>
 
 <% } else if (outboundTransport=="FTP") { %> 
 				<ftp:outbound-endpoint
@@ -155,7 +147,7 @@ ${xmlNamespace.onewayService}
 <% } %> 
                     binary="false"
                     passive="true"
-                    transformer-refs="${lowercaseJavaService}Transformer logMsgOut" />                                        
+                    transformer-refs="logMsgOut" />                                        
 
 <% } else if (outboundTransport=="SFTP") { %> 
 				<vm:outbound-endpoint address="vm://${service}-service" />
@@ -167,16 +159,16 @@ ${xmlNamespace.onewayService}
 					from="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_FROM}"
 					to="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_TEST_TO}"
 					subject="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_SUBJECT}">
-					<transformer ref="${lowercaseJavaService}Transformer logMsgOut"/>
+					<transformer ref="logMsgOut"/>
 					<email:string-to-email-transformer/>
 				</smtp:outbound-endpoint>
 <% } %>
 			<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
 
-		</flow>
+	</flow>
 
 <% if (outboundTransport=="SFTP") { %> 
-		<flow name="${service}-receiver-service">
+	<flow name="${service}-receiver-service">
 				<vm:inbound-endpoint address="vm://${service}-service" />
 
 				<sftp:outbound-endpoint
@@ -194,10 +186,10 @@ ${xmlNamespace.onewayService}
 					tempDir="receiving"
 					useTempFileTimestampSuffix="true"
 					duplicateHandling="addSeqNo"
-					transformer-refs="${lowercaseJavaService}Transformer logMsgOut"/>
-        </flow>
+					transformer-refs="logMsgOut"/>
+    </flow>
 
-		<flow name="${service}-resend-from-archive-service">
+	<flow name="${service}-resend-from-archive-service">
 				<file:inbound-endpoint
 					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
@@ -206,6 +198,6 @@ ${xmlNamespace.onewayService}
 
 				<outbound-endpoint address="vm://${service}-service" />
 			</outbound>
-		</flow>		
+	</flow>		
 <% } %> 
 </mule>
