@@ -146,7 +146,7 @@ public class OneWayServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = 10;
+		int expectedNoOfFiles = 12;
 		if (inboundTransport == HTTP || inboundTransport == SERVLET) {
 			expectedNoOfFiles++;
 		}

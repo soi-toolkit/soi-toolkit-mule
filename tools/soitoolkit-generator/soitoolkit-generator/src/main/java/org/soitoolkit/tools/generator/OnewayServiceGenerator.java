@@ -43,8 +43,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.soitoolkit.tools.generator.Generator;
-import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
@@ -72,7 +70,10 @@ public class OnewayServiceGenerator implements Generator {
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 
-    	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
+		// FIXME. MULE STUDIO.
+//    	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
+    	gu.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
+    	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMflow.groovy"), "src/main/resources/flow/__service__-service.mflow");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
 		
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-input.txt.gt");
@@ -108,7 +109,7 @@ public class OnewayServiceGenerator implements Generator {
 	    }
 		
     }
-
+	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
 		PrintWriter cfg = null;

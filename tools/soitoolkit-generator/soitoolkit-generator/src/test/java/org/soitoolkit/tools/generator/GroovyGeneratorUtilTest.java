@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soitoolkit.tools.generator.util;
+package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.*;
 
@@ -26,6 +26,8 @@ import org.junit.Test;
 import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.util.MiscUtil;
+import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
 
 public class GroovyGeneratorUtilTest {
@@ -34,11 +36,13 @@ public class GroovyGeneratorUtilTest {
 	
 	@Test
 	public void testGroovyGenerator() throws FileNotFoundException {
-		int i = 1;
-		assertTrue(i==1);
+		haveARun(TransportEnum.VM, TransportEnum.VM);
+		haveARun(TransportEnum.JMS, TransportEnum.JMS);
+	}
 
-		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", null, TransportEnum.VM, TransportEnum.VM, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
-		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("MyTestGroovyGenerator.groovy"), "myGroovyoutput.txt");
+	private void haveARun(TransportEnum in, TransportEnum out) throws FileNotFoundException {
+		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", null, in, out, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
+		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMFlow.groovy"), "myGroovyoutput.txt");
 		
 		InputStream is = new FileInputStream(TEST_OUT_FOLDER + "/" + "myGroovyoutput.txt");
 		String content = MiscUtil.convertStreamToString(is);

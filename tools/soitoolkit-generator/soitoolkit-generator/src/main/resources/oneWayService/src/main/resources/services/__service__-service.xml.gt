@@ -5,14 +5,14 @@ ${xmlNamespace.onewayService}
 	<!-- TODO: Add service specific definitions here -->
 	<flow name="${service}-service">
 <% if (inboundTransport=="VM") { %>
-                <vm:inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
+                <vm:inbound-endpoint path="${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
 <% if (serviceTransactional) { %>
 					<vm:transaction action="ALWAYS_BEGIN" />
 <% } %> 
 				</vm:inbound-endpoint>
 
 <% } else if (inboundTransport=="JMS") { %>
-                <jms:inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
+                <jms:inbound-endpoint queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
 <% if (serviceTransactional) { %>
 					<jms:transaction action="ALWAYS_BEGIN" />
 <% } %> 
@@ -102,7 +102,7 @@ ${xmlNamespace.onewayService}
 
 <% if (outboundTransport=="VM") { %>
                 <vm:outbound-endpoint 
-                    address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
+                    path="${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
                     transformer-refs="logMsgOut">
 <% if (serviceTransactional) { %>
 					<vm:transaction action="ALWAYS_JOIN" />
@@ -111,7 +111,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (outboundTransport=="JMS") { %>
                 <jms:outbound-endpoint 
-                    address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
+                    queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
                     transformer-refs="strToJms logMsgOut">
 <% if (serviceTransactional) { %>
 					<jms:transaction action="ALWAYS_JOIN" />
