@@ -45,6 +45,8 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/pom.xml.gt");
 		// TODO: Add code for standard monitorService!
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/java/__javaPackageFilepath__");
+		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/app");
+		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/resources/flow");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/main/resources/__artifactId__-common.xml.gt");
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/src/main/resources/__artifactId__-config.xml.gt");
 

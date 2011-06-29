@@ -52,6 +52,14 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 	</dependencies> 
 
     <build>
+        <resources>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/main/app</directory>
+            </resource>
+        </resources>
         <testResources>
             <testResource>
                 <directory>${dollarSymbol}{basedir}/src/test/resources</directory>

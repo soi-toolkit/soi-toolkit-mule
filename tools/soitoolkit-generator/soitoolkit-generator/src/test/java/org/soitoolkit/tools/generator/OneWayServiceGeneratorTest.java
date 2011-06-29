@@ -113,7 +113,7 @@ public class OneWayServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 54 : 66;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 56 : 68;
 		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
@@ -146,7 +146,7 @@ public class OneWayServiceGeneratorTest {
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
 		
-		int expectedNoOfFiles = 12;
+		int expectedNoOfFiles = 11;
 		if (inboundTransport == HTTP || inboundTransport == SERVLET) {
 			expectedNoOfFiles++;
 		}

@@ -106,7 +106,7 @@ public class RequestResponseServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 49 : 61;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 51 : 63;
 
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
