@@ -32,7 +32,7 @@
 	<properties>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<cxf-gen.version>2.3.1</cxf-gen.version>
-		<mule.version>3.2.0-SNAPSHOT</mule.version>
+		<mule.version>3.2.0</mule.version>
 		<cxf.version>2.3.1</cxf.version>
 		<jaxb-api.version>2.1</jaxb-api.version>		
 		<jaxb-impl.version>2.1.10</jaxb-impl.version>
@@ -44,7 +44,7 @@
 		<activemq.version>5.2.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
         <xbean.version>3.4</xbean.version>
-		<mule-module-commonretrypolicies>3.0.0</mule-module-commonretrypolicies>
+		<mule-module-commonretrypolicies>3.1.0</mule-module-commonretrypolicies>
 	    <derby.version>10.6.2.1</derby.version>
     	<hsql.version>1.8.0.7</hsql.version>
 		<jetty.version>6.1.11</jetty.version>    	
