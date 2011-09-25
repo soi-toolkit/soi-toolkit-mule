@@ -27,10 +27,10 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.endpoint.ImmutableEndpoint;
+import org.mule.api.lifecycle.Lifecycle;
 import org.mule.api.service.Service;
 import org.mule.transport.sftp.SftpClient;
 import org.mule.transport.sftp.SftpConnectionFactory;
-import org.mule.transport.sftp.SftpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.MiscUtil;
@@ -68,12 +68,11 @@ public class SftpUtil {
 	 */
 	public static void initEndpointDirectories(MuleContext muleContext, String[] serviceNames, String[] endpointNames) throws Exception {
 
-		// Stop all named services
-		List<Service> services = new ArrayList<Service>();
+		// Stop all named services (either Flows or services
+		List<Lifecycle> services = new ArrayList<Lifecycle>();
 		for (String serviceName : serviceNames) {
 			try {
-				Service service = muleContext.getRegistry().lookupService(
-						serviceName);
+				Lifecycle service = muleContext.getRegistry().lookupObject(serviceName);
 //				logServiceStatus(service);
 //				service.stop();
 //				logServiceStatus(service);
@@ -92,13 +91,14 @@ public class SftpUtil {
 		}
 
 		// We are done, startup the services again so that the test can begin...
-		for (Service service : services) {
+		for (@SuppressWarnings("unused") Lifecycle service : services) {
 //			logServiceStatus(service);
 //			service.start();
 //			logServiceStatus(service);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void logServiceStatus(Service service) {
 		System.err.println(service.getName() + " started: " + service.isStarted() + ", stopped: " + service.isStopped() + ", paused: " + service.isPaused());
 	}
