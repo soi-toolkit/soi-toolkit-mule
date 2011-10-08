@@ -107,16 +107,16 @@ public class RequestResponseServiceGenerator implements Generator {
 		xmlFragment =
 			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
 			"			<groupId>org.mule.modules.mule-module-smooks</groupId>\n" +
-			"			<artifactId>smooks-4-mule-2</artifactId>\n" +
-			"			<version>1.2</version>\n" +
+			"			<artifactId>smooks-4-mule-3</artifactId>\n" +
+			"			<version>1.3-RC1</version>\n" +
 			"		</dependency>\n";
-		addDependency(file, xmlFragment, "smooks-4-mule-2");
+		addDependency(file, xmlFragment, "smooks-4-mule-3");
 
 		xmlFragment =
 			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
 			"			<groupId>org.milyn</groupId>\n" +
 			"			<artifactId>milyn-smooks-templating</artifactId>\n" +
-			"			<version>1.3.1</version>\n" +
+			"			<version>1.4</version>\n" +
 			"		</dependency>\n";
 		addDependency(file, xmlFragment, "milyn-smooks-templating");
 
@@ -124,7 +124,7 @@ public class RequestResponseServiceGenerator implements Generator {
 			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
 			"			<groupId>org.milyn</groupId>\n" +
 			"			<artifactId>milyn-smooks-csv</artifactId>\n" +
-			"			<version>1.3.1</version>\n" +
+			"			<version>1.4</version>\n" +
 			"		</dependency>\n";
 		addDependency(file, xmlFragment, "milyn-smooks-csv");
     }

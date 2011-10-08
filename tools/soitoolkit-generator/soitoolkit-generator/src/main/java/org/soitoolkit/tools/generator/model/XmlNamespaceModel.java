@@ -222,7 +222,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txmlns:http=\"http://www.mulesoft.org/schema/mule/http\"\n");
 		sb.append("\txmlns:mule-xml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
-		sb.append("\txmlns:smooks=\"http://www.muleforge.org/smooks/schema/mule-module-smooks/1.2\"\n");
+		sb.append("\txmlns:smooks=\"http://www.muleforge.org/smooks/schema/mule-module-smooks\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd\n");
@@ -230,7 +230,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/http    http://www.mulesoft.org/schema/mule/http/3.1/mule-http.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml     http://www.mulesoft.org/schema/mule/xml/3.1/mule-xml.xsd\n");
-		sb.append("\t\thttp://www.muleforge.org/smooks/schema/mule-module-smooks/1.2 http://dist.muleforge.org/smooks/schema/mule-module-smooks/1.2/mule-module-smooks.xsd\n");
+		sb.append("\t\thttp://www.muleforge.org/smooks/schema/mule-module-smooks http://dist.muleforge.org/smooks/schema/mule-module-smooks/1.3/mule-module-smooks.xsd\n");
 		sb.append("\t\">");
 
 		return sb.toString();
