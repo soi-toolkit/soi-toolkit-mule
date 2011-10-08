@@ -29,7 +29,7 @@ ${xmlNamespace.onewayService}
 <% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
 				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 					exchange-pattern="request-response"
-					transformer-refs="createCorrId mimeToStr"
+					transformer-refs="createCorrId logMsgIn mimeToStr"
 					responseTransformer-refs="logRespOut">
 			    
 			        <response>
@@ -150,7 +150,7 @@ ${xmlNamespace.onewayService}
                     transformer-refs="logMsgOut" />                                        
 
 <% } else if (outboundTransport=="SFTP") { %> 
-				<vm:outbound-endpoint address="vm://${service}-service" />
+				<vm:outbound-endpoint path="${service}-service" />
 
 <% } else if (outboundTransport=="SMTP") { %> 
 				<smtp:outbound-endpoint 
@@ -197,7 +197,6 @@ ${xmlNamespace.onewayService}
 				/>
 
 				<outbound-endpoint address="vm://${service}-service" />
-			</outbound>
 	</flow>		
 <% } %> 
 </mule>

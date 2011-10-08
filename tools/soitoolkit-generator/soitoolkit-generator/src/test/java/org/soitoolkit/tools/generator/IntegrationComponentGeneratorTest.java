@@ -68,7 +68,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 				
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 51, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
+		assertEquals("Missmatch in expected number of created files and folders", 55, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "-standalone" + "/trunk");
 	}

@@ -1,54 +1,326 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-  Licensed to the soi-toolkit project under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
- 
-      http://www.apache.org/licenses/LICENSE-2.0
- 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow">
-    <flow entity-id="10a747d8-b1ef-4dea-abe3-0ee06eeffc5f">
-        <lane entity-id="270262ca-8bd6-4a2f-bfe9-3db71ddc7568">
-            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="org.mule.tooling.ui.modules.core.endpoint.vmEndpoint" name="VM" entity-id="5e0a3d0b-c345-4131-8334-2eb1a5db624e">
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="f1">
+    <flow name="f1Flow1">
+        <lane entity-id="f252dd57-8650-4b3a-8504-4c65839bbce7">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/jms/endpoint" name="JMS" entity-id="f28c18da-2b69-488c-8569-d811365c064d">
                 <properties>
-                    <property value="" name="endpoint.address"/>
-                    <property value="" name="endpoint.exchange.pattern"/>
-                    <property value="in2" name="vm.path"/>
-                    <property value="" name="endpoint.connector.ref"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="q1" name="queue"/>
+                    <property name="topic"/>
+                    <property name="address"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="durableName"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="disableTemporaryReplyToDestinations"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
                 </properties>
-                <description>Facilitates intra-VM component communication.</description>
+                <description>Send or receive messages from a JMS queue</description>
             </endpoint>
-            <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="53cc063e-c174-4513-a4e1-dbad32939bdf">
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Custom Transformer" entity-id="7bafe8cd-ab3c-4471-aae4-afd93823eed2">
                 <properties>
-                    <property value="HELLO!!!" name="logger.message"/>
-                    <property value="INFO" name="logger.level"/>
-                </properties>
-                <description>Performs logging using an expression that determines what should be logged.</description>
-            </pattern>
-            <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Custom Transformer" entity-id="b1e18ad0-d79e-474d-a8ab-c450c1144138">
-                <properties>
-                    <property value="org.ce.Ml2" name="custom.transformer.classname"/>
+                    <property value="org.mule.transformer.simple.AutoTransformer" name="custom.transformer.classname"/>
                 </properties>
                 <description>Transformer that delegates to a Java class.</description>
             </pattern>
-            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="org.mule.tooling.ui.modules.core.endpoint.vmEndpoint" name="VM" entity-id="1efa16b8-aa91-46ff-9a35-017e94cc4496">
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/jms/endpoint" name="JMS" entity-id="de2d76a4-5bb6-4a54-ab0e-e844482a8bf8">
                 <properties>
-                    <property value="" name="endpoint.address"/>
-                    <property value="" name="endpoint.exchange.pattern"/>
-                    <property value="out2" name="vm.path"/>
-                    <property value="" name="endpoint.connector.ref"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="q2" name="queue"/>
+                    <property name="topic"/>
+                    <property name="address"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="durableName"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="disableTemporaryReplyToDestinations"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
                 </properties>
-                <description>Facilitates intra-VM component communication.</description>
+                <description>Send or receive messages from a JMS queue</description>
             </endpoint>
         </lane>
     </flow>
+    <flow name="f1Flow3">
+        <lane entity-id="b9cc0b65-bdfe-453f-a5e9-6b72b8407942">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/ftp/endpoint" name="FTP" entity-id="b46e601e-3afd-48fb-8b91-aa40556035de">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property name="binary"/>
+                    <property name="passive"/>
+                    <property value="host" name="host"/>
+                    <property value="21" name="port"/>
+                    <property value="path" name="path"/>
+                    <property value="usr" name="user"/>
+                    <property value="pwd" name="password"/>
+                    <property name="pollingFrequency"/>
+                    <property value="address" name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="outputPattern"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                </properties>
+                <description>Read file from an FTP reference</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/ftp/endpoint" name="FTP" entity-id="a04f4608-ab76-447f-840d-ade370aa3c63">
+                <properties>
+                    <property value="21" name="port"/>
+                    <property value="false" name="binary"/>
+                    <property value="" name="host"/>
+                    <property value="1000" name="pollingFrequency"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="" name="password"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="sss" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="false" name="passive"/>
+                    <property value="" name="path"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="" name="outputPattern"/>
+                    <property value="" name="user"/>
+                    <property value="" name="mimeType"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>Read file from an FTP reference</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <flow name="f1Flow4">
+        <lane entity-id="185de945-3676-4bf9-8f66-a7a0ee0bd36a">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/file/endpoint" name="File" entity-id="692df561-2e50-49ea-a981-b3b7790f7c8d">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="/Users/magnuslarsson/Documents/temp/_plugintests/jUnitTests" name="path"/>
+                    <property name="outputPattern"/>
+                    <property value="moveToPattern" name="moveToPattern"/>
+                    <property value="/Users/magnuslarsson/Documents/temp/_plugintests/s2" name="moveToDirectory"/>
+                    <property name="pollingFrequency"/>
+                    <property name="fileAge"/>
+                    <property name="comparator"/>
+                    <property name="reverseOrder"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                </properties>
+                <description>Read/write a file from the filesystem</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/file/endpoint" name="File" entity-id="6c1532bc-b546-40e9-ae83-257508efff94">
+                <properties>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="encoding"/>
+                    <property value="/Users/magnuslarsson/Documents/temp" name="path"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="" name="outputPattern"/>
+                    <property value="" name="mimeType"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>Read/write a file from the filesystem</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <flow name="f1Flow5">
+        <lane entity-id="0fa86e03-a4ef-4157-b51a-6a9425420ce4">
+            <endpoint message-exchange-pattern="RequestResponse" direction="Inbound" type="http://www.mulesoft.org/schema/mule/https/endpoint" name="HTTP" entity-id="555b9f53-b766-4435-96fe-90f0ea09af70">
+                <properties>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="localhost" name="host"/>
+                    <property value="8081" name="port"/>
+                    <property name="user"/>
+                    <property name="password"/>
+                    <property name="path"/>
+                    <property value="GET" name="method"/>
+                    <property value="" name="contentType"/>
+                    <property name="keep-alive"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="followRedirects"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                </properties>
+                <description>The HTTPS endpoint allows Mule to send and recieve requests securely using HTTP over SSL protocol.</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="RequestResponse" direction="Outbound" type="http://www.mulesoft.org/schema/mule/https/endpoint" name="HTTP" entity-id="60d4f1a7-df4d-4f27-8641-a5b290bf4e97">
+                <properties>
+                    <property value="request-response" name="exchange-pattern"/>
+                </properties>
+                <description>The HTTPS endpoint allows Mule to send and recieve requests securely using HTTP over SSL protocol.</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <flow name="f1Flow6">
+        <lane entity-id="4bdbf6e7-6992-4fb7-88c8-4a775b71c3dc">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/jdbc/endpoint" name="JDBC" entity-id="2c843211-04a6-4d3b-9f14-8c61297529a6">
+                <properties>
+                    <property value="1000" name="pollingFrequency"/>
+                    <property value="1" name="queryTimeout"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="q1" name="queryKey"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="mimeType"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>JDBC Transport</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/jdbc/endpoint" name="JDBC" entity-id="45f4a9b0-8ebe-4129-abd1-38a45027d6d8">
+                <properties>
+                    <property value="1000" name="pollingFrequency"/>
+                    <property value="1" name="queryTimeout"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="w" name="queryKey"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="mimeType"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>JDBC Transport</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <flow name="f1Flow7">
+        <lane entity-id="58550ea9-e58a-4dcd-9dc7-b85223314d57">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/sftp/endpoint" name="SFTP" entity-id="b583f591-2af1-48b3-9423-76996a817f46">
+                <properties>
+                    <property value="22" name="port"/>
+                    <property value="" name="archiveTempSendingDir"/>
+                    <property value="" name="archiveTempReceivingDir"/>
+                    <property value="" name="password"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="0" name="fileAge"/>
+                    <property value="" name="archiveDir"/>
+                    <property value="" name="name"/>
+                    <property value="0" name="sizeCheckWaitTime"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="path"/>
+                    <property value="false" name="autoDelete"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="" name="mimeType"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="tempDir"/>
+                    <property value="" name="host"/>
+                    <property value="" name="passphrase"/>
+                    <property value="1000" name="pollingFrequency"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="false" name="useTempFileTimestampSuffix"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="a" name="address"/>
+                    <property value="" name="identityFile"/>
+                    <property value="" name="user"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>The SFTP transport provides connectivity to SFTP servers to allow files to be read and written as messages in Mule.</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/sftp/endpoint" name="SFTP" entity-id="1f23e65a-5cbc-422d-91a3-0d24c7d86093">
+                <properties>
+                    <property value="22" name="port"/>
+                    <property value="" name="tempDir"/>
+                    <property value="false" name="keepFileOnError"/>
+                    <property value="" name="host"/>
+                    <property value="" name="passphrase"/>
+                    <property value="false" name="useTempFileTimestampSuffix"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="" name="password"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="throwException" name="duplicateHandling"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="s" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="path"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="" name="identityFile"/>
+                    <property value="" name="outputPattern"/>
+                    <property value="" name="user"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="mimeType"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>The SFTP transport provides connectivity to SFTP servers to allow files to be read and written as messages in Mule.</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <flow name="f1Flow2" entity-id="70c28b2a-1b47-4f23-8641-f69265e1868d">
+        <lane entity-id="bc71a654-7286-4eb7-a651-b5daa3b87436">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="c6248bfd-2926-43fb-8729-785ff963681e">
+                <properties>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="encoding"/>
+                    <property value="q" name="path"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="" name="mimeType"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>Facilitates intra-VM component communication.</description>
+            </endpoint>
+            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/smtps/endpoint" name="SMTP" entity-id="f651bd88-b146-486b-a26e-3a0791619dc4">
+                <properties>
+                    <property value="25" name="port"/>
+                    <property value="" name="to"/>
+                    <property value="" name="host"/>
+                    <property value="" name="subject"/>
+                    <property value="http://www.mulesoft.org/schema/mule/smtp/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="" name="bcc"/>
+                    <property value="" name="from"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="" name="password"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="replyTo"/>
+                    <property value="s" name="address"/>
+                    <property value="" name="name"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="" name="user"/>
+                    <property value="" name="mimeType"/>
+                    <property value="10000" name="responseTimeout"/>
+                    <property value="" name="cc"/>
+                    <property value="" name="connector-ref"/>
+                </properties>
+                <description>The SMTPS transport is similar to the [SMTP Transport] but uses secure connections over SSL/TLS.</description>
+            </endpoint>
+        </lane>
+    </flow>
+    <description></description>
 </mule-configuration>

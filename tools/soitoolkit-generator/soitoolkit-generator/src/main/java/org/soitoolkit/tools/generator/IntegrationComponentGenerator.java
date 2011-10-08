@@ -43,6 +43,10 @@ public class IntegrationComponentGenerator implements Generator {
 
 		// TODO: Refactor to a reusable java-project generator + some mule-stuff?
 		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/pom.xml.gt");
+		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/.project.gt");
+		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/mule-project.xml.gt");
+		gu.generateContentAndCreateFile("trunk/__serviceProjectFilepath__/application/mule-deploy.properties.gt");
+
 		// TODO: Add code for standard monitorService!
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/java/__javaPackageFilepath__");
 		gu.generateFolder("trunk/__serviceProjectFilepath__/src/main/app");

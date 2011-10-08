@@ -36,8 +36,10 @@ public class GroovyGeneratorUtilTest {
 	
 	@Test
 	public void testGroovyGenerator() throws FileNotFoundException {
-		haveARun(TransportEnum.VM, TransportEnum.VM);
-		haveARun(TransportEnum.JMS, TransportEnum.JMS);
+		haveARun(TransportEnum.VM,   TransportEnum.VM);
+		haveARun(TransportEnum.JMS,  TransportEnum.JMS);  // Expect some extra file-proeprties
+		haveARun(TransportEnum.FILE, TransportEnum.FILE); // Expect outputPattern=#[header:originalFilename]
+		haveARun(TransportEnum.JMS,  TransportEnum.FILE); // Expect outputPattern=${${uppercaseService}_OUTBOUND_FILE}
 	}
 
 	private void haveARun(TransportEnum in, TransportEnum out) throws FileNotFoundException {
