@@ -113,7 +113,7 @@ public class OneWayServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 56 : 68;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 60 : 72;
 		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
