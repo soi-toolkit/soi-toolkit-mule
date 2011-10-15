@@ -66,6 +66,7 @@
     <!-- plugin versions - please keep list alphabetically ordered -->
     <!-- ********************************************************* -->
     <cxf-codegen-plugin.version>2.1.9</cxf-codegen-plugin.version>
+    <exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
     <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
     <maven-clean-plugin.version>2.4.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -150,6 +151,11 @@
           <groupId>org.apache.cxf</groupId>
           <artifactId>cxf-codegen-plugin</artifactId>
           <version>${cxf-codegen-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>

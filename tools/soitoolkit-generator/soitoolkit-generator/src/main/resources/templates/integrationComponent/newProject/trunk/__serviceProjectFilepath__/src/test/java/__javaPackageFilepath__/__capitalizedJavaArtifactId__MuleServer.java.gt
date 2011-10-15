@@ -4,7 +4,7 @@ package ${javaPackage};
 import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.StandaloneMuleServer;
-<% } %> 
+<% } %>
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
@@ -28,15 +28,18 @@ public class ${capitalizedJavaArtifactId}MuleServer {
     private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
 
 	public static void main(String[] args) throws Exception {
+
+        // Take mule-config-file from first argument if any, otherwise fallback to MULE_CONFIG
+        String muleConfig = (args.length > 0) ? args[0] : MULE_CONFIG;
 		
 <% if (servlet) { %>
-		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, MULE_CONFIG, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
+		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 
-		StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, MULE_CONFIG);
+		StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, muleConfig);
 <% } %> 
 		muleServer.run();
 	}
-	
+
     /**
      * Address based on usage of the servlet-transport and a config-property for the URI-part
      * 
