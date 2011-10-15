@@ -84,7 +84,7 @@ public class CreateComponentStartPage extends WizardPage {
 	private Text rootFolderText;
 	private Text mavenHomeText;
 	private Text customGroovyModelImplText;
-	private Text mavenEclipseGoalText;
+//	private Text mavenEclipseGoalText;
 
 	@SuppressWarnings("unused")
 	private ISelection selection;
@@ -189,16 +189,16 @@ public class CreateComponentStartPage extends WizardPage {
 		customGroovyModelImplText.setLayoutData(gd);
 		new Label(container, SWT.NULL); // FIXME Stupid filler...
 		
-		// Maven eclispe goal (label, text)		
-		label = new Label(container, SWT.NULL);
-		label.setText("Maven Eclipse goal:");
-
-		mavenEclipseGoalText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		mavenEclipseGoalText.setEnabled(false);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		mavenEclipseGoalText.setLayoutData(gd);
-//		mavenEclipseGoalText(modifyListener);
-		new Label(container, SWT.NULL); // FIXME Stupid filler...
+//		// Maven eclispe goal (label, text)		
+//		label = new Label(container, SWT.NULL);
+//		label.setText("Maven Eclipse goal:");
+//
+//		mavenEclipseGoalText = new Text(container, SWT.BORDER | SWT.SINGLE);
+//		mavenEclipseGoalText.setEnabled(false);
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		mavenEclipseGoalText.setLayoutData(gd);
+////		mavenEclipseGoalText(modifyListener);
+//		new Label(container, SWT.NULL); // FIXME Stupid filler...
 	}
 
 	
@@ -215,13 +215,16 @@ public class CreateComponentStartPage extends WizardPage {
 		rootFolderText.setText(prefs.getString(P_DEFAULT_ROOT_FOLDER));
 		mavenHomeText.setText(prefs.getString(P_MAVEN_HOME));
 		customGroovyModelImplText.setText(prefs.getString(P_GROOVY_MODEL));
-		String eclipseGoal = prefs.getString(P_ECLIPSE_GOAL);
-		mavenEclipseGoalText.setText(eclipseGoal);
-		if (eclipseGoal.equals("eclipse:m2eclipse")) {
-			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE.ordinal();
-		} else {
-			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_ECLIPSE.ordinal();
-		}
+
+		// Moving away from eclipse:m2eclipse
+//		String eclipseGoal = prefs.getString(P_ECLIPSE_GOAL);
+//		mavenEclipseGoalText.setText(eclipseGoal);
+//		if (eclipseGoal.equals("eclipse:m2eclipse")) {
+//			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE.ordinal();
+//		} else {
+//			mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_ECLIPSE.ordinal();
+//		}
+		mavenEclipseGoalType.value = MavenEclipseGoalEnum.ECLIPSE_ECLIPSE.ordinal();
 	}
 
 	/**

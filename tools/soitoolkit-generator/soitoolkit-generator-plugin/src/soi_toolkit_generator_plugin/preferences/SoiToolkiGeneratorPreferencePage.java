@@ -60,9 +60,9 @@ public class SoiToolkiGeneratorPreferencePage
 
 		addField(new DirectoryFieldEditor(PreferenceConstants.P_DEFAULT_ROOT_FOLDER,   "Default root folder:", getFieldEditorParent()));
 
-		addField(new RadioGroupFieldEditor(PreferenceConstants.P_ECLIPSE_GOAL, "Maven Eclipse goal", 1,
-			new String[][] { { "eclipse:eclipse", "eclipse:eclipse" }, {"eclipse:m2eclipse", "eclipse:m2eclipse" }
-		}, getFieldEditorParent()));
+//		addField(new RadioGroupFieldEditor(PreferenceConstants.P_ECLIPSE_GOAL, "Maven Eclipse goal", 1,
+//			new String[][] { { "eclipse:eclipse", "eclipse:eclipse" }, {"eclipse:m2eclipse", "eclipse:m2eclipse" }
+//		}, getFieldEditorParent()));
 
 		addField(new StringFieldEditor(PreferenceConstants.P_GROOVY_MODEL, "Custom Groovy model:", getFieldEditorParent()));
 
