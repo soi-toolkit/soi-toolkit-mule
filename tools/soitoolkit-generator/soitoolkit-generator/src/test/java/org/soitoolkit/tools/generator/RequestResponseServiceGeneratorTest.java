@@ -79,8 +79,8 @@ public class RequestResponseServiceGeneratorTest {
 			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 
-			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
-			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
 		}
 	}
 
@@ -106,7 +106,7 @@ public class RequestResponseServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 55 : 67;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 40 : 67;
 
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
@@ -129,11 +129,11 @@ public class RequestResponseServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
-		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk/" + model.getServiceProjectFilepath()).startGenerator();
+//		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
+		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk").startGenerator();
 		
 //		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
-		int expectedNoOfFiles = (outboundTransport == JMS) ? 17 : 15;
+		int expectedNoOfFiles = (outboundTransport == JMS) ? 18 : 16;
 		
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		

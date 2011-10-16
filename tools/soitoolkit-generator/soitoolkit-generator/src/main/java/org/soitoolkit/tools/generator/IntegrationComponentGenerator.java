@@ -40,7 +40,6 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("tags");
 
 		gu.generateContentAndCreateFile("trunk/pom.xml.gt");
-		gu.generateContentAndCreateFile("trunk/.project.gt");
 		gu.generateContentAndCreateFile("trunk/mule-project.xml.gt");
 		gu.generateContentAndCreateFile("trunk/application/mule-deploy.properties.gt");
 
@@ -57,7 +56,6 @@ public class IntegrationComponentGenerator implements Generator {
 			gu.generateContentAndCreateFile("trunk/src/environment/setup/__artifactId__-db-insert-testdata.sql.gt");
 	    }
 
-		gu.generateFolder("trunk/src/main/resources/services");
 		gu.generateContentAndCreateFile("trunk/src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
 		gu.generateContentAndCreateFile("trunk/src/test/resources/__artifactId__-teststubs-and-services-config.xml.gt");
 		gu.generateContentAndCreateFile("trunk/src/test/resources/__artifactId__-teststubs-only-config.xml.gt");

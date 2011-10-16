@@ -68,21 +68,21 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 				
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 55, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
+		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "-standalone" + "/trunk");
 	}
 
-	@Test
-	public void testGenerateOrderMgm_War() throws IOException {
-		SystemUtil.delDirs(PROJECT_FOLDER + "-war");
-		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-war"));
-				
-		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-war", "1.0-SNAPSHOT", MULE_VERSION, WAR_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 67, SystemUtil.countFiles(PROJECT_FOLDER + "-war"));
-		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "-war" + "/trunk");
-	}
+//	@Test
+//	public void testGenerateOrderMgm_War() throws IOException {
+//		SystemUtil.delDirs(PROJECT_FOLDER + "-war");
+//		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-war"));
+//				
+//		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-war", "1.0-SNAPSHOT", MULE_VERSION, WAR_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+//		assertEquals("Missmatch in expected number of created files and folders", 67, SystemUtil.countFiles(PROJECT_FOLDER + "-war"));
+//		
+//		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "-war" + "/trunk");
+//	}
 
 	@Test
 	public void testGenerateShipping() throws IOException {
@@ -90,7 +90,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "shipping", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 55, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
+		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/shipping/trunk");
 	}
@@ -104,7 +104,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 53, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", 38, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}
@@ -118,7 +118,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 55, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}
