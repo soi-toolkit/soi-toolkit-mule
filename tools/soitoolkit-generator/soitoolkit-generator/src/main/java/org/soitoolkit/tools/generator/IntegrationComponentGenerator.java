@@ -32,10 +32,44 @@ public class IntegrationComponentGenerator implements Generator {
 	public IntegrationComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, String folderName) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, deploymentModel, transports, "/templates/integrationComponent/newProject", folderName + "/__integrationComponentProject__");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, deploymentModel, transports, "/integrationComponent", folderName + "/__integrationComponentProject__");
 	}
-		
     public void startGenerator() {
+
+		gu.generateFolder("branches");
+		gu.generateFolder("tags");
+
+		gu.generateContentAndCreateFile("trunk/pom.xml.gt");
+		gu.generateContentAndCreateFile("trunk/.project.gt");
+		gu.generateContentAndCreateFile("trunk/mule-project.xml.gt");
+		gu.generateContentAndCreateFile("trunk/application/mule-deploy.properties.gt");
+
+		gu.generateFolder("trunk/src/main/java/__javaPackageFilepath__");
+		gu.generateFolder("trunk/src/main/resources/flow");
+		gu.generateContentAndCreateFile("trunk/src/main/app/mule-config.xml.gt");
+		gu.generateContentAndCreateFile("trunk/src/main/resources/__artifactId__-common.xml.gt");
+		gu.generateContentAndCreateFile("trunk/src/main/resources/__artifactId__-config.xml.gt");
+
+	    if (gu.getModel().isJdbc()) {
+			gu.generateContentAndCreateFile("trunk/src/main/resources/__artifactId__-jdbc-connector.xml.gt");
+			gu.generateContentAndCreateFile("trunk/src/environment/setup/__artifactId__-db-create-tables.sql.gt");
+			gu.generateContentAndCreateFile("trunk/src/environment/setup/__artifactId__-db-drop-tables.sql.gt");
+			gu.generateContentAndCreateFile("trunk/src/environment/setup/__artifactId__-db-insert-testdata.sql.gt");
+	    }
+
+		gu.generateFolder("trunk/src/main/resources/services");
+		gu.generateContentAndCreateFile("trunk/src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
+		gu.generateContentAndCreateFile("trunk/src/test/resources/__artifactId__-teststubs-and-services-config.xml.gt");
+		gu.generateContentAndCreateFile("trunk/src/test/resources/__artifactId__-teststubs-only-config.xml.gt");
+		gu.generateFolder("trunk/src/test/resources/testfiles");
+		gu.generateFolder("trunk/src/test/resources/teststub-services");
+		gu.generateContentAndCreateFile("trunk/src/environment/log4j.dtd.gt");
+		gu.generateContentAndCreateFile("trunk/src/environment/log4j.xml.gt");
+		gu.generateContentAndCreateFile("trunk/src/environment/__securityPropertyFile__.properties.gt");
+		gu.generateContentAndCreateFile("trunk/src/environment/__configPropertyFile__.properties.gt");
+    }
+		
+    public void startGeneratorMultiProjectStyle() {
 
 		gu.generateFolder("branches");
 		gu.generateFolder("tags");
