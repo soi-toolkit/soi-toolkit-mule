@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
+[soi-toolkit.gen.version=${soitoolkitVersion}]
+[soi-toolkit.gen.type=services]
+[soi-toolkit.gen.createDate=${xmlTimestamp}]
+[soi-toolkit.gen.artifactId=${artifactId}]
+-->
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>${superpomGroupId}</groupId>
+        <artifactId>${superpomArtifactId}</artifactId>
+        <version>${superpomVersion}</version>
+    </parent>
+    
+    <groupId>${groupId}</groupId>
+    <artifactId>${parentPom}</artifactId>
+    <version>${version}</version>
+    <packaging>mule</packaging>
+    <name>${parentPom}</name>
+
+    <scm>
+        <connection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</connection>
+        <developerConnection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</developerConnection>
+        <url>https://my-subversion-server/svn/${integrationComponentProject}/trunk</url>
+    </scm>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot Repository</name>
+            <url>http://my-maven-repo-server/repositories/snapshots</url>
+        </snapshotRepository>  
+        <repository>
+            <id>releases</id>
+            <name>Release Repository</name>
+            <url>http://my-maven-repo-server/repositories/releases</url>
+        </repository>
+    </distributionManagement>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-mule</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
+			<artifactId>soitoolkit-mule-${muleVersion}-dependencies</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+		</dependency>
+	</dependencies> 
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/main/app</directory>
+            </resource>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/environment</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${dollarSymbol}{basedir}/src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+		<plugins>   
+            <plugin>
+                <!-- Add mule-nature to the eclipse-.project-file -->
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.mule.tooling.core.muleNature</projectnature>
+                    </additionalProjectnatures>
+                </configuration>
+            </plugin>
+
+            <plugin>
+            <!--
+            FIX plugin-mgm!!!
+            -->
+                <groupId>org.mule.tools</groupId>
+                <artifactId>maven-mule-plugin</artifactId>
+                <version>1.6</version>
+                <extensions>true</extensions>
+                <!-- Include mule-dependencies that doesn't come with Mule 3.x otherwise we can't install to a vanilla Mule 3.x installation -->
+                <configuration>
+                    <inclusions>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>commonretrypolicies</artifactId>
+                        </inclusion>
+                    </inclusions>
+                </configuration>
+            </plugin>
+		</plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>muleServer</id>
+            <!-- Start mule server with the command "mvn -PmuleServer" or "mvn -PmuleServer -Dexec.args="${dollarSymbol}{artifaceId}-config.xml"" if you want to override the default config-file -->
+            <build>
+                <defaultGoal>test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>${javaPackage}.${capitalizedJavaArtifactId}MuleServer</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

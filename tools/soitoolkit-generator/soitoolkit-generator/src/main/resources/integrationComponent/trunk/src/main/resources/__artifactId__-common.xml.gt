@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.common}
+
+	<spring:bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<spring:property name="ignoreResourceNotFound" value="true" />
+		<spring:property name="locations">
+			<spring:list>
+				<!-- Only available in development env, e.g. Eclipse -->
+				<spring:value>classpath:${securityPropertyFile}.properties</spring:value>
+				<spring:value>classpath:${configPropertyFile}.properties</spring:value>
+				
+				<!-- Only available when deployed to a servlet container -->
+				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${securityPropertyFile}.properties</spring:value>
+				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${configPropertyFile}.properties</spring:value>
+			</spring:list>
+		</spring:property>
+	</spring:bean>
+
+<!-- 
+    <management:jmx-default-config port="${dollarSymbol}{JMX_PORT}" registerMx4jAdapter="false" >
+        <management:credentials>
+            <spring:entry key="${dollarSymbol}{JMX_USER}" value="${dollarSymbol}{JMX_PWD}"/>
+        </management:credentials>
+    </management:jmx-default-config> 
+ -->
+    
+	<!--  Allow tests to register dynamic listeners by specifying dynamic="true" -->
+	<!-- TODO: Is there a performance hit with this that is not acceptable in runtime?
+	           Then we maybe need a teststub-common-xml file in the end... -->
+<% if (sftp) { %>
+	<spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
+	<spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
+   	<notifications dynamic="true">
+		<notification event="COMPONENT-MESSAGE"/>
+		<notification event="ENDPOINT-MESSAGE"/>
+		<notification event="CUSTOM"/>
+		<notification-listener ref="sftpTransportNotificationLogger"/>
+		<notification-listener ref="endpointMessageNotificationLogger"/>
+	</notifications>
+<% } else { %>  
+   	<notifications dynamic="true">
+		<notification event="COMPONENT-MESSAGE"/>
+		<notification event="ENDPOINT-MESSAGE"/>
+	</notifications>
+<% } %>  
+
+    <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
+<% if (servlet) { %>
+	<servlet:connector name="servletConnector" />
+<% } %>  
+
+<% if (false) { %>
+    <!-- We don't use these global endpoint for the moment but maybe we will again in the future so we keep the code fragments -->
+	<endpoint name="soitoolkit-info-log-endpoint" address="vm://soitoolkit-info-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+	<endpoint name="soitoolkit-error-log-endpoint" address="vm://soitoolkit-error-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+<% } %>  
+
+<% if (pop3) { %>
+	<pop3:connector name="pop3Connector" checkFrequency="${dollarSymbol}{POP3_CHECK_FREQUENCY_MS}"/>
+<% } %>  
+
+<% if (imap) { %>
+	<imap:connector name="imapConnector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
+<% } %>  
+
+    <spring:beans>
+<% if (sftp) { %>
+        <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
+<% } %>  
+    </spring:beans>
+
+	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>
+
+	<custom-transformer name="createCorrId"  class="org.soitoolkit.commons.mule.log.correlationid.CreateCorrelationIdTransformer" />
+	<custom-transformer name="saveCorrId"    class="org.soitoolkit.commons.mule.log.correlationid.SaveCorrelationIdTransformer" />
+	<custom-transformer name="restoreCorrId" class="org.soitoolkit.commons.mule.log.correlationid.RestoreCorrelationIdTransformer" />
+
+	<custom-transformer name="objToXml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
+		<spring:property name="contextPath"  value="
+			"/>
+	</custom-transformer>
+
+	<custom-transformer name="xmlToObj" class="org.soitoolkit.commons.mule.jaxb.XmlToJaxbObjectTransformer">
+		<spring:property name="contextPath"  value="
+			"/>
+	</custom-transformer>
+
+    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+
+	<custom-transformer name="mimeToStr" class="org.soitoolkit.commons.mule.mime.MimeToStringTransformer" />
+
+    <custom-transformer name="logMsgIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="msg-in"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>
+
+    <custom-transformer name="logMsgOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="msg-out"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>
+
+    <custom-transformer name="logReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="req-in"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>
+
+    <custom-transformer name="logReqOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="req-out"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>
+
+    <custom-transformer name="logRespIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="resp-in"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>
+
+    <custom-transformer name="logRespOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"  value="resp-out"/>
+		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+    </custom-transformer>  
+
+    <!-- TODO: Add global definitions here -->
+
+</mule>
