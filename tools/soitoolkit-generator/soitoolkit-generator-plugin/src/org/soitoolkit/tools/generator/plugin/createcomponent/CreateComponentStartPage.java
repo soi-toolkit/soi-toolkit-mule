@@ -18,7 +18,7 @@ package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
 import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.UTILITY_COMPONENT;
-import static org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum.ECLIPSE_M2ECLIPSE;
+import static org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum.ECLIPSE_ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_DEFAULT_ROOT_FOLDER;
@@ -76,7 +76,7 @@ public class CreateComponentStartPage extends WizardPage {
 	}
 
 	private ValueHolder<Integer> componentType = new ValueHolder<Integer>(INTEGRATION_COMPONENT.ordinal());
-	private ValueHolder<Integer> mavenEclipseGoalType = new ValueHolder<Integer>(ECLIPSE_M2ECLIPSE.ordinal());
+	private ValueHolder<Integer> mavenEclipseGoalType = new ValueHolder<Integer>(ECLIPSE_ECLIPSE.ordinal());
 	
 	private Text artifactIdText;
 	private Text groupIdText;

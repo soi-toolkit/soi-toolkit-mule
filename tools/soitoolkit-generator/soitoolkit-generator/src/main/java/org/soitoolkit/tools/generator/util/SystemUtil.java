@@ -43,7 +43,7 @@ public class SystemUtil {
 	private static final String OFFLINE = ""; // If you want to speed things up a bit and already have everything in your local repo: " -o";
 
 	public static final String BUILD_COMMAND = MVN + " install" + OFFLINE;
-	public static final String ECLIPSE_AND_TEST_REPORT_COMMAND = MVN + " eclipse:m2eclipse surefire-report:report -DshowSuccess=false -DskipTests" + OFFLINE; // -Dmaven.test.failure.ignore=true";
+	public static final String ECLIPSE_AND_TEST_REPORT_COMMAND = MVN + " eclipse:eclipse surefire-report:report -DshowSuccess=false -DskipTests" + OFFLINE; // -Dmaven.test.failure.ignore=true";
 	public static final String CLEAN_COMMAND = MVN + " clean";
 
 	static class ThreadedStreamReader extends Thread {

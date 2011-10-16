@@ -37,7 +37,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_DEFAULT_ROOT_FOLDER, PreferencesUtil.getDefaultRootFolder());
 		store.setDefault(PreferenceConstants.P_MAVEN_HOME, PreferencesUtil.getMavenHome());
 		store.setDefault(PreferenceConstants.P_GROOVY_MODEL, PreferencesUtil.getCustomGroovyModelImpl());
-		store.setDefault(PreferenceConstants.P_ECLIPSE_GOAL, "eclipse:m2eclipse");
+		store.setDefault(PreferenceConstants.P_ECLIPSE_GOAL, "eclipse:eclipse");
 		store.setDefault(PreferenceConstants.P_SFTP_ROOT_FOLDER, PreferencesUtil.getDefaultSftpRootFolder());
 		
 /*

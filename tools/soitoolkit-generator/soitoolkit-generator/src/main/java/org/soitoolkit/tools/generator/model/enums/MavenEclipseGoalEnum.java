@@ -29,4 +29,3 @@ public enum MavenEclipseGoalEnum implements ILabeledEnum {
 	}
 	public String getLabel() {return label;}
 }
-
