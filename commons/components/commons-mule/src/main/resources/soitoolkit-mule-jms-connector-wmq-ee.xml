@@ -21,7 +21,7 @@
 	xmlns:spring="http://www.springframework.org/schema/beans"
 	xmlns:wmq="http://www.mulesoft.org/schema/mule/ee/wmq"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/beans       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.mulesoft.org/schema/mule/ee/wmq  http://www.mulesoft.org/schema/mule/ee/wmq/3.1/mule-wmq-ee.xsd
     http://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd">
 
