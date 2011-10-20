@@ -4,16 +4,10 @@
 ${xmlNamespace.common}
 
 	<spring:bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<spring:property name="ignoreResourceNotFound" value="true" />
 		<spring:property name="locations">
 			<spring:list>
-				<!-- Only available in development env, e.g. Eclipse -->
 				<spring:value>classpath:${securityPropertyFile}.properties</spring:value>
 				<spring:value>classpath:${configPropertyFile}.properties</spring:value>
-				
-				<!-- Only available when deployed to a servlet container -->
-				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${securityPropertyFile}.properties</spring:value>
-				<spring:value>file:${dollarSymbol}{app.home}/${artifactId}/config/${configPropertyFile}.properties</spring:value>
 			</spring:list>
 		</spring:property>
 	</spring:bean>
@@ -26,24 +20,16 @@ ${xmlNamespace.common}
     </management:jmx-default-config> 
  -->
     
-	<!--  Allow tests to register dynamic listeners by specifying dynamic="true" -->
-	<!-- TODO: Is there a performance hit with this that is not acceptable in runtime?
-	           Then we maybe need a teststub-common-xml file in the end... -->
 <% if (sftp) { %>
-	<spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
-	<spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
-   	<notifications dynamic="true">
-		<notification event="COMPONENT-MESSAGE"/>
-		<notification event="ENDPOINT-MESSAGE"/>
-		<notification event="CUSTOM"/>
-		<notification-listener ref="sftpTransportNotificationLogger"/>
-		<notification-listener ref="endpointMessageNotificationLogger"/>
-	</notifications>
-<% } else { %>  
-   	<notifications dynamic="true">
-		<notification event="COMPONENT-MESSAGE"/>
-		<notification event="ENDPOINT-MESSAGE"/>
-	</notifications>
+    <!-- Enable sftp-listener to publish sftp-events. Requires the SftpDummyEndpointMessageNotificationListenerImpl to work... -->
+    <spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
+    <spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
+    <notifications>
+        <notification event="ENDPOINT-MESSAGE"/>
+        <notification event="CUSTOM"/>
+        <notification-listener ref="sftpTransportNotificationLogger"/>
+        <notification-listener ref="endpointMessageNotificationLogger"/>
+    </notifications>
 <% } %>  
 
     <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
