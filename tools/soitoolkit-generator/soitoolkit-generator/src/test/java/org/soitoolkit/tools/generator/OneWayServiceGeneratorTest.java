@@ -45,8 +45,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.soitoolkit.tools.generator.model.IModel;
-import org.soitoolkit.tools.generator.model.ModelFactory;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
@@ -113,7 +111,7 @@ public class OneWayServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 45 : 72;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 46 : 72;
 		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 

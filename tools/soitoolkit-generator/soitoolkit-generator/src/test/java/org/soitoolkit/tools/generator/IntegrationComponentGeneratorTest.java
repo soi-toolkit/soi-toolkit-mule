@@ -18,7 +18,6 @@ package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_1_2;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 
@@ -68,7 +67,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 				
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
+		assertEquals("Missmatch in expected number of created files and folders", 41, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 		
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "-standalone" + "/trunk");
 	}
@@ -90,7 +89,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "shipping", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
+		assertEquals("Missmatch in expected number of created files and folders", 41, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/shipping/trunk");
 	}
@@ -104,7 +103,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 38, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", 39, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}
@@ -118,7 +117,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 40, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", 41, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "/trunk");
 	}

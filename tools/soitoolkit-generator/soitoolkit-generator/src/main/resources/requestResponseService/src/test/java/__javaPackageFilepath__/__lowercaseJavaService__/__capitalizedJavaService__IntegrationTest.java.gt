@@ -76,6 +76,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		"${artifactId}-jdbc-connector.xml," +
 <% } %>  
 		"${artifactId}-common.xml," +
+        "${artifactId}-integrationtests-common.xml," + 
         // FIXME. MULE STUDIO.
 //      "services/${service}-service.xml," +
         "${service}-service.xml," +
