@@ -111,11 +111,11 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	// Used to transform payloads that are jaxb-objects into a xml-string
 	private JaxbObjectToXmlTransformer jaxbToXml = null;
 
-	{
+	static {
 		try {
 			// Let's give it a try, fail silently...
 			HOST       = InetAddress.getLocalHost();
-			HOST_NAME  = HOST.getCanonicalHostName();
+			HOST_NAME  = HOST.getHostName();
 			HOST_IP    = HOST.getHostAddress();
 			PROCESS_ID = ManagementFactory.getRuntimeMXBean().getName();
 		} catch (Throwable ex) {
