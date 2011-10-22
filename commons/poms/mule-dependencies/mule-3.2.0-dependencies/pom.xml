@@ -30,6 +30,7 @@
 	<name>${project.artifactId}</name>
 
 	<properties>
+        <xercesImpl.version>2.9.1</xercesImpl.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<cxf-gen.version>2.3.1</cxf-gen.version>
 		<mule.version>3.2.0</mule.version>
@@ -62,6 +63,11 @@
 		    <version>${mule.version}</version>
 		</dependency>
 -->
+          <dependency>
+             <groupId>xerces</groupId>
+             <artifactId>xercesImpl</artifactId>
+             <version>${xercesImpl.version}</version>
+          </dependency>
 
 		<!-- Spring framework -->
 		<dependency>
