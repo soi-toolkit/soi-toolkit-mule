@@ -19,16 +19,20 @@ ${xmlNamespace.common}
         </management:credentials>
     </management:jmx-default-config> 
  -->
-    
+
 <% if (sftp) { %>
     <!-- Enable sftp-listener to publish sftp-events. Requires the SftpDummyEndpointMessageNotificationListenerImpl to work... -->
     <spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
+<!-- Temporary removed due to http://code.google.com/p/soi-toolkit/issues/detail?id=181
     <spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
+-->
     <notifications>
         <notification event="ENDPOINT-MESSAGE"/>
         <notification event="CUSTOM"/>
         <notification-listener ref="sftpTransportNotificationLogger"/>
+<!-- Temporary removed due to http://code.google.com/p/soi-toolkit/issues/detail?id=181
         <notification-listener ref="endpointMessageNotificationLogger"/>
+-->
     </notifications>
 <% } %>  
 
