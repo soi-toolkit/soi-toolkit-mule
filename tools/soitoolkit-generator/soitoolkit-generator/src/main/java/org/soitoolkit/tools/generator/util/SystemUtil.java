@@ -103,12 +103,12 @@ public class SystemUtil {
 
 	public static void executeCommand(String command, String workingDirectory, PrintStream out, PrintStream err) throws IOException {
 
-		System.err.println("MAVEN_HOME:[" + MAVEN_HOME + "]");
+//		System.err.println("MAVEN_HOME:[" + MAVEN_HOME + "]");
 		if ((MAVEN_HOME != null) && (MAVEN_HOME.length() > 0)) {
 			command = MAVEN_HOME + "/bin/" + command;
 		}
-		command += " -X";
-		System.err.println("MVN-CMD: " + command);
+//		command += " -X";
+//		System.err.println("MVN-CMD: " + command);
 		
 		Process p = Runtime.getRuntime().exec(command, null, new File(workingDirectory));
 
