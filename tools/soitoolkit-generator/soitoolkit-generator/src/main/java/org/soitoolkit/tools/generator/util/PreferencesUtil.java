@@ -34,7 +34,7 @@ public class PreferencesUtil {
     }
     
     static public String getMavenHome() {
-    	return get("maven_home", getUserHome());
+    	return get("maven_home", "");
     }
     
 	static public String getCustomGroovyModelImpl() {

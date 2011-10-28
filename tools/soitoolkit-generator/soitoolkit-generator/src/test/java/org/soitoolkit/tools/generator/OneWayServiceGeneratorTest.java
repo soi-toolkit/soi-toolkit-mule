@@ -57,7 +57,6 @@ public class OneWayServiceGeneratorTest {
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String VERSION = "1.0-SNAPSHOT";
-	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -81,7 +80,7 @@ public class OneWayServiceGeneratorTest {
 		
 		for (int i = 0; i < muleVersions.length; i++) {
 			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+//			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 
 //			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
 //			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
@@ -167,15 +166,15 @@ public class OneWayServiceGeneratorTest {
 		boolean testOk = false;
 		
 		try {
-			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 			testOk = true;
 		} finally {
 			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
 		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 }

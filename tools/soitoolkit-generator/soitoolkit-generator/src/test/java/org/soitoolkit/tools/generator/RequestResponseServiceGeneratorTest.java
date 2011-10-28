@@ -51,7 +51,6 @@ public class RequestResponseServiceGeneratorTest {
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String VERSION = "1.0-SNAPSHOT";
-	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -151,25 +150,25 @@ public class RequestResponseServiceGeneratorTest {
 		boolean testOk = false;
 		
 		try {
-			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 			testOk = true;
 		} finally {
 			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
 		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 	@SuppressWarnings("unused")
 	private void performMavenBuild_old(String groupId, String artifactId) throws IOException {
 		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 }

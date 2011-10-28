@@ -37,7 +37,6 @@ public class SchemaComponentGeneratorTest {
 	private static final String PROJECT = "dealernetwork";	
 	private static final String SCHEMA  = "dealernetwork";	
 	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT + "-schemas";
-	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -92,7 +91,7 @@ public class SchemaComponentGeneratorTest {
 		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER + "/trunk");
 */
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 	@Test
@@ -106,7 +105,7 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", SCHEMA, ops, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
 	}
 
 	@Test
@@ -120,7 +119,7 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", name, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
 	}
 
 	@Test
@@ -137,6 +136,6 @@ public class SchemaComponentGeneratorTest {
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", schema, null, TEST_OUT_FOLDER).startGenerator();
 		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(MAVEN_HOME + "/bin/" + BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
 	}
 }

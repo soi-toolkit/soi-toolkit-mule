@@ -42,9 +42,10 @@ public class SystemUtil {
 	// Build command used by generator tests
 	private static final String OFFLINE = ""; // If you want to speed things up a bit and already have everything in your local repo: " -o";
 
-	public static final String BUILD_COMMAND = MVN + " install" + OFFLINE;
-	public static final String ECLIPSE_AND_TEST_REPORT_COMMAND = MVN + " eclipse:eclipse surefire-report:report -DshowSuccess=false -DskipTests" + OFFLINE; // -Dmaven.test.failure.ignore=true";
-	public static final String CLEAN_COMMAND = MVN + " clean";
+	public  static final String BUILD_COMMAND = MVN + " install" + OFFLINE;
+	public  static final String ECLIPSE_AND_TEST_REPORT_COMMAND = MVN + " eclipse:eclipse surefire-report:report -DshowSuccess=false -DskipTests" + OFFLINE; // -Dmaven.test.failure.ignore=true";
+	public  static final String CLEAN_COMMAND = MVN + " clean";
+	private static final String MAVEN_HOME = PreferencesUtil.getMavenHome();
 
 	static class ThreadedStreamReader extends Thread {
 	    InputStream in;
@@ -101,6 +102,14 @@ public class SystemUtil {
 	}
 
 	public static void executeCommand(String command, String workingDirectory, PrintStream out, PrintStream err) throws IOException {
+
+		System.err.println("MAVEN_HOME:[" + MAVEN_HOME + "]");
+		if ((MAVEN_HOME != null) && (MAVEN_HOME.length() > 0)) {
+			command = MAVEN_HOME + "/bin/" + command;
+		}
+		command += " -X";
+		System.err.println("MVN-CMD: " + command);
+		
 		Process p = Runtime.getRuntime().exec(command, null, new File(workingDirectory));
 
 		ThreadedStreamReader outputReader = new ThreadedStreamReader(p.getErrorStream(), err, "");            
