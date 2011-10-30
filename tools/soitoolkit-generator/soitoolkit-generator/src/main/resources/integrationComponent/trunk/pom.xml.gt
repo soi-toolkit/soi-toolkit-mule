@@ -70,11 +70,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 <directory>${dollarSymbol}{basedir}/src/environment</directory>
             </resource>
         </resources>
-        <testResources>
-            <testResource>
-                <directory>${dollarSymbol}{basedir}/src/test/resources</directory>
-            </testResource>
-        </testResources>
 
 		<plugins>   
             <plugin>
