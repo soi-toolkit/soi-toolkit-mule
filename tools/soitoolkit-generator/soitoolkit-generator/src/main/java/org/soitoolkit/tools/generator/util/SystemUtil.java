@@ -98,14 +98,14 @@ public class SystemUtil {
 	}
 
 	public static void executeCommand(String command, String workingDirectory) throws IOException {
-		executeCommand(command, workingDirectory, System.out, System.err);
+		executeCommand(MAVEN_HOME, command, workingDirectory, System.out, System.err);
 	}
 
-	public static void executeCommand(String command, String workingDirectory, PrintStream out, PrintStream err) throws IOException {
+	public static void executeCommand(String mavenHome, String command, String workingDirectory, PrintStream out, PrintStream err) throws IOException {
 
-//		System.err.println("MAVEN_HOME:[" + MAVEN_HOME + "]");
-		if ((MAVEN_HOME != null) && (MAVEN_HOME.length() > 0)) {
-			command = MAVEN_HOME + "/bin/" + command;
+//		System.err.println("mavenHome:[" + mavenHome + "]");
+		if ((mavenHome != null) && (mavenHome.length() > 0)) {
+			command = mavenHome + "/bin/" + command;
 		}
 //		command += " -X";
 //		System.err.println("MVN-CMD: " + command);

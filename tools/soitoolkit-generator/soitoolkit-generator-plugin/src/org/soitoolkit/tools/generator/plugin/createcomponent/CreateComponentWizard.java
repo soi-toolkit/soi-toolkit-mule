@@ -293,7 +293,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
 			monitor.setTaskName("Execute command: " + buildCommand);
-			SystemUtil.executeCommand(mavenHome + "/bin/" + buildCommand, path + "/trunk", out, err);
+			SystemUtil.executeCommand(mavenHome, buildCommand, path + "/trunk", out, err);
 			
 			monitor.worked(1);
 			monitor.setTaskName("Open project(s) in " + path + "/trunk");
@@ -301,7 +301,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			
 			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
+				openProject(path + "/trunk/.project");
+/*
 				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
+
 				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");
 				
 				if (deploymentModel == DeploymentModelEnum.STANDALONE_DEPLOY) {
@@ -313,6 +316,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 					openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
 					openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");
 				}
+*/
 				break;
 
 			case SD_SCHEMA_COMPONENT:
