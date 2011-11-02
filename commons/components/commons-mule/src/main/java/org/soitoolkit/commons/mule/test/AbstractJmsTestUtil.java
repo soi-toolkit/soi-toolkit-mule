@@ -30,6 +30,11 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
+import javax.jms.TopicSubscriber;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +49,9 @@ public abstract class AbstractJmsTestUtil {
 
     protected QueueConnection connection = null;
     protected QueueSession    session    = null;
+    
+    protected TopicConnection topicConnection = null;
+    protected TopicSession    topicSession    = null;
 
 	protected static final Logger logger = LoggerFactory.getLogger(AbstractJmsTestUtil.class);
 
@@ -51,6 +59,7 @@ public abstract class AbstractJmsTestUtil {
 	 * Methods to be implemented by a provider specific implementation
 	 */
 	protected abstract QueueConnectionFactory createQueueConnectionFactory() throws Exception;
+	protected abstract TopicConnectionFactory createTopicConnectionFactory() throws Exception;
 	protected abstract String getUsername();
 	protected abstract String getPassword();
 
@@ -60,6 +69,13 @@ public abstract class AbstractJmsTestUtil {
 	 */
 	public QueueSession getSession() {
 		return session;
+	}
+	
+	/**
+	 * @return
+	 */
+	public TopicSession getTopicSession() {
+		return topicSession;
 	}
 	
 	/**
@@ -215,13 +231,125 @@ public abstract class AbstractJmsTestUtil {
  			List<Message> messages = consumeMessagesOnQueue(queueNames[i]);			
  			logger.debug("CONSUMED {} MESSAGES FROM QUEUE {}", messages.size(), queueNames[i]);
 		}
+ 		
 	}
+ 	
+ 	
+	/**
+	 * Consumes one messages on a topic and waits specified time if none exists up front. 
+	 * 
+	 * @param topic
+	 * @param subscription name
+	 * @param timeout 
+	 * @return the message, null if none was consumed during the specified time period
+	 */	
+ 	public Message consumeMessageOnTopic(String topicName, String subName, int timeout) {
 
+ 		TopicSubscriber topicSubscriber = null;
+
+	    try {
+		    topicSubscriber = createDurableSubscriber(topicName, subName);
+			
+			return topicSubscriber.receive(timeout);
+	    } catch (JMSException e) {
+	        throw new RuntimeException(e);
+	    } finally {
+	    	try {
+	    		if (topicSubscriber != null) topicSubscriber.close(); 
+	    	} catch (JMSException e) {}
+	    }
+	}
+ 	
+	/**
+	 * Consumes all messages on a topic and waits specified time if none exists up front. 
+	 * 
+	 * @param topic
+	 * @param subscription name
+	 * @param timeout 
+	 * @return the message, null if none was consumed during the specified time period
+	 */	
+ 	public List<Message> consumeMessagesOnTopic(String topicName, String subName, int timeout) {
+
+ 		List<Message> result = new ArrayList<Message>();
+ 		
+ 		TopicSubscriber topicSubscriber = null;
+
+	    try {
+		    topicSubscriber = createDurableSubscriber(topicName, subName);
+			
+			Message message = null;
+			while ((message = topicSubscriber.receive(timeout)) != null) {
+				result.add(message);
+			}	
+	        return result;
+
+	    } catch (JMSException e) {
+	        throw new RuntimeException(e);
+	    } finally {
+	    	try {
+	    		if (topicSubscriber != null) topicSubscriber.close(); 
+	    	} catch (JMSException e) {}
+	    }
+	}
+ 	
+ 	
+	/**
+	 * Creation of a TopicSubscriber (durable)
+	 * 
+	 * @param topic
+	 * @param subscription name 
+	 * @return the topicSubscriber.
+	 */	
+ 	public TopicSubscriber createDurableSubscriber(String topicName, String subName) {
+ 		TopicSubscriber topicSubscriber = null;
+ 		try {
+ 			Topic topic = topicSession.createTopic(topicName);
+ 			topicSubscriber = topicSession.createDurableSubscriber(topic,subName);
+ 		} catch (JMSException e) {
+ 			throw new RuntimeException(e);
+ 		}
+ 		finally {
+ 		}
+ 		return topicSubscriber;
+ 	}
+ 	
+	/**
+	 * Clear all the messages published on a specific topic.
+	 * 
+	 * @param topic
+	 * @param subscription name
+	 * @return the topicSubscriber, null if not successful.
+	 */	
+ 	public void clearTopic(String topicName, String... subNames) {
+ 		for(String subName : subNames) {
+ 			if (logger.isInfoEnabled()) {
+ 	 	 		logger.info("Clearing messages on topic: {} and subscription: {}", topicName, subName);
+ 	 		}
+
+ 	 		TopicSubscriber topicSubscriber = null;
+ 	 		try {
+ 	 			topicSubscriber = createDurableSubscriber(topicName, subName);
+ 	 		
+ 	 			while(topicSubscriber != null && topicSubscriber.receiveNoWait() != null);
+ 	 			
+ 	 		} catch (JMSException e) {
+ 	 			throw new RuntimeException(e);
+ 	 		}
+ 	 		finally {
+ 	 			try {
+ 	 				if (topicSubscriber != null) {
+ 		 				topicSubscriber.close();
+ 	 				}
+ 		    	} catch (JMSException e) {}
+ 	 		}
+ 		}
+ 	}
+ 	
  	//
  	// To be called from the specializations constructors...
  	//
 
-	protected void init() {
+	protected void init(String clientId) {
         boolean ok = false;
         try {
 	        QueueConnectionFactory connectionFactory = createQueueConnectionFactory();
@@ -244,6 +372,30 @@ public abstract class AbstractJmsTestUtil {
 	    	if (!ok) cleanup();
 	    }
 	    
+	    if (clientId != null) {
+	    	try {
+		        TopicConnectionFactory topicConnectionFactory = createTopicConnectionFactory();
+
+		        String username = getUsername();
+		        if (username == null) {
+		        	topicConnection = topicConnectionFactory.createTopicConnection();
+		        } else {
+		        	topicConnection = topicConnectionFactory.createTopicConnection(username, getPassword());
+		        	
+		        }
+		        topicConnection.setClientID(clientId);
+		        topicConnection.start();
+		
+		        topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+		        
+		        ok = true;
+		    } catch (Exception e) {
+		        throw new RuntimeException(e);
+		    } finally {
+		    	if (!ok) cleanup();
+		    }
+	    }
+	    
     }
 
 	/**
@@ -251,11 +403,23 @@ public abstract class AbstractJmsTestUtil {
 	 */
 	public void cleanup() {
         try {
-        	if (session    != null) session.close(); 
+        	if (session != null) session.close(); 
         	if (connection != null) {
         		connection.stop();
         		connection.close(); 
         	}
+        	
+	    } catch (JMSException e) {
+	        throw new RuntimeException(e);
+	    }
+	    
+	    try {
+		    if (topicSession != null) topicSession.close(); 
+	    	if (topicConnection != null) {
+	    		topicConnection.stop();
+	    		topicConnection.close(); 
+	    	}
+        	
 	    } catch (JMSException e) {
 	        throw new RuntimeException(e);
 	    }

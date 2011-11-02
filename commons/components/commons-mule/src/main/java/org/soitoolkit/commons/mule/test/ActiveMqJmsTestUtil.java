@@ -17,6 +17,7 @@
 package org.soitoolkit.commons.mule.test;
 
 import javax.jms.QueueConnectionFactory;
+import javax.jms.TopicConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -34,6 +35,11 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 
     protected String qmUrl = null;
 
+    public ActiveMqJmsTestUtil(String qmUrl, String clientId) {
+		this.qmUrl = qmUrl;
+		init(clientId);
+	}
+    
 	/**
 	 * Create a connection factory for the provided ActiveMQ broker url
 	 * 
@@ -41,7 +47,7 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 	 */
 	public ActiveMqJmsTestUtil(String qmUrl) {
 		this.qmUrl = qmUrl;
-		init();
+		init(null);
 	}
 
 	/**
@@ -55,6 +61,13 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 	@Override
 	protected QueueConnectionFactory createQueueConnectionFactory() throws Exception {
         logger.debug("Creating ActiveMQ Queue Connection Factory using URL: {}", this.qmUrl);
+
+        return new ActiveMQConnectionFactory(USR, PWD, qmUrl);
+	}
+	
+	@Override
+	protected TopicConnectionFactory createTopicConnectionFactory() throws Exception {
+        logger.debug("Creating ActiveMQ Topic Connection Factory using URL: {}", this.qmUrl);
 
         return new ActiveMQConnectionFactory(USR, PWD, qmUrl);
 	}
