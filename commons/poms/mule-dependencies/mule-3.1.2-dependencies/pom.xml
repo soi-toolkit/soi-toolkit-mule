@@ -31,12 +31,16 @@
 
 	<properties>
         <xercesImpl.version>2.9.1</xercesImpl.version>
+<!--        
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<cxf-gen.version>2.3.1</cxf-gen.version>
+-->		
 		<mule.version>3.1.2</mule.version>
+<!--		
 		<cxf.version>2.3.1</cxf.version>
 		<jaxb-api.version>2.1</jaxb-api.version>		
 		<jaxb-impl.version>2.1.10</jaxb-impl.version>
+-->		
 		<activemq.version>5.5.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
         <xbean.version>3.7</xbean.version>
@@ -71,6 +75,8 @@
 	      </dependency>
 
 		<!-- Spring framework -->
+<!--
+#174: why are we declaring these? the necessary spring-dependencies are referenced by mule-dependencies!	
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -91,7 +97,7 @@
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-
+-->
 		<!-- Mule ESB - core -->
 		<dependency>
 			<groupId>org.mule</groupId>
@@ -218,6 +224,9 @@
         </dependency>
 
 		<!-- Dependencies for JAXB -->
+<!--		
+#174: why are we declaring these? can't we rely on the one's brought in by CXF?
+
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -228,7 +237,7 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>${jaxb-impl.version}</version>
 		</dependency>
-
+-->
 		<!-- Dependencies for the servlet transport -->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
@@ -250,6 +259,8 @@
 		</dependency>
     
 		<!-- Dependencies for the CXF transport-->
+<!--
+#174: why are we declaring these? the necessary cxf-dependencies are referenced by mule-dependencies!
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-api</artifactId>
@@ -270,8 +281,11 @@
 			<artifactId>cxf-rt-transports-http</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
+-->
 
         <!-- TODO: MULE ESB 2.2.1 -> 2.2.5 --> 
+<!--
+#174: continued ...
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-databinding-aegis</artifactId>
@@ -297,7 +311,7 @@
 			<artifactId>cxf-rt-ws-security</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-
+-->
     <!--
       JDBC test dependencies.
       TODO: these should really have test-scope, see:
