@@ -37,6 +37,14 @@
       <version>${project.version}</version>
       <scope>provided</scope>      
     </dependency>
+    
+    <dependency>
+      <groupId>org.soitoolkit.commons.poms</groupId>
+      <artifactId>soitoolkit-test-dependencies</artifactId>
+      <version>${project.version}</version>
+      <!-- #61: can't be test-scope since we have code in src/main depending on this ... -->
+      <scope>provided</scope>      
+    </dependency>
   
 		<dependency>
             <groupId>org.soitoolkit.commons.components</groupId>
@@ -70,11 +78,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
       <version>4.8.2</version>
+      <!-- #61: can't be test-scope since we have code in src/main depending on this ... -->
 			<!--
 				Needs to be in the compile scope since commons-mule contains a base
 				class, AbstractTestCase, that depends on this module
-			-->
-			<scope>compile</scope>
+			-->      
+      <scope>provided</scope>      
 		</dependency>
 
 		<dependency>

@@ -52,6 +52,13 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		</dependency>
 
 		<dependency>
+			<groupId>org.soitoolkit.commons.poms</groupId>
+			<artifactId>soitoolkit-test-dependencies</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
 			<artifactId>soitoolkit-mule-${muleVersion}-dependencies</artifactId>
 			<version>${dollarSymbol}{soitoolkit.version}</version>
