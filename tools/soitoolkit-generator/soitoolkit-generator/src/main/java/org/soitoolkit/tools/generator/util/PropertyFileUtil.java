@@ -31,7 +31,7 @@ public class PropertyFileUtil {
     }
 
 	static public PrintWriter openPropertyFileForAppend(String outputFolder, String propertyFile) throws IOException {
-		String propFile = outputFolder + "/src/environment/" + propertyFile + ".properties";
+		String propFile = outputFolder + "/src/main/resources/" + propertyFile + ".properties";
 
 		// TODO: Replace with sl4j!
 		System.err.println("[INFO] Appending to property file: " + propFile);

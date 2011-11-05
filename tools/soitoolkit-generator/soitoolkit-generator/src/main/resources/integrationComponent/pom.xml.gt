@@ -75,9 +75,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
             <resource>
                 <directory>${dollarSymbol}{basedir}/src/main/app</directory>
             </resource>
-            <resource>
-                <directory>${dollarSymbol}{basedir}/src/environment</directory>
-            </resource>
         </resources>
 
 		<plugins>   

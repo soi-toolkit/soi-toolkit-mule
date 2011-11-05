@@ -42,6 +42,8 @@ public class IntegrationComponentGenerator implements Generator {
 
 		gu.generateFolder("src/main/java/__javaPackageFilepath__");
 		gu.generateFolder("src/main/resources/flow");
+		gu.generateFolder("src/environment");
+
 		gu.generateContentAndCreateFile("src/main/app/mule-config.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/__artifactId__-common.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/__artifactId__-config.xml.gt");
@@ -59,10 +61,10 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateContentAndCreateFile("src/test/resources/__artifactId__-teststubs-only-config.xml.gt");
 		gu.generateFolder("src/test/resources/testfiles");
 		gu.generateFolder("src/test/resources/teststub-services");
-		gu.generateContentAndCreateFile("src/environment/log4j.dtd.gt");
-		gu.generateContentAndCreateFile("src/environment/log4j.xml.gt");
-		gu.generateContentAndCreateFile("src/environment/__securityPropertyFile__.properties.gt");
-		gu.generateContentAndCreateFile("src/environment/__configPropertyFile__.properties.gt");
+		gu.generateContentAndCreateFile("src/main/resources/log4j.dtd.gt");
+		gu.generateContentAndCreateFile("src/main/resources/log4j.xml.gt");
+		gu.generateContentAndCreateFile("src/main/resources/__securityPropertyFile__.properties.gt");
+		gu.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
     }
 		
     public void startGeneratorMultiProjectStyle() {
