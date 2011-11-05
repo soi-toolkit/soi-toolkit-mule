@@ -25,6 +25,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
+import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -134,6 +135,8 @@ public class RequestResponseServiceGenerator implements Generator {
 
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-service.xml");
+
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
 		try {

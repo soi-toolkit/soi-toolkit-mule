@@ -32,6 +32,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
+import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -111,7 +112,9 @@ public class OnewayServiceGenerator implements Generator {
     }
 	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
-		
+
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-service.xml");
+
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
 		try {
@@ -332,7 +335,7 @@ public class OnewayServiceGenerator implements Generator {
     }
 
 	private void updateJdbcConnectorFileWithExportSql() {
-		String outFolder = gu.getOutputFolder() + "/src/main/resources/";
+		String outFolder = gu.getOutputFolder() + "/src/main/app/";
 		String key       = m.getLowercaseJavaService() + "-export-query";
 		String table     = m.getUppercaseService() + "_EXPORT_TB";
 
@@ -350,7 +353,7 @@ public class OnewayServiceGenerator implements Generator {
     }
 
 	private void updateJdbcConnectorFileWithImportSql() {
-		String outFolder    = gu.getOutputFolder() + "/src/main/resources/";
+		String outFolder    = gu.getOutputFolder() + "/src/main/app/";
 		String key          = m.getLowercaseJavaService() + "-import-query";
 		String key_teststub = m.getLowercaseJavaService() + "-teststub-export-query";
 		String table        = m.getUppercaseService() + "_IMPORT_TB";

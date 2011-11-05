@@ -20,6 +20,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class PropertyFileUtil {
 
@@ -30,7 +34,7 @@ public class PropertyFileUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
-	static public PrintWriter openPropertyFileForAppend(String outputFolder, String propertyFile) throws IOException {
+    public static PrintWriter openPropertyFileForAppend(String outputFolder, String propertyFile) throws IOException {
 		String propFile = outputFolder + "/src/main/resources/" + propertyFile + ".properties";
 
 		// TODO: Replace with sl4j!
@@ -38,5 +42,24 @@ public class PropertyFileUtil {
 		
 	    return new PrintWriter(new BufferedWriter(new FileWriter(propFile, true)));
 	}
-    
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void updateMuleDeployPropertyFileWithNewService(String outputFolder, String serviceName) {
+		String muleDeployPropertyFile = outputFolder + "/application/mule-deploy.properties";
+		System.err.println("Open muleDeployPropertyFile: " + muleDeployPropertyFile);
+		try {
+			PropertiesConfiguration config = new PropertiesConfiguration(muleDeployPropertyFile);
+			String key = "config.resources";
+			List value = config.getList(key);
+			value.add(serviceName);
+			System.err.println("Update muleDeployPropertyFile: " + key + " = " + value);
+			config.setProperty(key, value);
+			config.save();
+			System.err.println("Saved muleDeployPropertyFile");
+		} catch (ConfigurationException e1) {
+			System.err.println("Error with muleDeployPropertyFile: " + e1.getMessage());
+			throw new RuntimeException(e1);
+		}
+	}
+
 }
