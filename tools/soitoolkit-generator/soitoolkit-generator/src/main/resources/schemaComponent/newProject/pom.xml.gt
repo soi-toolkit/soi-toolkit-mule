@@ -26,12 +26,14 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     <name>${schemaProject}</name>
 
 	<scm>
+        <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
 		<connection>scm:svn:https://my-subversion-server/svn/${schemaProject}/trunk</connection>
 		<developerConnection>scm:svn:https://my-subversion-server/svn/${schemaProject}/trunk</developerConnection>
 		<url>https://my-subversion-server/svn/${schemaProject}/trunk</url>
 	</scm>
 	
 	<distributionManagement>
+        <!-- TODO: Sample <distributionManagement>-tag, update to reflect you own environment! -->
         <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshot Repository</name>

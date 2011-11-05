@@ -60,7 +60,7 @@ public class SchemaComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
 		
 		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT, "1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
+		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(PROJECT_FOLDER));
 		
 /* FIXME: How do we launch maven in cloudbees Jeniks servers???
 
@@ -85,13 +85,13 @@ public class SchemaComponentGeneratorTest {
 //		SystemUtil.executeCommand("ls " + home + "/.hudson", home);
 		
 		System.out.println("*** whereis mvn:");
-		SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER);
 
 		System.out.println("*** mvn -version:");
-		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER);
 */
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
 	}
 
 	@Test
@@ -103,9 +103,9 @@ public class SchemaComponentGeneratorTest {
 		ops.add("createOrder");
 		ops.add("getOrderStatus");
 		new SchemaComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", SCHEMA, ops, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(PROJECT_FOLDER));
+		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(PROJECT_FOLDER));
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
 	}
 
 	@Test
@@ -117,9 +117,9 @@ public class SchemaComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", name, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
+		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas");
 	}
 
 	@Test
@@ -134,8 +134,8 @@ public class SchemaComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
 		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", schema, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 15, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
+		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
 		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas/trunk");
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas");
 	}
 }

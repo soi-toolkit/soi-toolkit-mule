@@ -11,7 +11,10 @@ ${xmlNamespace.servicesOnlyConfig}
         <spring:import resource="classpath:soitoolkit-mule-jdbc-datasource.xml"/>
 <% } %>  
         <spring:import resource="classpath:${artifactId}-common.xml"/>
+<!-- FIXME. MULE STUDIO.
         <spring:import resource="classpath:services/*-service.xml"/>
+-->
+        <spring:import resource="classpath:./*-service.xml"/>
     </spring:beans>
 
 </mule>

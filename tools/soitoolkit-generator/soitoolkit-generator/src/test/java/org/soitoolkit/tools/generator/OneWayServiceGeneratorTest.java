@@ -110,7 +110,7 @@ public class OneWayServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 46 : 72;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 43 : 72;
 		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
@@ -141,7 +141,7 @@ public class OneWayServiceGeneratorTest {
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 //		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
-		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder + "/trunk").startGenerator();
+		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
 		int expectedNoOfFiles = 11;
 		if (inboundTransport == HTTP || inboundTransport == SERVLET) {
@@ -166,15 +166,15 @@ public class OneWayServiceGeneratorTest {
 		boolean testOk = false;
 		
 		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
 			testOk = true;
 		} finally {
 			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER + "/trunk");
+			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER);
 		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER + "/trunk");
+		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER);
 	}
 
 }
