@@ -74,17 +74,17 @@ public class RequestResponseServiceGenerator implements Generator {
 			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
     	}
 
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-input.xml.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-request-expected-result.csv.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-input.xml.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-expected-result.csv.gt");
 	    if (outboundTransport == RESTHTTP) {
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.rest.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-input.rest.gt");
 	    } else {
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-input.csv.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-input.csv.gt");
 	    }
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-response-expected-result.xml.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-expected-result.xml.gt");
 	    if (outboundTransport == JMS) {
-	    	gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-input.csv.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-fault-response-expected-result.xml.gt");
+	    	gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/fault-response-input.csv.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/fault-response-expected-result.xml.gt");
 	    }
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");

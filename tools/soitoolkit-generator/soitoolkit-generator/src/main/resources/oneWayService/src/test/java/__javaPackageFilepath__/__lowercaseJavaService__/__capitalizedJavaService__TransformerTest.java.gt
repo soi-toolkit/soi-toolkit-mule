@@ -15,8 +15,8 @@ public class ${capitalizedJavaService}TransformerTest {
 	public void testTransformer() throws IOException, TransformerException {
 
 		// Read input and expected result from testfiles 
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-input.txt");
-		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-expected-result.txt");
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/input.txt");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/expected-result.txt");
 		
 		// Create the transformer under test and let it perform the transformation
 		${capitalizedJavaService}Transformer transformer = new ${capitalizedJavaService}Transformer();

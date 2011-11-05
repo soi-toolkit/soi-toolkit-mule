@@ -7,7 +7,7 @@
   <params>
     <param name="stream.filter.type">SAX</param>
     <param name="inputType">input.csv</param>
-    <param name="input.csv" type="input.type.actived">Workspace://${serviceProject}/src/test/resources/testfiles/${service}-response-input.csv</param>
+    <param name="input.csv" type="input.type.actived">Workspace://${serviceProject}/src/test/resources/testfiles/${service}/response-input.csv</param>
   </params>
 
   <csv:reader fields="msgType,value" rootElementName="sample" recordElementName="sample">

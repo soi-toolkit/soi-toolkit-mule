@@ -76,8 +76,8 @@ public class OnewayServiceGenerator implements Generator {
     	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMflow.groovy"), "src/main/resources/flow/__service__-service.mflow");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
 		
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-input.txt.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__-expected-result.txt.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TransformerTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
@@ -90,8 +90,8 @@ public class OnewayServiceGenerator implements Generator {
 
 //		TODO: Wait with attachments... 	    
 //	    if (inboundTransport == POP3 || inboundTransport == IMAP) {
-//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__-input-attachment.pdf.gt");
-//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__-input-attachment.png.gt");
+//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__/input-attachment.pdf.gt");
+//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__/input-attachment.png.gt");
 //	    }
 
 		updatePropertyFiles(inboundTransport, outboundTransport);

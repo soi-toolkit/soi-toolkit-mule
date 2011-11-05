@@ -6,7 +6,7 @@
   <params>
     <param name="stream.filter.type">SAX</param>
     <param name="inputType">input.xml</param>
-    <param name="input.xml" type="input.type.actived">Workspace://${serviceProject}/src/test/resources/testfiles/${service}-request-input.xml</param>
+    <param name="input.xml" type="input.type.actived">Workspace://${serviceProject}/src/test/resources/testfiles/${service}/request-input.xml</param>
   </params>
   
   <ftl:freemarker applyOnElement="#document">

@@ -234,8 +234,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test${capitalizedJavaService}_ok() throws JMSException {
 
 		Map<String, String> props = new HashMap<String, String>();
-    	final  String inputFile   = "src/test/resources/testfiles/${service}-input.txt";
-    	String expectedResultFile = "src/test/resources/testfiles/${service}-expected-result.txt";
+    	final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+    	String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
         String receivingService   = "${service}-teststub-service";
 <% if (inboundTransport=="POP3" || inboundTransport=="IMAP" || outboundTransport=="SMTP") { %>
 		final  int timeout        = 30000; // Let's increase the timeout a bit since we have an email transport involved

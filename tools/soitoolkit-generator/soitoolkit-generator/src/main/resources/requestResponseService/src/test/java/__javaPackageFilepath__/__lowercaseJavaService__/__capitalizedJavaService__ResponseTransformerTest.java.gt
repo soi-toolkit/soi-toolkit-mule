@@ -16,20 +16,20 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 
 		// Specify input and expected result 
 <% if (outboundTransport=="SOAPHTTP") { %>
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-expected-result.xml"); // No transformation is done by default so use expected also as input...
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-expected-result.xml"); // No transformation is done by default so use expected also as input...
 <% } else if (outboundTransport=="RESTHTTP") { %>
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.rest");
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-input.rest");
 <% } else { %>
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-input.csv");
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-input.csv");
 <% } %>
-		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-response-expected-result.xml");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-expected-result.xml");
 		
 		// Create the transformer under test and let it perform the transformation
 <% if (transformerType=="JAVA") { %>
 		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
 		String result = (String)transformer.doTransform(input, "UTF-8");
 <% } else { %>
-		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}-response-transformer.xml");
+		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}/response-transformer.xml");
 <% } %>
 
 		// Compare the result to the expected value
@@ -41,8 +41,8 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 	public void testTransformer_fault() throws Exception {
 
 		// Specify input and expected result 
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-input.csv");
-		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}-fault-response-expected-result.xml");
+		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/fault-response-input.csv");
+		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/fault-response-expected-result.xml");
 		
 		// Create the transformer under test and let it perform the transformation
 <% if (transformerType=="JAVA") { %>

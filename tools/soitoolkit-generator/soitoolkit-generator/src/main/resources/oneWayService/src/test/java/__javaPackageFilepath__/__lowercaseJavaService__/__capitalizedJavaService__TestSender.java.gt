@@ -14,7 +14,7 @@ public class ${capitalizedJavaService}TestSender {
 
 	public static void main(String[] args) {
 		String url       = getAddress("${uppercaseService}_INBOUND_URL");
-    	String inputFile = "src/test/resources/testfiles/${service}-input.txt";
+    	String inputFile = "src/test/resources/testfiles/${service}/input.txt";
 		int timeout      = 5000;
 
 		log.info("Post message to: {}, {} chars", url, inputFile.length());

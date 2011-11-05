@@ -130,7 +130,7 @@ public class RequestResponseServiceGeneratorTest {
 		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
 //		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
-		int expectedNoOfFiles = (outboundTransport == JMS) ? 18 : 16;
+		int expectedNoOfFiles = (outboundTransport == JMS) ? 19 : 17;
 		
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		
