@@ -26,10 +26,11 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateMuleConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateTeststubsAndServicesConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -96,6 +97,12 @@ public class RequestResponseServiceGenerator implements Generator {
 		
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		
+		// Update both mule-config.xml and mule-deploy.properties files with the new service
+		// Doing for both files is required due to Mule Studio Beta M3.
+		updateMuleConfigXmlFileWithNewService(gu.getOutputFolder(), m.getService());
+		updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
+
 		String file = gu.getOutputFolder() + "/pom.xml";
 		String xmlFragment = 
 			"\n" +
@@ -107,36 +114,35 @@ public class RequestResponseServiceGenerator implements Generator {
 			"		</dependency>\n";
 		addDependency(file, xmlFragment, "soitoolkit-refapps-sample-schemas");
 
-
-		xmlFragment =
-			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-			"			<groupId>org.mule.modules.mule-module-smooks</groupId>\n" +
-			"			<artifactId>smooks-4-mule-3</artifactId>\n" +
-			"			<version>1.3-RC1</version>\n" +
-			"		</dependency>\n";
-		addDependency(file, xmlFragment, "smooks-4-mule-3");
-
-		xmlFragment =
-			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-			"			<groupId>org.milyn</groupId>\n" +
-			"			<artifactId>milyn-smooks-templating</artifactId>\n" +
-			"			<version>1.4</version>\n" +
-			"		</dependency>\n";
-		addDependency(file, xmlFragment, "milyn-smooks-templating");
-
-		xmlFragment =
-			"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
-			"			<groupId>org.milyn</groupId>\n" +
-			"			<artifactId>milyn-smooks-csv</artifactId>\n" +
-			"			<version>1.4</version>\n" +
-			"		</dependency>\n";
-		addDependency(file, xmlFragment, "milyn-smooks-csv");
+    	if (transformerType == TransformerEnum.SMOOKS) {
+			xmlFragment =
+				"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+				"			<groupId>org.mule.modules.mule-module-smooks</groupId>\n" +
+				"			<artifactId>smooks-4-mule-3</artifactId>\n" +
+				"			<version>1.3-RC1</version>\n" +
+				"		</dependency>\n";
+			addDependency(file, xmlFragment, "smooks-4-mule-3");
+	
+			xmlFragment =
+				"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+				"			<groupId>org.milyn</groupId>\n" +
+				"			<artifactId>milyn-smooks-templating</artifactId>\n" +
+				"			<version>1.4</version>\n" +
+				"		</dependency>\n";
+			addDependency(file, xmlFragment, "milyn-smooks-templating");
+	
+			xmlFragment =
+				"		<dependency xmlns=\"http://maven.apache.org/POM/4.0.0\">\n" +
+				"			<groupId>org.milyn</groupId>\n" +
+				"			<artifactId>milyn-smooks-csv</artifactId>\n" +
+				"			<version>1.4</version>\n" +
+				"		</dependency>\n";
+			addDependency(file, xmlFragment, "milyn-smooks-csv");
+    	}
     }
 
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
-		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-service.xml");
-
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
 		try {
@@ -216,6 +222,7 @@ public class RequestResponseServiceGenerator implements Generator {
 
 		PrintWriter pw = null;
 		try {
+			gu.logDebug("Overwrite file: " + file);
 			pw = openFileForOverwrite(file);
 			pw.print(xml);
 			
@@ -224,12 +231,5 @@ public class RequestResponseServiceGenerator implements Generator {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
-	}
-
-	private PrintWriter openFileForOverwrite(String filename) throws IOException {
-
-		gu.logDebug("Overwrite file: " + filename);
-
-	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
 	}
 }

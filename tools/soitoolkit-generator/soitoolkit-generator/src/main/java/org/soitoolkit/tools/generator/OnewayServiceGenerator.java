@@ -33,10 +33,12 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateMuleConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateTeststubsAndServicesConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.FileUtil.openFileForAppend;
+import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -97,7 +99,13 @@ public class OnewayServiceGenerator implements Generator {
 
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		
-	    if (inboundTransport == JDBC) {
+		// Update both mule-config.xml and mule-deploy.properties files with the new service
+		// Doing for both files is required due to Mule Studio Beta M3.
+		updateMuleConfigXmlFileWithNewService(gu.getOutputFolder(), m.getService());
+		updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
+
+		if (inboundTransport == JDBC) {
 	    	updateSqlDdlFilesAddExportTable();
 	    	updateJdbcConnectorFileWithExportSql();
 			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ExportFromDbTransformer.java.gt");
@@ -112,8 +120,6 @@ public class OnewayServiceGenerator implements Generator {
     }
 	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
-
-		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-service.xml");
 
 		PrintWriter cfg = null;
 		PrintWriter sec = null;
@@ -297,7 +303,9 @@ public class OnewayServiceGenerator implements Generator {
 	private void updateCreateSqlDdlFiles(String tbPrefix, String outFolder) {
 		PrintWriter out = null;
 		try {
-			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-create-tables.sql");
+			String filename = outFolder + m.getArtifactId() + "-db-create-tables.sql";
+			gu.logDebug("Appending to file: " + filename);
+			out = openFileForAppend(filename);
 			out.println("CREATE TABLE " + tbPrefix + "_TB (ID VARCHAR(32), VALUE VARCHAR(128), CONSTRAINT " + tbPrefix + "_PK PRIMARY KEY (ID));");
 
 		} catch (IOException e) {
@@ -311,7 +319,9 @@ public class OnewayServiceGenerator implements Generator {
 	private void updateDropSqlDdlFiles(String tbPrefix, String outFolder) {
 		PrintWriter out = null;
 		try {
-			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-drop-tables.sql");
+			String filename = outFolder + m.getArtifactId() + "-db-drop-tables.sql";
+			gu.logDebug("Appending to file: " + filename);
+			out = openFileForAppend(filename);
 			out.println("DROP TABLE " + tbPrefix + "_TB;");
 
 		} catch (IOException e) {
@@ -325,7 +335,9 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter out = null;
 		try {
 			// Just ensure that the file is created, don't insert any testdata for now...
-			out = openFileForAppend(outFolder + m.getArtifactId() + "-db-insert-testdata.sql");
+			String filename = outFolder + m.getArtifactId() + "-db-insert-testdata.sql";
+			gu.logDebug("Appending to file: " + filename);
+			out = openFileForAppend(filename);
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -373,20 +385,6 @@ public class OnewayServiceGenerator implements Generator {
 		
     }
 
-	private PrintWriter openFileForAppend(String filename) throws IOException {
-
-		gu.logDebug("Appending to file: " + filename);
-
-	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
-	}
-
-	private PrintWriter openFileForOverwrite(String filename) throws IOException {
-
-		gu.logDebug("Overwrite file: " + filename);
-
-	    return new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
-	}
-
 	private void addQueryToMuleJdbcConnector(String file, String xmlFragment) {
 		InputStream content = null;
 		String xml = null;
@@ -415,6 +413,7 @@ public class OnewayServiceGenerator implements Generator {
 
 		PrintWriter pw = null;
 		try {
+			gu.logDebug("Overwrite file: " + file);
 			pw = openFileForOverwrite(file);
 			pw.print(xml);
 			

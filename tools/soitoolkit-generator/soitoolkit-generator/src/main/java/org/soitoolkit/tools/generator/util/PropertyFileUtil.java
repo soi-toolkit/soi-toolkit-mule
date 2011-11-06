@@ -45,17 +45,20 @@ public class PropertyFileUtil {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void updateMuleDeployPropertyFileWithNewService(String outputFolder, String serviceName) {
+		
 		String muleDeployPropertyFile = outputFolder + "/application/mule-deploy.properties";
 		System.err.println("Open muleDeployPropertyFile: " + muleDeployPropertyFile);
+		
 		try {
 			PropertiesConfiguration config = new PropertiesConfiguration(muleDeployPropertyFile);
 			String key = "config.resources";
 			List value = config.getList(key);
-			value.add(serviceName);
+			value.add(serviceName + "-service.xml");
 			System.err.println("Update muleDeployPropertyFile: " + key + " = " + value);
 			config.setProperty(key, value);
 			config.save();
 			System.err.println("Saved muleDeployPropertyFile");
+		
 		} catch (ConfigurationException e1) {
 			System.err.println("Error with muleDeployPropertyFile: " + e1.getMessage());
 			throw new RuntimeException(e1);

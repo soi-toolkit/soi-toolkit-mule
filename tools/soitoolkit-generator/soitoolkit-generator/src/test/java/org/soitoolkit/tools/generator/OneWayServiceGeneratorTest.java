@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.soitoolkit.tools.generator.IntegrationComponentGeneratorTest.EXPECTED_NO_OF_IC_FILES_CREATED;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
@@ -110,7 +111,7 @@ public class OneWayServiceGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? 43 : 72;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED + 5 : 72;
 		
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 

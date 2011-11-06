@@ -42,6 +42,7 @@ public class IntegrationComponentGeneratorTest {
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String PROJECT = "ordermgm";	
 	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
+	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 37;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -66,7 +67,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 				
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 38, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
+		assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 		
 		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "-standalone");
 	}
@@ -88,7 +89,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", "shipping", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 38, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
+		assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
 		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/shipping");
 	}
@@ -102,7 +103,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 36, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED - 2, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name);
 	}
@@ -116,7 +117,7 @@ public class IntegrationComponentGeneratorTest {
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		new IntegrationComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 38, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+		assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
 		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name);
 	}

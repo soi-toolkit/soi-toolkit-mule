@@ -73,7 +73,12 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 <directory>${dollarSymbol}{basedir}/src/main/resources</directory>
             </resource>
             <resource>
+                <!-- To get mule-config files from the Mule Studio defined resource-folder in the classpath... -->
                 <directory>${dollarSymbol}{basedir}/src/main/app</directory>
+            </resource>
+            <resource>
+                <!-- To get the Mule Studio mule-deploy.properties file in the classpath... -->
+                <directory>${dollarSymbol}{basedir}/application</directory>
             </resource>
         </resources>
 
