@@ -81,7 +81,7 @@ public class OneWayServiceGeneratorTest {
 		
 		for (int i = 0; i < muleVersions.length; i++) {
 			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-//			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 
 //			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
 //			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
