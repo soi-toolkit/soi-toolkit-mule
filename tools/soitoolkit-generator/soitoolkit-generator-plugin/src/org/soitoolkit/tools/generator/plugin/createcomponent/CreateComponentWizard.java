@@ -293,34 +293,34 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
 			monitor.setTaskName("Execute command: " + buildCommand);
-			SystemUtil.executeCommand(mavenHome, buildCommand, path + "/trunk", out, err);
+			SystemUtil.executeCommand(mavenHome, buildCommand, path, out, err);
 			
 			monitor.worked(1);
-			monitor.setTaskName("Open project(s) in " + path + "/trunk");
+			monitor.setTaskName("Open project(s) in " + path);
 
 			
 			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
-				openProject(path + "/trunk/.project");
+				openProject(path + "/.project");
 /*
 				IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
 
-				openProject(path + "/trunk/" + m.getServiceProjectFilepath() + "/.project");
+				openProject(path + "/" + m.getServiceProjectFilepath() + "/.project");
 				
 				if (deploymentModel == DeploymentModelEnum.STANDALONE_DEPLOY) {
-					openProject(path + "/trunk/" + m.getStandaloneProjectFilepath() + "/.project");
-					openProject(path + "/trunk/" + m.getTeststubStandaloneProjectFilepath() + "/.project");
+					openProject(path + "/" + m.getStandaloneProjectFilepath() + "/.project");
+					openProject(path + "/" + m.getTeststubStandaloneProjectFilepath() + "/.project");
 				}
 
 				if (deploymentModel == DeploymentModelEnum.WAR_DEPLOY) {
-					openProject(path + "/trunk/" + m.getWebProjectFilepath() + "/.project");
-					openProject(path + "/trunk/" + m.getTeststubWebProjectFilepath() + "/.project");
+					openProject(path + "/" + m.getWebProjectFilepath() + "/.project");
+					openProject(path + "/" + m.getTeststubWebProjectFilepath() + "/.project");
 				}
 */
 				break;
 
 			case SD_SCHEMA_COMPONENT:
-				openProject(path + "/trunk/.project");
+				openProject(path + "/.project");
 				break;
 
 			default:

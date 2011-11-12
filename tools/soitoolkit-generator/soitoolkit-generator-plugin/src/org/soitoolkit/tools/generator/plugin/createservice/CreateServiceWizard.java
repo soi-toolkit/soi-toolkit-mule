@@ -107,7 +107,15 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 				try {
 					doFinish(containerName, mep, inboundTransport, outboundTransport, transformerType, serviceName, monitor);
 				} catch (CoreException e) {
+					e.printStackTrace();
 					throw new InvocationTargetException(e);
+				} catch (Throwable e) {
+					e.printStackTrace();
+					if (e instanceof RuntimeException) {
+						throw (RuntimeException)e;
+					} else {
+						throw new InvocationTargetException(e);
+					}
 				} finally {
 					monitor.done();
 				}
