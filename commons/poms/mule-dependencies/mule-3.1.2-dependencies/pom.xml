@@ -102,10 +102,22 @@
 		</dependency>
 -->
 		<!-- Mule ESB - core -->
+		<!-- Start with a explicit dependency to the dreadful jug.osgi dependency -->
+		<dependency>
+			<groupId>org.safehaus.jug</groupId>
+			<artifactId>jug.osgi</artifactId>
+			<version>2.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.mule</groupId>
 			<artifactId>mule-core</artifactId>
 			<version>${mule.version}</version>
+		    <exclusions>
+		      <exclusion>
+		        <groupId>org.safehaus.jug</groupId>
+		        <artifactId>jug</artifactId>
+		      </exclusion>
+		    </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
@@ -150,8 +162,13 @@
 			<groupId>org.mule.modules</groupId>
 			<artifactId>commonretrypolicies</artifactId>
 			<version>${mule-module-commonretrypolicies}</version>
+		    <exclusions>
+		      <exclusion>
+		        <groupId>org.safehaus.jug</groupId>
+		        <artifactId>jug</artifactId>
+		      </exclusion>
+		    </exclusions>
 		</dependency>
-			
 
 		<!-- Mule ESB Transports -->
 		<dependency>
@@ -213,12 +230,19 @@
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-restlet</artifactId>
 			<version>${mule-transport-restlet.version}</version>
+		    <exclusions>
+		      <exclusion>
+		        <groupId>org.safehaus.jug</groupId>
+		        <artifactId>jug</artifactId>
+		      </exclusion>
+		    </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-sftp</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
+
 		<!-- FIXME. Temporary dep to jsch until mulesoft update sftp-transport to use central maven repo -->
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -260,7 +284,7 @@
 			<artifactId>xbean-spring</artifactId>
 			<version>${xbean.version}</version>
 		</dependency>
-    
+
 		<!-- Dependencies for the CXF transport-->
 <!--
 #174: why are we declaring these? the necessary cxf-dependencies are referenced by mule-dependencies!

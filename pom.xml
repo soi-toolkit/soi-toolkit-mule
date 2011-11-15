@@ -125,6 +125,16 @@ TODO: should be removed?
 			<name>MuleSoft Repository</name>
 			<url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
 		</repository>
+		
+		<!-- for mule dependencies such as org.safehouse.jug-osgi -->
+		<repository>
+            <id>mule</id>
+            <name>Mule Dependencies</name>
+            <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
   
   <dependencyManagement>
