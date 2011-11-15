@@ -26,21 +26,14 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 
     <modelVersion>4.0.0</modelVersion>
 
-<!--  
-	<parent>
-		<groupId>org.soitoolkit.commons.poms</groupId>
-		<artifactId>soitoolkit-default-parent</artifactId>
-		<version>0.2.1-SNAPSHOT</version>
-	</parent>
--->
   <parent>
     <groupId>org.soitoolkit</groupId>
     <artifactId>soitoolkit</artifactId>
     <version>0.5.0-SNAPSHOT</version>
   </parent>
 
-	<groupId>org.soitoolkit.refapps.dealernetwork</groupId>
-	<artifactId>soitoolkit-refapps-dealernetwork-schemas</artifactId>
+  <groupId>org.soitoolkit.refapps.dealernetwork</groupId>
+  <artifactId>soitoolkit-refapps-dealernetwork-schemas</artifactId>
   <packaging>jar</packaging>
   <name>soitoolkit-refapps-dealernetwork-schemas</name>
 	
@@ -127,7 +120,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 						<!-- Plugin-dependency to a shared assembly-descriptor that creates the zip-file -->
 						<groupId>org.soitoolkit.commons.poms</groupId>
 						<artifactId>soitoolkit-assembly-descriptors</artifactId>
-						<version>${soitoolkit.version}</version>
+						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
 				<executions>
