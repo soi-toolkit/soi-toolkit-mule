@@ -43,12 +43,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,7 +60,9 @@ import org.xml.sax.SAXException;
 
 public class XPathUtil {
 
-    private static class MapNamespaceContext implements NamespaceContext {
+	private static final Logger log = LoggerFactory.getLogger(XPathUtil.class);
+
+	private static class MapNamespaceContext implements NamespaceContext {
         private Map<String, String> namespaceMap;
 
         public MapNamespaceContext(Map<String, String> namespaceMap) {
@@ -101,8 +106,12 @@ public class XPathUtil {
 	}
 
 	static public Document createDocument(String content) {
+		return createDocument(content, "UTF-8");
+	}
+
+	static public Document createDocument(String content, String charset) {
 		try {
-			InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+			InputStream is = new ByteArrayInputStream(content.getBytes(charset));
 			return getBuilder().parse(is);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -187,14 +196,26 @@ public class XPathUtil {
 	    parent.appendChild(fragmentNode);
 	}
 
-    public static String getXml(Document doc) {
-    	try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    public static String getXml(Node node) {
+    	return getXml(node, true, 2);
+	}
 
+    public static String getXml(Node node, boolean indentXml, int indentSize) {
+    	try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer;
+			
+			if (indentXml) {
+				tf.setAttribute("indent-number", new Integer(indentSize));
+				transformer = tf.newTransformer();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			} else {
+				transformer = tf.newTransformer(new StreamSource(XPathUtil.class.getResourceAsStream("remove-whitespace.xsl")));
+			}
+			
 			//initialize StreamResult with File object to save to file
 			StreamResult result = new StreamResult(new StringWriter());
-			DOMSource source = new DOMSource(doc);
+			DOMSource source = new DOMSource(node);
 			transformer.transform(source, result);
 
 			String xmlString = result.getWriter().toString();
@@ -230,5 +251,25 @@ public class XPathUtil {
     	int p1 = f.indexOf('=');
     	int p2 = f.indexOf(']');
     	return f.substring(p1+1, p2);
+	}
+	
+	public static String normalizeXmlString(String xml) {
+
+		log.debug("XML from start:\n{}", xml);
+		// First convert the xml string to a single long line
+		Document doc = createDocument(xml);
+		doc.setXmlStandalone(true);
+		xml = getXml(doc, false, 0);
+
+		log.debug("XML after removing whitespace:\n{}", xml);
+
+		// Next indent the xml string
+		doc = createDocument(xml);
+		doc.setXmlStandalone(true);
+		xml = getXml(doc, true, 2);
+		
+		log.debug("XML fully normalized:\n{}", xml);
+		
+		return xml;
 	}
 }
