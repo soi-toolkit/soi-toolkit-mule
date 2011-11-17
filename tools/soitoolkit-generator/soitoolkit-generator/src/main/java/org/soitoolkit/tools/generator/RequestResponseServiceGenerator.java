@@ -78,7 +78,11 @@ public class RequestResponseServiceGenerator implements Generator {
     	}
 
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-input.xml.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-expected-result.csv.gt");
+	    if (inboundTransport == RESTHTTP) {
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-fault-invalid-input.xml.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-fault-timeout-input.xml.gt");
+	    }
+	    gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-expected-result.csv.gt");
 	    if (outboundTransport == RESTHTTP) {
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-input.rest.gt");
 	    } else {
@@ -159,7 +163,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    cfg.println("# Properties for service \"" + m.getService() + "\"");
 		    cfg.println("# TODO: Update to reflect your settings");
 
-		    if (inboundTransport == SOAPHTTP) {
+		    if (inboundTransport == SOAPHTTP || inboundTransport == RESTHTTP) {
 			    cfg.println(service + "_INBOUND_URL=http://localhost:" + m.getHttpPort() + "/" + artifactId + "/services/" + serviceName + "/v1");
 
 		    } else if (inboundTransport == SOAPSERVLET) {

@@ -83,7 +83,7 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-		TransportEnum[] inboundTransports  = {SOAPHTTP};
+		TransportEnum[] inboundTransports  = {SOAPHTTP, RESTHTTP};
 		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
 
 		if (deploymentModel == WAR_DEPLOY) {
@@ -132,6 +132,8 @@ public class RequestResponseServiceGeneratorTest {
 		
 //		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
 		int expectedNoOfFiles = (outboundTransport == JMS) ? 19 : 17;
+		
+		if (inboundTransport == RESTHTTP) expectedNoOfFiles += 2;
 		
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		

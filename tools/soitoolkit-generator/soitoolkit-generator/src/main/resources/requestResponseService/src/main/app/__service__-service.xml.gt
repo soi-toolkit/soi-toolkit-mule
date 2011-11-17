@@ -35,6 +35,13 @@ ${xmlNamespace.reqRespService}
 				namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
 			</cxf:proxy-service>
 		</inbound-endpoint>
+<% } else if (inboundTransport=="RESTHTTP") { %>
+        <inbound-endpoint
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="logReqIn"
+            responseTransformer-refs="logRespOut">
+        </inbound-endpoint>
 <% } %> 
 <% if (outboundTransport=="SOAPHTTP") { %>
 		<outbound-endpoint 
@@ -82,6 +89,13 @@ ${xmlNamespace.reqRespService}
 			            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
 			        </cxf:proxy-service>
 		        </inbound-endpoint>
+<% } else if (inboundTransport=="RESTHTTP") { %>
+        <inbound-endpoint
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="logReqIn"
+            responseTransformer-refs="logRespOut">
+        </inbound-endpoint>
 <% } %> 
             </inbound>
 

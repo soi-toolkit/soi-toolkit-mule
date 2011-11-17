@@ -12,6 +12,25 @@ import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Te
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_TIMEOUT;
 
+<% if (inboundTransport=="RESTHTTP") { %>
+import static org.soitoolkit.commons.xml.XPathUtil.normalizeXmlString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.Response.Status;
+import javax.xml.stream.XMLStreamReader;
+
+import org.mule.api.MuleException;
+import org.mule.api.MuleMessage;
+import org.mule.module.client.MuleClient;
+import org.soitoolkit.commons.mule.util.BOMStripperInputStream;
+import org.soitoolkit.commons.mule.util.MiscUtil;
+import org.soitoolkit.commons.mule.util.XmlUtil;
+<% } %> 
+
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -104,6 +123,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
     }
 
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
     public void test_ok() throws Fault {
     	String id = TEST_ID_OK;
     	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
@@ -143,4 +163,78 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {}
     }
+<% } else if (inboundTransport=="RESTHTTP") { %>
+    public void test_ok() throws MuleException {
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-input.xml");
+        String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-expected-result.xml");
+
+        // Call the http-service with proper input
+        MuleMessage response = doCallHttpService(DEFAULT_SERVICE_ADDRESS, input);
+
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Assert response-payload
+        String actualResult = payloadToString(response.getPayload(), "utf-8");
+        assertEquals(normalizeXmlString(expectedResult), normalizeXmlString(actualResult));
+    }
+
+    public void test_fault_invalidInput() throws MuleException {
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-invalid-input.xml");
+
+        // Call the http-service with invalid input
+        MuleMessage response = doCallHttpService(DEFAULT_SERVICE_ADDRESS, input);
+
+        // Assert http-post internal server error
+        assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
+    }
+
+    public void test_fault_timeout() throws MuleException {
+
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-timeout-input.xml");
+
+        // Call the http-service with invalid input
+        MuleMessage response = doCallHttpService(DEFAULT_SERVICE_ADDRESS, input);
+
+        // Assert http-post internal server error
+        assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
+    }
+    
+    //
+    // FIXME: Methods below should be moved to a helper class in soitoolkit-commons-mule
+    //
+    
+    private MuleMessage doCallHttpService(String url, String payload) throws MuleException {        
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("http.method", "POST");
+        properties.put("Content-Type", "application/xml");
+
+        // do request and assert
+        MuleMessage response = new MuleClient(muleContext).send(url, payload, properties);
+        
+        return response;
+    }
+    
+    private String payloadToString(Object src, String encoding) {
+        if (src instanceof XMLStreamReader) {
+            if (this.logger.isDebugEnabled())this.logger.debug("XMLStreamReader detected, converting it to a String since Mule's ObjectToString - transformer can't make it");
+            return XmlUtil.convertXMLStreamReaderToString((XMLStreamReader) src, encoding);
+        }
+        
+        if (src instanceof InputStream) {
+            if (this.logger.isDebugEnabled())
+                this.logger.debug("InputStream detected, wrap with a BOMStripper since Mule doesn't seem to handle BOM chars......");
+            try {
+                src = new BOMStripperInputStream((InputStream) src);
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading input stream", e);
+            }
+            
+            return MiscUtil.convertStreamToString((InputStream) src);
+        }
+
+        return (String) src;
+    }
+<% } %> 
+
 }
