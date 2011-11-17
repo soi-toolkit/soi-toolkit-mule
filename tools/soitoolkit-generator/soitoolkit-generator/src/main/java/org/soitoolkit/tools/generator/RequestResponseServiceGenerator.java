@@ -41,6 +41,7 @@ import java.util.Map;
 import org.soitoolkit.tools.generator.Generator;
 import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.w3c.dom.Document;
@@ -52,8 +53,8 @@ public class RequestResponseServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	IModel m;
 	
-	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, null, inboundTransport, outboundTransport, transformerType, "/requestResponseService", folderName);
+	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, muleVersion, inboundTransport, outboundTransport, transformerType, "/requestResponseService", folderName);
 		m = gu.getModel();
 	}
 		

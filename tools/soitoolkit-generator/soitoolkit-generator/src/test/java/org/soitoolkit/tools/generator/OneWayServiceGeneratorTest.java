@@ -102,7 +102,7 @@ public class OneWayServiceGeneratorTest {
 			for (TransportEnum outboundTransport : outboundTransports) {
 				if (inboundTransport == JMS  && outboundTransport == JDBC) continue;
 				if (inboundTransport == JDBC && outboundTransport == JMS)  continue;
-				createOneWayService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.JAVA);
+				createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA);
 			}
 		}
 
@@ -134,7 +134,7 @@ public class OneWayServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createOneWayService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
+	private void createOneWayService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase());
@@ -142,7 +142,7 @@ public class OneWayServiceGeneratorTest {
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 //		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
-		new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
+		new OnewayServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
 		int expectedNoOfFiles = 12;
 		if (inboundTransport == HTTP || inboundTransport == SERVLET) {

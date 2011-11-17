@@ -440,8 +440,8 @@ public class DefaultModelImpl implements IModel {
 
 
 	// Mule version
-    public String getMuleVersion() {
-    	return muleVersion.getPomSuffix();
+    public MuleVersionEnum getMuleVersion() {
+    	return muleVersion;
     }
 
     // Deploy Model

@@ -62,7 +62,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 
 		<dependency>
 			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-			<artifactId>soitoolkit-mule-${muleVersion}-dependencies</artifactId>
+			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-dependencies</artifactId>
 			<version>${dollarSymbol}{soitoolkit.version}</version>
 		</dependency>
 	</dependencies> 

@@ -37,7 +37,7 @@ public class DefaultModelImplTest {
 		String artifactId = "test";
 		String version = null;
 		String service = null;
-		MuleVersionEnum muleVersion = null;
+		MuleVersionEnum muleVersion = MuleVersionEnum.MAIN_MULE_VERSION;
 		DeploymentModelEnum dependencyModel = null;
 		List<TransportEnum> transports = null;
 		TransportEnum inboundTransport = null;

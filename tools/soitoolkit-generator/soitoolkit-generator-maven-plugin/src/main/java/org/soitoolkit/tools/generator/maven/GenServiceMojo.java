@@ -134,11 +134,11 @@ public class GenServiceMojo extends AbstractMojo {
         Generator g = null;
         switch (mepEnum) {
 		case MEP_REQUEST_RESPONSE:
-			g = new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
+			g = new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;
 
 		case MEP_ONE_WAY:
-			g = new OnewayServiceGenerator(System.out, groupId, artifactId, service, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
+			g = new OnewayServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;
 
 		case MEP_PUBLISH_SUBSCRIBE:

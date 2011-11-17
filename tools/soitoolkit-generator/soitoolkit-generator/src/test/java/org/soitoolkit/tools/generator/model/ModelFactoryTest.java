@@ -29,6 +29,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 
 public class ModelFactoryTest {
 	
@@ -50,7 +51,7 @@ public class ModelFactoryTest {
 	
 	@Test
 	public void testDefaultModelImpl() {
-		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null, null);
+		IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", MuleVersionEnum.MAIN_MULE_VERSION, null, null);
 		assertEquals("artifactId-services", model.getServiceProject());
 		assertEquals("artifactId-web", model.getWebProject());
 	}
@@ -59,7 +60,7 @@ public class ModelFactoryTest {
 	public void testCustomModelImpl() throws InstantiationException, IllegalAccessException {
 		try {
 			ModelFactory.setModelClass(CustomizedModelImpl.class);
-			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null, null);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", MuleVersionEnum.MAIN_MULE_VERSION, null, null);
 			assertEquals("artifactId-intsvc", model.getServiceProject());
 			assertEquals("artifactId-web", model.getWebProject());
 		} finally {
@@ -76,7 +77,7 @@ public class ModelFactoryTest {
 			assertNotNull("Groovy class not found", url);
 
 			ModelFactory.setModelGroovyClass(url);
-			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", null, null, null);
+			IModel model = ModelFactory.newModel("groupId", "artifactId", "version", "service", MuleVersionEnum.MAIN_MULE_VERSION, null, null);
 			assertEquals("artifactId-module-intsvc", model.getServiceProject());
 			assertEquals("modules/intsvc", model.getServiceProjectFilepath());
 			assertEquals("applications/integrations", model.getWebProjectFilepath());

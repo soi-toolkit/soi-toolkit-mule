@@ -17,7 +17,11 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum MuleVersionEnum implements ILabeledEnum { 
-	MULE_3_1_2("3.1.2"); 
+	MULE_3_1_2("3.1.2", "3.1")
+//	,MULE_3_2_0("3.2.0", "current")
+	;
+
+	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_1_2;
 	
 	public static MuleVersionEnum get(int ordinal) {
 		return values()[ordinal];
@@ -41,8 +45,10 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	}
 	
 	private String label;
-	private MuleVersionEnum(String label) {
+	private String xsdNsVersion;
+	private MuleVersionEnum(String label, String xsdNsVersion) {
 		this.label = label;
+		this.xsdNsVersion = xsdNsVersion;
 	}
 
 	// For display in the wizard
@@ -50,6 +56,9 @@ public enum MuleVersionEnum implements ILabeledEnum {
 
 	// For generators to point out the right pom-file...
 	public String getPomSuffix() {return label;}
+
+	// For generators to point out the right version number to use in the xsd namespaces
+	public String getXsdNsVersion() {return xsdNsVersion;}
 
 	// For ver no with only numbers...
 	public String getVerNoNumbersOnly() {

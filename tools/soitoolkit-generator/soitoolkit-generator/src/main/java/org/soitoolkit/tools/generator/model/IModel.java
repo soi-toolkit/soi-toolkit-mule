@@ -18,6 +18,8 @@ package org.soitoolkit.tools.generator.model;
 
 import java.util.Map;
 
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
+
 public interface IModel {
 
 	public Object resolveParameter(String parameterName);
@@ -117,7 +119,7 @@ public interface IModel {
     public String getHttpTeststubPort();
     
     // Mule version
-    public String getMuleVersion();
+    public MuleVersionEnum getMuleVersion();
     
     // Deploy Model
     public boolean isStandaloneDeployModel();

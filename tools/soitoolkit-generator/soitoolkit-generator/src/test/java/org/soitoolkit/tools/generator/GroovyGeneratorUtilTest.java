@@ -16,19 +16,17 @@
  */
 package org.soitoolkit.tools.generator;
 
-import static org.junit.Assert.*;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.junit.Test;
 import org.soitoolkit.tools.generator.GeneratorUtil;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.MiscUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
-
 
 public class GroovyGeneratorUtilTest {
 
@@ -43,7 +41,7 @@ public class GroovyGeneratorUtilTest {
 	}
 
 	private void haveARun(TransportEnum in, TransportEnum out) throws FileNotFoundException {
-		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", null, in, out, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
+		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", MuleVersionEnum.MAIN_MULE_VERSION, in, out, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
 		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMFlow.groovy"), "myGroovyoutput.txt");
 		
 		InputStream is = new FileInputStream(TEST_OUT_FOLDER + "/" + "myGroovyoutput.txt");

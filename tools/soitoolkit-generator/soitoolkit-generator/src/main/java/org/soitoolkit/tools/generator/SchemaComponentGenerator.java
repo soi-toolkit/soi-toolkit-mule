@@ -21,13 +21,14 @@ import java.util.List;
 
 import org.soitoolkit.tools.generator.Generator;
 import org.soitoolkit.tools.generator.GeneratorUtil;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 
 public class SchemaComponentGenerator implements Generator {
 	
 	GeneratorUtil gu;
 	
 	public SchemaComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, String schemaName, List<String> operations, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, null, null, schemaName, operations, "/schemaComponent/newProject", folderName + "/__schemaProject__");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, MuleVersionEnum.MAIN_MULE_VERSION, null, schemaName, operations, "/schemaComponent/newProject", folderName + "/__schemaProject__");
 	}
 		
     public void startGenerator() {
