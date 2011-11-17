@@ -94,8 +94,8 @@ public class RequestResponseServiceGeneratorTest {
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
-				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.JAVA);
-//				createRequestResponseService(groupId, artifactId, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
+				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA);
+//				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
 			}
 		}
 
@@ -120,7 +120,7 @@ public class RequestResponseServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createRequestResponseService(String groupId, String artifactId, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
+	private void createRequestResponseService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase() + "Using" + capitalize(transformerType.name().toLowerCase()));
@@ -128,7 +128,7 @@ public class RequestResponseServiceGeneratorTest {
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 //		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
-		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
+		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
 //		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
 		int expectedNoOfFiles = (outboundTransport == JMS) ? 19 : 17;
