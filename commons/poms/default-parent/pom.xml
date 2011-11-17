@@ -91,25 +91,36 @@
     <properties-maven-plugin.version>1.0-alpha-2</properties-maven-plugin.version>
 	</properties>
 	
-	<repositories>
-		<!-- for jersey-server -->
-		<repository>
-			<id>maven2-repository.dev.java.net</id>
-			<url>http://download.java.net/maven/2/</url>
-			<layout>default</layout>
-		</repository>
-		<!-- for mule-addons such as jersey and restlet transports -->
-		<repository>
-			<id>muleforge</id>
-			<name>MuleForge Repository</name>
-			<url>http://repository.muleforge.org</url>
-		</repository>
-		<repository>
-			<id>mulesoft</id>
-			<name>MuleSoft Repository</name>
-			<url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <!-- for jersey-server -->
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <url>http://download.java.net/maven/2/</url>
+            <layout>default</layout>
+        </repository>
+
+        <!-- for mule-addons such as jersey and restlet transports -->
+        <repository>
+            <id>muleforge</id>
+            <name>MuleForge Repository</name>
+            <url>http://repository.muleforge.org</url>
+        </repository>
+        <repository>
+            <id>mulesoft</id>
+            <name>MuleSoft Repository</name>
+            <url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
+        </repository>
+        
+        <!-- for mule dependencies such as org.safehouse.jug-osgi -->
+        <repository>
+            <id>mule</id>
+            <name>Mule Dependencies</name>
+            <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
   
   <dependencyManagement>
     <dependencies>
