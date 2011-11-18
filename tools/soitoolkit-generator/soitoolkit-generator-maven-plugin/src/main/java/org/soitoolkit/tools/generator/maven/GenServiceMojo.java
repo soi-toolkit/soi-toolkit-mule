@@ -85,7 +85,7 @@ public class GenServiceMojo extends AbstractMojo {
      */
     private File outDir;
 
-    private static String[] allowedRequestReplyInboundTransport  = new String[] {"SOAPHTTP","SOAPSERVLET"};
+    private static String[] allowedRequestReplyInboundTransport  = new String[] {"SOAPHTTP","SOAPSERVLET", "RESTHTTP"};
     private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP","RESTHTTP","JMS"};
     private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "SERVLET", "POP3", "IMAP"};
     private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "SMTP"};
