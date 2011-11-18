@@ -27,6 +27,7 @@ import java.io.InputStream;
 
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ModelFactory;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.w3c.dom.Document;
 
 public class PomUtil {
@@ -50,7 +51,7 @@ public class PomUtil {
 		String groupId       = getFirstValue(getXPathResult(doc, nsPrefix, nsURI, "/ns:project/ns:groupId/text()"));
 		if (groupId == null) groupId = parentGroupId;
 		
-		return ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
+		return ModelFactory.newModel(groupId, artifactId, null, null, MuleVersionEnum.MAIN_MULE_VERSION, null, null);
 	}
    
 }
