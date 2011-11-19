@@ -51,6 +51,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
@@ -188,12 +189,12 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		switch (mep) {
 		case 0: // Req Resp
 			
-			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, transformerType , rootFolderName).startGenerator();
+			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType , rootFolderName).startGenerator();
 			break;
 
 		case 1: // One Way
 			
-			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
+			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
 //		case 2: // Pub Sub

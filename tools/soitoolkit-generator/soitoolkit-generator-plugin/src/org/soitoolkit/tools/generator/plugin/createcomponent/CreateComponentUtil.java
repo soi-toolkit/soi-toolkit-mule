@@ -19,6 +19,7 @@ package org.soitoolkit.tools.generator.plugin.createcomponent;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ModelFactory;
 import org.soitoolkit.tools.generator.model.enums.ComponentEnum;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 
 public class CreateComponentUtil {
 
@@ -28,7 +29,7 @@ public class CreateComponentUtil {
 //	public static final int IM_SCHEMA_COMPONENT = 3;
 
 	public static String getComponentProjectName(int componentType, String groupId, String artifactId) {
-		IModel m = ModelFactory.newModel(groupId, artifactId, null, null, null, null, null);
+		IModel m = ModelFactory.newModel(groupId, artifactId, null, null, MuleVersionEnum.MAIN_MULE_VERSION, null, null);
 		String projectFolderName = null;
 		ComponentEnum compEnum = ComponentEnum.get(componentType);
 		switch (compEnum) {
