@@ -25,7 +25,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
     @Override
     public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
-        // Perform any message aware processing here, otherwise delegate as much as possible to doTransform() for easier unit testing
+        // Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
 <% if (inboundTransport=="RESTHTTP") { %>
         if (message.getExceptionPayload() != null) {
             return createFault(message.getExceptionPayload());
