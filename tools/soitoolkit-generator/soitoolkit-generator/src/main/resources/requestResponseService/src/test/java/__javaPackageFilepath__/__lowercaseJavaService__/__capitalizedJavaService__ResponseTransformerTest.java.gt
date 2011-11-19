@@ -27,7 +27,7 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 		// Create the transformer under test and let it perform the transformation
 <% if (transformerType=="JAVA") { %>
 		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
-		String result = (String)transformer.doTransform(input, "UTF-8");
+		String result = (String)transformer.pojoTransform(input, "UTF-8");
 <% } else { %>
 		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}/response-transformer.xml");
 <% } %>
@@ -47,7 +47,7 @@ public class ${capitalizedJavaService}ResponseTransformerTest {
 		// Create the transformer under test and let it perform the transformation
 <% if (transformerType=="JAVA") { %>
 		${capitalizedJavaService}ResponseTransformer transformer = new ${capitalizedJavaService}ResponseTransformer();
-		String result = (String)transformer.doTransform(input, "UTF-8");
+		String result = (String)transformer.pojoTransform(input, "UTF-8");
 <% } else { %>
 		String result = runSmooksTransformer(input, "src/main/resources/transformers/${service}-response-transformer.xml");
 <% } %>

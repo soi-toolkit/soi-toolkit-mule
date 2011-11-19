@@ -36,14 +36,17 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
-
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+<% if (inboundTransport=="RESTHTTP") { %>
+import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
+<% } %> 
 <% if (inboundTransport=="SOAPSERVLET") { %>
 import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.AbstractTestCase;
 <% } %> 
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
-import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.refapps.sd.sample.schema.v1.FaultInfo;
 import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
 import org.soitoolkit.refapps.sd.sample.wsdl.v1.Fault;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
@@ -72,7 +75,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
 	private AbstractJmsTestUtil jmsUtil = null;
-
+<% if (inboundTransport=="RESTHTTP") { %>
+    private JaxbUtil jabxUtil = new JaxbUtil(FaultInfo.class);
+<% } %> 
     public ${capitalizedJavaService}IntegrationTest() {
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
@@ -131,7 +136,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		assertEquals("Value" + id,  response.getValue());
 	}
 
-	public void test_fault_invalidInput() throws Fault {
+	public void test_fault_invalidInput() throws Exception {
 		try {
 	    	String id = TEST_ID_FAULT_INVALID_ID;
 	    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
@@ -185,8 +190,19 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         // Call the http-service with invalid input
         MuleMessage response = doCallHttpService(DEFAULT_SERVICE_ADDRESS, input);
 
+<% if (outboundTransport=="SOAPHTTP") { %>
         // Assert http-post internal server error
         assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
+<% } else if (outboundTransport=="RESTHTTP") { %>
+        // Assert expected FaultInfo-response and expected error message
+        String payload = MiscUtil.convertStreamToString((InputStream)response.getPayload());
+        FaultInfo fi = (FaultInfo)jabxUtil.unmarshal(payload);
+        assertEquals("Internal Server Error, code: 500", fi.getMessage());
+<% } else if (outboundTransport=="JMS") { %>
+        // Assert expected FaultInfo-response and expected error message
+        FaultInfo fi = (FaultInfo)jabxUtil.unmarshal(response.getPayload());
+        assertEquals("Invalid Id: -1", fi.getMessage());
+<% } %> 
     }
 
     public void test_fault_timeout() throws MuleException {

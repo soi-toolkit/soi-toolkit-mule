@@ -27,7 +27,7 @@ ${xmlNamespace.reqRespService}
 		<inbound-endpoint
 			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 			exchange-pattern="request-response"
-			transformer-refs="logReqIn objToStr"
+			transformer-refs="objToStr logReqIn"
 			responseTransformer-refs="createSoapFaultIfException logRespOut">
 			<cxf:proxy-service 
 				service="sampleService"
@@ -39,7 +39,7 @@ ${xmlNamespace.reqRespService}
         <inbound-endpoint
             address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
             exchange-pattern="request-response"
-            transformer-refs="logReqIn"
+            transformer-refs="objToStr logReqIn"
             responseTransformer-refs="logRespOut">
         </inbound-endpoint>
 <% } %> 
