@@ -17,11 +17,11 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum MuleVersionEnum implements ILabeledEnum { 
-	MULE_3_1_2("3.1.2", "3.1")
-//	,MULE_3_2_0("3.2.0", "current")
+//	MULE_3_1_2("3.1.2", "3.1"),
+	MULE_3_2_0("3.2.0", "current")
 	;
 
-	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_1_2;
+	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_2_0;
 	
 	public static MuleVersionEnum get(int ordinal) {
 		return values()[ordinal];

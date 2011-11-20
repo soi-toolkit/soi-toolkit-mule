@@ -22,7 +22,7 @@ import org.mule.api.MessagingException;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.config.ExceptionHelper;
-import org.mule.exception.DefaultServiceExceptionStrategy;
+import org.mule.exception.DefaultMessagingExceptionStrategy;
 import org.soitoolkit.commons.mule.api.log.EventLogMessage;
 import org.soitoolkit.commons.mule.api.log.EventLogger;
 import org.soitoolkit.commons.mule.log.EventLoggerFactory;
@@ -33,7 +33,7 @@ import org.soitoolkit.commons.mule.log.EventLoggerFactory;
  * @author Magnus Larsson
  *
  */
-public class ServiceExceptionStrategy extends DefaultServiceExceptionStrategy {
+public class ServiceExceptionStrategy extends DefaultMessagingExceptionStrategy {
 
 	private final EventLogger eventLogger;
 

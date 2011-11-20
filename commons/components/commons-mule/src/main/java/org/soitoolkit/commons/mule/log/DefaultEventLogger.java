@@ -24,6 +24,7 @@ import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -270,7 +271,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
         MuleEventContext event       = RequestContext.getEventContext();
         if (event != null) {
 		    serviceImplementation   = MuleUtil.getServiceName(event);
-		    EndpointURI endpointURI = event.getEndpointURI();
+		    URI endpointURI         = event.getEndpointURI();
 			endpoint                = (endpointURI == null)? "" : endpointURI.toString();
         }
 		
