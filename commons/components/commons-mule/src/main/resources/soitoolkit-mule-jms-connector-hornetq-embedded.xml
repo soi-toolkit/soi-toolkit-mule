@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd 
+		http://www.mulesoft.org/schema/mule/jms  http://www.mulesoft.org/schema/mule/jms/3.1/mule-jms.xsd">
+
+	<spring:beans>
+		<spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml" />
+	</spring:beans>
+
+    <spring:bean id="EmbeddedHornetQ" class="org.hornetq.integration.spring.SpringJmsBootstrap" init-method="start" destroy-method="stop"/>
+
+    <!--
+    Sample configuration settings in the property-file:
+    
+    SOITOOLKIT_MULE_HORNETQ_HOST=localhost
+    SOITOOLKIT_MULE_HORNETQ_PORT=5445
+    
+#    SOITOOLKIT_MULE_HORNETQ_CONNECTION_TTL=1000
+    -->
+    <spring:bean name="soitoolkit-jms-connection-factory" class="org.hornetq.jms.client.HornetQJMSConnectionFactory" depends-on="EmbeddedHornetQ">
+        <spring:constructor-arg type="boolean" value="false"/>
+        <spring:constructor-arg>
+            <spring:bean name="transportConfiguration" class="org.hornetq.api.core.TransportConfiguration">
+                <spring:constructor-arg value="org.hornetq.core.remoting.impl.netty.NettyConnectorFactory"/>
+                <spring:constructor-arg>
+                    <spring:map key-type="java.lang.String" value-type="java.lang.Object">
+                        <spring:entry key="host" value="${SOITOOLKIT_MULE_HORNETQ_HOST}"/>
+                        <spring:entry key="port" value="${SOITOOLKIT_MULE_HORNETQ_PORT}"/>
+                    </spring:map>
+                </spring:constructor-arg>
+            </spring:bean>
+        </spring:constructor-arg>
+<!-- 
+        <spring:property name="ConnectionTTL" value="${SOITOOLKIT_MULE_HORNETQ_CONNECTION_TTL}"/>
+ -->
+    </spring:bean>
+
+    <jms:connector name="soitoolkit-jms-connector" username="guest" password="guest"
+        specification="1.1" connectionFactory-ref="soitoolkit-jms-connection-factory"/>
+</mule>
