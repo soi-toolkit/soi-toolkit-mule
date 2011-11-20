@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_1_2;
+import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_2_0;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	}
 
 	private boolean mustBeDisplayed = false;
-	private MuleVersionEnum muleVersion = MULE_3_1_2;
+	private MuleVersionEnum muleVersion = MULE_3_2_0;
 	
 	private Combo muleVersionCombo;
 	private ValueHolder<Integer> deploymentModelType = new ValueHolder<Integer>(STANDALONE_DEPLOY.ordinal());
@@ -256,7 +256,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //				containerText.setText(container.getFullPath().toString());
 //			}
 //		}
-		muleVersionCombo.select(MULE_3_1_2.ordinal());
+		muleVersionCombo.select(MULE_3_2_0.ordinal());
 	}
 
 	/**
