@@ -19,6 +19,8 @@ package org.soitoolkit.commons.mule.test;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -85,13 +87,30 @@ public abstract class AbstractJmsTestUtil {
 	 * @param the messages
 	 */
 	public void sendOneTextMessage(String queueName, String message) {
+		sendOneTextMessage(queueName, message, null);
+	}
+
+	/**
+	 * Sends a text messages to a queue with custom headers. 
+	 * 
+	 * @param queueName
+	 * @param message
+	 * @param headers
+	 */
+	public void sendOneTextMessage(String queueName, String message, Map<String, String> headers) {
 
         MessageProducer publisher = null;
 
 	    try {
 	    	publisher = session.createProducer(session.createQueue(queueName));
 	        TextMessage textMessage = session.createTextMessage(message);  
-	        publisher.send(textMessage);   
+
+	        if (headers != null) {
+		        for (Entry<String, String> entry : headers.entrySet()) {
+		            textMessage.setStringProperty(entry.getKey(), entry.getValue());
+		        }
+	        }
+		    publisher.send(textMessage);   
 	
 	    } catch (JMSException e) {
 	        throw new RuntimeException(e);
@@ -102,6 +121,7 @@ public abstract class AbstractJmsTestUtil {
 	    }
 	}
 
+	
 	/**
 	 * Browse messages on a queue. 
 	 * 
