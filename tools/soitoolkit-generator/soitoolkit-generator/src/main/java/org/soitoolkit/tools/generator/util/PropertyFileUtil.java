@@ -46,7 +46,7 @@ public class PropertyFileUtil {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void updateMuleDeployPropertyFileWithNewService(String outputFolder, String serviceName) {
 		
-		String muleDeployPropertyFile = outputFolder + "/application/mule-deploy.properties";
+		String muleDeployPropertyFile = outputFolder + "/src/main/app/mule-deploy.properties";
 		System.err.println("Open muleDeployPropertyFile: " + muleDeployPropertyFile);
 		
 		try {
