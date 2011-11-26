@@ -55,8 +55,9 @@
       </security-setting>
    </security-settings>
 
+   <!-- 
    <address-settings>
-      <!--default for catch all-->
+      <!- -default for catch all- ->
       <address-setting match="#">
          <dead-letter-address>jms.queue.DLQ</dead-letter-address>
          <expiry-address>jms.queue.ExpiryQueue</expiry-address>
@@ -66,5 +67,16 @@
          <address-full-policy>BLOCK</address-full-policy>
       </address-setting>
    </address-settings>
+   -->
+
+	<address-settings>
+	  <address-setting match="#">
+	    <dead-letter-address>jms.queue.DLQ</dead-letter-address>
+	    <max-delivery-attempts>4</max-delivery-attempts>
+	    <redelivery-delay>500</redelivery-delay>
+	  </address-setting>
+	</address-settings>
+
+    <message-counter-enabled>true</message-counter-enabled>
 
 </configuration>

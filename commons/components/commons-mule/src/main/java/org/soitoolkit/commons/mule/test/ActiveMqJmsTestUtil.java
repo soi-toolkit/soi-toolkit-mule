@@ -35,6 +35,12 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 
     protected String qmUrl = null;
 
+    /**
+	 * Create a connection factory for the provided ActiveMQ broker url and specify a clientId used for durable topic subscriber operations
+     * 
+     * @param qmUrl
+     * @param clientId
+     */
     public ActiveMqJmsTestUtil(String qmUrl, String clientId) {
 		this.qmUrl = qmUrl;
 		init(clientId);
@@ -46,8 +52,7 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 	 * @param qmUrl, typically "vm://localhost" when using embedded amq and tcp://localhost:61616 when using amq standalone
 	 */
 	public ActiveMqJmsTestUtil(String qmUrl) {
-		this.qmUrl = qmUrl;
-		init(null);
+		this(qmUrl, null);
 	}
 
 	/**
@@ -80,5 +85,10 @@ public class ActiveMqJmsTestUtil extends AbstractJmsTestUtil {
 	@Override
 	protected String getPassword() {
 		return PWD;
+	}	
+
+	@Override
+    public int getNoOfMsgsIncludingPendingForRetry(String queue) {
+		return browseMessagesOnQueue(queue).size();
 	}	
 }

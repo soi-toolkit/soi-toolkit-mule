@@ -64,6 +64,7 @@ public abstract class AbstractJmsTestUtil {
 	protected abstract TopicConnectionFactory createTopicConnectionFactory() throws Exception;
 	protected abstract String getUsername();
 	protected abstract String getPassword();
+	public abstract int getNoOfMsgsIncludingPendingForRetry(String queue);
 
 	
 	/**

@@ -55,6 +55,12 @@
  -->
     </spring:bean>
 
-    <jms:connector name="soitoolkit-jms-connector" username="guest" password="guest"
-        specification="1.1" connectionFactory-ref="soitoolkit-jms-connection-factory"/>
+    <jms:connector 
+        name="soitoolkit-jms-connector" 
+        username="guest" 
+        password="guest"
+        specification="1.1" 
+        connectionFactory-ref="soitoolkit-jms-connection-factory" 
+        maxRedelivery="-1"
+    />
 </mule>
