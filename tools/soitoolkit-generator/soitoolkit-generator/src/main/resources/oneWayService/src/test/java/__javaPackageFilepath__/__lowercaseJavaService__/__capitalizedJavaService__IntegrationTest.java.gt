@@ -1,5 +1,6 @@
 package ${javaPackage}.${lowercaseJavaService};
 
+import static org.junit.Assert.*;
 <% if (inboundTransport=="HTTP") { %>
 import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
@@ -26,6 +27,7 @@ import javax.jms.TextMessage;
 
 import javax.sql.DataSource;
 
+import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.api.routing.CouldNotRouteOutboundMessageException;
 import org.mule.api.transformer.TransformerException;
@@ -120,14 +122,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } %> 
-    	// TODO: Should this be placed in the baseclass?
-    	
-    	// Only start up Mule once to make the tests run faster...
-    	// Set to false if tests interfere with each other when Mule is started only once.
-        setDisposeManagerPerSuite(true);
-
-		// Increase the default 120 sec so that you have a chance to debug...
-        setTestTimeoutSecs(120);
     }
 
 	protected String getConfigResources() {
@@ -231,6 +225,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     }
 <% } %> 
 
+    @Test
     public void test${capitalizedJavaService}_ok() throws JMSException {
 
 		Map<String, String> props = new HashMap<String, String>();
@@ -363,6 +358,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
      *
      * @throws JMSException
      */
+    @Test
     public void test${capitalizedJavaService}_transformationError() throws JMSException {
 
     	String message = "Cnnn";
@@ -376,15 +372,12 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
         // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
         try {
-        	Thread.sleep(500);
+        	Thread.sleep(750);
         } catch (InterruptedException e) {}
 
-        // Verify that the message is still on the in-queue and now marked for redelivery
-        List<Message> inMsgs = jmsUtil.browseMessagesOnQueue(IN_QUEUE);
-        assertEquals(1, inMsgs.size());
-        //log.warn("Skip test \"assertTrue(inMsg.getJMSRedelivered())\" since I can't get it to work on ActiveMQ 5.5 for now...");
-        Message inMsg = inMsgs.get(0);
-        assertTrue(inMsg.getJMSRedelivered());
+        // Verify that two error-log-message is sent (for the first time and for the first re-delivery) but not yet anything of the deadletter queue...
+        assertErrorLogMessages(2, expectedErrMsg);
+        assertEquals("Incorrect number of DLQ-messages", 0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
 
         // Allow for some more background processing to complete so that the redelivery count is reached and the message is placed on the Dead Letter queue
         try {
@@ -405,12 +398,18 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
         // Wrap up with verifying that we now have four identical log-messages on the error-log-queue
         // One message for the initial attempt and three more for the redeliveries
-        msgs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
-        assertEquals("Incorrect number of error-messages", 4, msgs.size());
-        for (Message errMessage : msgs) {
-            String errMsg = ((TextMessage)errMessage).getText();
-            assertTrue("Expected error message not found", errMsg.contains(expectedErrMsg));
-        }
+        assertErrorLogMessages(4, expectedErrMsg);
     }    
+
+    private void assertErrorLogMessages(int noOfExpectedErrorLogMsgs, String expectedErrMsg) throws JMSException {
+        List<Message> msgs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+        assertEquals("Incorrect number of error-messages", noOfExpectedErrorLogMsgs, msgs.size());
+        int i = 0;
+        for (Message errMessage : msgs) {
+            i++;
+            String errMsg = ((TextMessage)errMessage).getText();
+            assertTrue("Expected error message not found in error-log-message #" + i, errMsg.contains(expectedErrMsg));
+        }
+    }
 <% } %>    
 }
