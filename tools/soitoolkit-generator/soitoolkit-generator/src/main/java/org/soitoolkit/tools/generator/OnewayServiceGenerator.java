@@ -182,7 +182,8 @@ public class OnewayServiceGenerator implements Generator {
 			    cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
 		    }
 		    if (outboundTransport == FILE) {
-				cfg.println(service + "_OUTBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/outbound");
+				cfg.println(service + "_OUTBOUND_FOLDER=${" + service + "_TESTSTUB_INBOUND_FOLDER}");
+				cfg.println(service + "_TESTSTUB_INBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/outbound");
 			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
 			    cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=500");
 		    }
@@ -195,7 +196,8 @@ public class OnewayServiceGenerator implements Generator {
 		    }
 		    if (outboundTransport == FTP) {
 		    	cfg.println("# URL for tests with embeddded FTP-server, replace with something like ${FTP_USERNAME}:${FTP_PASSWORD}@ftphost/~/path");
-				cfg.println(service + "_OUTBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/outbound");
+				cfg.println(service + "_OUTBOUND_FOLDER=${" + service + "_TESTSTUB_INBOUND_FOLDER}");
+				cfg.println(service + "_TESTSTUB_INBOUND_FOLDER=" + ftpRootFolder + "/" + serviceName + "/outbound");
 			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
 		    }		    
 		    

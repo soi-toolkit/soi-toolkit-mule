@@ -17,7 +17,7 @@ ${xmlNamespace.onewayTeststubService}
 
 <% } else if (outboundTransport=="FILE") { %> 
 				<file:inbound-endpoint
-					path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+					path="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
 					fileAge="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FILE_AGE_MS}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
 					transformer-refs="objToStr">
@@ -26,7 +26,7 @@ ${xmlNamespace.onewayTeststubService}
 
 <% } else if (outboundTransport=="FTP") { %> 
 				<ftp:inbound-endpoint 
-					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+					address="ftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
 					binary="false"
 					passive="true"
