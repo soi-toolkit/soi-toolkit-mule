@@ -287,7 +287,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			String componentProjectName = getComponentProjectName(componentType, groupId, artifactId);
 			final String path = folderName + "/" + componentProjectName;
 			
-			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
+//			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
 			
 			monitor.worked(1);
 			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();

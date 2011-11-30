@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.createservice;
 
 import static org.soitoolkit.tools.generator.util.PomUtil.extractGroupIdAndArtifactIdFromPom;
+import static soi_toolkit_generator_plugin.preferences.PreferenceConstants.P_MAVEN_HOME;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.ui.actions.OrganizeImportsAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -51,11 +53,16 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
+import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
+
+import soi_toolkit_generator_plugin.Activator;
 
 
 /**
@@ -102,11 +109,15 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		final TransportEnum outboundTransport = page.getSelectedOutboundTransport();
 		final TransformerEnum transformerType = page.getTransformerType(); 
 
+		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+		final String mavenHome = prefs.getString(P_MAVEN_HOME);
+		final int mavenEclipseGoalType = MavenEclipseGoalEnum.ECLIPSE_ECLIPSE.ordinal();
+		
 		final String serviceName = page.getServiceName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, mep, inboundTransport, outboundTransport, transformerType, serviceName, monitor);
+					doFinish(mavenHome, mavenEclipseGoalType, containerName, mep, inboundTransport, outboundTransport, transformerType, serviceName, monitor);
 				} catch (CoreException e) {
 					e.printStackTrace();
 					throw new InvocationTargetException(e);
@@ -142,9 +153,9 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	 * @param outboundTransport 
 	 * @param mep 
 	 */
-	private void doFinish(String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String mavenHome, int mavenEclipseGoalType, String containerName, int mep, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String serviceName, IProgressMonitor monitor) throws CoreException {
 
-		monitor.beginTask("Creating " + serviceName, 4);
+		monitor.beginTask("Creating " + serviceName, 5);
 		
 		final PrintStream ps = new PrintStream(new OutputStream() {
 			@Override
@@ -217,6 +228,17 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 //		});
 
 		monitor.worked(1);
+		String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
+
+		monitor.setTaskName("Execute command: " + buildCommand);
+		try {
+			System.err.println("Execute: " + buildCommand + " in folder: " + rootFolderName);
+			SystemUtil.executeCommand(mavenHome, buildCommand, rootFolderName, System.out, System.err);
+		} catch (IOException ioe) {
+			throwCoreException("Failed to create a new component", ioe);
+		}
+		
+		monitor.worked(1);
 		monitor.setTaskName("Organize Imports...");
 //		doOrganizeImports(resource);
 
@@ -265,6 +287,12 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 	private void throwCoreException(String message) throws CoreException {
 		IStatus status =
 			new Status(IStatus.ERROR, "soi_toolkit_generator_plugin", IStatus.OK, message, null);
+		throw new CoreException(status);
+	}
+
+	private void throwCoreException(String message, Throwable exception) throws CoreException {
+		IStatus status =
+			new Status(IStatus.ERROR, "soi_toolkit_generator_plugin", message, exception);
 		throw new CoreException(status);
 	}
 
