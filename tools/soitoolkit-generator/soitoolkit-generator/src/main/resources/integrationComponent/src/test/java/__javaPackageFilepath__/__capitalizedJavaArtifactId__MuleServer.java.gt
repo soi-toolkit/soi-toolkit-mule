@@ -5,7 +5,7 @@ import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.StandaloneMuleServer;
 <% } %>
-import java.util.ResourceBundle;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 //	public static final String MULE_CONFIG      = "${artifactId}-config.xml"; // only services
 
 	private static final Logger logger = LoggerFactory.getLogger(${capitalizedJavaArtifactId}MuleServer.class);
-    private static final ResourceBundle rb = ResourceBundle.getBundle("${configPropertyFile}");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
 
 	public static void main(String[] args) throws Exception {
 
