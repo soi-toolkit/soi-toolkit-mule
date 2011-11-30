@@ -1,5 +1,6 @@
 package ${javaPackage}.${lowercaseJavaService};
 
+import static org.junit.Assert.*;
 <% if (inboundTransport=="SOAPSERVLET") { %>
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.CONTEXT_PATH;
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
@@ -33,6 +34,7 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
 
 import javax.xml.ws.soap.SOAPFaultException;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
@@ -43,7 +45,7 @@ import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 <% if (inboundTransport=="SOAPSERVLET") { %>
 import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
 <% } else { %> 
-import org.soitoolkit.commons.mule.test.AbstractTestCase;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
 <% } %> 
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.refapps.sd.sample.schema.v1.FaultInfo;
@@ -83,14 +85,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } %> 
-    	// TODO: Should this be placed in the baseclass?
-
-    	// Only start up Mule once to make the tests run faster...
-    	// Set to false if tests interfere with each other when Mule is started only once.
-        setDisposeManagerPerSuite(true);
-
-		// Increase the default 120 sec so that you have a chance to debug...
-        setTestTimeoutSecs(120);
     }
 
 	protected String getConfigResources() {
@@ -129,6 +123,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     }
 
 <% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
+    @Test
     public void test_ok() throws Fault {
     	String id = TEST_ID_OK;
     	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
@@ -136,6 +131,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		assertEquals("Value" + id,  response.getValue());
 	}
 
+    @Test
 	public void test_fault_invalidInput() throws Exception {
 		try {
 	    	String id = TEST_ID_FAULT_INVALID_ID;
@@ -153,6 +149,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	    }
 	}
 
+    @Test
 	public void test_fault_timeout() throws Fault {
         try {
 	    	String id = TEST_ID_FAULT_TIMEOUT;
@@ -169,6 +166,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		} catch (InterruptedException e) {}
     }
 <% } else if (inboundTransport=="RESTHTTP") { %>
+    @Test
     public void test_ok() throws MuleException {
         String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-input.xml");
         String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-expected-result.xml");
@@ -184,6 +182,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         assertEquals(normalizeXmlString(expectedResult), normalizeXmlString(actualResult));
     }
 
+    @Test
     public void test_fault_invalidInput() throws MuleException {
         String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-invalid-input.xml");
 
@@ -205,6 +204,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
     }
 
+    @Test
     public void test_fault_timeout() throws MuleException {
 
         String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-timeout-input.xml");

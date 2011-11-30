@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.soitoolkit.commons.mule.test;
+package org.soitoolkit.commons.mule.test.junit4;
 
 import static org.mule.context.notification.ComponentMessageNotification.COMPONENT_POST_INVOKE;
 import static org.mule.context.notification.ExceptionNotification.EXCEPTION_ACTION;
+import static org.junit.Assert.*;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -34,14 +35,14 @@ import org.mule.context.notification.ComponentMessageNotification;
 import org.mule.context.notification.EndpointMessageNotification;
 import org.mule.context.notification.ExceptionNotification;
 import org.mule.module.client.MuleClient;
-import org.mule.tck.FunctionalTestCase;
+import org.mule.tck.junit4.FunctionalTestCase;
+import org.soitoolkit.commons.mule.test.Dispatcher;
+import org.soitoolkit.commons.mule.test.DispatcherMuleClientImpl;
 import org.soitoolkit.commons.mule.util.MuleUtil;
 import org.soitoolkit.commons.mule.util.ValueHolder;
 
 /**
- * Extends the base class in Mule, org.mule.tck.FuntionalTestCase, i.e. for old-style junit3 testing
- * 
- * @deprecated since 0.5.0 use org.soitoolkit.commons.mule.test.junit4.AbstractTestCase instead for junit4 functionality
+ * Extends the base class in Mule, org.mule.tck.junit4.FuntionalTestCase.
  * 
  * @author Magnus Larsson
  *
@@ -57,13 +58,15 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Log4jLogger");
 	}
 
+    /* ISSUE 203: Gone in org.mule.tck.junit4.FunctionalTestCase...
+     
 	/**
      * Fix for Mule 2.2.2 problem with presentation of test-name i Eclipse
      * testrunner that comes from override in
      * <code>org.mule.tck.AbstractMuleTestCase.setName()</code>. 
      * 
      * @see org.mule.tck.AbstractMuleTestCase#getName()
-     */
+     * /
     @Override
     public String getName() {
       return junitTestCaseName;
@@ -75,7 +78,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
      * <code>org.mule.tck.AbstractMuleTestCase.setName()</code>. 
      * 
      * @see org.mule.tck.AbstractMuleTestCase#getName()
-     */
+     * /
     @Override
     public void setName(String name) {
         junitTestCaseName = name;
@@ -91,13 +94,14 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
      * 
      * @see org.mule.tck.AbstractMuleTestCase#AbstractMuleTestCase()
      * @see org.mule.tck.AbstractMuleTestCase#initTestTimeoutSecs()
-     */
+     * /
     protected void setTestTimeoutSecs(int seconds) {
         logger.info("Setting test timeout to (seconds): " + seconds);
         String strSeconds = String.valueOf(seconds);
         System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, strSeconds);
         initTestTimeoutSecs();	
     }
+    */
 
 	/**
 	 * Sends the <code>payload</code> and <code>headers</code> to the <code>inboundEndpointAddress</code> and waits <code>timeout</code> ms for a <code>MuleMessage</code> to arrive on outboundEndpoint with the name <code>outboundEndpointName</code>. 
