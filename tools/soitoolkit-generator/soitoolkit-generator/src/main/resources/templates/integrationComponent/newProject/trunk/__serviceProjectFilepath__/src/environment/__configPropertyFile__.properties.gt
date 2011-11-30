@@ -2,8 +2,7 @@
 # TODO: Add connector and service properties here...
 
 # Standard properties for an external ActiveMQ broker, see soitoolkit-mule-jms-connector-activemq-external.xml.
-SOITOOLKIT_MULE_AMQ_HOST=localhost
-SOITOOLKIT_MULE_AMQ_PORT=61616
+SOITOOLKIT_MULE_AMQ_BROKER_URL=failover:(tcp://localhost:61616)
 SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES=3
 SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY=10000
 SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2

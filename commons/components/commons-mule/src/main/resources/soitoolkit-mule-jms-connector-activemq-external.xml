@@ -30,8 +30,7 @@
 	<!--
     Sample configuration settings:
     
-	SOITOOLKIT_MULE_AMQ_HOST=localhost
-	SOITOOLKIT_MULE_AMQ_PORT=61616
+    SOITOOLKIT_MULE_AMQ_BROKER_URL=failover:(tcp://host1:61616,tcp://host2:61616)
 	SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES=10
 	SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY=60000
 	SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
@@ -39,7 +38,7 @@
 
 	<spring:bean name="soitoolkit-jms-connection-factory"
 		class="org.apache.activemq.ActiveMQConnectionFactory">
-		<spring:property name="brokerURL" value="failover:(tcp://${SOITOOLKIT_MULE_AMQ_HOST}:${SOITOOLKIT_MULE_AMQ_PORT})" />
+        <spring:property name="brokerURL" value="${SOITOOLKIT_MULE_AMQ_BROKER_URL}" />
 		<spring:property name="redeliveryPolicy">
 			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
 				<spring:property name="maximumRedeliveries" value="${SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES}" />
