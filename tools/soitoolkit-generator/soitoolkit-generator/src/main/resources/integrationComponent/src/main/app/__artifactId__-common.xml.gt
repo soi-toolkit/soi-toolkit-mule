@@ -23,9 +23,11 @@ ${xmlNamespace.common}
   <spring:bean id="propertyConfigurer"
       class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
     <spring:constructor-arg ref="configurationEncryptor"/>
+    <spring:property name="ignoreResourceNotFound" value="true"/>
     <spring:property name="locations">
       <spring:list>
         <spring:value>classpath:${configPropertyFile}.properties</spring:value>
+        <spring:value>classpath:${configPropertyFile}-override.properties</spring:value>
       </spring:list>
     </spring:property>
   </spring:bean>
