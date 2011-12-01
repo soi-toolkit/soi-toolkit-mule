@@ -65,7 +65,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
-	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 
 <% if (inboundTransport=="VM") { %>
 	private static final String IN_VM_QUEUE = rb.getString("${uppercaseService}_IN_VM_QUEUE");

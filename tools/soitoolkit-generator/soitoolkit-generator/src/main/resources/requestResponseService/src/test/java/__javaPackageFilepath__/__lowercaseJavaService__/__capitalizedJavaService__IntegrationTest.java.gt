@@ -62,7 +62,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	
 <% if (outboundTransport=="JMS") { %>
-	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 	private static final long   SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Response timed out (" + SERVICE_TIMOUT_MS + "ms) waiting for message response id ";
 <% } else { %> 

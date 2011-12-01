@@ -25,7 +25,7 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 //	public static final String MULE_CONFIG      = "${artifactId}-config.xml"; // only services
 
 	private static final Logger logger = LoggerFactory.getLogger(${capitalizedJavaArtifactId}MuleServer.class);
-    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 
 	public static void main(String[] args) throws Exception {
 
