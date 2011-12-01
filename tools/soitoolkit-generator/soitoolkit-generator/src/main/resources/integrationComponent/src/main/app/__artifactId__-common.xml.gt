@@ -3,6 +3,7 @@
 <mule 
 ${xmlNamespace.common}
 
+<!-- #183
 	<spring:bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<spring:property name="locations">
 			<spring:list>
@@ -11,6 +12,37 @@ ${xmlNamespace.common}
 			</spring:list>
 		</spring:property>
 	</spring:bean>
+-->
+<!-- #183
+http://www.jasypt.org/encrypting-configuration.html
+http://blogs.mulesoft.org/encrypting-passwords-in-mule/
+-->
+  <!-- Support for decrypting encrypted properties.
+    The encryption password will be read from an environment variable
+    called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once
+    the application has been started, could be safely unset. -->
+  <spring:bean id="environmentVariablesConfiguration"
+      class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+    <spring:property name="algorithm" value="PBEWithMD5AndDES"/>
+    <spring:property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD"/>
+  </spring:bean>
+  <!-- Support for decrypting encrypted properties -->
+  <spring:bean id="configurationEncryptor"
+      class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+    <spring:property name="config" ref="environmentVariablesConfiguration"/>
+  </spring:bean>
+  <!-- Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+    that supports decrypting encrypted property values -->
+  <spring:bean id="propertyConfigurer"
+      class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+    <spring:constructor-arg ref="configurationEncryptor"/>
+    <spring:property name="locations">
+      <spring:list>
+        <spring:value>classpath:ic2-security.properties</spring:value>
+        <spring:value>classpath:ic2-config.properties</spring:value>
+      </spring:list>
+    </spring:property>
+  </spring:bean>
 
 <!-- 
     <management:jmx-default-config port="${dollarSymbol}{JMX_PORT}" registerMx4jAdapter="false" >
