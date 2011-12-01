@@ -46,21 +46,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
         </repository>
     </distributionManagement>
 
-	<dependencies>
-	  <!-- #183 -->
-	  <dependency>
-	    <groupId>org.jasypt</groupId>
-	    <artifactId>jasypt</artifactId>
-	    <version>1.8</version>
-	  </dependency>
-	  <!-- #183: icu is only needed if JDK < 6, see: http://www.jasypt.org/dependencies.html
-      Note: 4.8.1.1 is latest in maven central repo -->
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <version>3.4.4</version>
-    </dependency>
-	
+	<dependencies>	
 		<dependency>
             <groupId>org.soitoolkit.commons.components</groupId>
 			<artifactId>soitoolkit-commons-mule</artifactId>

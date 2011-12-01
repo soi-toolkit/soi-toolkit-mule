@@ -123,10 +123,8 @@ public class OnewayServiceGenerator implements Generator {
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 
 		PrintWriter cfg = null;
-		PrintWriter sec = null;
 		try {
 			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
-			sec = openPropertyFileForAppend(gu.getOutputFolder(), m.getSecurityPropertyFile());
 
 			String artifactId     = m.getArtifactId();
 			String service        = m.getUppercaseService();
@@ -140,13 +138,6 @@ public class OnewayServiceGenerator implements Generator {
 		    cfg.println("");
 		    cfg.println("# Properties for service \"" + m.getService() + "\"");
 		    cfg.println("# TODO: Update to reflect your settings");
-
-		    if (inboundTransport == POP3 || inboundTransport == IMAP) {
-				// Print header for this service's properties if any security related properties are required
-			    sec.println("");
-			    sec.println("# Security related properties for service \"" + m.getService() + "\"");
-			    sec.println("# TODO: Update to reflect your settings");
-		    }
 		    
 		    // VM properties
 		    if (inboundTransport == VM) {
@@ -245,23 +236,6 @@ public class OnewayServiceGenerator implements Generator {
 				cfg.println(service + "_INBOUND_EMAIL_TO=soitoolkit1@yahoo.se");
 				cfg.println(service + "_INBOUND_EMAIL_SUBJECT=Inbound mail sent to Mule ESB");
 		    }
-		    
-		    // POP3 properties
-		    if (inboundTransport == POP3) {
-				cfg.println(service + "_POP3_HOST=pop.mail.yahoo.com");
-			    cfg.println(service + "_POP3_PORT=110");
-
-		    	// Write to the security-property-file
-			    sec.println(service + "_POP3_USR=soitoolkit1%40yahoo.se");
-			    sec.println(service + "_POP3_PWD=soitoolkit1pwd");
-		    }
-		    
-		    // IMAP properties
-		    if (inboundTransport == IMAP) {
-		    	// Write to the security-property-file
-			    sec.println(service + "_IMAP_USR=soitoolkit1%40yahoo.se");
-			    sec.println(service + "_IMAP_PWD=soitoolkit1pwd");
-		    }
 
 		    // SMTP properties
 		    if (outboundTransport == SMTP) {
@@ -273,12 +247,35 @@ public class OnewayServiceGenerator implements Generator {
 			    cfg.println(service + "_OUTBOUND_EMAIL_SUBJECT=Outbound mail sent from Mule ESB");
 		    }
 		    
+		    // POP3 properties
+		    if (inboundTransport == POP3) {
+				cfg.println(service + "_POP3_HOST=pop.mail.yahoo.com");
+			    cfg.println(service + "_POP3_PORT=110");
+
+			    printSecurityHeaderForService(cfg);
+			    cfg.println(service + "_POP3_USR=soitoolkit1%40yahoo.se");
+			    cfg.println(service + "_POP3_PWD=soitoolkit1pwd");
+		    }
+		    
+		    // IMAP properties
+		    if (inboundTransport == IMAP) {
+		    	printSecurityHeaderForService(cfg);
+			    cfg.println(service + "_IMAP_USR=soitoolkit1%40yahoo.se");
+			    cfg.println(service + "_IMAP_PWD=soitoolkit1pwd");
+		    }
+		    
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (cfg != null) {cfg.close();}
-			if (sec != null) {sec.close();}
 		}
+	}
+
+	private void printSecurityHeaderForService(PrintWriter cfg) {
+		// Print header for this service's properties if any security related properties are required
+		cfg.println("");
+		cfg.println("# Security related properties for service \"" + m.getService() + "\"");
+		cfg.println("# TODO: Update to reflect your settings");
 	}
 	
 	private void updateSqlDdlFilesAddExportTable() {

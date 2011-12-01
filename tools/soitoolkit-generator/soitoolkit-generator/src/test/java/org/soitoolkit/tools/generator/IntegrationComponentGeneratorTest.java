@@ -42,7 +42,7 @@ public class IntegrationComponentGeneratorTest {
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
 	private static final String PROJECT = "ordermgm";	
 	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
-	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 37;
+	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 36;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

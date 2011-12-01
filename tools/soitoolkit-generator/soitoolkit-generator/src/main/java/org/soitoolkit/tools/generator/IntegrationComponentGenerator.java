@@ -64,7 +64,6 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("src/test/resources/teststub-services");
 		gu.generateContentAndCreateFile("src/main/resources/log4j.dtd.gt");
 		gu.generateContentAndCreateFile("src/main/resources/log4j.xml.gt");
-		gu.generateContentAndCreateFile("src/main/resources/__securityPropertyFile__.properties.gt");
 		gu.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
     }
 		
@@ -102,7 +101,6 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("__serviceProjectFilepath__/src/test/resources/teststub-services");
 		gu.generateContentAndCreateFile("__serviceProjectFilepath__/src/environment/log4j.dtd.gt");
 		gu.generateContentAndCreateFile("__serviceProjectFilepath__/src/environment/log4j.xml.gt");
-		gu.generateContentAndCreateFile("__serviceProjectFilepath__/src/environment/__securityPropertyFile__.properties.gt");
 		gu.generateContentAndCreateFile("__serviceProjectFilepath__/src/environment/__configPropertyFile__.properties.gt");
 
 		// Support for the mule deployment model

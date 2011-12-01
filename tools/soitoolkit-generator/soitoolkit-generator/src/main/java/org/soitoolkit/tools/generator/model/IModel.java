@@ -147,6 +147,5 @@ public interface IModel {
 
     // Property files
     public String getConfigPropertyFile();
-	public String getSecurityPropertyFile();
 
 }

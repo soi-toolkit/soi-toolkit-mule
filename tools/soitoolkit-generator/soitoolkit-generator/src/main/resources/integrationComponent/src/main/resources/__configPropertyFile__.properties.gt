@@ -51,7 +51,6 @@ POP3_CHECK_FREQUENCY_MS=3000
 
 <% if (jdbc) { %>
 # Properties for the generic soitoolkit-mule-jdbc-connector.xml.
-# See ${securityPropertyFile}.properties for authentication related jdbc-connector properties
 # TODO: Update to reflect your settings
 # For Derby:
 # (see soitoolkit-mule-jdbc-datasource.xml for how to setup other databases, e.g. MySQL, SQL Server or Oracle)

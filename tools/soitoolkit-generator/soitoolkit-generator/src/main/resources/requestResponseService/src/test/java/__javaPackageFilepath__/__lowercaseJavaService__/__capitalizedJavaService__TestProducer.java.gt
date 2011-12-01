@@ -29,7 +29,7 @@ public class ${capitalizedJavaService}TestProducer implements SampleInterface {
 	public static final String TEST_ID_FAULT_TIMEOUT    = "0";
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
-    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 	private static final long SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 
 	public SampleResponse sample(Sample request) throws Fault {
@@ -67,7 +67,7 @@ public class ${capitalizedJavaService}TestProducer {
 	public static final String TEST_ID_FAULT_TIMEOUT    = "0";
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
-    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 	private static final long SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 
     @GET
@@ -107,7 +107,7 @@ public class ${capitalizedJavaService}TestProducer {
 	public static final String TEST_ID_FAULT_TIMEOUT    = "0";
 	
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
-    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${securityPropertyFile}");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 	private static final long SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
 
     public Object process(String csvRequest) {

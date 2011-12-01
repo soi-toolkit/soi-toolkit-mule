@@ -521,9 +521,6 @@ public class DefaultModelImpl implements IModel {
     public String getConfigPropertyFile() {
     	return getArtifactId() + "-config";
     }
-	public String getSecurityPropertyFile() {
-    	return getArtifactId() + "-security";
-    }
 
 
 	// --------------------	

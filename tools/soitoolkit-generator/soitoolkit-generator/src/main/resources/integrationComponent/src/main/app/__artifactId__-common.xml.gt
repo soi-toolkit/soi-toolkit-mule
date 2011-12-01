@@ -3,20 +3,7 @@
 <mule 
 ${xmlNamespace.common}
 
-<!-- #183
-	<spring:bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<spring:property name="locations">
-			<spring:list>
-				<spring:value>classpath:${securityPropertyFile}.properties</spring:value>
-				<spring:value>classpath:${configPropertyFile}.properties</spring:value>
-			</spring:list>
-		</spring:property>
-	</spring:bean>
--->
-<!-- #183
-http://www.jasypt.org/encrypting-configuration.html
-http://blogs.mulesoft.org/encrypting-passwords-in-mule/
--->
+  <!-- Load property files -->
   <!-- Support for decrypting encrypted properties.
     The encryption password will be read from an environment variable
     called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once

@@ -149,10 +149,8 @@ public class RequestResponseServiceGenerator implements Generator {
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
 		PrintWriter cfg = null;
-		PrintWriter sec = null;
 		try {
 			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
-			sec = openPropertyFileForAppend(gu.getOutputFolder(), m.getSecurityPropertyFile());
 
 			String artifactId     = m.getArtifactId();
 			String service        = m.getUppercaseService();
@@ -188,7 +186,6 @@ public class RequestResponseServiceGenerator implements Generator {
 			throw new RuntimeException(e);
 		} finally {
 			if (cfg != null) {cfg.close();}
-			if (sec != null) {sec.close();}
 		}
 	}
 	
