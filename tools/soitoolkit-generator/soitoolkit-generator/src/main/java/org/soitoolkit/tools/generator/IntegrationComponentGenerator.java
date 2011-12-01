@@ -43,9 +43,8 @@ public class IntegrationComponentGenerator implements Generator {
 		gu.generateFolder("src/environment");
 		gu.generateFolder("flows");
 
-		gu.generateContentAndCreateFile("src/main/app/mule-config.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/__artifactId__-common.xml.gt");
-//		gu.generateContentAndCreateFile("src/main/app/__artifactId__-config.xml.gt");
+		gu.generateContentAndCreateFile("src/main/app/__artifactId__-config.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-app.properties.gt");
 
@@ -106,9 +105,9 @@ public class IntegrationComponentGenerator implements Generator {
 		// Support for the mule deployment model
 	    if (gu.getModel().isStandaloneDeployModel()) {
 	    	gu.generateContentAndCreateFile("__standaloneProjectFilepath__/pom.xml.gt");
-			gu.generateContentAndCreateFile("__standaloneProjectFilepath__/src/main/app/mule-config.xml.gt");
+			gu.generateContentAndCreateFile("__standaloneProjectFilepath__/src/main/app/__artifactId__-config.xml.gt");
 			gu.generateContentAndCreateFile("__teststubStandaloneProjectFilepath__/pom.xml.gt");
-			gu.generateContentAndCreateFile("__teststubStandaloneProjectFilepath__/src/main/app/mule-config.xml.gt");
+			gu.generateContentAndCreateFile("__teststubStandaloneProjectFilepath__/src/main/app/__artifactId__-config.xml.gt");
 	    }
 		
 		// Support for the war deployment model

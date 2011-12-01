@@ -50,8 +50,8 @@ public class XmlFileUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
-	public static void updateMuleConfigXmlFileWithNewService(String outputFolder, String serviceName) {
-		String filename  = outputFolder + "/src/main/app/mule-config.xml";
+	public static void updateConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
+		String filename  = outputFolder + "/src/main/app/" + icName + "-config.xml";
 		updateXmlConfigFileWithNewService(filename, serviceName);
     }
 

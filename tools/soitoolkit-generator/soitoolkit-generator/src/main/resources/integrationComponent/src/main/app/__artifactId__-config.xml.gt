@@ -1,28 +1,23 @@
-
-REPLACED BY mule-config.xml. TO BE REMOVED!!!
-
 <?xml version="1.0" encoding="UTF-8"?>
 <mule 
 ${xmlNamespace.servicesOnlyConfig}
 
     <spring:beans>
-	    <!-- Connectors et al that are specific for different environment specific config-files (local unit-test, integration-test or production environments) -->
+        <!-- Connectors et al that are specific for different environment specific config-files (local unit-test, integration-test or production environments) -->
 
-    	<!-- TODO: Add import of environment specific configuration files here as required -->
-    	
-    	<!-- Import the JMS-provider used in production here, embedded JMS providers used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
+        <!-- TODO: Add import of environment specific configuration files here as required -->
+        
+        <!-- Import the JMS-provider used in production here, embedded JMS providers used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
         <spring:import resource="classpath:soitoolkit-mule-jms-connector-activemq-external.xml"/>
 <% if (jdbc) { %>
         <!-- Import the JDBC datasource used in production here, embedded JDBC datasources used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
         <spring:import resource="classpath:soitoolkit-mule-jdbc-datasource.xml"/>
 <% } %>  
-<!-- FIXME. MULE STUDIO. To be able to launch a flow using Mule Studio app launcher comment out the block below -->
+<!-- FIXME. MULE STUDIO. To be able to launch a flow using Mule Studio app launcher comment out the spring-imports below -->
 <% if (jdbc) { %>
         <spring:import resource="classpath:${artifactId}-jdbc-connector.xml"/>
 <% } %>  
         <spring:import resource="classpath:${artifactId}-common.xml"/>
-        <spring:import resource="classpath:./*-service.xml"/>
-<!-- FIXME. MULE STUDIO. Comment should stop here -->
     </spring:beans>
 
 </mule>

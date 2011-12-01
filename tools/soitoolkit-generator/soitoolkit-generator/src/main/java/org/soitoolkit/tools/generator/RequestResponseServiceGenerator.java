@@ -26,7 +26,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
-import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateMuleConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateConfigXmlFileWithNewService;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateTeststubsAndServicesConfigXmlFileWithNewService;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
@@ -102,9 +102,9 @@ public class RequestResponseServiceGenerator implements Generator {
 		
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		
-		// Update both mule-config.xml and mule-deploy.properties files with the new service
+		// Update both artefact-config.xml and mule-deploy.properties files with the new service
 		// Doing for both files is required due to Mule Studio Beta M3.
-		updateMuleConfigXmlFileWithNewService(gu.getOutputFolder(), m.getService());
+		updateConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
