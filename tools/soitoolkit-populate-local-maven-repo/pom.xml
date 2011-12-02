@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+	  <groupId>org.soitoolkit</groupId>
+		<artifactId>soitoolkit</artifactId>
+		<version>0.5.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.soitoolkit.tools</groupId>
+	<artifactId>soitoolkit-populate-local-maven-repo</artifactId>
+	<packaging>pom</packaging>
+	<name>${project.artifactId}</name>
+	<url>http://soi-toolkit.org</url>
+
+  <!-- Add snapshot repo for soi-toolkit -->
+  <repositories>
+    <repository>
+      <id>soi-toolkit-snapshot-repository</id>
+      <name>soi-toolkit snapshot repository</name>
+      <url>http://repository-soi-toolkit.forge.cloudbees.com/snapshot/</url>
+      <releases> 
+        <enabled>false</enabled> 
+      </releases> 
+      <snapshots> 
+        <enabled>true</enabled> 
+      </snapshots>      
+    </repository>
+  </repositories>
+  
+  <!-- Add dependencies to make sure this module builds in the
+      right order in the soi-tk build, i.e. when the generator
+      is ready to be used -->
+  <dependencies>
+		<dependency>
+		  <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-mule</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+      <groupId>org.soitoolkit.tools.generator</groupId>
+      <artifactId>soitoolkit-generator</artifactId>
+      <version>${project.version}</version>
+		</dependency>
+  </dependencies>
+  
+  <!--
+    Perform the most realistic action possible to populate the
+    local maven repo: create an integration component
+  -->
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <!-- for build of this module, we must select a phase when
+              soi-toolkit module dependencies exist in the local repo -->
+            <phase>install</phase>
+            <configuration>
+              <target>
+                <echo>*****************************************************************************</echo>
+                <echo>Create an integration component</echo>
+                <echo>*****************************************************************************</echo>                
+                <property name="ic.name" value="${project.artifactId}-ic"/>
+                <exec osfamily="unix" dir="${project.build.directory}" executable="mvn" failonerror="true">
+                  <arg line="org.soitoolkit.tools.generator:soitoolkit-generator-maven-plugin:${project.version}:genIC"/>
+                  <arg line="-DartifactId=${ic.name}"/>
+                  <arg line="-DgroupId=${project.groupId}"/>
+                  <arg line="-Dconnectors=FTP,SFTP,JDBC"/>
+                </exec>                
+                
+                <echo>*****************************************************************************</echo>
+                <echo>Add a service to the integration component</echo>
+                <echo>*****************************************************************************</echo>
+                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
+                  <arg line="org.soitoolkit.tools.generator:soitoolkit-generator-maven-plugin:${project.version}:genService"/>
+                  <arg line="-Dservice=jmsToJms"/>
+                  <arg line="-DmessageExchangePattern=One-Way"/>
+                  <arg line="-DinboundTransport=JMS"/>
+                  <arg line="-DoutboundTransport=JMS"/>
+                </exec>                
+                
+                <echo>*****************************************************************************</echo>
+                <echo>Build the integration component</echo>
+                <echo>*****************************************************************************</echo>
+                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
+                  <arg line="clean"/>
+                  <arg line="install"/>
+                </exec>                
+                
+                <echo>*****************************************************************************</echo>
+                <echo>Generate eclipse project files for the integration component</echo>
+                <echo>*****************************************************************************</echo>
+                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
+                  <arg line="eclipse:eclipse"/>
+                </exec>                
+                
+                <echo>*****************************************************************************</echo>
+                <echo>TODO: create other type of components ...</echo>
+                <echo>*****************************************************************************</echo>
+                
+
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
