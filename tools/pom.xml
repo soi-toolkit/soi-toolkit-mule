@@ -32,7 +32,6 @@
 
 	<modules>
 		<module>soitoolkit-generator</module>
-		<module>soitoolkit-populate-local-maven-repo</module>
 	</modules>
 
 </project>
