@@ -18,25 +18,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+<!--
+The purpose of this script is to populate a local Maven-repo with most
+of the dependencies needed for working with Soi-toolkit (with the same version as this script).
+
+In order to catch most dependencies this script generates an integration component using
+the soitoolkit-generator-maven-plugin and then run "mvn install" on the generated integration
+component.
+
+Prerequisites:
+- JDK installed and $JAVA_HOME/bin in PATH
+- Maven installed and $MAVEN_HOME/bin in PATH
+
+USAGE: mvn install 
+-->
+
+<!--
+  DO NOT USE THE SOI-TK PARENT POM - FOR BUILDING WITH SNAPSHOT VERSIONS IT
+  WOULD REQUIRE A USER TO SPECIFY THE SOI-TK SNAPSHOT REPO's IN A settings.xml,
+  WHICH WOULD REQUIRE HANDLING MORE THAN *THIS* SCRIPT.
+
 	<parent>
 	  <groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
 		<version>0.5.0-SNAPSHOT</version>
 	</parent>
+-->
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.tools</groupId>
 	<artifactId>soitoolkit-populate-local-maven-repo</artifactId>
+	<version>0.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<url>http://soi-toolkit.org</url>
+	
+	<properties>
+	  <!-- needed if we are running this pom-file in a snapshot version -->
+	  <soitk.snapshot.repo.url>http://repository-soi-toolkit.forge.cloudbees.com/snapshot</soitk.snapshot.repo.url>
+	  <!-- name of the integration component to generate -->
+		<ic.name>${project.artifactId}-ic</ic.name>
+		<!-- the directory for the generated integration component -->
+		<ic.dir>${project.build.directory}/${ic.name}</ic.dir>
+	  <!-- name of the service description component to generate -->
+		<sdc.name>${project.artifactId}-sdc</sdc.name>
+		<!-- the directory for the generated service description component -->
+		<sdc.dir>${project.build.directory}/${sdc.name}-schemas</sdc.dir>
+  </properties>
 
   <!-- Add snapshot repo for soi-toolkit -->
   <repositories>
     <repository>
       <id>soi-toolkit-snapshot-repository</id>
       <name>soi-toolkit snapshot repository</name>
-      <url>http://repository-soi-toolkit.forge.cloudbees.com/snapshot/</url>
+      <url>${soitk.snapshot.repo.url}</url>
       <releases> 
         <enabled>false</enabled> 
       </releases> 
@@ -45,10 +80,22 @@
       </snapshots>      
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>soi-toolkit-snapshot-plugin-repository</id> 
+      <name>soi-toolkit snapshot plugin repository</name>
+      <url>${soitk.snapshot.repo.url}</url>
+      <releases> 
+        <enabled>false</enabled> 
+      </releases> 
+      <snapshots> 
+        <enabled>true</enabled> 
+      </snapshots> 
+    </pluginRepository>
+  </pluginRepositories>
   
-  <!-- Add dependencies to make sure this module builds in the
-      right order in the soi-tk build, i.e. when the generator
-      is ready to be used -->
+  <!-- Add dependencies to make sure this module builds in the right order
+      in the soi-tk build, i.e. when the generator is ready to be used -->
   <dependencies>
 		<dependency>
 		  <groupId>org.soitoolkit.commons.components</groupId>
@@ -62,65 +109,157 @@
       <version>${project.version}</version>
 		</dependency>
   </dependencies>
-  
-  <!--
-    Perform the most realistic action possible to populate the
-    local maven repo: create an integration component
-  -->
+
   <build>
     <plugins>
+      <!-- Generate integration component and add as service to it -->
+      <plugin>
+        <groupId>org.soitoolkit.tools.generator</groupId>
+        <artifactId>soitoolkit-generator-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>genIC</id>
+            <goals>
+              <goal>genIC</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <artifactId>${ic.name}</artifactId>
+              <groupId>${project.groupId}</groupId>
+              <connectors>FTP,SFTP,JDBC</connectors>
+              <outDir>${project.build.directory}</outDir>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>genService</id>
+            <goals>
+              <goal>genService</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <service>jmsToJms</service>
+              <messageExchangePattern>One-Way</messageExchangePattern>
+              <inboundTransport>JMS</inboundTransport>
+              <outboundTransport>JMS</outboundTransport>
+              <outDir>${ic.dir}</outDir>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>genSDC</id>
+            <goals>
+              <goal>genSDC</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <artifactId>${sdc.name}</artifactId>
+              <groupId>${project.groupId}</groupId>
+              <outDir>${project.build.directory}</outDir>
+            </configuration>
+          </execution>
+          
+        </executions>
+      </plugin>
+      
+      <!-- Build the generated integration component -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.7</version>
         <executions>
           <execution>
-            <!-- for build of this module, we must select a phase when
-              soi-toolkit module dependencies exist in the local repo -->
             <phase>install</phase>
             <configuration>
               <target>
-                <echo>*****************************************************************************</echo>
-                <echo>Create an integration component</echo>
-                <echo>*****************************************************************************</echo>                
-                <property name="ic.name" value="${project.artifactId}-ic"/>
-                <exec osfamily="unix" dir="${project.build.directory}" executable="mvn" failonerror="true">
-                  <arg line="org.soitoolkit.tools.generator:soitoolkit-generator-maven-plugin:${project.version}:genIC"/>
-                  <arg line="-DartifactId=${ic.name}"/>
-                  <arg line="-DgroupId=${project.groupId}"/>
-                  <arg line="-Dconnectors=FTP,SFTP,JDBC"/>
-                </exec>                
-                
-                <echo>*****************************************************************************</echo>
-                <echo>Add a service to the integration component</echo>
-                <echo>*****************************************************************************</echo>
-                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
-                  <arg line="org.soitoolkit.tools.generator:soitoolkit-generator-maven-plugin:${project.version}:genService"/>
-                  <arg line="-Dservice=jmsToJms"/>
-                  <arg line="-DmessageExchangePattern=One-Way"/>
-                  <arg line="-DinboundTransport=JMS"/>
-                  <arg line="-DoutboundTransport=JMS"/>
-                </exec>                
-                
-                <echo>*****************************************************************************</echo>
-                <echo>Build the integration component</echo>
-                <echo>*****************************************************************************</echo>
-                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
-                  <arg line="clean"/>
-                  <arg line="install"/>
-                </exec>                
-                
-                <echo>*****************************************************************************</echo>
-                <echo>Generate eclipse project files for the integration component</echo>
-                <echo>*****************************************************************************</echo>
-                <exec osfamily="unix" dir="${project.build.directory}/${ic.name}" executable="mvn" failonerror="true">
-                  <arg line="eclipse:eclipse"/>
-                </exec>                
-                
-                <echo>*****************************************************************************</echo>
-                <echo>TODO: create other type of components ...</echo>
-                <echo>*****************************************************************************</echo>
-                
+                <echo>#######################################################################################</echo>
+                <echo>Write Maven settings.xml file needed for building with soi-tk snapshot version</echo>
+                <echo>#######################################################################################</echo>
+                <echoxml file="${project.build.directory}/settings.xml">
+                  <!-- echoxml does not work with the namespaces below, skip the namespaces since maven does not seem to need them -->
+                  <!--
+                  <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+                  -->
+                  <settings>
+                    <profiles>
+                      <profile>
+                        <id>soi-toolkit-snapshot-profile</id>
+                        <repositories> 
+                          <repository> 
+                            <id>soi-toolkit-snapshot-repository</id> 
+                            <name>soi-toolkit snapshot repository</name>
+                            <url>${soitk.snapshot.repo.url}</url>
+                            <releases> 
+                              <enabled>false</enabled> 
+                            </releases> 
+                            <snapshots> 
+                              <enabled>true</enabled> 
+                            </snapshots> 
+                          </repository> 
+                        </repositories>
 
+                        <pluginRepositories>
+                          <pluginRepository>
+                            <id>soi-toolkit-snapshot-plugin-repository</id> 
+                            <name>soi-toolkit snapshot plugin repository</name>
+                            <url>${soitk.snapshot.repo.url}</url>
+                            <releases> 
+                              <enabled>false</enabled> 
+                            </releases> 
+                            <snapshots> 
+                              <enabled>true</enabled> 
+                            </snapshots> 
+                          </pluginRepository>
+                        </pluginRepositories>      
+                      </profile>
+                    </profiles>
+  
+                    <activeProfiles>
+                      <activeProfile>soi-toolkit-snapshot-profile</activeProfile>
+                    </activeProfiles>
+                  </settings>                  
+                </echoxml>
+                
+                
+                <echo>#######################################################################################</echo>
+                <echo>Build the integration component, requires $MAVEN_HOME/bin to be in $PATH</echo>
+                <echo>#######################################################################################</echo>
+                <exec osfamily="unix" dir="${ic.dir}" executable="mvn" failonerror="true">
+                  <arg line="-s"/>
+                  <arg line="${project.build.directory}/settings.xml"/>
+                  <arg line="install eclipse:eclipse"/>
+                </exec>
+
+                <exec osfamily="windows" dir="${ic.dir}" executable="cmd" failonerror="true">
+                  <arg line="/c"/>
+                  <arg line="mvn.bat"/>
+                  <arg line="-s"/>
+                  <arg line="${project.build.directory}/settings.xml"/>
+                  <arg line="install eclipse:eclipse"/>
+                </exec>
+
+
+                <echo>#######################################################################################</echo>
+                <echo>Build the service description component, requires $MAVEN_HOME/bin to be in $PATH</echo>
+                <echo>#######################################################################################</echo>
+                <exec osfamily="unix" dir="${sdc.dir}" executable="mvn" failonerror="true">
+                  <arg line="-s"/>
+                  <arg line="${project.build.directory}/settings.xml"/>
+                  <arg line="install eclipse:eclipse"/>
+                </exec>
+
+                <exec osfamily="windows" dir="${sdc.dir}" executable="cmd" failonerror="true">
+                  <arg line="/c"/>
+                  <arg line="mvn.bat"/>
+                  <arg line="-s"/>
+                  <arg line="${project.build.directory}/settings.xml"/>
+                  <arg line="install eclipse:eclipse"/>
+                </exec>
+
+                <echo>#######################################################################################</echo>
+                <echo>Done building components!</echo>
+                <echo>#######################################################################################</echo>
+                
               </target>
             </configuration>
             <goals>
@@ -129,6 +268,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>
