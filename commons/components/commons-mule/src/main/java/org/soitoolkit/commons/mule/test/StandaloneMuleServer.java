@@ -16,8 +16,12 @@
  */
 package org.soitoolkit.commons.mule.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 
 /**
@@ -45,9 +49,15 @@ public class StandaloneMuleServer {
 	 * @param muleServerId
 	 * @param muleConfig
 	 */
-    public StandaloneMuleServer(String muleServerId, String muleConfig) {
+    public StandaloneMuleServer(String muleServerId, String muleConfig, boolean loadServices) {
     	this.muleServerId = muleServerId;
-    	this.muleConfig = muleConfig;
+    	
+    	// Initiate the muleConfig with all config files from mule-deploy.properties, optionally filter out service-config files
+    	this.muleConfig = getConfigFileFromMuleDeployPropertyFile(loadServices);	
+    	
+    	if (muleConfig != null && muleConfig.length() > 0) {
+    		this.muleConfig += ", " + muleConfig;
+    	}
 	}
 
     /**
@@ -104,4 +114,47 @@ public class StandaloneMuleServer {
         // Shutdown mule server
         muleServer.shutdown();
 	}
+
+
+	/**
+	 * Get mule config-files from the standard mule-deploy.properties file
+	 * 
+	 * @param loadServices - set to false if no service-config files are to be loaded, e.g. for a teststub-service only configuration
+	 * @return
+	 */
+	protected String getConfigFileFromMuleDeployPropertyFile(boolean loadServices) {
+
+	    // Get all config-files from the mule-deploy.properties - file
+	    RecursiveResourceBundle rb = new RecursiveResourceBundle("mule-deploy");
+	    String allConfigFiles = rb.getString("config.resources");
+	    
+	    
+	    // If services-config-files are to be used (the normal case) then just return the list
+	    if (loadServices) return allConfigFiles;
+	    
+	    
+	    // Ok, so now we need to filter out all service-config files, i.e. files ending with "-service.xml"
+	    String[] allConfigFilesArr = allConfigFiles.split(",");
+
+	    // Place all non-service config-files in a list
+	    List<String> configFilesList = new ArrayList<String>();
+	    for (String configFile : allConfigFilesArr) {
+	    	// Only add config files not ending with "-service.xml"
+	    	if (!configFile.endsWith("-service.xml")) {
+				configFilesList.add(configFile);
+			}
+		}
+
+	    // Finally convert the list to a comma separated string and return it
+	    StringBuffer configFiles = new StringBuffer();
+	    for (String configFile : configFilesList) {
+	    	if (configFiles.length() == 0) {
+	    		configFiles.append(configFile);
+	    	} else {
+	    		configFiles.append(',').append(configFile);
+	    	}
+		}
+	    return configFiles.toString();
+	}
+
 }

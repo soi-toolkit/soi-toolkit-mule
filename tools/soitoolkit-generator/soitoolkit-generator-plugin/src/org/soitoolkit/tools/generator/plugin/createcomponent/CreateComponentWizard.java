@@ -231,7 +231,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		}
 
 		if (jdbcSelected || ftpSelected || sftpSelected) {
-			MessageDialog.openInformation(getShell(), "Security Notice", "Security related properties for " + transportString + " will be created in the security-property-file in the src/environment folder. Please update these properties to reflect your environment and protect the information accordingly, e.g. don't commit your credential information to subversion!");
+			MessageDialog.openInformation(getShell(), "Security Notice", "Security related properties for " + transportString + " will be created in the property-file in the src/main/resources folder. Please update these properties to reflect your environment and protect the information accordingly, e.g. don't commit your credential information to subversion!");
 		}
 	}
 	

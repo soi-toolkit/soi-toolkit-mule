@@ -13,11 +13,12 @@ ${xmlNamespace.servicesOnlyConfig}
         <!-- Import the JDBC datasource used in production here, embedded JDBC datasources used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
         <spring:import resource="classpath:soitoolkit-mule-jdbc-datasource.xml"/>
 <% } %>  
-<!-- FIXME. MULE STUDIO. To be able to launch a flow using Mule Studio app launcher comment out the spring-imports below -->
+<% /* FIXME. MULE STUDIO. Everything in the folder src/main/app is loaded by mule-deploy.proeprties, so skip the parts below:
 <% if (jdbc) { %>
         <spring:import resource="classpath:${artifactId}-jdbc-connector.xml"/>
 <% } %>  
         <spring:import resource="classpath:${artifactId}-common.xml"/>
+<% END OF FIXME. MULE STUDIO. */ %>
     </spring:beans>
 
 </mule>

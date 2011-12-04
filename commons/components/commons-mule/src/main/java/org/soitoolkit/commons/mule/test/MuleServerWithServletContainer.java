@@ -52,7 +52,7 @@ public class MuleServerWithServletContainer extends StandaloneMuleServer {
 	 * @param muleReceiverServletUri
 	 */
     public MuleServerWithServletContainer(String muleServerId, String muleConfig, int httpPort, String contextPath, String muleReceiverServletUri) {
-    	super(muleServerId, muleConfig);
+    	super(muleServerId, muleConfig, true);
     	this.httpPort = httpPort ;
 	    this.contextPath = contextPath;
 	    this.muleReceiverServletUri = muleReceiverServletUri;

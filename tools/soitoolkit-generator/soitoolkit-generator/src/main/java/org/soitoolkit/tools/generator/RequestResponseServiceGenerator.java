@@ -102,10 +102,10 @@ public class RequestResponseServiceGenerator implements Generator {
 		
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		
-		// Update both artefact-config.xml and mule-deploy.properties files with the new service
-		// Doing for both files is required due to Mule Studio Beta M3.
-		updateConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
-		updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
+		// Update mule-deploy.properties files with the new service
+		// (Everything in the folder src/main/app is loaded by mule-deploy.properties) so skip updating *ConfigXmlFile.
+		// updateConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
+		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
 		String file = gu.getOutputFolder() + "/pom.xml";
