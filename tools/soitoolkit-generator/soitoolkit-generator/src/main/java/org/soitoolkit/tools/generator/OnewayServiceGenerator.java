@@ -77,7 +77,7 @@ public class OnewayServiceGenerator implements Generator {
 		// FIXME. MULE STUDIO.
 //    	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
     	gu.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
-    	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMflow.groovy"), "flows/__service__-service.mflow");
+    	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateOneWayMflow.groovy"), "flows/__service__-service.mflow");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
 		
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");

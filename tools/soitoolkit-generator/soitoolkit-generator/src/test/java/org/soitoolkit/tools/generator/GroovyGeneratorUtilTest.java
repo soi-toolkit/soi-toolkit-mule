@@ -33,16 +33,29 @@ public class GroovyGeneratorUtilTest {
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests/GroovyGeneratorUtilTest";
 	
 	@Test
-	public void testGroovyGenerator() throws FileNotFoundException {
-		haveARun(TransportEnum.VM,   TransportEnum.VM);
-		haveARun(TransportEnum.JMS,  TransportEnum.JMS);  // Expect some extra file-proeprties
-		haveARun(TransportEnum.FILE, TransportEnum.FILE); // Expect outputPattern=#[header:originalFilename]
-		haveARun(TransportEnum.JMS,  TransportEnum.FILE); // Expect outputPattern=${${uppercaseService}_OUTBOUND_FILE}
+	public void testGroovyOneWayGenerator() throws FileNotFoundException {
+		haveARunOneWay(TransportEnum.VM,   TransportEnum.VM);
+		haveARunOneWay(TransportEnum.JMS,  TransportEnum.JMS);  // Expect some extra file-proeprties
+		haveARunOneWay(TransportEnum.FILE, TransportEnum.FILE); // Expect outputPattern=#[header:originalFilename]
+		haveARunOneWay(TransportEnum.JMS,  TransportEnum.FILE); // Expect outputPattern=${${uppercaseService}_OUTBOUND_FILE}
 	}
 
-	private void haveARun(TransportEnum in, TransportEnum out) throws FileNotFoundException {
+	@Test
+	public void testGroovyRequestResponseGenerator() throws FileNotFoundException {
+		haveARunRequestRespons(TransportEnum.RESTHTTP,   TransportEnum.RESTHTTP);
+	}
+
+	private void haveARunOneWay(TransportEnum in, TransportEnum out) throws FileNotFoundException {
+		haveARun(in, out, "GenerateOneWayMFlow.groovy");
+	}
+
+	private void haveARunRequestRespons(TransportEnum in, TransportEnum out) throws FileNotFoundException {
+		haveARun(in, out, "GenerateRequestResponseMFlow.groovy");
+	}
+
+	private void haveARun(TransportEnum in, TransportEnum out, String groovyScript) throws FileNotFoundException {
 		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", MuleVersionEnum.MAIN_MULE_VERSION, in, out, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
-		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMFlow.groovy"), "myGroovyoutput.txt");
+		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource(groovyScript), "myGroovyoutput.txt");
 		
 		InputStream is = new FileInputStream(TEST_OUT_FOLDER + "/" + "myGroovyoutput.txt");
 		String content = MiscUtil.convertStreamToString(is);

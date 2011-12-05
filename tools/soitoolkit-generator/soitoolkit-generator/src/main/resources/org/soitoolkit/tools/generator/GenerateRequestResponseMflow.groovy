@@ -31,48 +31,53 @@ public class GenerateMflow implements FileGenerator {
     	xml.'mule-configuration'(name:model.service, xmlns:'http://www.mulesoft.com/tooling/messageflow') {
       		flow(name:getFlowName(model)) {
       			lane('entity-id':uuid()) {
-					endpoint(name:getInboundEndpointName(model), 'message-exchange-pattern':"OneWay", direction:"Inbound", type:getInboundEndpointType(model), 'entity-id':uuid()) {
+					endpoint(name:getInboundEndpointName(model), 'message-exchange-pattern':"RequestResponse", direction:"Inbound", type:getInboundEndpointType(model), 'entity-id':uuid()) {
       					properties {
       						property(name:getAddressAttribute('in', model.getInboundTransport()),  value:getInboundEndpointAddress(model))
-      						property(name:"exchange-pattern", value:"one-way")
-      						property(name:"transformer-refs", value:getInboundTransformerRefs(model))
-//JMS SPECIFIC!!!
-//      						property(name:"disableTransportTransformer",         value:"false")
-//      						property(name:"disableTemporaryReplyToDestinations", value:"false")
-
-//      						property(name:"endpoint.connector.ref",    value:getInboundConnectorRef(model))
-//      						property(name:"endpoint.address",      value:getInboundEndpointAddress(model))
-
-							if (inTr == "FILE") {
-	      						property(name:"pollingFrequency", value:"${dollarSymbol()}{${model.getUppercaseService()}_INBOUND_POLLING_MS}")
-	      						property(name:"fileAge",          value:"${dollarSymbol()}{${model.getUppercaseService()}_INBOUND_FILE_AGE_MS}")
-	      						property(name:"moveToDirectory",  value:"${dollarSymbol()}{${model.getUppercaseService()}_ARCHIVE_FOLDER}")
-	      						property(name:"moveToPattern",    value:"#[header:originalFilename]")
-	      					}
+      						property(name:"exchange-pattern", value:"request-response")
+                            property(name:"transformer-refs", value:getInboundRequestTransformerRefs(model))
+                            property(name:"responseTransformer-refs", value:getInboundResponseTransformerRefs(model))
+                            property(name:"org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute", value:"http://www.mulesoft.org/schema/mule/http/endpoint")
 	      				}
       				}
-      				pattern (name:"Java Transformer", type:"org.mule.tooling.ui.modules.core.pattern.customTransformer", 'entity-id':uuid()) {
+      				pattern (name:"transform-request", type:"org.mule.tooling.ui.modules.core.pattern.customTransformer", 'entity-id':uuid()) {
       					properties {
-      						property(name:"custom.transformer.classname", value:getTransformerClass(model))
+                            property(name:"class", value:getRequestTransformerClass(model))
+                            property(name:"returnClass")
+                            property(name:"ignoreBadInput")
+                            property(name:"encoding")
+                            property(name:"mimeType")
       					}
       					description('Transformer that delegates to a Java class.')
       				}
-					endpoint(name:getOutboundEndpointName(model), 'message-exchange-pattern':"OneWay", direction:"Outbound", type:getOutboundEndpointType(model), 'entity-id':uuid()) {
+                    response('entity-id':uuid()) {
+                        compartment('entity-id':uuid()) {
+                            lane('entity-id':uuid()) {
+                                pattern (name:"transform-response", type:"org.mule.tooling.ui.modules.core.pattern.customTransformer", 'entity-id':uuid()) {
+                                    properties {
+                                        property(name:"class", value:getResponseTransformerClass(model))
+                                        property(name:"returnClass")
+                                        property(name:"ignoreBadInput")
+                                        property(name:"encoding")
+                                        property(name:"mimeType")
+                                    }
+                                    description('Transformer that delegates to a Java class.')
+                                }
+                            }
+                        }
+                    }
+					endpoint(name:getOutboundEndpointName(model), 'message-exchange-pattern':"RequestResponse", direction:"Outbound", type:getOutboundEndpointType(model), 'entity-id':uuid()) {
       					properties {
       						property(name:getAddressAttribute('out', model.getOutboundTransport()),  value:getOutboundEndpointAddress(model))
-      						property(name:"exchange-pattern",                                 value:"one-way")
-      						property(name:"transformer-refs",                                value:getOutboundTransformerRefs(model))
-//      						property(name:"endpoint.connector.ref",    value:getOutboundConnectorRef(model))
-//      						property(name:"endpoint.address",      value:getOutboundEndpointAddress(model))
-
-							if (outTr == "FILE") {
-								if (model.isInboundEndpointFilebased()) {
-		      						property(name:"outputPattern", value:"#[header:originalFilename]")
-		      					} else {
-		      						property(name:"outputPattern", value:"${dollarSymbol()}{${model.getUppercaseService()}_OUTBOUND_FILE}")
-		      					}
-		      				}
+      						property(name:"exchange-pattern", value:"request-response")
+      						property(name:"transformer-refs", value:getOutboundRequestTransformerRefs(model))
+                            property(name:"responseTimeout", value:"${dollarSymbol()}{SERVICE_TIMEOUT_M}")
+                            property(name:"method", value:"GET")
+                            property(name:"org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute", value:"http://www.mulesoft.org/schema/mule/http/endpoint")
       					}
+      				}
+      				unknown('entity-id':uuid()) {
+      				    content("&lt;custom-exception-strategy xmlns=&quot;http://www.mulesoft.org/schema/mule/core&quot; class=&quot;org.soitoolkit.commons.mule.error.ServiceExceptionStrategy&quot;/&gt;")
       				}
       			}
       		}
@@ -99,9 +104,9 @@ public class GenerateMflow implements FileGenerator {
 	
 	private String getInboundEndpointType(IModel model) {
 		getEndpointType(model.getInboundTransport())
-	}
+    }
 
-	private String getInboundEndpointAddress(IModel model) {
+    private String getInboundEndpointAddress(IModel model) {
 		String t = model.getInboundTransport()
 		if (t == "VM") {
 			"${dollarSymbol()}{${model.getUppercaseService()}_IN_VM_QUEUE}"
@@ -122,9 +127,52 @@ public class GenerateMflow implements FileGenerator {
 		} else {
 			"UNKNOWN-ENDPOINT-TYPE"
 		}
-	}
+    }
 
-	private String getInboundTransformerRefs(IModel model) {
+    private String getInboundRequestEndpointAddress(IModel model) {
+        String t = model.getInboundTransport()
+        if (t == "SOAPHTTP") {
+            "${dollarSymbol()}{${model.getUppercaseService()}_INBOUND_URL}"
+        } else if (t == "RESTHTTP") {
+            "${dollarSymbol()}{${model.getUppercaseService()}_INBOUND_URL}"
+        } else {
+            "UNKNOWN-ENDPOINT-TYPE"
+        }
+    }
+
+    private String getInboundRequestTransformerRefs(IModel model) {
+        "objToStr logReqIn"
+    }
+
+    private String getInboundResponseTransformerRefs(IModel model) {
+        String t = model.getInboundTransport()
+        
+        if (t == "SOAPHTTP") {
+            "createSoapFaultIfException logRespOut"
+        } else if (t == "RESTHTTP") {
+             "logRespOut"
+        } else {
+             "logRespOut"
+        }
+    }
+
+    private String getOutboundRequestTransformerRefs(IModel model) {
+        "objToStr logReqOut"
+    }
+
+    private String getOutboundResponseTransformerRefs(IModel model) {
+        String t = model.getInboundTransport()
+        
+        if (t == "SOAPHTTP") {
+            "logRespIn"
+        } else if (t == "RESTHTTP") {
+             "objToStr logRespIn"
+        } else {
+             "logRespIn"
+        }
+    }
+
+    private String getInboundTransformerRefs(IModel model) {
 		String t = model.getInboundTransport()
 		
 		if (t == "JMS") {
@@ -148,9 +196,15 @@ public class GenerateMflow implements FileGenerator {
 		}
 	}
 
-	private String getTransformerClass(IModel model) {
-		"${model.getJavaPackage()}.${model.getLowercaseJavaService()}.${model.getCapitalizedJavaService()}Transformer"
-	}
+    private String getTransformerClass(IModel model) {
+        "${model.getJavaPackage()}.${model.getLowercaseJavaService()}.${model.getCapitalizedJavaService()}Transformer"
+    }
+    private String getRequestTransformerClass(IModel model) {
+        "${model.getJavaPackage()}.${model.getLowercaseJavaService()}.${model.getCapitalizedJavaService()}RequestTransformer"
+    }
+    private String getResponseTransformerClass(IModel model) {
+        "${model.getJavaPackage()}.${model.getLowercaseJavaService()}.${model.getCapitalizedJavaService()}ResponseTransformer"
+    }
 	private String getOutboundEndpointName(IModel model) {
 		model.getOutboundTransport() + '-OUT'
 	}
@@ -178,6 +232,17 @@ public class GenerateMflow implements FileGenerator {
 		} else {
 			"UNKNOWN-ENDPOINT-TYPE"
 		}
+    }
+    
+    private String getOutboundResponseEndpointAddress(IModel model) {
+        String t = model.getOutboundTransport()
+        if (t == "SOAPHTTP") {
+            "${dollarSymbol()}{${model.getUppercaseService()}_OUTBOUND_URL}"
+        } else if (t == "RESTHTTP") {
+            "${dollarSymbol()}{${model.getUppercaseService()}_OUTBOUND_URL}/sample/#[xpath:/ns:sample/ns:id]"
+        } else {
+            "UNKNOWN-ENDPOINT-TYPE"
+        }
 	}
 	
     private String getAddressAttribute(String direction, String t) {
@@ -218,7 +283,7 @@ public class GenerateMflow implements FileGenerator {
 		} else if (t == "SFTP") {
 			"http://www.mulesoft.org/schema/mule/sftp/endpoint"
 		} else if (t == "HTTP") {
-			"http://www.mulesoft.org/schema/mule/http/endpoint"
+			"http://www.mulesoft.org/schema/mule/https/endpoint"
 		} else if (t == "SERVLET") {
 			"http://www.mulesoft.org/schema/mule/servlet/endpoint"
 		} else if (t == "SMTP") {

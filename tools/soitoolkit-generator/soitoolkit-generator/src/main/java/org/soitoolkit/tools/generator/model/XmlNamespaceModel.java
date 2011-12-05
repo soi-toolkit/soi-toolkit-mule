@@ -154,6 +154,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
+ 		sb.append("\txmlns:doc=\"http://www.mulesoft.org/schema/mule/documentation\"\n");
 		sb.append("\txmlns:vm=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txmlns:file=\"http://www.mulesoft.org/schema/mule/file\"\n");
 		sb.append("\txmlns:ftp=\"http://www.mulesoft.org/schema/mule/ftp\"\n");
@@ -222,6 +223,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
+ 		sb.append("\txmlns:doc=\"http://www.mulesoft.org/schema/mule/documentation\"\n");
 		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txmlns:cxf=\"http://www.mulesoft.org/schema/mule/cxf\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");

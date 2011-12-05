@@ -24,7 +24,7 @@ ${xmlNamespace.onewayService}
 					<jdbc:transaction action="ALWAYS_BEGIN" />
 <% } %> 
             	</jdbc:inbound-endpoint>
-                <custom-transformer class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
+                <custom-transformer doc:name="transform-message" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
 
 <% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
 				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
