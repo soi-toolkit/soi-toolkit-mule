@@ -44,6 +44,11 @@ USAGE: mvn install
 		<version>0.5.0-SNAPSHOT</version>
 	</parent>
 -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.tools</groupId>
@@ -123,7 +128,7 @@ USAGE: mvn install
             <goals>
               <goal>genIC</goal>
             </goals>
-            <phase>compile</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <artifactId>${ic.name}</artifactId>
               <groupId>${project.groupId}</groupId>
@@ -137,7 +142,7 @@ USAGE: mvn install
             <goals>
               <goal>genService</goal>
             </goals>
-            <phase>compile</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <service>jmsToJms</service>
               <messageExchangePattern>One-Way</messageExchangePattern>
@@ -152,7 +157,7 @@ USAGE: mvn install
             <goals>
               <goal>genSDC</goal>
             </goals>
-            <phase>compile</phase>
+            <phase>generate-sources</phase>
             <configuration>
               <artifactId>${sdc.name}</artifactId>
               <groupId>${project.groupId}</groupId>
@@ -169,7 +174,11 @@ USAGE: mvn install
         <version>1.7</version>
         <executions>
           <execution>
-            <phase>install</phase>
+            <id>buildGeneratedComponents</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>package</phase>
             <configuration>
               <target>
                 <echo>#######################################################################################</echo>
@@ -258,13 +267,27 @@ USAGE: mvn install
 
                 <echo>#######################################################################################</echo>
                 <echo>Done building components!</echo>
-                <echo>#######################################################################################</echo>
-                
+                <echo>#######################################################################################</echo>                
               </target>
             </configuration>
+          </execution>
+
+
+          <execution>
+            <id>deleteGeneratedComponents</id>
             <goals>
               <goal>run</goal>
             </goals>
+            <phase>install</phase>
+            <configuration>
+              <target>
+                <echo>#######################################################################################</echo>
+                <echo>Deleting generated components</echo>
+                <echo>#######################################################################################</echo>
+                <delete dir="${ic.dir}"/>
+                <delete dir="${sdc.dir}"/>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>
