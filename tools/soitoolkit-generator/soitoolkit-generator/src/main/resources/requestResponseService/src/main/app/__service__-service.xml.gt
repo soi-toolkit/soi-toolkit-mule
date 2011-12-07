@@ -50,13 +50,14 @@ ${xmlNamespace.reqRespService}
 <% } %> 
 
 <% if (outboundTransport=="SOAPHTTP") { %>
+        <cxf:proxy-client />
+        
 		<http:outbound-endpoint 
 			address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
 			exchange-pattern="request-response"
 			responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
 			transformer-refs="logReqOut"
 			responseTransformer-refs="logRespIn">
-			<cxf:proxy-client />
 		</http:outbound-endpoint>
 <% } else if (outboundTransport=="RESTHTTP") { %>
 		<http:outbound-endpoint 
