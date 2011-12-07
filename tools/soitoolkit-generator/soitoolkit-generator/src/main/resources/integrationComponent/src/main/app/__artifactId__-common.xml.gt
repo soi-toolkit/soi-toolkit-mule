@@ -3,25 +3,27 @@
 <mule 
 ${xmlNamespace.common}
 
-  <!-- Load property files -->
-  <!-- Support for decrypting encrypted properties.
-    The encryption password will be read from an environment variable
-    called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once
-    the application has been started, could be safely unset. -->
-  <spring:bean id="environmentVariablesConfiguration"
-      class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+  <!-- Load property files in three steps... -->
+  
+  <!-- 1. Support for decrypting encrypted properties.
+       The encryption password will be read from an environment variable
+       called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once
+       the application has been started, could be safely unset. -->
+  <spring:bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
     <spring:property name="algorithm" value="PBEWithMD5AndDES"/>
     <spring:property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD"/>
   </spring:bean>
-  <!-- Support for decrypting encrypted properties -->
-  <spring:bean id="configurationEncryptor"
-      class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+  
+  
+  <!-- 2. Support for decrypting encrypted properties -->
+  <spring:bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
     <spring:property name="config" ref="environmentVariablesConfiguration"/>
   </spring:bean>
-  <!-- Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
-    that supports decrypting encrypted property values -->
-  <spring:bean id="propertyConfigurer"
-      class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+  
+  
+  <!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+       that supports decrypting encrypted property values -->
+  <spring:bean id="propertyConfigurer" class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
     <spring:constructor-arg ref="configurationEncryptor"/>
     <spring:property name="ignoreResourceNotFound" value="true"/>
     <spring:property name="locations">

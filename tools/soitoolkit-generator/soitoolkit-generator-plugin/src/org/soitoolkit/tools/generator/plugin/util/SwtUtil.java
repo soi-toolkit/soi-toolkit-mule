@@ -73,6 +73,10 @@ public class SwtUtil {
 	}
 	
 	public static void addRadioButtons (String[] choices, String labelText, final ValueHolder<Integer> selection, Composite parent, final Listener selectionChangedListener) {
+		addRadioButtons(choices, labelText, selection, parent, selectionChangedListener, true);
+	}
+	
+	public static void addRadioButtons (String[] choices, String labelText, final ValueHolder<Integer> selection, Composite parent, final Listener selectionChangedListener, boolean enabled) {
 
 		final Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -104,6 +108,7 @@ public class SwtUtil {
 		for (int i = 0; i < choices.length; i++) {
 			Button b = SwtUtil.createRadioButton(container, listener, i, choices[i]);
 			b.setSelection(i == selection.value);
+			b.setEnabled(enabled);
 		}
 	}
 

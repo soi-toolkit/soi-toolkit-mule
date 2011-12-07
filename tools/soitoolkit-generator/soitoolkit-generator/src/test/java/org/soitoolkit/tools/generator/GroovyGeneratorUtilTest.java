@@ -45,6 +45,11 @@ public class GroovyGeneratorUtilTest {
 		haveARunRequestRespons(TransportEnum.RESTHTTP,   TransportEnum.RESTHTTP);
 	}
 
+	@Test
+	public void testGroovyMinimalGenerator() throws FileNotFoundException {
+		haveARunMinimal(TransportEnum.VM, TransportEnum.VM);
+	}
+
 	private void haveARunOneWay(TransportEnum in, TransportEnum out) throws FileNotFoundException {
 		haveARun(in, out, "GenerateOneWayMFlow.groovy");
 	}
@@ -53,6 +58,10 @@ public class GroovyGeneratorUtilTest {
 		haveARun(in, out, "GenerateRequestResponseMFlow.groovy");
 	}
 
+	private void haveARunMinimal(TransportEnum in, TransportEnum out) throws FileNotFoundException {
+		haveARun(in, out, "GenerateMinimalMflow.groovy");
+	}
+	
 	private void haveARun(TransportEnum in, TransportEnum out, String groovyScript) throws FileNotFoundException {
 		GeneratorUtil gu = new GeneratorUtil(System.out, "myGroup", "myArtifact", null, "myService", MuleVersionEnum.MAIN_MULE_VERSION, in, out, TransformerEnum.JAVA, "template-folder", TEST_OUT_FOLDER);
 		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource(groovyScript), "myGroovyoutput.txt");

@@ -71,7 +71,7 @@ public class GenerateMflow implements FileGenerator {
       						property(name:getAddressAttribute('out', model.getOutboundTransport()),  value:getOutboundEndpointAddress(model))
       						property(name:"exchange-pattern", value:"request-response")
       						property(name:"transformer-refs", value:getOutboundRequestTransformerRefs(model))
-                            property(name:"responseTimeout", value:"${dollarSymbol()}{SERVICE_TIMEOUT_M}")
+                            property(name:"responseTimeout", value:"${dollarSymbol()}{SERVICE_TIMEOUT_MS}")
                             property(name:"method", value:"GET")
                             property(name:"org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute", value:"http://www.mulesoft.org/schema/mule/http/endpoint")
       					}

@@ -191,7 +191,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 				public void handleEvent (Event e) {
 					dialogChanged();
 				}
-			}
+			},
+			false
 		);
 
 		
