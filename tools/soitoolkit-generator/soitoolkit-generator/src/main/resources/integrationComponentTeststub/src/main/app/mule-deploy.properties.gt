@@ -1,0 +1,8 @@
+# Mule Application Deployment Descriptor
+redeployment.enabled=true
+encoding=UTF-8
+
+#190: TODO: ic2-teststub-config.xml
+config.resources=${artifactId}-teststub-config.xml
+
+domain=default

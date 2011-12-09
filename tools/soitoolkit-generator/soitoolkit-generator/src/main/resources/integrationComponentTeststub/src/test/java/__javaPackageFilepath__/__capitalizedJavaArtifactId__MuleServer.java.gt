@@ -1,0 +1,68 @@
+package ${javaPackage};
+
+<% if (servlet) { %>
+import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
+<% } else { %> 
+import org.soitoolkit.commons.mule.test.StandaloneMuleServer;
+<% } %>
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+public class ${capitalizedJavaArtifactId}MuleServer {
+
+
+	public static final String MULE_SERVER_ID   = "${artifactId}";
+<% if (servlet) { %>
+	public static final int    HTTP_PORT        = ${servletPort};
+	public static final String CONTEXT_PATH     = "/${artifactId}";
+	public static final String MULE_SERVLET_URI = "/services";
+<% } %> 
+
+	private static final Logger logger = LoggerFactory.getLogger(${capitalizedJavaArtifactId}MuleServer.class);
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+
+	public static void main(String[] args) throws Exception {
+
+<% if (servlet) { %>
+		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
+<% } else { %> 
+        // Configure the mule-server:
+        // 1. Specify the "${artifactId}-teststubs-config.xml" file if teststub-services are to be loaded
+        // 2. Specify true if all files including the services are to be loaded from the mule-deploy.properties - file
+        // 3. Specify false if services are NOT to be loaded from the mule-deploy.properties - file, only common config files will be loaded
+        //StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, "${artifactId}-teststubs-config.xml", true);
+        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, null, true);        
+<% } %> 
+        // Start the server
+		muleServer.run();
+	}
+
+    /**
+     * Address based on usage of the servlet-transport and a config-property for the URI-part
+     * 
+     * @param serviceUrlPropertyName
+     * @return
+     */
+    public static String getAddress(String serviceUrlPropertyName) {
+
+        String url = rb.getString(serviceUrlPropertyName);
+<% if (servlet) { %>
+        if (!url.startsWith("servlet://")) {
+    	    logger.info("Non servlet URL: {}", url);
+        	return url;
+        }
+        
+        String uri = url.substring("servlet://".length());
+        
+	    url = "http://localhost:" + HTTP_PORT + CONTEXT_PATH + MULE_SERVLET_URI + "/" + uri;
+	    logger.info("Servlet URL: {}", url);
+	    return url;
+<% } else { %>
+	    logger.info("URL: {}", url);
+    	return url;
+<% } %> 
+    }	
+}

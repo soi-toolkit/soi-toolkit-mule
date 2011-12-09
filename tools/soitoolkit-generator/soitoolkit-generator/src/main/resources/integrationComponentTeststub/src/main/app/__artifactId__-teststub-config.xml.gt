@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule 
+${xmlNamespace.servicesOnlyConfig}
+
+    <spring:beans>
+      <!-- Load all teststub services -->
+      <spring:import resource="classpath:${artifactId}-teststubs-config.xml"/>
+      <!-- Load all classpath resources needed by the core artifact -->
+      <spring:import resource="classpath:${artifactId}-config.xml"/>
+      <!-- Load property files and common declarations -->
+      <spring:import resource="classpath:${artifactId}-common.xml"/>
+    </spring:beans>
+
+</mule>

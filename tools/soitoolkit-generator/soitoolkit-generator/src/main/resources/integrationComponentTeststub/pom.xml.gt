@@ -46,25 +46,20 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
         </repository>
     </distributionManagement>
 
-	<dependencies>	
-		<dependency>
-            <groupId>org.soitoolkit.commons.components</groupId>
-			<artifactId>soitoolkit-commons-mule</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.soitoolkit.commons.poms</groupId>
-			<artifactId>soitoolkit-test-dependencies</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-dependencies</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-		</dependency>
+	<dependencies>
+<!-- #190 TODO: groupid, artifactId, version from user input -->
+    <dependency>
+    	<groupId>${groupId}</groupId>
+    	<artifactId>${artifactId}</artifactId>
+    	<version>${version}</version>
+    	<type>test-jar</type>
+    </dependency>
+    <dependency>
+    	<groupId>${groupId}</groupId>
+    	<artifactId>${artifactId}</artifactId>
+    	<version>${version}</version>
+    	<classifier>core</classifier>    	
+    </dependency>
 	</dependencies> 
 
     <build>
@@ -103,34 +98,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                     </inclusions>
                 </configuration>
             </plugin>
-            
-            <plugin>
-              <artifactId>maven-jar-plugin</artifactId>
-              <configuration>
-                <!-- if no classifier is declared, then a mvn install results in a file in
-                  
-                  the local repo: ic2-1.0.0-SNAPSHOT.mule
-                  
-                  which is a jar-file - only strangely named and with a bad extension
-                -->
-                <classifier>core</classifier>
-                <excludes>
-                  <exclude>log4j.xml</exclude>
-                  <!--
-                  <exclude>mule-deploy.properties</exclude>
-                  -->
-                </excludes>
-              </configuration>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>jar</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-            
-      </plugins>
+		</plugins>
 
     </build>
 
