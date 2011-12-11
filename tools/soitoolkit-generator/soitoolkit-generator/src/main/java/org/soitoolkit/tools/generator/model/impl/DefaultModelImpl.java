@@ -329,7 +329,7 @@ public class DefaultModelImpl implements IModel {
 	 * @see org.soitoolkit.tools.generator.model.IModel#getTeststubStandaloneProject()
 	 */
 	public String getTeststubStandaloneProject() {
-		return getArtifactId() + "-teststub-standalone";
+		return getArtifactId() + "-teststub";
 	}
 	
 	/* (non-Javadoc)
@@ -337,6 +337,14 @@ public class DefaultModelImpl implements IModel {
 	 */
 	public String getTeststubStandaloneProjectFilepath() {
 		return getTeststubStandaloneProject();
+	}
+
+	protected String getJavaTeststubArtifactId() {
+		return makeJavaName(getTeststubStandaloneProject());
+	}
+
+	public String getCapitalizedJavaTeststubArtifactId() {
+		return capitalize(getJavaTeststubArtifactId());
 	}
 
 	/* (non-Javadoc)

@@ -87,6 +87,7 @@ public interface IModel {
 
 	public String getTeststubStandaloneProject();
 	public String getTeststubStandaloneProjectFilepath();
+	public String getCapitalizedJavaTeststubArtifactId();
 	
 	public String getWebProject();
 	public String getWebProjectFilepath();

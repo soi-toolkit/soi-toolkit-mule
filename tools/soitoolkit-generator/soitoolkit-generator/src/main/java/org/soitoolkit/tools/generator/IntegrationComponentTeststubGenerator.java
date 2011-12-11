@@ -32,7 +32,8 @@ public class IntegrationComponentTeststubGenerator implements Generator {
 	public IntegrationComponentTeststubGenerator(PrintStream ps, String groupId, String artifactId, String version, DeploymentModelEnum deploymentModel, String folderName) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, MuleVersionEnum.MAIN_MULE_VERSION, deploymentModel, null, "/integrationComponentTeststub", folderName + "/__integrationComponentProject__-teststub");
+		MuleVersionEnum muleVersionOnlyHereToSatisfyTheUnderlyingModel = MuleVersionEnum.MAIN_MULE_VERSION;
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersionOnlyHereToSatisfyTheUnderlyingModel, deploymentModel, null, "/integrationComponentTeststub", folderName + "/__teststubStandaloneProject__");
 	}
     public void startGenerator() {
 
@@ -41,11 +42,11 @@ public class IntegrationComponentTeststubGenerator implements Generator {
 
 		//gu.generateFolder("src/main/java/__javaPackageFilepath__");
 
-		gu.generateContentAndCreateFile("src/main/app/__artifactId__-teststub-config.xml.gt");
+		gu.generateContentAndCreateFile("src/main/app/__teststubStandaloneProject__-config.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-app.properties.gt");
 
-		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaTeststubArtifactId__MuleServer.java.gt");
 		//gu.generateContentAndCreateFile("src/test/resources/__artifactId__-integrationtests-common.xml.gt");
 //		gu.generateContentAndCreateFile("src/test/resources/__artifactId__-teststubs-and-services-config.xml.gt");
 //		gu.generateContentAndCreateFile("src/test/resources/__artifactId__-teststubs-only-config.xml.gt");

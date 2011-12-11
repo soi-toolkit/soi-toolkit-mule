@@ -20,16 +20,16 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     </parent>
     
     <groupId>${groupId}</groupId>
-    <artifactId>${parentPom}</artifactId>
+    <artifactId>${teststubStandaloneProject}</artifactId>
     <version>${version}</version>
     <packaging>mule</packaging>
-    <name>${parentPom}</name>
+    <name>${teststubStandaloneProject}</name>
 
     <scm>
         <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
-        <connection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</connection>
-        <developerConnection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</developerConnection>
-        <url>https://my-subversion-server/svn/${integrationComponentProject}/trunk</url>
+        <connection>scm:svn:https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</connection>
+        <developerConnection>scm:svn:https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</developerConnection>
+        <url>https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</url>
     </scm>
     
     <distributionManagement>
@@ -47,7 +47,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     </distributionManagement>
 
 	<dependencies>
-<!-- #190 TODO: groupid, artifactId, version from user input -->
+	  <!-- dependencies to the integration component that contains the services to stub -->
     <dependency>
     	<groupId>${groupId}</groupId>
     	<artifactId>${artifactId}</artifactId>
@@ -119,7 +119,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>${javaPackage}.${capitalizedJavaArtifactId}MuleServer</mainClass>
+                                    <mainClass>${javaPackage}.${capitalizedJavaTeststubArtifactId}MuleServer</mainClass>
                                     <classpathScope>test</classpathScope>
                                 </configuration>
                             </execution>
