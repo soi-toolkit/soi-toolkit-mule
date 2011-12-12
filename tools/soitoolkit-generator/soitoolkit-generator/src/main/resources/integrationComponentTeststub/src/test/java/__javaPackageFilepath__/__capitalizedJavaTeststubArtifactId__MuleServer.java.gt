@@ -29,12 +29,8 @@ public class ${capitalizedJavaTeststubArtifactId}MuleServer {
 <% if (servlet) { %>
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 
-        // Configure the mule-server:
-        // 1. Specify the "${artifactId}-teststubs-config.xml" file if teststub-services are to be loaded
-        // 2. Specify true if all files including the services are to be loaded from the mule-deploy.properties - file
-        // 3. Specify false if services are NOT to be loaded from the mule-deploy.properties - file, only common config files will be loaded
-        //StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, "${artifactId}-teststubs-config.xml", true);
-        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, null, true);        
+        // Configure the mule-server
+        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, null, false);        
 <% } %> 
         // Start the server
 		muleServer.run();

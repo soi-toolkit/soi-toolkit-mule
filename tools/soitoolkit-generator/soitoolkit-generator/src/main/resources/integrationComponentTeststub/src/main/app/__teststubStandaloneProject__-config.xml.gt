@@ -4,10 +4,12 @@ ${xmlNamespace.servicesOnlyConfig}
 
     <spring:beans>
       <!-- Load all teststub services -->
-      <spring:import resource="classpath:${artifactId}-teststubs-config.xml"/>
-      <!-- Load all classpath resources needed by the core artifact -->
+      <spring:import resource="classpath:${artifactId}-teststubs.xml"/>
+      
+      <!-- Load all resources needed by the core artifact -->
       <spring:import resource="classpath:${artifactId}-config.xml"/>
-      <!-- Load property files and common declarations -->
+      
+      <!-- Load property files and other common declarations -->
       <spring:import resource="classpath:${artifactId}-common.xml"/>
     </spring:beans>
 
