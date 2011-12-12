@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_TESTSTUBS_COMPONENT;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
 
 import java.io.IOException;
@@ -54,6 +55,7 @@ import org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.IntegrationComponentGenerator;
+import org.soitoolkit.tools.generator.IntegrationComponentTeststubGenerator;
 import org.soitoolkit.tools.generator.SchemaComponentGenerator;
 import org.soitoolkit.tools.generator.plugin.util.StatusPage;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
@@ -267,10 +269,13 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 
 		ComponentEnum compEnum = ComponentEnum.get(componentType);
 		try {
-			
 			switch (compEnum) {
 			case INTEGRATION_COMPONENT:
 				new IntegrationComponentGenerator(out, groupId, artifactId, version, muleVersion, deploymentModel, transports, folderName).startGenerator();
+				break;
+
+			case INTEGRATION_TESTSTUBS_COMPONENT:
+				new IntegrationComponentTeststubGenerator(out, groupId, artifactId, version, deploymentModel, folderName).startGenerator();
 				break;
 
 			case SD_SCHEMA_COMPONENT:
@@ -317,6 +322,10 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 					openProject(path + "/" + m.getTeststubWebProjectFilepath() + "/.project");
 				}
 */
+				break;
+
+			case INTEGRATION_TESTSTUBS_COMPONENT:
+				openProject(path + "/.project");
 				break;
 
 			case SD_SCHEMA_COMPONENT:

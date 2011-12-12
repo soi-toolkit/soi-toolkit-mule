@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum ComponentEnum implements ILabeledEnum { 
-	INTEGRATION_COMPONENT("Integration Component"), UTILITY_COMPONENT("Utility Component"), SD_SCHEMA_COMPONENT("Service Description Component"); //, IM_SCHEMA_COMPONENT("Information Model Component"); 
+	INTEGRATION_COMPONENT("Integration Component"), INTEGRATION_TESTSTUBS_COMPONENT("Integration Teststubs Component"), UTILITY_COMPONENT("Utility Component"), SD_SCHEMA_COMPONENT("Service Description Component"); //, IM_SCHEMA_COMPONENT("Information Model Component"); 
 
 	public static ComponentEnum get(int ordinal) {
 		return values()[ordinal];

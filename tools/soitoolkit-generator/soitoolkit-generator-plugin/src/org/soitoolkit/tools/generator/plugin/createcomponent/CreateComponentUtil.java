@@ -36,6 +36,9 @@ public class CreateComponentUtil {
 		case INTEGRATION_COMPONENT:
 			projectFolderName = m.getIntegrationComponentProject();
 			break;
+		case INTEGRATION_TESTSTUBS_COMPONENT:
+			projectFolderName = m.getTeststubStandaloneProject();
+			break;
 		case SD_SCHEMA_COMPONENT:
 			projectFolderName = m.getSchemaProject();
 			break;
