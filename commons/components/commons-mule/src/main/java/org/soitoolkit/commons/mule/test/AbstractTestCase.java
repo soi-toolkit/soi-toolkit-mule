@@ -92,12 +92,14 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
      * @see org.mule.tck.AbstractMuleTestCase#AbstractMuleTestCase()
      * @see org.mule.tck.AbstractMuleTestCase#initTestTimeoutSecs()
      */
+    /* ISSUE 156: use -Dmule.test.timeoutSecs=XX instead
     protected void setTestTimeoutSecs(int seconds) {
         logger.info("Setting test timeout to (seconds): " + seconds);
         String strSeconds = String.valueOf(seconds);
         System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, strSeconds);
         initTestTimeoutSecs();	
     }
+    */
 
 	/**
 	 * Sends the <code>payload</code> and <code>headers</code> to the <code>inboundEndpointAddress</code> and waits <code>timeout</code> ms for a <code>MuleMessage</code> to arrive on outboundEndpoint with the name <code>outboundEndpointName</code>. 

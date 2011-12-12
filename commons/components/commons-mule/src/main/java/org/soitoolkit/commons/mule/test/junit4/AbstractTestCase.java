@@ -49,59 +49,12 @@ import org.soitoolkit.commons.mule.util.ValueHolder;
  */
 public abstract class AbstractTestCase extends FunctionalTestCase {
     
-    protected String junitTestCaseName;
-    
     public AbstractTestCase() {
 		super();
 
 		// Ensure that CXF use LOG4J for logging
 		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Log4jLogger");
 	}
-
-    /* ISSUE 203: Gone in org.mule.tck.junit4.FunctionalTestCase...
-     
-	/**
-     * Fix for Mule 2.2.2 problem with presentation of test-name i Eclipse
-     * testrunner that comes from override in
-     * <code>org.mule.tck.AbstractMuleTestCase.setName()</code>. 
-     * 
-     * @see org.mule.tck.AbstractMuleTestCase#getName()
-     * /
-    @Override
-    public String getName() {
-      return junitTestCaseName;
-    }
-
-    /**
-     * Fix for Mule 2.2.2 problem with presentation of test-name i Eclipse
-     * testrunner that comes from override in
-     * <code>org.mule.tck.AbstractMuleTestCase.setName()</code>. 
-     * 
-     * @see org.mule.tck.AbstractMuleTestCase#getName()
-     * /
-    @Override
-    public void setName(String name) {
-        junitTestCaseName = name;
-        super.setName(junitTestCaseName);
-    }
-
-    /**
-     * Fix for Mule 2.2.2 where init of test timeout moved from setUp to
-     * constructor. 
-     * This method MUST be called from the constructor of an inherited TestCase
-     * to have any effect, calling this method from doSetUp() or any other
-     * method is too late.
-     * 
-     * @see org.mule.tck.AbstractMuleTestCase#AbstractMuleTestCase()
-     * @see org.mule.tck.AbstractMuleTestCase#initTestTimeoutSecs()
-     * /
-    protected void setTestTimeoutSecs(int seconds) {
-        logger.info("Setting test timeout to (seconds): " + seconds);
-        String strSeconds = String.valueOf(seconds);
-        System.setProperty(PROPERTY_MULE_TEST_TIMEOUT, strSeconds);
-        initTestTimeoutSecs();	
-    }
-    */
 
 	/**
 	 * Sends the <code>payload</code> and <code>headers</code> to the <code>inboundEndpointAddress</code> and waits <code>timeout</code> ms for a <code>MuleMessage</code> to arrive on outboundEndpoint with the name <code>outboundEndpointName</code>. 
