@@ -29,6 +29,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.soitoolkit.commons.poms</groupId>
 	<artifactId>soitoolkit-schemas-jax-ws-dependencies</artifactId>
+	<packaging>pom</packaging>	
 	<name>soitoolkit-schemas-jax-ws-dependencies</name>
   <url>http://soi-toolkit.org</url>
 

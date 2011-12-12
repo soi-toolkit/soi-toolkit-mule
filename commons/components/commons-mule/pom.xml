@@ -40,6 +40,7 @@
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
       <artifactId>soitoolkit-mule-3.2.1-dependencies</artifactId>
       <version>${project.version}</version>
+      <type>pom</type>
       <scope>provided</scope>      
     </dependency>
     
@@ -47,6 +48,7 @@
       <groupId>org.soitoolkit.commons.poms</groupId>
       <artifactId>soitoolkit-test-dependencies</artifactId>
       <version>${project.version}</version>
+      <type>pom</type>
       <!-- #61: can't be test-scope since we have code in src/main depending on this ... -->
       <scope>provided</scope>      
     </dependency>

@@ -22,6 +22,7 @@
 
 	<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
 	<artifactId>soitoolkit-mule-3.2.1-dependencies</artifactId>
+	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 
 	<properties>

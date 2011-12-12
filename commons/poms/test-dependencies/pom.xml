@@ -27,6 +27,7 @@
     
 	<groupId>org.soitoolkit.commons.poms</groupId>
 	<artifactId>soitoolkit-test-dependencies</artifactId>
+	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 
 	<properties>

@@ -51,6 +51,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
       <!--
       <version>${soitoolkit.version}</version>
       -->
+      <type>pom</type>
       <scope>provided</scope>
     </dependency>
   </dependencies>
