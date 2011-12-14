@@ -109,11 +109,10 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
             <plugin>
               <artifactId>maven-jar-plugin</artifactId>
               <configuration>
-                <!-- if no classifier is declared, then a mvn install results in a file in
-                  
-                  the local repo: ic2-1.0.0-SNAPSHOT.mule
-                  
-                  which is a jar-file - only strangely named and with a bad extension
+                <!-- 
+                 if no classifier is declared, then a mvn install results in a file in
+                 the local repo: ic2-1.0.0-SNAPSHOT.mule
+                 which is a jar-file - only strangely named and with a bad extension
                 -->
                 <classifier>core</classifier>
                 <excludes>
