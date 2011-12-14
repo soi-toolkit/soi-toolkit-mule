@@ -11,10 +11,6 @@ ${xmlNamespace.reqRespService}
 	</mule-xml:namespace-manager>
 <% } %> 
 
-
-<% if (outboundTransport!="JMS") { %>
-
-
 	<flow name="${service}-service">
 <% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
 		<http:inbound-endpoint
@@ -69,64 +65,10 @@ ${xmlNamespace.reqRespService}
 			responseTransformer-refs="objToStr logRespIn" />
 <% } else if (outboundTransport=="JMS") { %>
 		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
-			<outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStrstrToJms logReqOut" />
-			<inbound-endpoint  address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr"/>
+			<jms:outbound-endpoint queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr strToJms logReqOut" />
+			<jms:inbound-endpoint  queue="${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr"/>
 		</request-reply>
 <% } %> 
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
 	</flow>
-
-<% } else { %>		
-	<!-- ISSUE #154: FIX FOR OUTBOUND-JMS, FLOW DOESN'T SUPPORT REQUEST-REPLY OVER JMS FOR NOW SO WE HAVE TO RETAIN THE OLD SERVICE STYLE HERE, FOR DETAILS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=154 -->
-
-<% if (transformerType=="JAVA") { %>
-    <custom-transformer name="${initialLowercaseJavaService}RequestTransformer"  class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
-    <custom-transformer name="${initialLowercaseJavaService}ResponseTransformer" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
-<% } else { %>     
-    <smooks:transformer name="${initialLowercaseJavaService}RequestTransformer"  configFile="/transformers/${service}-request-transformer.xml"/>
-    <smooks:transformer name="${initialLowercaseJavaService}ResponseTransformer" configFile="/transformers/${service}-response-transformer.xml"/>
-<% } %> 
-
-	<model name="${service}-model">
-	
-		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
-
-		<service name="${service}-service">
-            <inbound>
-<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
-		        <inbound-endpoint
-		            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
-		            exchange-pattern="request-response"
-		            transformer-refs="logReqIn objToStr"
-		            responseTransformer-refs="createSoapFaultIfException logRespOut">
-			        <cxf:proxy-service 
-			            service="sampleService"
-			            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
-			            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
-			        </cxf:proxy-service>
-		        </inbound-endpoint>
-<% } else if (inboundTransport=="RESTHTTP") { %>
-        <inbound-endpoint
-            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
-            exchange-pattern="request-response"
-            transformer-refs="logReqIn"
-            responseTransformer-refs="logRespOut">
-        </inbound-endpoint>
-<% } %> 
-            </inbound>
-
-			<outbound>
-				<pass-through-router>
-                    <outbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="${initialLowercaseJavaService}RequestTransformer strToJms logReqOut" exchange-pattern="request-response"/>
-                    <reply-to address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />                                                             
-				</pass-through-router>
-			</outbound>
-
-            <async-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
-                <inbound-endpoint address="jms://${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr ${initialLowercaseJavaService}ResponseTransformer"/>
-                <single-async-reply-router/>
-            </async-reply>      
-		</service>
-	</model>
-<% } %>
 </mule>
