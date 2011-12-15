@@ -38,7 +38,7 @@ public class CreateSoapFaultIfExceptionTransformer extends AbstractMessageTransf
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
     static String SOAP_FAULT_V11 = 
-    	"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:org.soitoolkit.refapps.sd.sample.schema:v1\">\n" +
+    	"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
     	"  <soapenv:Header/>" + 
     	"  <soapenv:Body>" + 
 		"    <soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
