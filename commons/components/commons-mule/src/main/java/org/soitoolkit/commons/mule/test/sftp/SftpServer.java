@@ -49,7 +49,9 @@ import org.slf4j.LoggerFactory;
  * @author hakan
  */
 public class SftpServer {
-	static final String TARGET_DIR_NAME = "target";
+	static final String TARGET_DIR = "target";
+	static final String SFTP_ROOT_DIR = TARGET_DIR + File.separator
+			+ "sftproot";
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SshServer sshd;
 	private int port = 2222;
@@ -93,7 +95,7 @@ public class SftpServer {
 			// set security related stuff
 			// Note: always allow logins - this is only for local testing!
 			sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
-					TARGET_DIR_NAME + File.separator + "ssh-server-key.ser"));
+					TARGET_DIR + File.separator + "ssh-server-key.ser"));
 			sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
 				public boolean authenticate(String username, String password,
 						ServerSession session) {
@@ -181,10 +183,18 @@ public class SftpServer {
 			super(userName, caseInsensitive);
 
 			modifiedRootDir = System.getProperty("user.dir") + File.separator
-					+ TARGET_DIR_NAME;
+					+ SFTP_ROOT_DIR;
+			File rootDir = new File(modifiedRootDir);
+			rootDir.mkdirs();
+			if (!rootDir.exists() || !rootDir.isDirectory()) {
+				String errMsg = "Could not create sftp-root dir: " + rootDir;
+				logger.error(errMsg);
+				throw new RuntimeException(errMsg);
+			}
 			logger.debug(
 					"Modified NativeFileSystemView created with root dir: {}",
 					modifiedRootDir);
+			logger.info("Using sftp-root dir: {}", modifiedRootDir);
 		}
 
 		@Override

@@ -37,7 +37,7 @@ public class SftpServerTest {
 		};
 
 		String subDirname = SftpServerTest.class.getSimpleName() + "-test";
-		File subdir = new File(SftpServer.TARGET_DIR_NAME + File.separator
+		File subdir = new File(SftpServer.SFTP_ROOT_DIR + File.separator
 				+ subDirname);
 		subdir.mkdirs();
 		assertTrue(subdir.exists());
