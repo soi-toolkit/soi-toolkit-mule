@@ -17,21 +17,20 @@
 
 package org.soitoolkit.commons.mule.test.sftp;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.Arrays;
-import java.util.EnumSet;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.NamedFactory;
-import org.apache.sshd.common.util.OsUtils;
 import org.apache.sshd.server.Command;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.PublickeyAuthenticator;
 import org.apache.sshd.server.command.ScpCommandFactory;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.server.shell.ProcessShellFactory;
+import org.apache.sshd.server.sftp.SftpSubsystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * This SFTP-server is only intended for integration-testing in a local
  * environment. It does not verify login credentials.
  * 
- * Example: connect from Mac-terminal with: sftp -oPort=2222 muletest2@localhost
+ * Example: connect from Mac-terminal with: sftp -oPort=2222 -oStrictHostKeyChecking=false muletest2@localhost
  * 
  * @author hakan
  */
@@ -68,13 +67,8 @@ public class SftpServer {
 			sshd.setPort(port);
 
 			// enable SFTP
-			// sshd.setSubsystemFactories(Arrays
-			// .<NamedFactory<Command>> asList(new SftpSubsystem.Factory()));
-
-			// PATCH for SSHD version 0.5.0: remove extra bytes at end of
-			// transferred file when used with Jsch
 			sshd.setSubsystemFactories(Arrays
-					.<NamedFactory<Command>> asList(new Patched050SftpSubsystem.Factory()));
+					.<NamedFactory<Command>> asList(new SftpSubsystem.Factory()));
 
 			sshd.setCommandFactory(new ScpCommandFactory());
 			// if (OsUtils.isUNIX()) {
@@ -91,12 +85,11 @@ public class SftpServer {
 
 			// set security related stuff
 			// Note: always allow logins - this is only for local testing!
-			sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
-					"key.ser"));
+			sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("target"
+					+ File.separator + "ssh-server-key.ser"));
 			sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
 				public boolean authenticate(String username, String password,
 						ServerSession session) {
-					System.err.println("### AUTH using username + password");
 					logger.debug("auth using username + password");
 
 					// don't check credentials - for testing only
@@ -106,7 +99,6 @@ public class SftpServer {
 			sshd.setPublickeyAuthenticator(new PublickeyAuthenticator() {
 				public boolean authenticate(String username, PublicKey key,
 						ServerSession session) {
-					System.err.println("### AUTH using public key");
 					logger.debug("auth using public key");
 
 					// don't check credentials - for testing only
