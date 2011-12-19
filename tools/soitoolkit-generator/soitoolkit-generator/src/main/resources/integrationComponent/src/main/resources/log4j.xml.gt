@@ -27,6 +27,10 @@
 	<logger name="org.mockftpserver">
 		<level value="ERROR" />
 	</logger>
+	
+	<logger name="org.apache.sshd">
+		<level value="ERROR" />
+	</logger>	
 
 	<logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<level value="TRACE" />
