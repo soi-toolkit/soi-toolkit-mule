@@ -24,10 +24,15 @@ import java.util.Arrays;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.common.Session;
 import org.apache.sshd.server.Command;
+import org.apache.sshd.server.FileSystemView;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.PublickeyAuthenticator;
+import org.apache.sshd.server.SshFile;
 import org.apache.sshd.server.command.ScpCommandFactory;
+import org.apache.sshd.server.filesystem.NativeFileSystemFactory;
+import org.apache.sshd.server.filesystem.NativeFileSystemView;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.sftp.SftpSubsystem;
@@ -38,11 +43,13 @@ import org.slf4j.LoggerFactory;
  * This SFTP-server is only intended for integration-testing in a local
  * environment. It does not verify login credentials.
  * 
- * Example: connect from Mac-terminal with: sftp -oPort=2222 -oStrictHostKeyChecking=false muletest2@localhost
+ * Example: connect from Mac-terminal with: sftp -oPort=2222
+ * -oStrictHostKeyChecking=false muletest2@localhost
  * 
  * @author hakan
  */
 public class SftpServer {
+	static final String TARGET_DIR_NAME = "target";
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private SshServer sshd;
 	private int port = 2222;
@@ -85,8 +92,8 @@ public class SftpServer {
 
 			// set security related stuff
 			// Note: always allow logins - this is only for local testing!
-			sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("target"
-					+ File.separator + "ssh-server-key.ser"));
+			sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(
+					TARGET_DIR_NAME + File.separator + "ssh-server-key.ser"));
 			sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
 				public boolean authenticate(String username, String password,
 						ServerSession session) {
@@ -105,6 +112,9 @@ public class SftpServer {
 					return true;
 				}
 			});
+
+			// change sftp root to be in the build target-dir
+			sshd.setFileSystemFactory(getModifiedNativeFileSystemFactory());
 
 			sshd.start();
 			logger.info("started server on port {}", port);
@@ -127,6 +137,59 @@ public class SftpServer {
 			String errMsg = "Failed to stop";
 			logger.error(errMsg, e);
 			throw new RuntimeException(errMsg, e);
+		}
+	}
+
+	/**
+	 * Override to provide a NativeFileSystemView with a modified root-dir.
+	 * 
+	 * @return a modified NativeFileSystemFactory
+	 */
+	NativeFileSystemFactory getModifiedNativeFileSystemFactory() {
+		return new NativeFileSystemFactory() {
+
+			@Override
+			public FileSystemView createFileSystemView(Session session) {
+				String userName = getUsername(session);
+				NativeFileSystemView nfsv = new ModifiedNativeFileSystemView(
+						userName, isCaseInsensitive());
+				logger.debug("creating a modified NativeFileSystemView: {}",
+						nfsv.getClass());
+				return nfsv;
+			}
+
+		};
+	}
+
+	/**
+	 * Hook to override for testing without a valid session.
+	 */
+	String getUsername(Session session) {
+		return session.getUsername();
+	}
+
+	/**
+	 * Override to provide a NativeFileSystemView with a modified root-dir.
+	 * 
+	 * @return a modified NativeFileSystemView
+	 */
+	class ModifiedNativeFileSystemView extends NativeFileSystemView {
+		String modifiedRootDir;
+
+		public ModifiedNativeFileSystemView(String userName,
+				boolean caseInsensitive) {
+			super(userName, caseInsensitive);
+
+			modifiedRootDir = System.getProperty("user.dir") + File.separator
+					+ TARGET_DIR_NAME;
+			logger.debug(
+					"Modified NativeFileSystemView created with root dir: {}",
+					modifiedRootDir);
+		}
+
+		@Override
+		public SshFile getFile(String file) {
+			return getFile(modifiedRootDir, file);
 		}
 	}
 
