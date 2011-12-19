@@ -25,16 +25,5 @@
   <spring:beans>
     <spring:import resource="classpath:soitoolkit-mule-sftp-connector-commons.xml"/>
   </spring:beans>
-  
-  <spring:bean id="testSftpServer" class="org.soitoolkit.commons.mule.test.sftp.SftpServer"
-      init-method="startServer" destroy-method="stopServer">
-    <spring:property name="port" value="2222"/>
-  </spring:bean>
-  
-  <spring:bean id="testSshKeyGenerator" class="org.soitoolkit.commons.mule.test.sftp.KeyGenerator"
-      init-method="generateKeys">
-    <spring:property name="keygenDirPath" value="target/ssh"/>
-    <spring:property name="passphrase" value="testonly"/>
-  </spring:bean>
-  
+    
 </mule>

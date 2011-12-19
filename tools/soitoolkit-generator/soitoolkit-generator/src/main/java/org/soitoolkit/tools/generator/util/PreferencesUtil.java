@@ -62,15 +62,19 @@ public class PreferencesUtil {
     }
     
     static public String getDefaultSftpRootFolder() {
-    	return get("sftp_root_folder", "${SOITOOLKIT_SFTP_USERNAME}@localhost/~/sftp");
+    	return get("sftp_root_folder", "${SOITOOLKIT_SFTP_USERNAME}@localhost:2222/~/sftp");
     }
     
     static public String getDefaultSftpIdentityFile() {
-    	return get("sftp_identity_file", getUserHome() + "/.ssh/id_dsa");
+    	//return get("sftp_identity_file", getUserHome() + "/.ssh/id_dsa");
+    	// id file that is generated when the embedded sftp-server is started
+    	return get("sftp_identity_file", "target/ssh/id_dsa");
     }
     
     static public String getDefaultSftpIdentityPassphrase() {
-    	return get("sftp_identity_passphrase", "nnn");
+    	// passphrase for the private key that is generated when
+    	// the embedded sftp-server is started
+    	return get("sftp_identity_passphrase", "testonly");
     }
 
     static public String getDefaultArchiveFolder() {

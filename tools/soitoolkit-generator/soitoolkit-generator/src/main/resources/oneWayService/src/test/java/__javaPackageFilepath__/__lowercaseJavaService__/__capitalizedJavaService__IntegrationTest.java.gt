@@ -132,7 +132,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %>  
 <% if (inboundTransport=="FTP" || outboundTransport=="FTP") { %>
 		"soitoolkit-mule-ftp-connector-embedded.xml," + 
-<% } %>  
+<% } %>
+<% if (inboundTransport=="SFTP" || outboundTransport=="SFTP") { %>
+		"soitoolkit-mule-sftp-connector-embedded.xml," +
+<% } %>
 		"${artifactId}-common.xml," +
         "${artifactId}-integrationtests-common.xml," + 
 		// FIXME. MULE STUDIO.

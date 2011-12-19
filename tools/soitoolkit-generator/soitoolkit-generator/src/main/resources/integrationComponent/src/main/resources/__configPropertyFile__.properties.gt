@@ -17,7 +17,8 @@ SOITOOLKIT_FTP_PASSWORD=${defaultFtpPassword}
 
 <% if (sftp) { %>
 # Properties for the default soitoolkit-sftp-connector
-# TODO: Update to reflect your settings
+# Values below valid for embedded sftp-server - do not change
+# TODO: Update to reflect your settings in an override-properties file
 SOITOOLKIT_SFTP_USERNAME=${defaultSftpUsername}
 SOITOOLKIT_SFTP_IDENTITYFILE=${defaultSftpIdentityFile}
 SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=${defaultSftpIdentityPassphrase}

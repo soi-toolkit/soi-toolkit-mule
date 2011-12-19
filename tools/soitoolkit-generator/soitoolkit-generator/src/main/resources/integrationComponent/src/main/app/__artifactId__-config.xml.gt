@@ -12,7 +12,11 @@ ${xmlNamespace.servicesOnlyConfig}
 <% if (jdbc) { %>
         <!-- Import the JDBC datasource used in production here, embedded JDBC datasources used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
         <spring:import resource="classpath:soitoolkit-mule-jdbc-datasource.xml"/>
-<% } %>  
+<% } %>
+<% if (sftp) { %>
+        <!-- Import the SFTP-connector used in production here, embedded SFTP-connector used for integration tests are loaded by the *IntegratIonTest.java classes directly -->
+        <spring:import resource="classpath:soitoolkit-mule-sftp-connector-external.xml"/>
+<% } %>
 <% /* FIXME. MULE STUDIO. Everything in the folder src/main/app is loaded by mule-deploy.proeprties, so skip the parts below:
 <% if (jdbc) { %>
         <spring:import resource="classpath:${artifactId}-jdbc-connector.xml"/>

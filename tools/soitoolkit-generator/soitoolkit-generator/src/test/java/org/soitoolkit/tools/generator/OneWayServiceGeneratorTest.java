@@ -89,8 +89,8 @@ public class OneWayServiceGeneratorTest {
 	}
 
 	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP}; // Waiting for embedded SFTP: SFTP, //, IMAP}; // POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP};       // Waiting for embedded SFTP: SFTP, //, SMTP};  
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP, SFTP}; // Waiting for: IMAP, POP3
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP, SFTP};       // Waiting for: SMTP  
 
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports = appendTransport(inboundTransports, SERVLET);

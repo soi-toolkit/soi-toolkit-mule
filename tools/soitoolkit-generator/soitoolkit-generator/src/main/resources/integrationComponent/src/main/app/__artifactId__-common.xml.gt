@@ -82,7 +82,8 @@ ${xmlNamespace.common}
 <% } %>  
 
     <spring:beans>
-<% if (sftp) { %>
+<% if (false) { %>
+        <!-- the SFTP-connector is now imported in the top-level config-file, but is kept here as an example -->
         <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
 <% } %>  
     </spring:beans>
