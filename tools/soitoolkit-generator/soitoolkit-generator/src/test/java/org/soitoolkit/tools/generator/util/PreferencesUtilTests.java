@@ -37,11 +37,4 @@ public class PreferencesUtilTests {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testGetDefaultSftpIdentityFile() throws FileNotFoundException {
-    	File f = new File(PreferencesUtil.getDefaultSftpIdentityFile());
-    	assertTrue(f.exists());
-    	assertTrue(f.canRead());
-    	assertTrue(convertStreamToString(new FileInputStream(f)).length() > 0);
-	}
 }
