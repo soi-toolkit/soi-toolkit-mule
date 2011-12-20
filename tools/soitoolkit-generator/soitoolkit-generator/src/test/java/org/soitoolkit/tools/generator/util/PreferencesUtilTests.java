@@ -16,15 +16,13 @@
  */
 package org.soitoolkit.tools.generator.util;
 
-import static org.junit.Assert.assertTrue;
-import static org.soitoolkit.tools.generator.util.MiscUtil.convertStreamToString;
+import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PreferencesUtilTests {
@@ -35,6 +33,22 @@ public class PreferencesUtilTests {
 
 	@After
 	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void testGetDefaultValue_getDefaultSftpIdentityFile()
+			throws FileNotFoundException {
+		String expectedFilePath = "target/ssh/id_dsa";
+		assertEquals(expectedFilePath,
+				PreferencesUtil.getDefaultSftpIdentityFile());
+	}
+
+	@Test
+	@Ignore // configured value might change over environments
+	public void testConfiguredValue_getDefaultRootFolder()
+			throws FileNotFoundException {
+		String expectedFilePath = "/scratch/hudson/workspace/soi-toolkit-nightly";
+		assertEquals(expectedFilePath, PreferencesUtil.getDefaultRootFolder());
 	}
 
 }
