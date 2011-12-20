@@ -78,7 +78,8 @@ public class PreferencesUtil {
     }
 
     static public String getDefaultArchiveFolder() {
-    	return get("archive_folder", getUserHome() + "/soitoolkit/archive");
+    	//return get("archive_folder", getUserHome() + "/soitoolkit/archive");
+    	return get("archive_folder", "target/soitoolkit/archive");
     }
 
     // -----------------
