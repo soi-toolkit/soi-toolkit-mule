@@ -30,7 +30,8 @@ public class PreferencesUtil {
     }
 
     static public String getDefaultRootFolder() {
-    	return get("root_folder", getUserHome());
+    	//return get("root_folder", getUserHome());
+    	return get("root_folder", "target");
     }
     
     static public String getMavenHome() {
@@ -42,7 +43,8 @@ public class PreferencesUtil {
 	}
 
     static public String getDefaultFileRootFolder() {
-    	return get("file_root_folder", getUserHome() + "/soitoolkit/file-transport");
+    	//return get("file_root_folder", getUserHome() + "/soitoolkit/file-transport");
+    	return get("file_root_folder", "target/soitoolkit/file-transport");
     }
     
     static public String getDefaultFtpRootFolder() {
