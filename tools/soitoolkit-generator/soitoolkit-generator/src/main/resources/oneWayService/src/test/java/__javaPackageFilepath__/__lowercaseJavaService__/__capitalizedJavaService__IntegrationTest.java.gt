@@ -42,7 +42,7 @@ import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
 <% if (inboundTransport=="SERVLET") { %>
 import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
 <% } else { %> 
-import org.soitoolkit.commons.mule.test.AbstractTestCase;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
 <% } %> 
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
@@ -104,8 +104,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final String subject  = rb.getString("${uppercaseService}_INBOUND_EMAIL_SUBJECT");
 <% } %> 
 	
-	/**
-	 *
+    /**
+     *
      * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
      *                   <deadLetterStrategy>
      *                     <!--
@@ -115,13 +115,15 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
      *                     <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
      *                   </deadLetterStrategy>
      * 
-	 */
+     */
     public ${capitalizedJavaService}IntegrationTest() {
-    	
 <% if (inboundTransport=="SERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } %> 
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
     }
 
 	protected String getConfigResources() {
