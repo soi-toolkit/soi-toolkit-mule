@@ -48,6 +48,16 @@ public class SftpServerTest {
 
 		assertTrue(sshFile.doesExist());
 		assertTrue(sshFile.isDirectory());
-		assertEquals(subdir.getAbsolutePath(), sshFile.getAbsolutePath());
+		// fix for windows paths
+		String expectedPath = getOsUnifiedPath(subdir);
+		assertEquals(expectedPath, sshFile.getAbsolutePath());
+	}
+
+	private String getOsUnifiedPath(File f) {
+		String osUnifiedPath = f.getAbsolutePath().replace('\\', '/');
+		if (osUnifiedPath.charAt(0) != '/') {
+			osUnifiedPath = '/' + osUnifiedPath;
+		}
+		return osUnifiedPath;
 	}
 }
