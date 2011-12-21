@@ -25,14 +25,14 @@
             id="soi_toolkit_generator_plugin">
       </category>
       <wizard
-            name="Create a new component"
+            name="Create a new SOI Toolkit component"
             icon="icons/component.png"
             category="soi_toolkit_generator_plugin"
             class="org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentWizard"
             id="soi_toolkit_generator_plugin.wizards.CreateComponentWizard">
       </wizard>
       <wizard
-            name="Create a new service"
+            name="Create a new SOI Toolkit service"
             icon="icons/service.png"
             category="soi_toolkit_generator_plugin"
             class="org.soitoolkit.tools.generator.plugin.createservice.CreateServiceWizard"
