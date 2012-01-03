@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.reqRespService}
+
+	<!-- TODO: Add service specific definitions here -->
+
+    <json:object-to-json-transformer name="jaxbToJson" />
+
+    <message-properties-transformer name="setJsonContentType" scope="outbound">
+        <add-message-property key="Content-Type" value="application/json;charset=UTF-8"/>
+    </message-properties-transformer>
+ 
+    <rest:config />
+
+    <flow name="ml2-service">
+
+        <http:inbound-endpoint
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="objToStr logReqIn"
+            responseTransformer-refs="jaxbToJson setJsonContentType logRespOut">
+        </http:inbound-endpoint>
+ 
+        <rest:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample">
+
+            <!-- FIND: HTTP GET on /sample -->
+            <rest:get>
+                <flow-ref name="call-soap-service"/> 
+            </rest:get>
+
+            <!-- CREATE: HTTP POST on /sample -->
+            <rest:post>
+                <json:json-to-object-transformer doc:name="json to CreateSample-object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample"/>
+                <flow-ref name="call-soap-service"/> 
+            </rest:post>
+
+        </rest:router> 
+        
+        <rest:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample/{id}">
+
+            <!-- READ: HTTP GET on /sample/{id} -->
+            <rest:get>
+                <flow-ref name="call-soap-service"/> 
+            </rest:get>
+
+        </rest:router> 
+
+        <!-- 
+          NO MATCH, RETURN AN ERROR!
+          -->
+        <response>
+            <script:transformer>
+                <script:script engine="groovy">
+                    message.setOutboundProperty("http.status", 500);
+                    "This was unfortunate, I don't understand HTTP " + message.getInboundProperty("http.method") + " on the path " + message.getInboundProperty("http.request")
+                </script:script>
+            </script:transformer>
+        </response>
+
+        <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+    </flow>
+
+
+    <flow name="call-soap-service"> 
+
+        <custom-transformer doc:name="transform-request" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+
+        <custom-transformer doc:name="object to xml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
+            <spring:property name="contextPath" value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
+        </custom-transformer>
+
+        <response>
+            <custom-transformer doc:name="xml to object" class="org.soitoolkit.commons.mule.jaxb.XmlToJaxbObjectTransformer">
+                <spring:property name="contextPath"  value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
+            </custom-transformer>
+
+            <custom-transformer doc:name="transform-response" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+        </response>
+
+        <http:outbound-endpoint 
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+            <cxf:proxy-client />
+        </http:outbound-endpoint>
+ 
+        <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+    </flow>
+</mule>

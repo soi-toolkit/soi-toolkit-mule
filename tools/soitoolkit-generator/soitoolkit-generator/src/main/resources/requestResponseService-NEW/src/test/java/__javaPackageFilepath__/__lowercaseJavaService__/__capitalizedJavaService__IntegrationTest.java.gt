@@ -1,0 +1,165 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.junit.Assert.*;
+
+import java.io.InputStream;
+
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.Test;
+import org.mule.api.MuleMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.rest.JsonMapper;
+import org.soitoolkit.commons.mule.rest.RestClient;
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.Fault;
+
+<% if (inboundTransport=="SOAPSERVLET") { %>
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
+<% } else { %> 
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
+<% } %> 
+	
+    @SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
+	
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+    private static final String INBOUND_URL = rb.getString("${uppercaseService}_INBOUND_URL");
+ 
+    private static final String ERROR_LOG_QUEUE = "SOITOOLKIT.LOG.ERROR";
+    private AbstractJmsTestUtil jmsUtil = null;
+
+    private String ENTITY1_ID = null;
+    private String ENTITY2_ID = null;
+    private static final String ENTITY2_VALUE = "Entity 2";
+    private static final String ENTITY1_VALUE = "Entity 1";
+
+    private RestClient restClient;
+    private JsonMapper json = new JsonMapper();
+
+    public ${capitalizedJavaService}IntegrationTest() {
+<% if (inboundTransport=="SOAPSERVLET") { %>
+    	// Initialize servlet engine in baseclass with proper values
+    	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
+<% } %> 
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+
+	protected String getConfigResources() {
+		return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+        "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
+		"${artifactId}-jdbc-connector.xml," +
+<% } %>  
+		"${artifactId}-common.xml," +
+        "${artifactId}-integrationtests-common.xml," + 
+        "${service}-service.xml," +
+		"teststub-services/${service}-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+
+		doSetUpJms();
+
+        restClient = new RestClient(muleContext);
+        
+        // Prepare the test-producer of the service with two known sample entities
+        ${capitalizedJavaService}TestProducer.clear();
+        ENTITY1_ID = createSampleEntity(ENTITY1_VALUE);
+        ENTITY2_ID = createSampleEntity(ENTITY2_VALUE);
+    }
+
+	private void doSetUpJms() {
+		// TODO: Fix lazy init of JMS connection et al so that we can create jmsutil in the declaration
+		// (The embedded ActiveMQ queue manager is not yet started by Mule when jmsutil is delcared...)
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+<% if (outboundTransport=="JMS") { %>
+		// Clear queues used for the outbound endpoint
+		jmsUtil.clearQueues(REQUEST_QUEUE);
+		jmsUtil.clearQueues(RESPONSE_QUEUE);
+<% } %> 
+		// Clear queues used for error handling
+		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
+    }
+
+    private String createSampleEntity(String value) throws Fault {
+        CreateSample request = new CreateSample();
+        request.setValue(value);
+        return new ${capitalizedJavaService}TestProducer().createSample(request).getId();
+    }
+
+    @Test
+    public void test_createSample_ok() throws Exception {
+
+        // Prepare request
+        CreateSample request = new CreateSample();
+        request.setValue("A value");
+        
+        String requestJson = json.marshal(request);
+        
+        // Perform call
+        MuleMessage response = restClient.doHttpPostRequest_JsonContent(INBOUND_URL + "/sample", requestJson);
+        
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Verify result
+        CreateSampleResponse responseObj = json.unmarshal((InputStream)response.getPayload(), CreateSampleResponse.class);
+        assertNotNull(responseObj.getId());
+    }
+    
+    @Test
+    public void test_getSample_ok() throws Exception {
+
+        // Perform call
+        MuleMessage response = restClient.doHttpGetRequest_JsonConent(INBOUND_URL + "/sample/" + ENTITY1_ID);
+        
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Verify result
+        GetSampleResponse responseObj = json.unmarshal((InputStream)response.getPayload(), GetSampleResponse.class);
+        assertEquals(ENTITY1_VALUE, responseObj.getValue());
+    }
+    
+    @Test
+    public void test_findSample_ok() throws Exception {
+
+        // Perform call
+        MuleMessage response = restClient.doHttpGetRequest_JsonConent(INBOUND_URL + "/sample");
+        
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Verify result
+        FindSamplesResponse responseObj = json.unmarshal((InputStream)response.getPayload(), FindSamplesResponse.class);
+        assertEquals(2, responseObj.getSampleEntity().size());
+        for (SampleEntity entity : responseObj.getSampleEntity()) {
+
+            if (entity.getId().equals(ENTITY1_ID)) {
+                assertEquals(ENTITY1_VALUE, entity.getValue());
+
+            } else if (entity.getId().equals(ENTITY2_ID)) {
+                assertEquals(ENTITY2_VALUE, entity.getValue());
+            
+            } else {
+                fail("Unknown endtity id: " + entity.getId());
+            }
+        }
+    }
+
+}

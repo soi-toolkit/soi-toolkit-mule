@@ -1,0 +1,125 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.jws.WebService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.CrudSampleInterface;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.Fault;
+
+@WebService(serviceName = "crudSampleService", portName = "crudSamplePort", targetNamespace = "urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1", name = "crudSampleService")
+public class ${capitalizedJavaService}TestProducer implements CrudSampleInterface {
+
+    private static Map<String, SampleEntity> entities = new HashMap<String, SampleEntity>();
+    
+    public static final String TEST_ID_FAULT_TIMEOUT    = "0";
+    
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+	private static final long SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
+
+    public CreateSampleResponse createSample(CreateSample request) throws Fault {
+        
+        log.info("TestProducer received the request: {}", request);
+
+        SampleEntity entity = new SampleEntity();
+        entity.setId(UUID.randomUUID().toString());
+        entity.setValue(request.getValue());
+        
+        entities.put(entity.getId(), entity);
+        
+        CreateSampleResponse response = new CreateSampleResponse();
+        response.setId(entity.getId());
+        return response;
+    }
+
+    public FindSamplesResponse findSamples(FindSamples request) throws Fault {
+
+        log.info("TestProducer received the request: {}", request);
+        
+        FindSamplesResponse response = new FindSamplesResponse();
+        response.getSampleEntity().addAll(entities.values());
+        return response;
+    }
+    
+    public synchronized UpdateSampleResponse updateSample(UpdateSample request) throws Fault {
+
+        log.info("TestProducer received the request: {}", request);
+
+        // Force a timeout if timeout Id
+        if (TEST_ID_FAULT_TIMEOUT.equals(request.getId())) forceTimeout();
+
+        SampleEntity entity = entities.get(request.getId());
+        if (entity == null) {
+            throw new Fault("Entity not found for Id: " + request.getId());
+        }
+        
+        entity.setValue(request.getValue());
+        entities.put(entity.getId(), entity);
+        
+        return new UpdateSampleResponse();
+    }
+
+    public GetSampleResponse getSample(GetSample request) throws Fault {
+
+        log.info("TestProducer received the request: {}", request);
+
+        // Force a timeout if timeout Id
+        if (TEST_ID_FAULT_TIMEOUT.equals(request.getId())) forceTimeout();
+
+        SampleEntity entity = entities.get(request.getId());
+        if (entity == null) {
+            throw new Fault("Entity not found for Id: " + request.getId());
+        }
+
+        // Produce the response
+        GetSampleResponse response = new GetSampleResponse();
+        response.setValue(entity.getValue());
+        return response;
+    }
+
+    public DeleteSampleResponse deleteSample(DeleteSample request) throws Fault {
+
+        log.info("TestProducer received the request: {}", request);
+
+        // Force a timeout if timeout Id
+        if (TEST_ID_FAULT_TIMEOUT.equals(request.getId())) forceTimeout();
+
+        SampleEntity entity = entities.remove(request.getId());
+        if (entity == null) {
+            throw new Fault("Entity not found for Id: " + request.getId());
+        }
+        return new DeleteSampleResponse();
+    }
+
+    public static void clear()  {
+        
+        log.info("TestProducer clear its map of entities");
+
+        entities.clear();
+    }
+
+    private void forceTimeout() {
+        try {
+            log.info("TestProducer force a timeout to happen...");
+            Thread.sleep(SERVICE_TIMOUT_MS + 1000);
+        } catch (InterruptedException e) {}
+    }
+
+}

@@ -1,0 +1,82 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.soitoolkit.commons.mule.util.MuleUtil.getFlowVariable;
+
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.config.i18n.MessageFactory;
+import org.mule.transformer.AbstractMessageTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+
+public class ${capitalizedJavaService}RequestTransformer extends AbstractMessageTransformer {
+
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    private static final String BASE_PATH = rb.getString("${uppercaseService}_BASE_PATH");
+
+    /**
+     * Message aware transformer that ...
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+
+        // Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
+
+        // Pick up the id-variable if set by the rest module, e.g. for a http get-request on a specific resource entity
+        String id = getFlowVariable(message, "id");
+
+        return pojoTransform(message.getPayload(), id, outputEncoding);
+    }
+
+	/**
+     * Simple pojo transformer method that can be tested with plain unit testing...
+	 */
+	protected Object pojoTransform(Object request, String id, String encoding) throws TransformerException {
+
+        System.err.println("Transforming request: " + request);
+        log.debug("Transforming payload: {}", request);
+
+        if (request instanceof CreateSample) {
+            
+            // No transformation is required
+            return request;
+            
+        } else if (request instanceof String) {
+
+            String path = (String)request;
+            
+            if (path.equals(BASE_PATH + "/sample")) {
+                
+                /*
+                 * HTTP GET to /sample
+                 */
+        
+                // Return a SOAP-request object with the id set
+                return new FindSamples();
+                
+            } else if (path.startsWith(BASE_PATH + "/sample/")) {
+                
+                /*
+                 * HTTP GET to /sample/{id}
+                 */
+        
+                // Return a SOAP-request object with the id set
+                GetSample reqObj = new GetSample();
+                reqObj.setId(id);
+                return reqObj;
+                
+            } else {
+                throw new TransformerException(MessageFactory.createStaticMessage("Unknown content: " + request), this);
+            }
+            
+        } else {
+            throw new TransformerException(MessageFactory.createStaticMessage("Unknown type: " + request.getClass().getName()), this);
+        }
+	}
+}
