@@ -27,11 +27,11 @@
     </wsdl:message>
 
     
-    <wsdl:message name="findSampleRequest">
-        <wsdl:part name="parameters" element="sd:findSample" />
+    <wsdl:message name="findSamplesRequest">
+        <wsdl:part name="parameters" element="sd:findSamples" />
     </wsdl:message>
-    <wsdl:message name="findSampleResponse">
-        <wsdl:part name="parameters" element="sd:findSampleResponse"/>
+    <wsdl:message name="findSamplesResponse">
+        <wsdl:part name="parameters" element="sd:findSamplesResponse"/>
     </wsdl:message>
 
     
@@ -71,9 +71,9 @@
             <wsdl:fault name="fault" message="Fault"/>
         </wsdl:operation>
 
-        <wsdl:operation  name="findSample">
-            <wsdl:input  message="findSampleRequest"/>
-            <wsdl:output message="findSampleResponse"/>
+        <wsdl:operation  name="findSamples">
+            <wsdl:input  message="findSamplesRequest"/>
+            <wsdl:output message="findSamplesResponse"/>
             <wsdl:fault name="fault" message="Fault"/>
         </wsdl:operation>
 
@@ -113,8 +113,8 @@
             </wsdl:fault>
         </wsdl:operation>
 
-        <wsdl:operation name="findSample">
-            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:findSample"/>
+        <wsdl:operation name="findSamples">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:findSamples"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>

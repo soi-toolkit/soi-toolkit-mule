@@ -48,7 +48,7 @@
     <!-- 
       FIND
       -->
-    <xsd:element name="findSample">
+    <xsd:element name="findSamples">
         <xsd:complexType>
             <xsd:sequence>
     
@@ -57,7 +57,7 @@
         </xsd:complexType>
     </xsd:element>
     
-    <xsd:element name="findSampleResponse">
+    <xsd:element name="findSamplesResponse">
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="tns:sampleEntity" minOccurs="0" maxOccurs="unbounded" />
