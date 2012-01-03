@@ -116,5 +116,17 @@ public class MuleUtil {
 		}
 		return endpoint;
 	}
+
+	/**
+	 * Returns the value of a flow-variable from a MuleMessage
+	 * 
+	 * @param message
+	 * @param name
+	 * @return
+	 */
+	public static String getFlowVariable(MuleMessage message, String name) {
+		return message.getInvocationProperty(name);
+	}
+
 	
 }
