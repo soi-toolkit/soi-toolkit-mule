@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+	name="sampleService"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:sd="urn:org.soitoolkit.refapps.sd.crudsample.schema:v1"
+	xmlns="urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1" 
+	targetNamespace="urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1">
+
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import 
+				namespace="urn:org.soitoolkit.refapps.sd.crudsample.schema:v1"
+            	schemaLocation="crudSample.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+
+    <wsdl:message name="createSampleRequest">
+        <wsdl:part name="parameters" element="sd:createSample" />
+    </wsdl:message>
+    <wsdl:message name="createSampleResponse">
+        <wsdl:part name="parameters" element="sd:createSampleResponse"/>
+    </wsdl:message>
+
+    
+    <wsdl:message name="findSampleRequest">
+        <wsdl:part name="parameters" element="sd:findSample" />
+    </wsdl:message>
+    <wsdl:message name="findSampleResponse">
+        <wsdl:part name="parameters" element="sd:findSampleResponse"/>
+    </wsdl:message>
+
+    
+    <wsdl:message name="getSampleRequest">
+        <wsdl:part name="parameters" element="sd:getSample" />
+    </wsdl:message>
+    <wsdl:message name="getSampleResponse">
+        <wsdl:part name="parameters" element="sd:getSampleResponse"/>
+    </wsdl:message>
+
+    
+    <wsdl:message name="updateSampleRequest">
+        <wsdl:part name="parameters" element="sd:updateSample" />
+    </wsdl:message>
+    <wsdl:message name="updateSampleResponse">
+        <wsdl:part name="parameters" element="sd:updateSampleResponse"/>
+    </wsdl:message>
+
+    
+    <wsdl:message name="deleteSampleRequest">
+        <wsdl:part name="parameters" element="sd:deleteSample" />
+    </wsdl:message>
+    <wsdl:message name="deleteSampleResponse">
+        <wsdl:part name="parameters" element="sd:deleteSampleResponse"/>
+    </wsdl:message>
+
+    
+    <wsdl:message name="Fault">
+       <wsdl:part name="fault" element="sd:faultInfo"/>
+    </wsdl:message>
+	
+	<wsdl:portType name="crudSampleInterface">
+
+        <wsdl:operation  name="createSample">
+            <wsdl:input  message="createSampleRequest"/>
+            <wsdl:output message="createSampleResponse"/>
+            <wsdl:fault name="fault" message="Fault"/>
+        </wsdl:operation>
+
+        <wsdl:operation  name="findSample">
+            <wsdl:input  message="findSampleRequest"/>
+            <wsdl:output message="findSampleResponse"/>
+            <wsdl:fault name="fault" message="Fault"/>
+        </wsdl:operation>
+
+        <wsdl:operation  name="getSample">
+            <wsdl:input  message="getSampleRequest"/>
+            <wsdl:output message="getSampleResponse"/>
+            <wsdl:fault name="fault" message="Fault"/>
+        </wsdl:operation>
+
+        <wsdl:operation  name="updateSample">
+            <wsdl:input  message="updateSampleRequest"/>
+            <wsdl:output message="updateSampleResponse"/>
+            <wsdl:fault name="fault" message="Fault"/>
+        </wsdl:operation>
+
+        <wsdl:operation  name="deleteSample">
+            <wsdl:input  message="deleteSampleRequest"/>
+            <wsdl:output message="deleteSampleResponse"/>
+            <wsdl:fault name="fault" message="Fault"/>
+        </wsdl:operation>
+
+	</wsdl:portType>
+	
+	<wsdl:binding name="crudSampleBinding" type="crudSampleInterface">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <wsdl:operation name="createSample">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:createSample"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="findSample">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:findSample"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getSample">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:getSample"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="updateSample">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:updateSample"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="deleteSample">
+            <soap:operation soapAction="urn:org.soitoolkit.refapps.sd.sample.crudsample.wsdl:v1:deleteSample"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault use="literal" name="fault"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+	</wsdl:binding>
+
+	<wsdl:service name="crudSampleService">
+		<wsdl:port name="crudSamplePort" binding="crudSampleBinding">
+			<soap:address location="http://localhost:8080/services/crudSampleService/v1"/>
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

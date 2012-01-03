@@ -57,16 +57,27 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 							<sourceRoot>${schema.gen.src.dir}</sourceRoot>
 							<wsdlOptions>
               
-								<wsdlOption>
-									<wsdl>${schema.path}/org/soitoolkit/refapps/sd/sample/sampleService.wsdl</wsdl>
-									<extraargs>
-										<extraarg>-validate</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>urn:org.soitoolkit.refapps.sd.sample.wsdl:v1=org.soitoolkit.refapps.sd.sample.wsdl.v1</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>urn:org.soitoolkit.refapps.sd.sample.schema:v1=org.soitoolkit.refapps.sd.sample.schema.v1</extraarg>
-									</extraargs>
-								</wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${schema.path}/org/soitoolkit/refapps/sd/sample/sampleService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-validate</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:org.soitoolkit.refapps.sd.sample.wsdl:v1=org.soitoolkit.refapps.sd.sample.wsdl.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:org.soitoolkit.refapps.sd.sample.schema:v1=org.soitoolkit.refapps.sd.sample.schema.v1</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+
+                                <wsdlOption>
+                                    <wsdl>${schema.path}/org/soitoolkit/refapps/sd/crudSample/crudSampleService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-validate</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1=org.soitoolkit.refapps.sd.crudsample.wsdl.v1</extraarg>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>urn:org.soitoolkit.refapps.sd.crudsample.schema:v1=org.soitoolkit.refapps.sd.crudsample.schema.v1</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
 
 							</wsdlOptions>
 						</configuration>
