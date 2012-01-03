@@ -20,6 +20,7 @@ import static org.soitoolkit.commons.mule.util.MiscUtil.convertResourceBundleToP
 import static org.soitoolkit.commons.mule.util.MiscUtil.parseStringValue;
 
 import java.util.Map.Entry;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -44,17 +45,25 @@ public class RecursiveResourceBundle {
 	public RecursiveResourceBundle(String... baseNames) {
 		for (String baseName : baseNames) {
 			logger.debug("Loading properties from ResourceBundle: {}", baseName);
-			Properties p = convertResourceBundleToProperties(ResourceBundle.getBundle(baseName));
-			for (Entry<Object, Object> entry : p.entrySet()) {
-				logger.debug("Adding property: {} = {}", entry.getKey(), entry.getValue());
-				properties.put(entry.getKey(), entry.getValue());
+			ResourceBundle bundle = null;
+			try {
+				bundle = ResourceBundle.getBundle(baseName);
+			} catch (MissingResourceException e) {
+				logger.warn("Failed to laod properties from ResourceBundle: {}, continue with the next bundle", baseName);
+			}
+			if (bundle != null) {
+				Properties p = convertResourceBundleToProperties(bundle);
+				for (Entry<Object, Object> entry : p.entrySet()) {
+					logger.debug("Adding property: {} = {}", entry.getKey(), entry.getValue());
+					properties.put(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 	}
 
 	public String getString(String key) {
 		String value = properties.getProperty(key);
-		String parsedValue = parseStringValue(value, properties);
+		String parsedValue = (value == null) ? null : parseStringValue(value, properties);
 		logger.debug("{} = {}", key, parsedValue);
 		return parsedValue;
 	}

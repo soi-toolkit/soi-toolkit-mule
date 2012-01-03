@@ -25,6 +25,25 @@ import org.junit.Test;
 public class MiscUtilTests {
 
 	@Test
+	public void testResourceNotFound() {
+		RecursiveResourceBundle rb = new RecursiveResourceBundle("not-exist-config", "not-exist-config-override");
+		
+		String value = rb.getString("A");
+		assertNull(value);
+	}
+
+	@Test
+	public void testPropertyNotFound() {
+		RecursiveResourceBundle rb = new RecursiveResourceBundle("sample-config");
+		
+		String value = rb.getString("A");
+		assertEquals("1", value);
+		
+		value = rb.getString("NOT-EXIST");
+		assertNull(value);
+	}
+
+	@Test
 	public void testParseStringValue_ok() {
 		String text = "aaa${VARIABLE}bbb";
 		String expectedresult = "aaaVarValuebbb";
