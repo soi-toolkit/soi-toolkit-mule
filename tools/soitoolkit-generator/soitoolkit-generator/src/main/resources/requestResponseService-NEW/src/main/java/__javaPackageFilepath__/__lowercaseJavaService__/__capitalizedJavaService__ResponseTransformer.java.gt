@@ -5,13 +5,16 @@ import java.util.StringTokenizer;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
+import org.mule.config.i18n.MessageFactory;
 import org.mule.transformer.AbstractMessageTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 <% if (inboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTP") { %>
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
-import org.soitoolkit.refapps.sd.sample.schema.v1.FaultInfo;
-import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo;
 <% } %>
 public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
 
@@ -37,19 +40,28 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
     /**
      * Simple pojo transformer method that can be tested with plain unit testing...
      */
-    public Object pojoTransform(Object src, String outputEncoding) throws TransformerException {
-        log.debug("Transforming payload: {}", src);
+    public Object pojoTransform(Object response, String outputEncoding) throws TransformerException {
+        log.debug("Transforming payload: {}", response);
 
 <% if (outboundTransport=="SOAPHTTP") { %>
-		return src;
+        if ((response instanceof CreateSampleResponse) ||
+            (response instanceof FindSamplesResponse) ||
+            (response instanceof GetSampleResponse)) {
+            
+            // No transformation is required
+            return response;
+
+        } else {
+            throw new TransformerException(MessageFactory.createStaticMessage("Unknown type: " + response.getClass().getName()), this);
+        }
 <% } else if (outboundTransport=="RESTHTTP") { %>
 		SampleResponse request = new SampleResponse();
-		request.setValue(src.toString());
+		request.setValue(response.toString());
 		String xml = jaxbUtil.marshal(request);
 		return xml;
 		
 <% } else { %>
-		StringTokenizer st = new StringTokenizer((String)src, ",");
+		StringTokenizer st = new StringTokenizer((String)response, ",");
 		String msgType = st.nextToken().trim();
 		String value = st.nextToken().trim();
 

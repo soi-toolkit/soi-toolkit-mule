@@ -58,7 +58,7 @@ public class ${capitalizedJavaService}TestProducer implements CrudSampleInterfac
         return response;
     }
     
-    public synchronized UpdateSampleResponse updateSample(UpdateSample request) throws Fault {
+    public UpdateSampleResponse updateSample(UpdateSample request) throws Fault {
 
         log.info("TestProducer received the request: {}", request);
 

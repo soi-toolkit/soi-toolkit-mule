@@ -81,12 +81,20 @@ ${xmlNamespace.common}
 	<imap:connector name="imapConnector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
 <% } %>  
 
+    <rest:config />
+
     <spring:beans>
 <% if (false) { %>
         <!-- the SFTP-connector is now imported in the top-level config-file, but is kept here as an example -->
         <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
 <% } %>  
     </spring:beans>
+
+    <message-properties-transformer name="setJsonContentType" scope="outbound">
+        <add-message-property key="Content-Type" value="application/json;charset=UTF-8"/>
+    </message-properties-transformer>
+ 
+    <json:object-to-json-transformer name="jaxbToJson" />
 
 	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>
 

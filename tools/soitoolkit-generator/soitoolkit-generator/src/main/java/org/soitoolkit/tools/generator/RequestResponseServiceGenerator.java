@@ -298,7 +298,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    	ML2_INBOUND_URL=${ML2_INBOUND_BASE_URL}${ML2_BASE_PATH}
 */
 			    cfg.println(service + "_BASE_URL=http://localhost:" + m.getHttpPort());
-			    cfg.println(service + "_BASE_PATH=/" + artifactId + "/rest");
+			    cfg.println(service + "_BASE_PATH=/" + artifactId + "/" + serviceName + "/rest");
 			    cfg.println(service + "_SAMPLE_PATH=${" + service + "_BASE_PATH}/sample");
 			    cfg.println(service + "_INBOUND_URL=${" + service + "_BASE_URL}${" + service + "_BASE_PATH}");
 

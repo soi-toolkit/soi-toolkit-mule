@@ -5,15 +5,7 @@ ${xmlNamespace.reqRespService}
 
 	<!-- TODO: Add service specific definitions here -->
 
-    <json:object-to-json-transformer name="jaxbToJson" />
-
-    <message-properties-transformer name="setJsonContentType" scope="outbound">
-        <add-message-property key="Content-Type" value="application/json;charset=UTF-8"/>
-    </message-properties-transformer>
- 
-    <rest:config />
-
-    <flow name="ml2-service">
+    <flow name="${service}-service">
 
         <http:inbound-endpoint
             address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
@@ -26,13 +18,13 @@ ${xmlNamespace.reqRespService}
 
             <!-- FIND: HTTP GET on /sample -->
             <rest:get>
-                <flow-ref name="call-soap-service"/> 
+                <flow-ref name="${service}-soap-service"/> 
             </rest:get>
 
             <!-- CREATE: HTTP POST on /sample -->
             <rest:post>
                 <json:json-to-object-transformer doc:name="json to CreateSample-object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample"/>
-                <flow-ref name="call-soap-service"/> 
+                <flow-ref name="${service}-soap-service"/> 
             </rest:post>
 
         </rest:router> 
@@ -41,7 +33,7 @@ ${xmlNamespace.reqRespService}
 
             <!-- READ: HTTP GET on /sample/{id} -->
             <rest:get>
-                <flow-ref name="call-soap-service"/> 
+                <flow-ref name="${service}-soap-service"/> 
             </rest:get>
 
         </rest:router> 
@@ -62,9 +54,9 @@ ${xmlNamespace.reqRespService}
     </flow>
 
 
-    <flow name="call-soap-service"> 
+    <flow name="${service}-soap-service"> 
 
-        <custom-transformer doc:name="transform-request" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
+        <custom-transformer doc:name="transform request" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
 
         <custom-transformer doc:name="object to xml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
             <spring:property name="contextPath" value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
@@ -75,7 +67,7 @@ ${xmlNamespace.reqRespService}
                 <spring:property name="contextPath"  value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
             </custom-transformer>
 
-            <custom-transformer doc:name="transform-response" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
+            <custom-transformer doc:name="transform response" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
         </response>
 
         <http:outbound-endpoint 

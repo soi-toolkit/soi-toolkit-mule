@@ -39,7 +39,6 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractMessage
 	 */
 	protected Object pojoTransform(Object request, String id, String encoding) throws TransformerException {
 
-        System.err.println("Transforming request: " + request);
         log.debug("Transforming payload: {}", request);
 
         if (request instanceof CreateSample) {
