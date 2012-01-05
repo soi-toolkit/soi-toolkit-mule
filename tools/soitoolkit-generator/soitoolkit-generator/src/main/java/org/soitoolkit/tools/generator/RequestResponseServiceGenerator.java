@@ -167,8 +167,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 
-		// FIXME. MULE STUDIO.
-//    	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
+    	gu.generateContentAndCreateFile("__artifactId__-__service__-soapui-project.xml.gt");
     	gu.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
     	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-service.mflow");
     	if (transformerType == TransformerEnum.SMOOKS) {
