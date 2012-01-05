@@ -18,9 +18,12 @@ import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
 import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.Fault;
 
 <% if (inboundTransport=="SOAPSERVLET") { %>
@@ -101,6 +104,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         request.setValue(value);
         return new ${capitalizedJavaService}TestProducer().createSample(request).getId();
     }
+    private FindSamplesResponse findSampleEntities() throws Fault {
+        return new ${capitalizedJavaService}TestProducer().findSamples(new FindSamples());
+    }
 
     @Test
     public void test_createSample_ok() throws Exception {
@@ -134,6 +140,40 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         // Verify result
         GetSampleResponse responseObj = json.unmarshal((InputStream)response.getPayload(), GetSampleResponse.class);
         assertEquals(ENTITY1_VALUE, responseObj.getValue());
+    }
+    
+    @Test
+    public void test_updateSample_ok() throws Exception {
+
+        // Prepare request
+        UpdateSample request = new UpdateSample();
+        request.setId(ENTITY1_ID);
+        request.setValue("Another value");
+        
+        String requestJson = json.marshal(request);
+        
+        // Perform call
+        MuleMessage response = restClient.doHttpPutRequest_JsonContent(INBOUND_URL + "/sample/" + ENTITY1_ID, requestJson);
+        
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Verify result
+        UpdateSampleResponse responseObj = json.unmarshal((InputStream)response.getPayload(), UpdateSampleResponse.class);
+        assertNotNull(responseObj);
+    }
+    
+    @Test
+    public void test_deleteSample_ok() throws Exception {
+
+        // Perform call
+        MuleMessage response = restClient.doHttpDeleteRequest_JsonConent(INBOUND_URL + "/sample/" + ENTITY1_ID);
+        
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Verify result
+        assertEquals(1, findSampleEntities().getSampleEntity().size());
     }
     
     @Test

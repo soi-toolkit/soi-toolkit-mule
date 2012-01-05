@@ -36,6 +36,17 @@ ${xmlNamespace.reqRespService}
                 <flow-ref name="${service}-soap-service"/> 
             </rest:get>
 
+            <!-- UPDATE: HTTP PUT on /sample/{id} -->
+            <rest:put>
+                <json:json-to-object-transformer doc:name="json to UpdateSample-object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample"/>
+                <flow-ref name="${service}-soap-service"/> 
+            </rest:put>
+
+            <!-- DELETE: HTTP DELETE on /sample/{id} -->
+            <rest:delete>
+                <flow-ref name="${service}-soap-service"/> 
+            </rest:delete>
+
         </rest:router> 
 
         <!-- 

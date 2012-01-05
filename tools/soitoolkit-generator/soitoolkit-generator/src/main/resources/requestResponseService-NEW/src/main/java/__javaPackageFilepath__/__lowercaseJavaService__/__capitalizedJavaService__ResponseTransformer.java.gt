@@ -1,7 +1,5 @@
 package ${javaPackage}.${lowercaseJavaService};
 
-import java.util.StringTokenizer;
-
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
@@ -12,9 +10,11 @@ import org.slf4j.LoggerFactory;
 <% if (inboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTP") { %>
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
 <% } %>
 public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
 
@@ -46,7 +46,9 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
 <% if (outboundTransport=="SOAPHTTP") { %>
         if ((response instanceof CreateSampleResponse) ||
             (response instanceof FindSamplesResponse) ||
-            (response instanceof GetSampleResponse)) {
+            (response instanceof GetSampleResponse) ||
+            (response instanceof UpdateSampleResponse) ||
+            (response instanceof DeleteSampleResponse)) {
             
             // No transformation is required
             return response;

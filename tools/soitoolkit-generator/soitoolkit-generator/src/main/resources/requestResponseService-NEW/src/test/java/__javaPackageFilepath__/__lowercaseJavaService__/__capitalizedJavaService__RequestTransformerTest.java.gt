@@ -23,7 +23,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
         
         // Create the transformer under test and let it perform the transformation
         ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
-        CreateSample result = (CreateSample)transformer.pojoTransform(input, null, "UTF-8");
+        CreateSample result = (CreateSample)transformer.pojoTransform(input, null, null, "UTF-8");
 
         // Compare the result to the expected value
         assertEquals(input.getValue(), result.getValue());
@@ -36,7 +36,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
         
         // Create the transformer under test and let it perform the transformation
         ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
-        FindSamples result = (FindSamples)transformer.pojoTransform(input, null, "UTF-8");
+        FindSamples result = (FindSamples)transformer.pojoTransform(input, null, null, "UTF-8");
 
         // Compare the result to the expected value
         assertNotNull(result);
@@ -51,7 +51,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
         
         // Create the transformer under test and let it perform the transformation
         ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
-        GetSample result = (GetSample)transformer.pojoTransform(input, id, "UTF-8");
+        GetSample result = (GetSample)transformer.pojoTransform(input, "GET", id, "UTF-8");
 
         // Compare the result to the expected value
         assertEquals(id, result.getId());
@@ -66,7 +66,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
         ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
         
         try {
-            transformer.pojoTransform(input, null, "UTF-8");
+            transformer.pojoTransform(input, null, null, "UTF-8");
             fail("Expected TransformerException here!");
             
         // Assert expected error information
@@ -85,7 +85,7 @@ public class ${capitalizedJavaService}RequestTransformerTest {
         ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
         
         try {
-            transformer.pojoTransform(input, null, "UTF-8");
+            transformer.pojoTransform(input, null, null, "UTF-8");
             fail("Expected TransformerException here!");
             
         // Assert expected error information

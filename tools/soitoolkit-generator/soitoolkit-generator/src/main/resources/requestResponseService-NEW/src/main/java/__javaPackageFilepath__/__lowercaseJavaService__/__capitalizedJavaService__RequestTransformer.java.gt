@@ -1,6 +1,7 @@
 package ${javaPackage}.${lowercaseJavaService};
 
 import static org.soitoolkit.commons.mule.util.MuleUtil.getFlowVariable;
+import static org.mule.transport.http.HttpConnector.HTTP_METHOD_PROPERTY;
 
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
@@ -10,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
 
 public class ${capitalizedJavaService}RequestTransformer extends AbstractMessageTransformer {
 
@@ -29,19 +32,21 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractMessage
         // Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
 
         // Pick up the id-variable if set by the rest module, e.g. for a http get-request on a specific resource entity
+        String method = message.getInboundProperty(HTTP_METHOD_PROPERTY);
         String id = getFlowVariable(message, "id");
 
-        return pojoTransform(message.getPayload(), id, outputEncoding);
+        return pojoTransform(message.getPayload(), method, id, outputEncoding);
     }
 
 	/**
      * Simple pojo transformer method that can be tested with plain unit testing...
 	 */
-	protected Object pojoTransform(Object request, String id, String encoding) throws TransformerException {
+	protected Object pojoTransform(Object request, String method, String id, String encoding) throws TransformerException {
 
         log.debug("Transforming payload: {}", request);
 
-        if (request instanceof CreateSample) {
+        if ((request instanceof CreateSample) ||
+            (request instanceof UpdateSample)) {
             
             // No transformation is required
             return request;
@@ -61,14 +66,31 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractMessage
                 
             } else if (path.startsWith(BASE_PATH + "/sample/")) {
                 
-                /*
-                 * HTTP GET to /sample/{id}
-                 */
-        
-                // Return a SOAP-request object with the id set
-                GetSample reqObj = new GetSample();
-                reqObj.setId(id);
-                return reqObj;
+                if (method.equalsIgnoreCase("GET")) {
+                    
+                    /*
+                     * HTTP GET to /sample/{id}
+                     */
+            
+                    // Return a SOAP-request object with the id set
+                    GetSample reqObj = new GetSample();
+                    reqObj.setId(id);
+                    return reqObj;
+                    
+                } else if (method.equalsIgnoreCase("DELETE")) {
+                    
+                    /*
+                     * HTTP DELETE to /sample/{id}
+                     */
+            
+                    // Return a SOAP-request object with the id set
+                    DeleteSample reqObj = new DeleteSample();
+                    reqObj.setId(id);
+                    return reqObj;
+
+                } else {
+                    throw new TransformerException(MessageFactory.createStaticMessage("Unsupported http-method: " + method + " on request: " + request), this);
+                }
                 
             } else {
                 throw new TransformerException(MessageFactory.createStaticMessage("Unknown content: " + request), this);
