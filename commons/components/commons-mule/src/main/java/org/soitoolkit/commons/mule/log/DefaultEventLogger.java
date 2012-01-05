@@ -17,6 +17,7 @@
 package org.soitoolkit.commons.mule.log;
 
 import static org.mule.api.config.MuleProperties.MULE_ENDPOINT_PROPERTY;
+import static org.mule.transport.http.HttpConnector.HTTP_METHOD_PROPERTY;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
@@ -463,10 +464,28 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
         try {
         	if (message != null) {
 	        	String outEp = message.getOutboundProperty(MULE_ENDPOINT_PROPERTY);
-	        	if (outEp != null) return outEp;
+	        	if (outEp != null) {
+	        		// If http endpoint then try to add the http-method
+	        		if (outEp.startsWith("http")) {
+	        			String httpMethod = message.getOutboundProperty(HTTP_METHOD_PROPERTY);
+	        			if (httpMethod != null) {
+	        				outEp += " (" + httpMethod + ")";
+	        			}
+	        		}
+	        		return outEp;
+	        	}
 	        	
 	        	String inEp  = message.getInboundProperty(MULE_ENDPOINT_PROPERTY);
-	        	if (inEp != null) return inEp;
+	        	if (inEp != null) {
+	        		// If http endpoint then try to add the http-method
+	        		if (inEp.startsWith("http")) {
+	        			String httpMethod = message.getInboundProperty(HTTP_METHOD_PROPERTY);
+	        			if (httpMethod != null) {
+	        				inEp += " (" + httpMethod + ")";
+	        			}
+	        		}
+	        		return inEp;
+	        	}
         	}
 
         	if (event != null) {
