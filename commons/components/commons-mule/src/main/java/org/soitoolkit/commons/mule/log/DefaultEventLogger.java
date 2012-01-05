@@ -16,10 +16,11 @@
  */
 package org.soitoolkit.commons.mule.log;
 
+import static org.mule.api.config.MuleProperties.MULE_ENDPOINT_PROPERTY;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -48,7 +49,6 @@ import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleConfiguration;
 import org.mule.api.context.MuleContextAware;
-import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
 import org.mule.config.DefaultMuleConfiguration;
@@ -267,13 +267,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		// TODO: Will event-context always be null when an error is reported?
 		// If so then its probably better to move this code to the info-logger method.
 	    String           serviceImplementation = "";
-		String           endpoint    = "";
         MuleEventContext event       = RequestContext.getEventContext();
         if (event != null) {
 		    serviceImplementation   = MuleUtil.getServiceName(event);
-		    URI endpointURI         = event.getEndpointURI();
-			endpoint                = (endpointURI == null)? "" : endpointURI.toString();
         }
+
+        String endpoint = getEndpoint(message, event);
 		
 		String messageId             = "";
 		String integrationScenarioId = ""; 
@@ -447,6 +446,41 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		
 		// We are actually done :-)
 		return logEvent;
+	}
+
+	/**
+	 * Pick up the most relevant endpoint information:
+	 * 
+	 * 1. First from the outbound property MULE_ENDPOINT_PROPERTY if found
+	 * 2. Secondly from the inbound property MULE_ENDPOINT_PROPERTY if found
+	 * 3. Last try with the mule-event's endpoint-info
+	 * 
+	 * @param message
+	 * @param event
+	 * @return
+	 */
+	protected String getEndpoint(MuleMessage message, MuleEventContext event) {
+        try {
+        	if (message != null) {
+	        	String outEp = message.getOutboundProperty(MULE_ENDPOINT_PROPERTY);
+	        	if (outEp != null) return outEp;
+	        	
+	        	String inEp  = message.getInboundProperty(MULE_ENDPOINT_PROPERTY);
+	        	if (inEp != null) return inEp;
+        	}
+
+        	if (event != null) {
+    		    URI endpointURI = event.getEndpointURI();
+    			return (endpointURI == null)? "" : endpointURI.toString();
+            }
+
+        	// No luck at all this time :-(
+        	return "";
+
+        } catch (Throwable ex) {
+        	// Really bad...
+        	return "GET-ENDPOINT ERROR: " + ex.getMessage();
+        }
 	}
 
 	/**
