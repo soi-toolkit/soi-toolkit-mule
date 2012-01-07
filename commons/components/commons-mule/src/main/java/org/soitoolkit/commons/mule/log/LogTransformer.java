@@ -311,7 +311,7 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 
 	private String evaluateValue(String key, String value, MuleMessage message) {
 		try {
-			if(muleContext.getExpressionManager().isValidExpression(value.toString())) {
+			if(isValidExpression(value)) {
 		    	String before = value;
 		    	Object eval = muleContext.getExpressionManager().evaluate(value.toString(), message);
 
@@ -336,5 +336,13 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 			value = errMsg + ", " + ex;
 		}
 		return value;
+	}
+
+	private boolean isValidExpression(String expression) {
+		try {
+			return muleContext.getExpressionManager().isValidExpression(expression);
+		} catch (Throwable ex) {
+			return false;
+		}
 	}
 }
