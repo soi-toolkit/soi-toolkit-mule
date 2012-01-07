@@ -18,6 +18,7 @@ package org.soitoolkit.commons.mule.log;
 
 import static org.mule.api.config.MuleProperties.MULE_ENDPOINT_PROPERTY;
 import static org.mule.transport.http.HttpConnector.HTTP_METHOD_PROPERTY;
+import static org.mule.transport.http.HttpConnector.HTTP_REQUEST_PROPERTY;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
@@ -490,7 +491,17 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 
         	if (event != null) {
     		    URI endpointURI = event.getEndpointURI();
-    			return (endpointURI == null)? "" : endpointURI.toString();
+    			String ep = (endpointURI == null)? "" : endpointURI.toString();
+        		if (ep.startsWith("http")) {
+        			String httpMethod  = message.getInboundProperty(HTTP_METHOD_PROPERTY);
+        			String httpRequest = message.getInboundProperty(HTTP_REQUEST_PROPERTY);
+        			if (httpMethod != null) {
+        				ep += " (" + httpMethod + " on " + httpRequest + ")";
+        			}
+        		}
+    			
+    			
+    			return ep;
             }
 
         	// No luck at all this time :-(
