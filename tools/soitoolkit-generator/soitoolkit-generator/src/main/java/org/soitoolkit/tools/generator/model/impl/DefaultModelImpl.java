@@ -44,7 +44,7 @@ import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
 public class DefaultModelImpl implements IModel {
 
-	private static final String SOITOOLKIT_VERSION = "0.5.0-SNAPSHOT";
+	private static final String SOITOOLKIT_VERSION = "0.5.0";
 
 	private String groupId;
 	private String artifactId;

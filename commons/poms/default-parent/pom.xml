@@ -51,7 +51,7 @@
 			 to its own project-version and not soi-toolkits. 
 			 So we have to specify the soitoolkit-version twice! 
 		-->
-    <soitoolkit.version>0.5.0-SNAPSHOT</soitoolkit.version>
+    <soitoolkit.version>0.5.0</soitoolkit.version>
     
     <compiler.target.version>1.5</compiler.target.version>
     <compiler.source.version>1.5</compiler.source.version>
