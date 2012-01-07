@@ -69,12 +69,12 @@ ${xmlNamespace.reqRespService}
 
         <custom-transformer doc:name="transform request" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
 
-        <custom-transformer doc:name="object to xml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
+        <custom-transformer name="${service}-objToXml" doc:name="object to xml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
             <spring:property name="contextPath" value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
         </custom-transformer>
 
         <response>
-            <custom-transformer doc:name="xml to object" class="org.soitoolkit.commons.mule.jaxb.XmlToJaxbObjectTransformer">
+            <custom-transformer name="${service}-xmlToObj" doc:name="xml to object" class="org.soitoolkit.commons.mule.jaxb.XmlToJaxbObjectTransformer">
                 <spring:property name="contextPath"  value="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
             </custom-transformer>
 

@@ -197,7 +197,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
                 assertEquals(ENTITY2_VALUE, entity.getValue());
             
             } else {
-                fail("Unknown endtity id: " + entity.getId());
+                fail("Unknown entity id: " + entity.getId());
             }
         }
     }

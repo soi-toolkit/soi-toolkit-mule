@@ -116,7 +116,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
             errMsg = ep.getMessage();
         }
 
-        log.warn("transformer caught an exception payload: {}", errMsg);
+        log.warn("Transformer caught an exception payload: {}", errMsg);
         return createFault(errMsg);
     }
 
