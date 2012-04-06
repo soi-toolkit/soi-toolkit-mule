@@ -30,6 +30,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     <groupId>org.soitoolkit</groupId>
     <artifactId>soitoolkit</artifactId>
     <version>0.5.1-SNAPSHOT</version>
+    <relativePath>../../../pom.xml</relativePath>
   </parent>
 
   <groupId>org.soitoolkit.refapps.dealernetwork</groupId>

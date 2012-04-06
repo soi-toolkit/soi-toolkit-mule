@@ -21,6 +21,7 @@
 		<groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
 		<version>0.5.1-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -34,7 +35,7 @@
     <schema.path>${basedir}/src/main/resources/schemas</schema.path>
     <schema.gen.src.dir>${project.build.directory}/generated-sources/cxf</schema.gen.src.dir>
   </properties>
-    
+
   <dependencies>
     <dependency>
       <groupId>org.soitoolkit.commons.poms</groupId>
@@ -44,7 +45,7 @@
       <scope>provided</scope>
 	  </dependency>
   </dependencies>
-  
+
   	<build>
 		<plugins>
 			<plugin>
