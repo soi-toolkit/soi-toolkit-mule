@@ -47,7 +47,7 @@ public class UpdateTool {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		String newVersion = "0.5.0"; // specified as "n.n.n"
+		String newVersion = "0.5.1"; // specified as "n.n.n"
 		boolean isSnapshot = true; // true or false
 
 		UpdateTool ut = new UpdateTool();

@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.commons.mule.jaxb;
 
+import static org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer.LOG_OBJ_CREATION;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -35,11 +37,20 @@ public abstract class AbstractJaxbTransformer extends AbstractMessageAwareTransf
     private JaxbUtil jaxbUtil;
 
     private static Map<String, JaxbUtil> jaxbUtilMap = new HashMap<String, JaxbUtil>();
+
+	public static int lastId = 0;
+	public int id = 0;
+	public AbstractJaxbTransformer() {
+		id = ++lastId;
+		if (LOG_OBJ_CREATION) System.err.println("### " + getClass().getSimpleName() + "#" + id + " CREATED");
+	}
     
     @Override
     public void initialise() throws InitialisationException {
         try {
+        	if (LOG_OBJ_CREATION) System.err.println("### " + getClass().getSimpleName() + "#" + id + " initialise called");
         	initializeCachedJaxbObject();
+        	if (LOG_OBJ_CREATION) System.err.println("### " + getClass().getSimpleName() + "#" + id + " initialise result, jaxb-util null? " + (jaxbUtil == null));
         	
         } catch (JAXBException e) {
             throw new InitialisationException(e, this);
@@ -87,10 +98,12 @@ public abstract class AbstractJaxbTransformer extends AbstractMessageAwareTransf
     }
 
     public void setContextPath(String contextPath) {
+    	if (LOG_OBJ_CREATION)  System.err.println("### " + getClass().getSimpleName() + "#" + id + " set contextPath " + contextPath);
         this.contextPath = trimWhitespace(contextPath);
     }
 
-	protected JaxbUtil getJaxbUtil() {
+	public JaxbUtil getJaxbUtil() {
+	// TODO: ML FIX TEST protected JaxbUtil getJaxbUtil() {
         return jaxbUtil;
     }
 

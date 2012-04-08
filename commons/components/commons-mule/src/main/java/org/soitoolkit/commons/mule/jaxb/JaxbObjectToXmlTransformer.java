@@ -45,6 +45,8 @@ import org.mule.api.transformer.TransformerException;
  */
 public class JaxbObjectToXmlTransformer extends AbstractJaxbTransformer {
 
+	public static final boolean LOG_OBJ_CREATION = false;
+
 	private String namespaceURI  = null; // urn:org.soitoolkit:purchase:v1
 	private String localPart     = null; // Schedule
 
@@ -53,11 +55,16 @@ public class JaxbObjectToXmlTransformer extends AbstractJaxbTransformer {
         setReturnClass(String.class);
     }
 
+    @Override
 	public Object transform(MuleMessage message, String outputEncoding) throws TransformerException {
+    	return transformJaxbObjectToXml(message.getPayload());
+    }
+
+	public String transformJaxbObjectToXml(Object jaxbObject) throws TransformerException {
+		if (LOG_OBJ_CREATION) System.err.println("JAXB-TO-XML-TRANSFORMER#" + id + " TRANSFORM WITH NULL JAXB-UTIL-OBJECT: " + (getJaxbUtil() == null));
 
     	String xmlString = null;
     	
-    	Object jaxbObject = message.getPayload();
         if (namespaceURI == null && localPart == null) {
         	xmlString = getJaxbUtil().marshal(jaxbObject);
         } else {

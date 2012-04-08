@@ -73,4 +73,42 @@ public class RestClient {
     	return response;
 	}
 
+	/**
+	 * Perform a HTTP PUT call with json request
+	 * 
+	 * @param url
+	 * @param payload
+	 * @return
+	 * @throws MuleException
+	 */
+	public MuleMessage doHttpPutRequest_JsonContent(String url, String payload) throws MuleException {    	
+
+		Map<String, String> properties = new HashMap<String, String>();
+    	properties.put("http.method",    "PUT");
+    	properties.put("Content-Type",   "application/json;charset=utf-8");
+
+    	MuleMessage response = muleClient.send(url, payload, properties);
+    	
+    	return response;
+	}
+	
+	/**
+	 * Perform a HTTP DELETE call with json response
+	 * 
+	 * @param url
+	 * @return
+	 * @throws MuleException
+	 */
+	public MuleMessage doHttpDeleteRequest_JsonConent(String url) throws MuleException {    	
+
+		Map<String, String> properties = new HashMap<String, String>();
+    	properties.put("http.method",    "DELETE");
+    	properties.put("Accept",         "application/json");
+    	properties.put("Accept-Charset", "utf-8");
+
+    	MuleMessage response = muleClient.send(url, null, properties);
+    	
+    	return response;
+	}
+
 }

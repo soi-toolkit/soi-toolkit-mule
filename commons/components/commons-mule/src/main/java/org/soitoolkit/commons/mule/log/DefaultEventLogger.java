@@ -16,10 +16,15 @@
  */
 package org.soitoolkit.commons.mule.log;
 
+import static org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer.LOG_OBJ_CREATION;
+
+import static org.mule.api.config.MuleProperties.MULE_ENDPOINT_PROPERTY;
+import static org.mule.transport.http.HttpConnector.HTTP_METHOD_PROPERTY;
+import static org.mule.transport.http.HttpConnector.HTTP_REQUEST_PROPERTY;
+import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CONTRACT_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID;
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
-import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_BUSINESS_CONTEXT_ID;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -48,7 +53,6 @@ import org.mule.api.MuleEventContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleConfiguration;
 import org.mule.api.context.MuleContextAware;
-import org.mule.api.endpoint.EndpointURI;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
 import org.mule.config.DefaultMuleConfiguration;
@@ -123,8 +127,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		}
 	}
 
+	public static int lastId = 0;
+	public int id = 0;
 	public DefaultEventLogger() {
 		log.debug("constructor");
+		id = ++lastId;
+		if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " CREATED");
 	}
 
 
@@ -143,6 +151,8 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	 * @param jaxbToXml
 	 */
 	public void setJaxbToXml(JaxbObjectToXmlTransformer jaxbToXml) {
+		if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " GOT JaxbObjectToXmlTransformer#" + jaxbToXml.id);
+//		Thread.dumpStack();
 		this.jaxbToXml  = jaxbToXml;
 	}
 	
@@ -267,13 +277,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		// TODO: Will event-context always be null when an error is reported?
 		// If so then its probably better to move this code to the info-logger method.
 	    String           serviceImplementation = "";
-		String           endpoint    = "";
         MuleEventContext event       = RequestContext.getEventContext();
         if (event != null) {
 		    serviceImplementation   = MuleUtil.getServiceName(event);
-		    URI endpointURI         = event.getEndpointURI();
-			endpoint                = (endpointURI == null)? "" : endpointURI.toString();
         }
+
+        String endpoint = getEndpoint(message, event);
 		
 		String messageId             = "";
 		String integrationScenarioId = ""; 
@@ -447,6 +456,69 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		
 		// We are actually done :-)
 		return logEvent;
+	}
+
+	/**
+	 * Pick up the most relevant endpoint information:
+	 * 
+	 * 1. First from the outbound property MULE_ENDPOINT_PROPERTY if found
+	 * 2. Secondly from the inbound property MULE_ENDPOINT_PROPERTY if found
+	 * 3. Last try with the mule-event's endpoint-info
+	 * 
+	 * @param message
+	 * @param event
+	 * @return
+	 */
+	protected String getEndpoint(MuleMessage message, MuleEventContext event) {
+        try {
+        	if (message != null) {
+	        	String outEp = message.getOutboundProperty(MULE_ENDPOINT_PROPERTY);
+	        	if (outEp != null) {
+	        		// If http endpoint then try to add the http-method
+	        		if (outEp.startsWith("http")) {
+	        			String httpMethod = message.getOutboundProperty(HTTP_METHOD_PROPERTY);
+	        			if (httpMethod != null) {
+	        				outEp += " (" + httpMethod + ")";
+	        			}
+	        		}
+	        		return outEp;
+	        	}
+	        	
+	        	String inEp  = message.getInboundProperty(MULE_ENDPOINT_PROPERTY);
+	        	if (inEp != null) {
+	        		// If http endpoint then try to add the http-method
+	        		if (inEp.startsWith("http")) {
+	        			String httpMethod = message.getInboundProperty(HTTP_METHOD_PROPERTY);
+	        			if (httpMethod != null) {
+	        				inEp += " (" + httpMethod + ")";
+	        			}
+	        		}
+	        		return inEp;
+	        	}
+        	}
+
+        	if (event != null) {
+    		    URI endpointURI = event.getEndpointURI();
+    			String ep = (endpointURI == null)? "" : endpointURI.toString();
+        		if (ep.startsWith("http")) {
+        			String httpMethod  = message.getInboundProperty(HTTP_METHOD_PROPERTY);
+        			String httpRequest = message.getInboundProperty(HTTP_REQUEST_PROPERTY);
+        			if (httpMethod != null) {
+        				ep += " (" + httpMethod + " on " + httpRequest + ")";
+        			}
+        		}
+    			
+    			
+    			return ep;
+            }
+
+        	// No luck at all this time :-(
+        	return "";
+
+        } catch (Throwable ex) {
+        	// Really bad...
+        	return "GET-ENDPOINT ERROR: " + ex.getMessage();
+        }
 	}
 
 	/**
@@ -698,11 +770,20 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			}
 
 			try {
-				content = (String) jaxbToXml.doTransform(jaxbObject,
-						outputEncoding);
+				if (jaxbToXml.getJaxbUtil() == null) {
+					if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " SUPERFIX INIT JAXB-OBJECT!!!");
+					jaxbToXml.initialise();
+					if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " JAXB-OBJECT NUL? " + (jaxbToXml.getJaxbUtil() == null));
+				}
+				content = jaxbToXml.transformJaxbObjectToXml(jaxbObject);
 			} catch (TransformerException e) {
+				if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " GOT ERR1");
 				e.printStackTrace();
-				content = "JAXB object marshalling failed: " + e.getMessage();
+				content = "JAXB object marshalling failed 1: " + e.getMessage();
+			} catch (Throwable e) {
+				if (LOG_OBJ_CREATION) System.err.println("DEF_EVENT_LOGGER #" + id + " GOT ERR2");
+				e.printStackTrace();
+				content = "JAXB object marshalling failed 2: " + e.getMessage();
 			}
 		}
 		return content;

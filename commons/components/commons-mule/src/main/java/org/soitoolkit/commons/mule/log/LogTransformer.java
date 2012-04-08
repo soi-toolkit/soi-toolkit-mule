@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.commons.mule.log;
 
+import static org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer.LOG_OBJ_CREATION;
+
 import static org.soitoolkit.commons.logentry.schema.v1.LogLevelType.INFO;
 
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.context.MuleContextAware;
+import org.mule.api.lifecycle.InitialisationException;
 import org.mule.api.transformer.TransformerException;
 import org.mule.message.ExceptionMessage;
 import org.mule.transformer.AbstractMessageTransformer;
@@ -66,6 +69,7 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 	public void setMuleContext(MuleContext muleContext) {
 		super.setMuleContext(muleContext);
 
+		if (LOG_OBJ_CREATION) System.err.println("LOG-TRANFORMER #" + id + " : MuleContext injected, injecting JAXB-2-XML TRANSFORMER WITH JAXB-UTIL: " + (jaxbObjectToXml.getJaxbUtil() != null));
 		log.debug("MuleContext injected");
 		
 		// Also inject the muleContext in the event-logger (since we create the event-logger for now)
@@ -75,6 +79,14 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 			((DefaultEventLogger) eventLogger).setJaxbToXml(jaxbObjectToXml);
 		}
 	}
+
+	
+	@Override
+	public void initialise() throws InitialisationException {
+		super.initialise();
+		if (LOG_OBJ_CREATION) System.err.println("LOG_TRANSFORMER #" + id + " : initialise called");
+	}
+
 
 	/*
 	 * Property logLevel 
@@ -148,10 +160,6 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 		this.extraInfo = extraInfo;
 	}
 
-	public LogTransformer() {
-		//eventLogger = new DefaultEventLogger();		
-	}
-
 	/**
 	 * Setter for the jaxbToXml property
 	 * 
@@ -159,9 +167,21 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 	 */
 	private JaxbObjectToXmlTransformer jaxbObjectToXml;
 	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxbToXml) {
+		if (LOG_OBJ_CREATION) System.err.println("LOG_TRANSFORMER #" + id + " : JaxbObjectToXmlTransformer injected with null jaxb-util: " + (jaxbToXml.getJaxbUtil() == null));
 		this.jaxbObjectToXml = jaxbToXml;
 	}
 	
+	
+	
+	public static int lastId = 0;
+	public int id = 0;
+	public LogTransformer() {
+		log.debug("constructor");
+		id = ++lastId;
+		if (LOG_OBJ_CREATION) System.err.println("LOG-TRANFORMER #" + id + " CREATED");
+		//eventLogger = new DefaultEventLogger();		
+	}
+
 	@Override
 	public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
@@ -294,7 +314,7 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 		}
     }
 
-	private Map<String, String> evaluateMapInfo(Map<String, String> map, MuleMessage message) {
+	protected Map<String, String> evaluateMapInfo(Map<String, String> map, MuleMessage message) {
 		
 		if (map == null) return null;
 		
@@ -309,14 +329,14 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 		return evaluatedMap;
 	}
 
-	private String evaluateValue(String key, String value, MuleMessage message) {
+	protected String evaluateValue(String key, String value, MuleMessage message) {
 		try {
-			if(muleContext.getExpressionManager().isValidExpression(value.toString())) {
+			if(isValidExpression(value)) {
 		    	String before = value;
-		    	Object eval = muleContext.getExpressionManager().evaluate(value.toString(), message);
+		    	Object eval = evaluateExpression(value, message);
 
 		    	if (eval == null) {
-		    		value = "UNKNOWN";
+		    		value = "";
 
 		    	} else if (eval instanceof List) {
 		    		@SuppressWarnings("rawtypes")
@@ -336,5 +356,21 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 			value = errMsg + ", " + ex;
 		}
 		return value;
+	}
+
+	protected boolean isValidExpression(String expression) {
+		try {
+			return muleContext.getExpressionManager().isValidExpression(expression);
+		} catch (Throwable ex) {
+			return false;
+		}
+	}
+
+	protected Object evaluateExpression(String value, MuleMessage message) {
+		try {
+			return muleContext.getExpressionManager().evaluate(value, message, false);
+		} catch (Throwable ex) {
+			return "";
+		}
 	}
 }

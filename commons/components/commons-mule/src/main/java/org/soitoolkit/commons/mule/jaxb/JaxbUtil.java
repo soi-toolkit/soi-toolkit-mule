@@ -232,8 +232,15 @@ public class JaxbUtil {
             return jaxbObject;
         }
         catch (JAXBException e) {
+        	if (payload instanceof String) {
+        		logger.error("ERROR XML: {}", payload);
+        	} else if (payload instanceof byte[]) {
+        		String xml = new String((byte[])payload);
+        		logger.error("ERROR XML: {}", xml);
+        	} else {
+            	logger.error("ERROR XML OF UNKNOWN TYPE: {}", payload.getClass().getName());
+        	}
             throw new RuntimeException(e);
         }
     }
-
 }

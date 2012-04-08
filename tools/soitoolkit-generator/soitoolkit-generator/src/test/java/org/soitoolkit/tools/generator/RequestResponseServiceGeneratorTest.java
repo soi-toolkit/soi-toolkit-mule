@@ -144,6 +144,10 @@ public class RequestResponseServiceGeneratorTest {
 				expectedNoOfFiles--;
 			}
 		}
+
+		// A new generation of the generator is on its way...
+		if (inboundTransport == RESTHTTP && outboundTransport == SOAPHTTP) expectedNoOfFiles = 12;
+
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, actualNoOfFiles);
 	}
 

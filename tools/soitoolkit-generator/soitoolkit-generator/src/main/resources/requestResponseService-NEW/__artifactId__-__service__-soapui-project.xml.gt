@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="${artifactId}-${service}" soapui-version="3.6.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config">
+	<con:settings/>
+	<con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="${service}" type="rest" basePath="/${artifactId}/${service}/rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<con:settings/>
+		<con:definitionCache type="TEXT" rootPart=""/>
+		<con:endpoints>
+			<con:endpoint>http://localhost:8081</con:endpoint>
+		</con:endpoints>
+		<con:resource name="CreateSample" path="sample">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="CreateSample" method="POST">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:sam="http://localhost/${artifactId}/${service}/rest/sample">sam:Response</con:element>
+				</con:representation>
+				<con:representation type="REQUEST">
+					<con:mediaType>application/xml</con:mediaType>
+					<con:params/>
+				</con:representation>
+				<con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request - CreateSample" mediaType="application/xml" postQueryString="false">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8081</con:endpoint>
+					<con:request>{"value":"A value","any":[]}</con:request>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
+        <con:resource name="FindAllSamples" path="sample">
+            <con:settings/>
+            <con:parameters/>
+            <con:method name="FindAllSamples" method="GET">
+                <con:settings/>
+                <con:parameters/>
+                <con:representation type="RESPONSE">
+                    <con:mediaType>application/json</con:mediaType>
+                    <con:status>200</con:status>
+                    <con:params/>
+                    <con:element xmlns:sam="http://localhost/${artifactId}/${service}/rest/sample">sam:Response</con:element>
+                </con:representation>
+                <con:request name="Request - FindAllSamples" mediaType="application/xml">
+                    <con:settings>
+                        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                    </con:settings>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:request/>
+                    <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                    <con:jmsPropertyConfig/>
+                    <con:parameters/>
+                </con:request>
+            </con:method>
+        </con:resource>
+		<con:resource name="GetSampleById" path="sample/1">
+			<con:settings/>
+			<con:parameters/>
+			<con:method name="GetSampleById" method="GET">
+				<con:settings/>
+				<con:parameters/>
+				<con:representation type="FAULT">
+					<con:mediaType>text/xml</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+				</con:representation>
+				<con:representation type="FAULT">
+					<con:mediaType>application/json</con:mediaType>
+					<con:status>500</con:status>
+					<con:params/>
+				</con:representation>
+				<con:representation type="RESPONSE">
+					<con:mediaType>application/json</con:mediaType>
+					<con:status>200</con:status>
+					<con:params/>
+					<con:element xmlns:fe9="http://localhost/${artifactId}/${service}/rest/sample/1">fe9:Response</con:element>
+				</con:representation>
+				<con:request name="Request - GetSampleById" mediaType="application/xml">
+					<con:settings>
+						<con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+					</con:settings>
+					<con:endpoint>http://localhost:8081</con:endpoint>
+					<con:request/>
+					<con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+					<con:jmsPropertyConfig/>
+					<con:parameters/>
+				</con:request>
+			</con:method>
+		</con:resource>
+        <con:resource name="UpdateSample" path="sample/1">
+            <con:settings/>
+            <con:parameters/>
+            <con:method name="UpdateSample" method="PUT">
+                <con:settings/>
+                <con:parameters/>
+                <con:representation type="RESPONSE">
+                    <con:mediaType>application/json</con:mediaType>
+                    <con:status>200</con:status>
+                    <con:params/>
+                    <con:element xmlns:sam="http://localhost/${artifactId}/${service}/rest/sample/1">sam:Response</con:element>
+                </con:representation>
+                <con:representation type="REQUEST">
+                    <con:mediaType>application/xml</con:mediaType>
+                    <con:params/>
+                </con:representation>
+                <con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request - UpdateSample" mediaType="application/xml" postQueryString="false">
+                    <con:settings>
+                        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                    </con:settings>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:request>{"id":"1","value":"Another value","any":[]}</con:request>
+                    <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                    <con:jmsPropertyConfig/>
+                    <con:parameters/>
+                </con:request>
+            </con:method>
+        </con:resource>
+        <con:resource name="DeleteSample" path="sample/1">
+            <con:settings/>
+            <con:parameters/>
+            <con:method name="DeleteSample" method="DELETE">
+                <con:settings/>
+                <con:parameters/>
+                <con:representation type="FAULT">
+                    <con:mediaType>text/xml</con:mediaType>
+                    <con:status>500</con:status>
+                    <con:params/>
+                </con:representation>
+                <con:representation type="FAULT">
+                    <con:mediaType>application/json</con:mediaType>
+                    <con:status>500</con:status>
+                    <con:params/>
+                </con:representation>
+                <con:representation type="RESPONSE">
+                    <con:mediaType>application/json</con:mediaType>
+                    <con:status>200</con:status>
+                    <con:params/>
+                    <con:element xmlns:fe9="http://localhost/${artifactId}/${service}/rest/sample/1">fe9:Response</con:element>
+                </con:representation>
+                <con:request name="Request - DeleteSample" mediaType="application/xml">
+                    <con:settings>
+                        <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                    </con:settings>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:request/>
+                    <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                    <con:jmsPropertyConfig/>
+                    <con:parameters/>
+                </con:request>
+            </con:method>
+        </con:resource>
+	</con:interface>
+	<con:properties/>
+	<con:wssContainer/>
+	<con:sensitiveInformation/>
+</con:soapui-project>
