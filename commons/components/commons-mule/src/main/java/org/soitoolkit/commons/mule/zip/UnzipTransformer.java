@@ -100,7 +100,7 @@ public class UnzipTransformer extends AbstractMessageAwareTransformer {
 					name = name.substring(lastDirSep + 1);
 				}
 				if (log.isDebugEnabled()) {
-					String oldname = message.getProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME).toString();
+					Object oldname = message.getProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME);
 					log.debug("unzip replaces original filename " + oldname + " with " + name);
 				}
 				message.setProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME, name);
