@@ -54,6 +54,7 @@ import org.soitoolkit.commons.mule.sftp.SftpUtil;
 import org.soitoolkit.commons.mule.file.FileUtil;
 import org.soitoolkit.commons.mule.mail.MailUtil;
 import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,14 +89,22 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
 	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
 <% } %> 
-
 <% if (outboundTransport=="JMS") { %>
 	private static final String OUT_QUEUE        = rb.getString("${uppercaseService}_OUT_QUEUE");
 <% } %> 
-
 	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
 	private AbstractJmsTestUtil jmsUtil = null;
-	
+
+<% if (inboundTransport=="JDBC") { %>
+    private static final String IN_TABLE         = "${uppercaseService}_EXPORT_TB";
+<% } %> 
+<% if (outboundTransport=="JDBC") { %>
+    private static final String OUT_TABLE        = "${uppercaseService}_IMPORT_TB";
+<% } %> 
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+    DataSource dataSource = null;
+    SimpleJdbcTemplate jdbcTemplate = null;
+<% } %> 
 <% if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
 	private static final String smtpHost = rb.getString("${uppercaseService}_SMTP_HOST");
 	private static final int    smtpPort = Integer.parseInt(rb.getString("${uppercaseService}_SMTP_PORT"));
@@ -127,9 +136,17 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     }
 
 	protected String getConfigResources() {
-		return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% if (serviceXaTransactional) { %>
+        return "soitoolkit-mule-jms-xa-connector-activemq-embedded.xml," + 
+<% } else { %>  
+        return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% } %>  
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+  <% if (serviceXaTransactional) { %>
+        "soitoolkit-mule-jdbc-xa-datasource-hsql-embedded.xml," +
+  <% } else { %>
         "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
+  <% } %>  
 		"${artifactId}-jdbc-connector.xml," +
 <% } %>  
 <% if (inboundTransport=="FTP" || outboundTransport=="FTP") { %>
@@ -217,8 +234,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
 	private void doSetUpDb() throws FileNotFoundException {
-		DataSource ds = JdbcUtil.lookupDataSource(muleContext, "soitoolkit-jdbc-datasource");
-		JdbcScriptEngine se = new JdbcScriptEngine(ds);
+		dataSource = JdbcUtil.lookupDataSource(muleContext, "soitoolkit-jdbc-datasource");
+		jdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		JdbcScriptEngine se = new JdbcScriptEngine(dataSource);
 		
 		try {
 			se.execute("src/environment/setup/${artifactId}-db-drop-tables.sql");
@@ -323,18 +341,27 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		// Verify inbound jms-queues
         assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
         assertEquals(0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
+<% } else if (inboundTransport=="JDBC") { %>
+        // TODO: Enable this test again as soon as issue #209 is resolved, see http://code.google.com/p/soi-toolkit/issues/detail?id=209
+        // // Verify that the record is gone from the in-table (export table)
+        // int cntIn = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM " + IN_TABLE);
+        // assertEquals("Record still left in in-table", 0, cntIn);
 <% } %> 
 
 <% if (outboundTransport=="JMS") { %>
-		// Verify outbound jms-queues
+		// Verify outbound jms-queues, i.e. that the teststub-producer has consumed it
         assertEquals(0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+<% } else if (outboundTransport=="JDBC") { %>
+        // Verify that the record is consumed by the teststub-producer from the out-table (import table)
+        int cntOut = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM " + OUT_TABLE);
+        assertEquals("Record still left in out-table", 0, cntOut);
 <% } %> 
 
 		// Verify error-queue
         assertEquals(0, jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE).size());
     }
 
-<% if (inboundTransport=="JMS" && outboundTransport=="JMS" ) { %>
+<% if (serviceTransactional) { %>
     /**
      * Verifies error handling with regards to:
      * - transaction-handling 
@@ -366,20 +393,41 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     @Test
     public void test${capitalizedJavaService}_transformationError() throws JMSException {
 
-    	String message = "Cnnn";
-        String expectedErrMsg="Unknown content: " + message;
-
-        // Send a poisoned message to the in-queue and verify that the expected exception occurs in the ESB
-        Exception exception = dispatchAndWaitForException("jms://" + IN_QUEUE, message, null, 2000);
+        String id    = "Cnnn";
+        String value = "Some value";
+        String expectedErrMsg  = "Unknown content: " + id + "=" + value;
+<% if (inboundTransport=="JDBC") { %>
+        String inboundEndpoint = "jdbc://INSERT INTO " + IN_TABLE + "(ID, VALUE) VALUES ('" + id + "', '" + value + "')";
+        String message = null;
+<% } else if (inboundTransport=="JMS") { %>
+        String inboundEndpoint = "jms://" + IN_QUEUE;
+        String message = id + "=" + value;
+<% } %>
+        // Send a poisoned message to the in-endpoint and verify that the expected exception occurs in the ESB
+        Exception exception = dispatchAndWaitForException(inboundEndpoint, message, null, 2000);
         assertTrue(exception instanceof TransformerMessagingException);
         assertTrue(exception.getCause() instanceof TransformerException);
         assertEquals(expectedErrMsg, exception.getCause().getMessage());
 
+<% if (inboundTransport=="JDBC") { %>
+        // Verify that the record still exists in the in-table (export table)
+        int cntIn = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM " + IN_TABLE);
+        assertEquals("Record not found in in-table", 1, cntIn);
+
+        // Allow for some background processing to complete so that the log-message is put on the error-log-queue before we check it
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {}
+
+        // Verifying that we now have a log-message on the error-log-queue
+        assertErrorLogMessages(1, expectedErrMsg);
+<% } else if (inboundTransport=="JMS") { %>
         // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
         try {
         	Thread.sleep(750);
         } catch (InterruptedException e) {}
 
+  <% if (outboundTransport=="JMS") { %>
         // Verify that two error-log-message is sent (for the first time and for the first re-delivery) but not yet anything of the deadletter queue...
         assertErrorLogMessages(2, expectedErrMsg);
         assertEquals("Incorrect number of DLQ-messages", 0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
@@ -388,12 +436,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         try {
         	Thread.sleep(1500);
         } catch (InterruptedException e) {}
+  <% } %>
 
         // Verify that the message now is gone from the in-queue
         assertEquals("Sent message not removed", 0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
-
-        // Verify as well that nothing is placed on the out-queue
-        assertEquals("Unexpected message on out-queue", 0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
 
         // Verify that the in-message now is found on the deadletter queue
         List<Message> msgs = jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE);
@@ -401,9 +447,19 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         String dlqMsg = ((TextMessage)msgs.get(0)).getText();
         assertEquals("Message on DLQ is not identical with the message sent", dlqMsg, message);
 
-        // Wrap up with verifying that we now have four identical log-messages on the error-log-queue
+        // Verifying that we now have four identical log-messages on the error-log-queue
         // One message for the initial attempt and three more for the redeliveries
         assertErrorLogMessages(4, expectedErrMsg);
+<% } %>
+
+<% if (outboundTransport=="JMS") { %>
+        // Verify as well that nothing is placed on the out-queue
+        assertEquals("Unexpected message on out-queue", 0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+<% } else if (outboundTransport=="JDBC") { %>
+        // Verify as well that nothing is placed in the out-table (import table)
+        int cntOut = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM " + OUT_TABLE);
+        assertEquals("Unexpected record in out-table", 0, cntOut);
+<% } %>    
     }    
 
     private void assertErrorLogMessages(int noOfExpectedErrorLogMsgs, String expectedErrMsg) throws JMSException {

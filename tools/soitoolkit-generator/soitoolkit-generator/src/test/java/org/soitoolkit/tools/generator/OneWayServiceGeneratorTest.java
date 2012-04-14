@@ -100,8 +100,6 @@ public class OneWayServiceGeneratorTest {
 
 		for (TransportEnum inboundTransport : inboundTransports) {
 			for (TransportEnum outboundTransport : outboundTransports) {
-				if (inboundTransport == JMS  && outboundTransport == JDBC) continue;
-				if (inboundTransport == JDBC && outboundTransport == JMS)  continue;
 				createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA);
 			}
 		}

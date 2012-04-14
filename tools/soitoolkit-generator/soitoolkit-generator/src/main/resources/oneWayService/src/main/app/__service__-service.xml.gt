@@ -3,6 +3,11 @@
 <mule 
 ${xmlNamespace.onewayService}
 	<!-- TODO: Add service specific definitions here -->
+
+<% if (serviceXaTransactional) { %>
+    <jbossts:transaction-manager/>
+<% } %> 
+
 	<flow name="${service}-service">
 <% if (inboundTransport=="VM") { %>
                 <vm:inbound-endpoint path="${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
@@ -13,14 +18,18 @@ ${xmlNamespace.onewayService}
 
 <% } else if (inboundTransport=="JMS") { %>
                 <jms:inbound-endpoint queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
-<% if (serviceTransactional) { %>
-					<jms:transaction action="ALWAYS_BEGIN" />
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_BEGIN" />
+<% } else if (serviceTransactional) { %>
+                    <jms:transaction action="ALWAYS_BEGIN" />
 <% } %> 
 				</jms:inbound-endpoint>
 
 <% } else if (inboundTransport=="JDBC") { %> 
             	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="logMsgIn">
-<% if (serviceTransactional) { %>
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_BEGIN" />
+<% } else if (serviceTransactional) { %>
 					<jdbc:transaction action="ALWAYS_BEGIN" />
 <% } %> 
             	</jdbc:inbound-endpoint>
@@ -113,7 +122,9 @@ ${xmlNamespace.onewayService}
                 <jms:outbound-endpoint 
                     queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
                     transformer-refs="strToJms logMsgOut">
-<% if (serviceTransactional) { %>
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_JOIN" />
+<% } else if (serviceTransactional) { %>
 					<jms:transaction action="ALWAYS_JOIN" />
 <% } %> 
 				</jms:outbound-endpoint>
@@ -121,7 +132,9 @@ ${xmlNamespace.onewayService}
 <% } else if (outboundTransport=="JDBC") { %>
                 <custom-transformer doc:name="transform-to-db" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
             	<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="logMsgOut">
-<% if (serviceTransactional) { %>
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_JOIN" />
+<% } else if (serviceTransactional) { %>
 					<jdbc:transaction action="ALWAYS_JOIN" />
 <% } %> 
 				</jdbc:outbound-endpoint>

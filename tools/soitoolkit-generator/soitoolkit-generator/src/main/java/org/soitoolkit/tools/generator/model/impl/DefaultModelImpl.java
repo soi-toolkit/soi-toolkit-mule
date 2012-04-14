@@ -508,8 +508,9 @@ public class DefaultModelImpl implements IModel {
     }
     			    	
     public boolean isServiceXaTransactional() {
-    	return false; // Wait a bit more for this one :-)
+    	return isServiceTransactional() && (inboundTransport != outboundTransport);
     }
+    
     public boolean isInboundEndpointFilebased() {
     	return inboundTransport == FILE ||
     	       inboundTransport == FTP  ||

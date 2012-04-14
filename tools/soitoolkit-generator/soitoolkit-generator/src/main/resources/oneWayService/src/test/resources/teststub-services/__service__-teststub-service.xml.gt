@@ -13,7 +13,7 @@ ${xmlNamespace.onewayTeststubService}
                 <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
 
 <% } else if (outboundTransport=="JDBC") { %> 
-            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-teststub-export-query"/>
+            	<jdbc:inbound-endpoint pollingFrequency="100" queryKey="${lowercaseJavaService}-teststub-export-query"/>
 
 <% } else if (outboundTransport=="FILE") { %> 
 				<file:inbound-endpoint

@@ -172,6 +172,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:smtp=\"http://www.mulesoft.org/schema/mule/smtp\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txmlns:script=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
+		sb.append("\txmlns:jbossts=\"http://www.mulesoft.org/schema/mule/jbossts\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core      http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
@@ -186,6 +187,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/smtp      http://www.mulesoft.org/schema/mule/smtp/" + xsdNsMuleVersion + "/mule-smtp.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms       http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/" + xsdNsMuleVersion + "/mule-scripting.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jbossts   http://www.mulesoft.org/schema/mule/jbossts/" + xsdNsMuleVersion + "/mule-jbossts.xsd\n");
 		sb.append("\t\">");
 
 		return sb.toString();
