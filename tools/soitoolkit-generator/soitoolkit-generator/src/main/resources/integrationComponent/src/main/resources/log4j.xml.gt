@@ -32,6 +32,10 @@
 		<level value="ERROR" />
 	</logger>	
 
+    <logger name="org.apache.activemq.transport.failover.FailoverTransport">
+        <level value="DEBUG" />
+    </logger>
+    
 	<logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<level value="TRACE" />
 	</logger>
