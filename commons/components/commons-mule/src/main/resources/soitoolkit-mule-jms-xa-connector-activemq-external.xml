@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+		http://www.mulesoft.org/schema/mule/jms  http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+
+	<spring:beans>
+		<spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml" />
+	</spring:beans>
+
+	<!--
+    Sample configuration settings:
+    
+    SOITOOLKIT_MULE_AMQ_BROKER_URL=failover:(tcp://host1:61616,tcp://host2:61616)
+	SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES=10
+	SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY=60000
+	SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
+	-->
+
+	<spring:bean name="soitoolkit-jms-connection-factory"
+		class="org.apache.activemq.ActiveMQXAConnectionFactory">
+        <spring:property name="brokerURL" value="${SOITOOLKIT_MULE_AMQ_BROKER_URL}" />
+		<spring:property name="redeliveryPolicy">
+			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
+				<spring:property name="maximumRedeliveries" value="${SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES}" />
+				<spring:property name="initialRedeliveryDelay" value="${SOITOOLKIT_MULE_AMQ_REDELIVERY_DELAY}" />			
+			</spring:bean>
+		</spring:property>
+	</spring:bean>
+
+	<jms:connector name="soitoolkit-jms-connector"
+		connectionFactory-ref="soitoolkit-jms-connection-factory"
+		disableTemporaryReplyToDestinations="true" 
+		persistentDelivery="true"
+		numberOfConsumers="${SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS}"
+		specification="1.1"
+		maxRedelivery="-1">
+
+<!-- NOTE: The use below of Mule rety-policies are under development... -->
+
+<!-- 
+ 		<spring:property name="retryPolicyTemplate" ref="threadingPolicyTemplate" />
+ -->
+		
+<!-- 
+		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
+ -->
+
+<!-- 
+        <default-connector-exception-strategy>
+            <outbound-endpoint address="file://./mule-connector-errors">
+            	<jms:transaction action="JOIN_IF_POSSIBLE" />
+            </outbound-endpoint>
+        </default-connector-exception-strategy>
+ -->
+        		
+	</jms:connector>
+
+	<spring:bean id="threadingPolicyTemplate"
+		class="org.mule.modules.common.retry.policies.AdaptiveRetryPolicyTemplateWrapper">
+		<spring:property name="delegate" ref="exhaustingRetryPolicyTemplate" />
+	</spring:bean>
+
+	<spring:bean id="exhaustingRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ExhaustingRetryPolicyTemplate">
+	    <spring:property name="sleepTime" value="1000"/>
+	    <spring:property name="retryLimit" value="2"/>
+	</spring:bean>
+
+<!-- 
+	<spring:bean id="foreverRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ForeverRetryPolicyTemplate" />
+
+	<jms:activemq-connector name="soitoolkit-jms-connector"
+		brokerURL="failover:(tcp://localhost:61616)"
+		disableTemporaryReplyToDestinations="true" persistentDelivery="true"
+		numberOfConsumers="2" specification="1.1">
+		<spring:property name="retryPolicyTemplate" ref="ThreadingPolicyTemplate" />
+	</jms:activemq-connector>
+ -->
+
+</mule>
