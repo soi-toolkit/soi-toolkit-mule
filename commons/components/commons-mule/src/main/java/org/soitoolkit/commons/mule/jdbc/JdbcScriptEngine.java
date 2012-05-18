@@ -42,9 +42,28 @@ public class JdbcScriptEngine {
 	}
 	
 	public void execute(String scriptFilename) throws FileNotFoundException {
+		execute(scriptFilename, false);
+	}
+	
+	public void execute(String scriptFilename, boolean ignoreErrors) throws FileNotFoundException {
 		String s = MiscUtil.convertStreamToString(new FileInputStream(scriptFilename));
 		log.info("Execute JDBC-scriptfile: {}", scriptFilename);
-		t.getJdbcOperations().execute(s);
+		String[] sqlArr = s.split(";");
+		for (String sql : sqlArr) {
+			if (sql != null && sql.trim().length() > 0) {
+				try {
+					log.debug("Execute: {}", sql);
+					t.getJdbcOperations().execute(sql);
+				} catch (RuntimeException e) {
+					if (ignoreErrors) {
+						log.debug("Ignore failed to execute sql command [" + sql + "], error: " + e.getMessage());
+					} else {
+						log.warn("Failed to execute sql command [" + sql + "], error: " + e.getMessage());
+						throw e;
+					}
+				}
+			}
+		}
 		log.info("Done executing JDBC-scriptfile: {}", scriptFilename);
 	}
 }
