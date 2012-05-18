@@ -34,7 +34,7 @@
 			SOITOOLKIT_JDBC_USR=username
 			SOITOOLKIT_JDBC_PWD=passowrd
 	    	SOITOOLKIT_JDBC_CON_POOL_INIT_SIZE=1
-	    	SOITOOLKIT_JDBC_CON_POOL_MAX_ACTIVE=2
+	    	SOITOOLKIT_JDBC_CON_POOL_MAX_ACTIVE=10
 	    	SOITOOLKIT_JDBC_CON_POOL_MAX_IDLE=10
 
 		Note: It is recommended to keep the username and password properties separate in the security-property-file
