@@ -29,11 +29,11 @@ public class IntegrationComponentTeststubGenerator implements Generator {
 
 	GeneratorUtil gu;
 	
-	public IntegrationComponentTeststubGenerator(PrintStream ps, String groupId, String artifactId, String version, DeploymentModelEnum deploymentModel, String folderName) {
+	public IntegrationComponentTeststubGenerator(PrintStream ps, String groupId, String artifactId, String version, DeploymentModelEnum deploymentModel, String outputFolder) {
 		// Test of custom model impl
 		// ModelFactory.setModelClass(CustomizedModelImpl.class);
 		MuleVersionEnum muleVersionOnlyHereToSatisfyTheUnderlyingModel = MuleVersionEnum.MAIN_MULE_VERSION;
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersionOnlyHereToSatisfyTheUnderlyingModel, deploymentModel, null, "/integrationComponentTeststub", folderName + "/__teststubStandaloneProject__");
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersionOnlyHereToSatisfyTheUnderlyingModel, deploymentModel, null, "/integrationComponentTeststub", outputFolder + "/__teststubStandaloneProject__");
 	}
     public void startGenerator() {
 

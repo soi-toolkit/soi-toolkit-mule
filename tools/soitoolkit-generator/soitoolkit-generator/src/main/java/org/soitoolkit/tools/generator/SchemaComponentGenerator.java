@@ -27,8 +27,8 @@ public class SchemaComponentGenerator implements Generator {
 	
 	GeneratorUtil gu;
 	
-	public SchemaComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, String schemaName, List<String> operations, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, MuleVersionEnum.MAIN_MULE_VERSION, null, schemaName, operations, "/schemaComponent/newProject", folderName + "/__schemaProject__");
+	public SchemaComponentGenerator(PrintStream ps, String groupId, String artifactId, String version, String schemaName, List<String> operations, String outputFolder) {
+		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, MuleVersionEnum.MAIN_MULE_VERSION, null, schemaName, operations, "/schemaComponent/newProject", outputFolder + "/__schemaProject__");
 	}
 		
     public void startGenerator() {

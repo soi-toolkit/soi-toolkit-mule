@@ -51,14 +51,14 @@ public class RequestResponseServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	IModel m;
 	
-	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
+	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String outputFolder) {
 
 		String templateFolder = "/requestResponseService";
 		if (inboundTransport == TransportEnum.RESTHTTP && outboundTransport == SOAPHTTP) {
 			templateFolder = "/requestResponseService-NEW";
 		}
 
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, muleVersion, inboundTransport, outboundTransport, transformerType, templateFolder, folderName);
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, muleVersion, inboundTransport, outboundTransport, transformerType, templateFolder, outputFolder);
 		m = gu.getModel();
 	}
 	
