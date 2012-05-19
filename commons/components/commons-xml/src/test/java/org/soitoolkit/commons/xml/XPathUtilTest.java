@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 public class XPathUtilTest {
 
@@ -146,6 +149,27 @@ public class XPathUtilTest {
 		xml2 = XPathUtil.normalizeXmlString(xml2);
 
 		assertEquals(xml1, xml2);
+	}
+	
+	@Test
+	public void testLookupSpringImportInConfigFile() {
+		assertEquals(0, doLookupSpringImportInConfigFile("test-config-without-searched-element.xml"));
+		assertEquals(1, doLookupSpringImportInConfigFile("test-config-with-searched-element.xml"));
+	}
+
+	private int doLookupSpringImportInConfigFile(String filename) {
+		InputStream content = getClass().getClassLoader().getResourceAsStream(filename);
+
+		Document configDoc = createDocument(content);
+
+		Map<String, String> namespaceMap = new HashMap<String, String>();
+		namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
+		namespaceMap.put("spring", "http://www.springframework.org/schema/beans");
+		String xmlFragmentId = "classpath:soitoolkit-mule-jms-xa-connector-activemq-external.xml";
+		
+		// Lookup the fragment...
+		NodeList testList = getXPathResult(configDoc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
+		return testList.getLength();
 	}
 
 	// -----------

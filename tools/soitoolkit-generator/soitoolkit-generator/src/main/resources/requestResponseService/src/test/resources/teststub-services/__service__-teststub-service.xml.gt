@@ -22,9 +22,10 @@ ${xmlNamespace.reqRespTeststubService}
 <% } else { %> 
     <flow name="${service}-teststub-service">
 <% if (outboundTransport=="JMS") { %>
-        <inbound-endpoint 
+        <jms:inbound-endpoint 
             name="${service}-teststub-endpoint" 
-            address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" 
+            connector-ref="${jmsDefaultConnector}" 
+            queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" 
             transformer-refs="jmsToStr"
             responseTransformer-refs="strToJms"/>
 <% } %> 

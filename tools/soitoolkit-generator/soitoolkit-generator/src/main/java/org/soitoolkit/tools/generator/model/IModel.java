@@ -106,6 +106,9 @@ public interface IModel {
     public String getDefaultSftpIdentityPassphrase();
 
     // JMS Naming...
+    public String getJmsInboundConnector();
+    public String getJmsOutboundConnector();
+    public String getJmsDefaultConnector();
     public String getJmsInQueue();
     public String getJmsOutQueue();
     public String getJmsDLQueue();
@@ -113,6 +116,11 @@ public interface IModel {
     public String getJmsResponseQueue();
     public String getJmsLogInfoQueue();
     public String getJmsLogErrorQueue();
+
+    // JDBC Naming...
+    public String getJdbcInboundConnector();
+    public String getJdbcOutboundConnector();
+    public String getJdbcDefaultConnector();
 
     // HTTP ports...
     public String getServletPort();

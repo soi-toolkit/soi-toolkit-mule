@@ -2,7 +2,7 @@
 <mule 
 ${xmlNamespace.jdbcConnector}
 
-	<jdbc:connector name="jdbcConnector" pollingFrequency="${dollarSymbol}{SOITOOLKIT_JDBC_CON_POLLING_MS}" dataSource-ref="soitoolkit-jdbc-datasource">
+	<jdbc:connector name="soitoolkit-jdbc-connector" pollingFrequency="${dollarSymbol}{SOITOOLKIT_JDBC_CON_POLLING_MS}" dataSource-ref="soitoolkit-jdbc-datasource">
 	</jdbc:connector>
 
 </mule>

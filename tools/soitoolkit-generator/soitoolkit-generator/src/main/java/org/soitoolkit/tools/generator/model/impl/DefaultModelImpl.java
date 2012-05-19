@@ -46,6 +46,11 @@ public class DefaultModelImpl implements IModel {
 
 	private static final String SOITOOLKIT_VERSION = "0.5.1-SNAPSHOT";
 
+	private static final String JMS_CONNECTOR     = "soitoolkit-jms-connector";
+	private static final String JMS_XA_CONNECTOR  = "soitoolkit-jms-xa-connector";
+	private static final String JDBC_CONNECTOR    = "soitoolkit-jdbc-connector";
+	private static final String JDBC_XA_CONNECTOR = "soitoolkit-jdbc-xa-connector";
+
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -410,6 +415,24 @@ public class DefaultModelImpl implements IModel {
 
     // JMS Naming...
 
+    public String getJmsInboundConnector() {
+    	if (isServiceXaTransactional() && inboundTransport == JMS) {
+    		return JMS_XA_CONNECTOR;
+    	} else {
+    		return getJmsDefaultConnector();
+    	}
+    }
+    public String getJmsOutboundConnector() {
+    	if (isServiceXaTransactional() && outboundTransport == JMS) {
+    		return JMS_XA_CONNECTOR;
+    	} else {
+    		return getJmsDefaultConnector();
+    	}
+    }
+    public String getJmsDefaultConnector() {
+		return JMS_CONNECTOR;
+    }
+
     public String getJmsInQueue() {
     	return getJavaArtifactId().toUpperCase() + "." + getService().toUpperCase() + ".IN.QUEUE"; 
     }
@@ -432,6 +455,24 @@ public class DefaultModelImpl implements IModel {
     	return "SOITOOLKIT.LOG.ERROR"; 
     }
 
+    // JDBC Naming...
+    public String getJdbcInboundConnector() {
+    	if (isServiceXaTransactional() && inboundTransport == JDBC) {
+    		return JDBC_XA_CONNECTOR;
+    	} else {
+    		return getJdbcDefaultConnector();
+    	}
+    }
+    public String getJdbcOutboundConnector() {
+    	if (isServiceXaTransactional() && outboundTransport == JDBC) {
+    		return JDBC_XA_CONNECTOR;
+    	} else {
+    		return getJdbcDefaultConnector();
+    	}
+    }
+    public String getJdbcDefaultConnector() {
+		return JDBC_CONNECTOR;
+    }
 
     // HTTP ports...
 	public String getServletPort() {

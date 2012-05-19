@@ -65,8 +65,8 @@ ${xmlNamespace.reqRespService}
 			responseTransformer-refs="objToStr logRespIn" />
 <% } else if (outboundTransport=="JMS") { %>
 		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
-			<jms:outbound-endpoint queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}"  transformer-refs="objToStr strToJms logReqOut" />
-			<jms:inbound-endpoint  queue="${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr"/>
+			<jms:outbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr strToJms logReqOut" />
+			<jms:inbound-endpoint  connector-ref="${jmsOutboundConnector}" queue="${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" transformer-refs="logRespIn jmsToStr"/>
 		</request-reply>
 <% } %> 
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>

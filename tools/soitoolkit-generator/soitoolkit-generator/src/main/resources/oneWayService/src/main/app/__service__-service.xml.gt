@@ -17,7 +17,7 @@ ${xmlNamespace.onewayService}
 				</vm:inbound-endpoint>
 
 <% } else if (inboundTransport=="JMS") { %>
-                <jms:inbound-endpoint queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
+                <jms:inbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
 <% if (serviceXaTransactional) { %>
                     <xa-transaction action="ALWAYS_BEGIN" />
 <% } else if (serviceTransactional) { %>
@@ -26,7 +26,7 @@ ${xmlNamespace.onewayService}
 				</jms:inbound-endpoint>
 
 <% } else if (inboundTransport=="JDBC") { %> 
-            	<jdbc:inbound-endpoint queryKey="${lowercaseJavaService}-export-query" transformer-refs="logMsgIn">
+            	<jdbc:inbound-endpoint connector-ref="${jdbcInboundConnector}" queryKey="${lowercaseJavaService}-export-query" transformer-refs="logMsgIn">
 <% if (serviceXaTransactional) { %>
                     <xa-transaction action="ALWAYS_BEGIN" />
 <% } else if (serviceTransactional) { %>
@@ -120,6 +120,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (outboundTransport=="JMS") { %>
                 <jms:outbound-endpoint 
+                    connector-ref="${jmsOutboundConnector}"
                     queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
                     transformer-refs="strToJms logMsgOut">
 <% if (serviceXaTransactional) { %>
@@ -131,7 +132,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (outboundTransport=="JDBC") { %>
                 <custom-transformer doc:name="transform-to-db" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
-            	<jdbc:outbound-endpoint queryKey="${lowercaseJavaService}-import-query" transformer-refs="logMsgOut">
+            	<jdbc:outbound-endpoint connector-ref="${jdbcOutboundConnector}" queryKey="${lowercaseJavaService}-import-query" transformer-refs="logMsgOut">
 <% if (serviceXaTransactional) { %>
                     <xa-transaction action="ALWAYS_JOIN" />
 <% } else if (serviceTransactional) { %>

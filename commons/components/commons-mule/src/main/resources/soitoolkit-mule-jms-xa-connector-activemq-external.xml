@@ -23,9 +23,11 @@
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
 		http://www.mulesoft.org/schema/mule/jms  http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
 
+<!-- Already imported by soitoolkit-mule-jms-connector-activemq-external.xml, that always will be used together with this one... 
 	<spring:beans>
 		<spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml" />
 	</spring:beans>
+-->
 
 	<!--
     Sample configuration settings:
@@ -36,7 +38,7 @@
 	SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
 	-->
 
-	<spring:bean name="soitoolkit-jms-connection-factory"
+	<spring:bean name="soitoolkit-jms-xa-connection-factory"
 		class="org.apache.activemq.ActiveMQXAConnectionFactory">
         <spring:property name="brokerURL" value="${SOITOOLKIT_MULE_AMQ_BROKER_URL}" />
 		<spring:property name="redeliveryPolicy">
@@ -47,8 +49,8 @@
 		</spring:property>
 	</spring:bean>
 
-	<jms:connector name="soitoolkit-jms-connector"
-		connectionFactory-ref="soitoolkit-jms-connection-factory"
+	<jms:connector name="soitoolkit-jms-xa-connector"
+		connectionFactory-ref="soitoolkit-jms-xa-connection-factory"
 		disableTemporaryReplyToDestinations="true" 
 		persistentDelivery="true"
 		numberOfConsumers="${SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS}"
@@ -71,10 +73,10 @@
             	<jms:transaction action="JOIN_IF_POSSIBLE" />
             </outbound-endpoint>
         </default-connector-exception-strategy>
- -->
-        		
+ -->        		
 	</jms:connector>
 
+<!-- 
 	<spring:bean id="threadingPolicyTemplate"
 		class="org.mule.modules.common.retry.policies.AdaptiveRetryPolicyTemplateWrapper">
 		<spring:property name="delegate" ref="exhaustingRetryPolicyTemplate" />
@@ -84,6 +86,7 @@
 	    <spring:property name="sleepTime" value="1000"/>
 	    <spring:property name="retryLimit" value="2"/>
 	</spring:bean>
+ -->
 
 <!-- 
 	<spring:bean id="foreverRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ForeverRetryPolicyTemplate" />

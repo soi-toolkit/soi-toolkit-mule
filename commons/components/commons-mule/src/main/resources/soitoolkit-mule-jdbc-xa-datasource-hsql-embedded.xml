@@ -25,7 +25,7 @@
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
 		http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd">
 
-	<spring:bean id="soitoolkit-jdbc-datasource" class="org.enhydra.jdbc.standard.StandardXADataSource">
+	<spring:bean id="soitoolkit-jdbc-xa-datasource" class="org.enhydra.jdbc.standard.StandardXADataSource">
 		<spring:property name="driverName" value="org.hsqldb.jdbcDriver" />
 		<spring:property name="url"        value="jdbc:hsqldb:mem:."/>
 	    <spring:property name="user"       value="sa"/>

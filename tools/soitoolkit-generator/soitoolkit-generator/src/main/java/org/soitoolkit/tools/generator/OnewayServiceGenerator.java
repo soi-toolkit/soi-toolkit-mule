@@ -33,16 +33,17 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
-import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateConfigXmlFileWithNewService;
-import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateTeststubsAndServicesConfigXmlFileWithNewService;
+import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileConfigFile;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForAppend;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +64,8 @@ public class OnewayServiceGenerator implements Generator {
 	GeneratorUtil gu;
 	IModel m;
 	
-	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String folderName) {
-		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, muleVersion, inboundTransport, outboundTransport, transformerType, "/oneWayService", folderName);
+	public OnewayServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String outputFolder) {
+		gu = new GeneratorUtil(ps, groupId, artifactId, null, serviceName, muleVersion, inboundTransport, outboundTransport, transformerType, "/oneWayService", outputFolder);
 		m = gu.getModel();
 	}
 		
@@ -79,7 +80,7 @@ public class OnewayServiceGenerator implements Generator {
     	gu.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
     	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-service.mflow");
 		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
-		
+
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
@@ -106,6 +107,30 @@ public class OnewayServiceGenerator implements Generator {
 		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
+	    // Is this flow based on a XA-transaction
+	    if (m.isServiceXaTransactional()) {
+	    	
+	    	// Add JMS-XA-Connector if any endpoint is based on the JMS-transport 
+	    	if (inboundTransport == JMS || outboundTransport == JMS) {
+				String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JMS under a XA transaction";
+	    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml");
+	    	}
+
+	    	// Add JDBC-XA-DataSource if any endpoint is based on the JDBC-transport 
+	    	if (inboundTransport == JDBC || outboundTransport == JDBC) {
+
+	    		// Create XA-connector for JDBC if it not already exists 
+    			String jdbcXaConnectorConfigFilename = m.getArtifactId() + "-jdbc-xa-connector.xml";
+	    	    if (!new File(gu.getOutputFolder() + "/src/main/app/" + jdbcXaConnectorConfigFilename).exists()) {
+	    	    	gu.generateContentAndCreateFile("src/main/app/__artifactId__-jdbc-xa-connector.xml.gt");
+	    			updateMuleDeployPropertyFileConfigFile(gu.getOutputFolder(), jdbcXaConnectorConfigFilename);
+	    		}
+
+	    	    String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JDBC under a XA transaction";
+	    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml");
+	    	}
+	    }
+				
 		if (inboundTransport == JDBC) {
 	    	updateSqlDdlFilesAddExportTable();
 	    	updateJdbcConnectorFileWithExportSql();
@@ -117,7 +142,7 @@ public class OnewayServiceGenerator implements Generator {
 	    	updateJdbcConnectorFileWithImportSql();
 			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ImportToDbTransformer.java.gt");
 	    }
-		
+	    
     }
 	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
@@ -353,7 +378,12 @@ public class OnewayServiceGenerator implements Generator {
 
 		PrintWriter out = null;
 		try {
-			String file = outFolder + m.getArtifactId() + "-jdbc-connector.xml";
+			String file;
+			if (m.isServiceXaTransactional()) {
+				file = outFolder + m.getArtifactId() + "-jdbc-xa-connector.xml";
+			} else {
+				file = outFolder + m.getArtifactId() + "-jdbc-connector.xml";
+			}
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
 
@@ -373,9 +403,13 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter out = null;
 		try {
 			String file = outFolder + m.getArtifactId() + "-jdbc-connector.xml";
-			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key          + "\" value=\"INSERT INTO  " + table + "(ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + "\" value=\"SELECT ID, VALUE FROM " + table + " ORDER BY ID\"/>");
 			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key_teststub + ".ack\" value=\"DELETE FROM " + table + " WHERE ID = #[map-payload:ID]\"/>");
+
+			if (m.isServiceXaTransactional()) {
+				file = outFolder + m.getArtifactId() + "-jdbc-xa-connector.xml";
+			}
+			addQueryToMuleJdbcConnector(file, "<jdbc:query xmlns:jdbc=\"" + NAMESPACE_JDBC + "\" key=\"" + key          + "\" value=\"INSERT INTO  " + table + "(ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])\"/>");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -425,4 +459,62 @@ public class OnewayServiceGenerator implements Generator {
 	
 		gu.logInfo("Updated: " + file);
 	}
+
+	private void updateConfigFileWithSpringImport(String comment, String xmlFragment) {
+		String file = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-config.xml";
+
+		InputStream content = null;
+		String xml = null;
+		try {
+			
+			String xmlFragmentId = "classpath:" + xmlFragment;
+			
+			gu.logDebug("Add: " + xmlFragment + " to " + file);
+			content = new FileInputStream(file);
+			
+			Document doc = createDocument(content);
+
+			Map<String, String> namespaceMap = new HashMap<String, String>();
+			namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
+			namespaceMap.put("spring", "http://www.springframework.org/schema/beans");
+
+			// First verify that the dependency does not exist already
+			NodeList testList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
+			System.err.println("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
+			if (testList.getLength() > 0) {
+				gu.logDebug("Fragment already exists, bail out!!!");
+				return;
+			}
+			
+			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans");
+			Node root = rootList.item(0);
+		    
+			xmlFragment = 
+				"\t\t<!-- " + comment + " -->\n" + 
+				"\t\t<import xmlns=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
+			
+		    appendXmlFragment(root, xmlFragment);
+			
+		    xml = getXml(doc);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (content != null) {try {content.close();} catch (IOException e) {}}
+		}
+
+		PrintWriter pw = null;
+		try {
+			System.err.println("Writing back:\n" + xml);
+			gu.logDebug("Overwrite file: " + file);
+			pw = openFileForOverwrite(file);
+			pw.print(xml);
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (pw != null) {pw.close();}
+		}
+	}
+	
 }

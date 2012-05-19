@@ -27,17 +27,17 @@
 		http://www.mulesoft.org/schema/mule/jms  http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
 		http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"> 
 
+<!-- Already imported by soitoolkit-mule-jms-connector-activemq-embedded.xml, that always will be used together with this one... 
     <spring:beans>
         <spring:import resource="classpath:soitoolkit-mule-jms-connector-commons.xml"/>
-
 		<amq:broker id="broker" brokerName="localhost" persistent="false" useJmx="false" start="true" >
 			<amq:destinationPolicy>
 				<amq:policyMap>
 					<amq:policyEntries>
 		                <amq:policyEntry queue=">" producerFlowControl="true" memoryLimit="1mb">
 							<amq:deadLetterStrategy>
-								<!-- Use the prefix 'DLQ.' for the destination name, and make the DLQ a 
-									queue rather than a topic -->
+								<!- - Use the prefix 'DLQ.' for the destination name, and make the DLQ a 
+									queue rather than a topic - ->
 								<amq:individualDeadLetterStrategy
 									queuePrefix="DLQ." useQueueForQueueMessages="true" />
 							</amq:deadLetterStrategy>
@@ -49,9 +49,11 @@
 				<amq:transportConnector uri="vm://localhost" />
 			</amq:transportConnectors>
 		</amq:broker>
-    </spring:beans>
 
-	<spring:bean name="soitoolkit-jms-connection-factory"
+    </spring:beans>
+-->    
+
+	<spring:bean name="soitoolkit-jms-xa-connection-factory"
 		class="org.apache.activemq.ActiveMQXAConnectionFactory" depends-on="broker">
 		<spring:property name="brokerURL" value="vm://localhost" />
 		<spring:property name="redeliveryPolicy">
@@ -62,8 +64,8 @@
 		</spring:property>
 	</spring:bean>
 
-	<jms:connector name="soitoolkit-jms-connector"
-		connectionFactory-ref="soitoolkit-jms-connection-factory"
+	<jms:connector name="soitoolkit-jms-xa-connector"
+		connectionFactory-ref="soitoolkit-jms-xa-connection-factory"
 		disableTemporaryReplyToDestinations="true" 
 		persistentDelivery="true"
 		numberOfConsumers="2"

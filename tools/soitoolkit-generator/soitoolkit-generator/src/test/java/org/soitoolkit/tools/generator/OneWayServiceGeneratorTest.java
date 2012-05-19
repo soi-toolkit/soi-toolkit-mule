@@ -37,6 +37,7 @@ import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.ModelFactory;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
@@ -139,10 +142,17 @@ public class OneWayServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-//		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
-		new OnewayServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
-		
 		int expectedNoOfFiles = 12;
+		
+		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, muleVersion, inboundTransport, outboundTransport, transformerType);
+
+		// Add one expected file is service is xa-transacted and the jdbc-trnsport is involved and the jdbc-xa-connector.xml file is not yet created....
+		if (model.isServiceXaTransactional() && (inboundTransport == JDBC || outboundTransport == JDBC)) {
+    	    if (!new File(projectFolder + "/src/main/app/" + artifactId + "-jdbc-xa-connector.xml").exists()) {
+    	    	expectedNoOfFiles++;
+    	    }
+		}
+
 		if (inboundTransport == HTTP || inboundTransport == SERVLET) {
 			expectedNoOfFiles++;
 		}
@@ -156,6 +166,9 @@ public class OneWayServiceGeneratorTest {
 //		if (inboundTransport == POP3 || inboundTransport == IMAP) {
 //			expectedNoOfFiles += 2; // png + pdf attachment
 //		}
+		
+		new OnewayServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
+		
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 

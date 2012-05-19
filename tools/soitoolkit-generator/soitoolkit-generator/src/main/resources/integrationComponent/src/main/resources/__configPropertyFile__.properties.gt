@@ -55,8 +55,12 @@ POP3_CHECK_FREQUENCY_MS=3000
 # TODO: Update to reflect your settings
 # For Derby:
 # (see soitoolkit-mule-jdbc-datasource.xml for how to setup other databases, e.g. MySQL, SQL Server or Oracle)
+# (see soitoolkit-mule-jdbc-xa-datasource-derby-external.xml for example of setup of XA DataSources)
+SOITOOLKIT_JDBC_DATABASE=${artifactId}Db
+SOITOOLKIT_JDBC_HOST=localhost
+SOITOOLKIT_JDBC_PORT=1527
 SOITOOLKIT_JDBC_DRIVER=org.apache.derby.jdbc.ClientDriver
-SOITOOLKIT_JDBC_URL=jdbc:derby://localhost:1527/${artifactId}Db;create=true
+SOITOOLKIT_JDBC_URL=jdbc:derby://${dollarSymbol}{SOITOOLKIT_JDBC_HOST}:${dollarSymbol}{SOITOOLKIT_JDBC_PORT}/${dollarSymbol}{SOITOOLKIT_JDBC_DATABASE};create=true
 
 SOITOOLKIT_JDBC_CON_POLLING_MS=1000
 SOITOOLKIT_JDBC_CON_POOL_INIT_SIZE=1

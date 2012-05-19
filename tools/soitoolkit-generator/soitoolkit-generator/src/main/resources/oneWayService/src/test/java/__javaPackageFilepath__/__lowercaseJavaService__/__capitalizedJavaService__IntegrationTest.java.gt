@@ -136,17 +136,17 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     }
 
 	protected String getConfigResources() {
-<% if (serviceXaTransactional) { %>
-        return "soitoolkit-mule-jms-xa-connector-activemq-embedded.xml," + 
-<% } else { %>  
         return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% if (serviceXaTransactional) { %>
+        "soitoolkit-mule-jms-xa-connector-activemq-embedded.xml," + 
+<% } else { %>  
 <% } %>  
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
   <% if (serviceXaTransactional) { %>
         "soitoolkit-mule-jdbc-xa-datasource-hsql-embedded.xml," +
-  <% } else { %>
-        "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
+        "${artifactId}-jdbc-xa-connector.xml," +
   <% } %>  
+        "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
 		"${artifactId}-jdbc-connector.xml," +
 <% } %>  
 <% if (inboundTransport=="FTP" || outboundTransport=="FTP") { %>
@@ -269,7 +269,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% } else if (inboundTransport=="JMS") { %>
 		// Setup inbound endpoint for jms
-		String inboundEndpoint = "jms://" + IN_QUEUE;
+		String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
 
 <% } else if (inboundTransport=="FILE") { %>
 		// Setup inbound endpoint for file-transport
@@ -302,7 +302,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		StringTokenizer st = new StringTokenizer(input, "=");
 		String inId        = st.nextToken();
 		String inValue     = st.nextToken();
-        String inboundEndpoint = "jdbc://INSERT INTO ${uppercaseService}_EXPORT_TB(ID, VALUE) VALUES ('" + inId + "', '" + inValue + "')";
+        String inboundEndpoint = "jdbc://INSERT INTO ${uppercaseService}_EXPORT_TB(ID, VALUE) VALUES ('" + inId + "', '" + inValue + "')?connector=soitoolkit-jdbc-connector";
 
 <% } else if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
 		// Setup inbound endpoint for the smtp-transport
@@ -397,10 +397,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         String value = "Some value";
         String expectedErrMsg  = "Unknown content: " + id + "=" + value;
 <% if (inboundTransport=="JDBC") { %>
-        String inboundEndpoint = "jdbc://INSERT INTO " + IN_TABLE + "(ID, VALUE) VALUES ('" + id + "', '" + value + "')";
+        String inboundEndpoint = "jdbc://INSERT INTO " + IN_TABLE + "(ID, VALUE) VALUES ('" + id + "', '" + value + "')?connector=soitoolkit-jdbc-connector";
         String message = null;
 <% } else if (inboundTransport=="JMS") { %>
-        String inboundEndpoint = "jms://" + IN_QUEUE;
+        String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
         String message = id + "=" + value;
 <% } %>
         // Send a poisoned message to the in-endpoint and verify that the expected exception occurs in the ESB

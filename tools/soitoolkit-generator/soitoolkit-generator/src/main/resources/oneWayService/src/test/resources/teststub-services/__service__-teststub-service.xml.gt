@@ -10,10 +10,10 @@ ${xmlNamespace.onewayTeststubService}
                 <inbound-endpoint address="vm://${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}"/>
 
 <% } else if (outboundTransport=="JMS") { %>
-                <inbound-endpoint name="${service}-teststub-endpoint" address="jms://${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
+                <jms:inbound-endpoint name="${service}-teststub-endpoint" connector-ref="${jmsDefaultConnector}" queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
 
 <% } else if (outboundTransport=="JDBC") { %> 
-            	<jdbc:inbound-endpoint pollingFrequency="100" queryKey="${lowercaseJavaService}-teststub-export-query"/>
+            	<jdbc:inbound-endpoint connector-ref="${jdbcDefaultConnector}" pollingFrequency="100" queryKey="${lowercaseJavaService}-teststub-export-query"/>
 
 <% } else if (outboundTransport=="FILE") { %> 
 				<file:inbound-endpoint

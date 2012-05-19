@@ -43,8 +43,12 @@ public class PropertyFileUtil {
 	    return new PrintWriter(new BufferedWriter(new FileWriter(propFile, true)));
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void updateMuleDeployPropertyFileWithNewService(String outputFolder, String serviceName) {
+		updateMuleDeployPropertyFileConfigFile(outputFolder, serviceName + "-service.xml");
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void updateMuleDeployPropertyFileConfigFile(String outputFolder, String configFilename) {
 		
 		String muleDeployPropertyFile = outputFolder + "/src/main/app/mule-deploy.properties";
 		System.err.println("Open muleDeployPropertyFile: " + muleDeployPropertyFile);
@@ -53,7 +57,7 @@ public class PropertyFileUtil {
 			PropertiesConfiguration config = new PropertiesConfiguration(muleDeployPropertyFile);
 			String key = "config.resources";
 			List value = config.getList(key);
-			value.add(serviceName + "-service.xml");
+			value.add(configFilename);
 			System.err.println("Update muleDeployPropertyFile: " + key + " = " + value);
 			config.setProperty(key, value);
 			config.save();
