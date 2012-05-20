@@ -490,10 +490,11 @@ public class OnewayServiceGenerator implements Generator {
 			Node root = rootList.item(0);
 		    
 			xmlFragment = 
+				// TODO: Comment not added to the document, simply skippen when the xml ragment is parsed...
 				"\t\t<!-- " + comment + " -->\n" + 
 				"\t\t<import xmlns=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
-			
-		    appendXmlFragment(root, xmlFragment);
+		
+	    	appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
 			
