@@ -107,7 +107,13 @@ public class OnewayServiceGenerator implements Generator {
 		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
-	    // Is this flow based on a XA-transaction
+		// Add ftp-connector to config file if ftp-transport is used for the first time
+		if (inboundTransport == FTP || outboundTransport == FTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
+    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-ftp-connector-external.xml");
+		}
+
+		// Is this flow based on a XA-transaction?
 	    if (m.isServiceXaTransactional()) {
 	    	
 	    	// Add JMS-XA-Connector if any endpoint is based on the JMS-transport 
@@ -491,9 +497,19 @@ public class OnewayServiceGenerator implements Generator {
 		    
 			xmlFragment = 
 				// TODO: Comment not added to the document, simply skippen when the xml ragment is parsed...
-				"\t\t<!-- " + comment + " -->\n" + 
-				"\t\t<import xmlns=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
-		
+				"<!-- " + comment + " -->\n" + 
+				"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
+
+			// If the spring:beans - element was not founf then add it as well
+			if (root == null) {
+				xmlFragment = 
+					"    <spring:beans xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
+					"    " + xmlFragment + "\n" +
+					"    </spring:beans>";
+				rootList = getXPathResult(doc, namespaceMap, "/mule:mule");
+				root = rootList.item(0);
+			}
+			
 	    	appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
@@ -517,5 +533,4 @@ public class OnewayServiceGenerator implements Generator {
 			if (pw != null) {pw.close();}
 		}
 	}
-	
 }

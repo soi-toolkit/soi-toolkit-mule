@@ -18,10 +18,12 @@ package org.soitoolkit.commons.xml;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static org.soitoolkit.commons.xml.XPathUtil.appendXmlFragment;
 import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
 import static org.soitoolkit.commons.xml.XPathUtil.getDocumentComment;
 import static org.soitoolkit.commons.xml.XPathUtil.getFirstValue;
 import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
+import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.commons.xml.XPathUtil.lookupParameterValue;
 
 import java.io.BufferedReader;
@@ -36,13 +38,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class XPathUtilTest {
 
@@ -152,12 +158,13 @@ public class XPathUtilTest {
 	}
 	
 	@Test
-	public void testLookupSpringImportInConfigFile() {
-		assertEquals(0, doLookupSpringImportInConfigFile("test-config-without-searched-element.xml"));
-		assertEquals(1, doLookupSpringImportInConfigFile("test-config-with-searched-element.xml"));
+	public void testLookupSpringImportInConfigFile() throws IOException, SAXException, ParserConfigurationException {
+		assertEquals(1, doLookupAndAddSpringImportInConfigFile("test-config-with-searched-element.xml"));
+		assertEquals(1, doLookupAndAddSpringImportInConfigFile("test-config-without-searched-element.xml"));
+		assertEquals(1, doLookupAndAddSpringImportInConfigFile("test-config-without-spring-beans-element.xml"));
 	}
 
-	private int doLookupSpringImportInConfigFile(String filename) {
+	private int doLookupAndAddSpringImportInConfigFile(String filename) throws IOException, SAXException, ParserConfigurationException {
 		InputStream content = getClass().getClassLoader().getResourceAsStream(filename);
 
 		Document configDoc = createDocument(content);
@@ -169,6 +176,34 @@ public class XPathUtilTest {
 		
 		// Lookup the fragment...
 		NodeList testList = getXPathResult(configDoc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
+
+		if (testList.getLength() > 0) return testList.getLength();
+
+	
+		// Not found, ok try to add it...
+		NodeList rootList = getXPathResult(configDoc, namespaceMap, "/mule:mule/spring:beans");
+		Node root = rootList.item(0);
+	    
+		String xmlFragment = 
+			"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
+
+		if (root == null) {
+			xmlFragment = 
+				"    <spring:beans xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
+				"    " + xmlFragment + "\n" +
+				"    </spring:beans>";
+			rootList = getXPathResult(configDoc, namespaceMap, "/mule:mule");
+			root = rootList.item(0);
+		}
+		
+    	appendXmlFragment(root, xmlFragment);
+		
+	    String xml = getXml(configDoc);
+	    System.err.println("file: " + filename + ":\n" + xml);
+	
+		// Lookup the fragment again...
+		testList = getXPathResult(configDoc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
+	
 		return testList.getLength();
 	}
 

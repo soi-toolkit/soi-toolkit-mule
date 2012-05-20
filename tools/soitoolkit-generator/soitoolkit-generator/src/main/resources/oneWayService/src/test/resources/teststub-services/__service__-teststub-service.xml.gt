@@ -26,6 +26,7 @@ ${xmlNamespace.onewayTeststubService}
 
 <% } else if (outboundTransport=="FTP") { %> 
 				<ftp:inbound-endpoint 
+                    connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
 					binary="false"

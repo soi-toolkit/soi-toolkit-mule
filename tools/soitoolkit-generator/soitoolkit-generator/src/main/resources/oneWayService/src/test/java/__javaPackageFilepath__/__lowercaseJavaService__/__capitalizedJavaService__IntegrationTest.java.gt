@@ -279,7 +279,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% } else if (inboundTransport=="FTP") { %>
 		// Setup inbound endpoint for file-transport
-        String inboundEndpoint = "ftp://" + IN_FOLDER;
+        String inboundEndpoint = "ftp://" + IN_FOLDER + "?connector=soitoolkit-ftp-connector";
 		String filename        = "testfile.txt";
 		props.put(FtpConnector.PROPERTY_FILENAME, filename);
 

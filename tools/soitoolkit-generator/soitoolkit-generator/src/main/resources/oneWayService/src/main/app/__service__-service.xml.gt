@@ -64,6 +64,7 @@ ${xmlNamespace.onewayService}
 <% } else if (inboundTransport=="FTP") { %> 
 				<ftp:inbound-endpoint 
 					name="${service}-inbound-endpoint"
+                    connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					binary="false"
@@ -154,6 +155,7 @@ ${xmlNamespace.onewayService}
 <% } else if (outboundTransport=="FTP") { %> 
 				<ftp:outbound-endpoint
 					name="${service}-outbound-endpoint"
+                    connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
 					outputPattern="#[header:originalFilename]"

@@ -17,8 +17,12 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	xsi:schemaLocation=
+	   "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	">
 
+    <import resource="classpath:soitoolkit-mule-ftp-connector-commons.xml"/>
+	
 	<bean id="fakeFtpServer" class="org.mockftpserver.fake.FakeFtpServer"
 		init-method="start" destroy-method="stop">
 		<property name="serverControlPort" value="8021" />
