@@ -480,7 +480,7 @@ public class OnewayServiceGenerator implements Generator {
 
 			// First verify that the dependency does not exist already
 			NodeList testList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
-			System.err.println("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
+			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
 			if (testList.getLength() > 0) {
 				gu.logDebug("Fragment already exists, bail out!!!");
 				return;
@@ -506,7 +506,7 @@ public class OnewayServiceGenerator implements Generator {
 
 		PrintWriter pw = null;
 		try {
-			System.err.println("Writing back:\n" + xml);
+			gu.logDebug("Writing back:\n" + xml);
 			gu.logDebug("Overwrite file: " + file);
 			pw = openFileForOverwrite(file);
 			pw.print(xml);
