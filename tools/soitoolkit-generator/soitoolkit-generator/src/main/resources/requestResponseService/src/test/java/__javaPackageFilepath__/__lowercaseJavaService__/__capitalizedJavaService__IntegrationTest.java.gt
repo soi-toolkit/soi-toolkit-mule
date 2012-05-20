@@ -143,10 +143,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 			Object response = consumer.callService(id);
 	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
 	    } catch (SOAPFaultException e) {
-<% if (outboundTransport=="SOAPHTTP") { %>
-	    	assertEquals("Invalid status code: 500", e.getMessage());
-<% } else if (outboundTransport=="RESTHTTP") { %>
-	    	assertEquals("Internal Server Error, code: 500", e.getMessage());
+<% if (outboundTransport=="RESTHTTP") { %>
+            assertEquals("Internal Server Error, code: 500", e.getMessage());
+<% } else if (outboundTransport=="SOAPHTTP") { %>
+	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
 <% } else if (outboundTransport=="JMS") { %>
 	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
 <% } %> 

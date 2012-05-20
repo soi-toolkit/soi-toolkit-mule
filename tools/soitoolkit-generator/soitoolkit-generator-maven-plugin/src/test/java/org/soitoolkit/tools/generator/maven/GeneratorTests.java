@@ -8,7 +8,7 @@ public class GeneratorTests {
 
 	@Test
 	public void testEnum() {
-		MuleVersionEnum e = MuleVersionEnum.MULE_3_2_1;
+		MuleVersionEnum e = MuleVersionEnum.MULE_3_3_0;
 		System.out.println(e.name());
 
 		try {
@@ -18,13 +18,13 @@ public class GeneratorTests {
 		}
 
 		try {
-			System.out.println(MuleVersionEnum.valueOf("MULE_3_2_1").name());
+			System.out.println(MuleVersionEnum.valueOf("MULE_3_3_0").name());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
 		try {
-			System.out.println(MuleVersionEnum.getByLabel("3.2.1").name());
+			System.out.println(MuleVersionEnum.getByLabel("3.3.0").name());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
