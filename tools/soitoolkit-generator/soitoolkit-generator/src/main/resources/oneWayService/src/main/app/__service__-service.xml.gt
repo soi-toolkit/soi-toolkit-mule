@@ -75,6 +75,7 @@ ${xmlNamespace.onewayService}
 <% } else if (inboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
 					name="${service}-inbound-endpoint"
+					connector-ref="soitoolkit-sftp-connector"
 					address="sftp://${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_POLLING_MS}"
 					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_SIZECHECK_MS}"
@@ -187,6 +188,7 @@ ${xmlNamespace.onewayService}
 
 				<sftp:outbound-endpoint
 					name="${service}-outbound-endpoint"
+                    connector-ref="soitoolkit-sftp-connector"
 					address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
 <% if (inboundTransport=="FTP") { %> 

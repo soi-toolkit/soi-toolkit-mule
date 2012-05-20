@@ -286,7 +286,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } else if (inboundTransport=="SFTP") { %>
 		// Setup inbound endpoint for sftp
         String inFolder        = rb.getString("${uppercaseService}_INBOUND_SFTP_FOLDER");
-        String inboundEndpoint = "sftp://" + inFolder;
+        String inboundEndpoint = "sftp://" + inFolder + "?connector=soitoolkit-sftp-connector";
 		String filename        = "testfile.txt";
 		props.put(SftpConnector.PROPERTY_FILENAME, filename);
 

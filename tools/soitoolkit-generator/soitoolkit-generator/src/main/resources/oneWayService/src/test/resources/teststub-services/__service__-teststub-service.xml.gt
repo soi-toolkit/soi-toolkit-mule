@@ -36,6 +36,7 @@ ${xmlNamespace.onewayTeststubService}
 
 <% } else if (outboundTransport=="SFTP") { %> 
 				<sftp:inbound-endpoint
+                    connector-ref="soitoolkit-sftp-connector"
 					address="sftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_POLLING_MS}"
 					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_SIZECHECK_MS}"
