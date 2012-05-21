@@ -265,7 +265,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% if (inboundTransport=="VM") { %>
 		// Setup inbound endpoint for vm-transport
-		String inboundEndpoint = "vm://" + IN_VM_QUEUE;
+		String inboundEndpoint = "vm://" + IN_VM_QUEUE + "?connector=soitoolkit-vm-connector";
 
 <% } else if (inboundTransport=="JMS") { %>
 		// Setup inbound endpoint for jms
@@ -273,7 +273,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 <% } else if (inboundTransport=="FILE") { %>
 		// Setup inbound endpoint for file-transport
-        String inboundEndpoint = "file://" + IN_FOLDER;
+        String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
 		String filename        = "testfile.txt";
 		props.put(FileConnector.PROPERTY_FILENAME, filename);
 

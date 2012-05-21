@@ -107,7 +107,27 @@ public class OnewayServiceGenerator implements Generator {
 		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
-		// Add ftp-connector to config file if ftp-transport is used for the first time
+
+		// Add vm-connector to common file (one and the same for junit-tests and running mule server) if vm-transport is used for the first time
+		if (inboundTransport == VM || outboundTransport == VM) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the VM-transport";
+    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-vm-connector.xml");
+		}
+
+		// Add http-connector to common file (one and the same for junit-tests and running mule server) if http-transport is used for the first time
+		if (inboundTransport == HTTP || outboundTransport == HTTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
+    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-http-connector.xml");
+		}
+
+		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
+		if (inboundTransport == FILE || outboundTransport == FILE) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
+    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-file-connector.xml");
+		}
+
+		// TODO: Do the same with JDBC and SFTP as for FTP so we can eliminate selection of transport in the Create Integration Component Wizard!
+		// Add ftp-connector to config file (separate connectors used for junit-tests and running mule server) if ftp-transport is used for the first time
 		if (inboundTransport == FTP || outboundTransport == FTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
     		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-ftp-connector-external.xml");
@@ -466,8 +486,17 @@ public class OnewayServiceGenerator implements Generator {
 		gu.logInfo("Updated: " + file);
 	}
 
+	private void updateCommonFileWithSpringImport(String comment, String xmlFragment) {
+		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-common.xml";
+		updateXmlFileWithSpringImport(xmlFile, comment, xmlFragment);
+	}
+
 	private void updateConfigFileWithSpringImport(String comment, String xmlFragment) {
-		String file = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-config.xml";
+		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-config.xml";
+		updateXmlFileWithSpringImport(xmlFile, comment, xmlFragment);
+	}
+
+	private void updateXmlFileWithSpringImport(String xmlFile, String comment, String xmlFragment) {
 
 		InputStream content = null;
 		String xml = null;
@@ -475,8 +504,8 @@ public class OnewayServiceGenerator implements Generator {
 			
 			String xmlFragmentId = "classpath:" + xmlFragment;
 			
-			gu.logDebug("Add: " + xmlFragment + " to " + file);
-			content = new FileInputStream(file);
+			gu.logDebug("Add: " + xmlFragment + " to " + xmlFile);
+			content = new FileInputStream(xmlFile);
 			
 			Document doc = createDocument(content);
 
@@ -523,8 +552,8 @@ public class OnewayServiceGenerator implements Generator {
 		PrintWriter pw = null;
 		try {
 			gu.logDebug("Writing back:\n" + xml);
-			gu.logDebug("Overwrite file: " + file);
-			pw = openFileForOverwrite(file);
+			gu.logDebug("Overwrite file: " + xmlFile);
+			pw = openFileForOverwrite(xmlFile);
 			pw.print(xml);
 			
 		} catch (IOException e) {
