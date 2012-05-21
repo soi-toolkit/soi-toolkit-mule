@@ -26,6 +26,7 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
 import java.io.FileInputStream;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,6 +124,12 @@ public class RequestResponseServiceGenerator implements Generator {
 		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
 
+		// Add http-connector to common file (one and the same for junit-tests and running mule server) if http-transport is used for the first time
+		if (inboundTransport == TransportEnum.RESTHTTP || inboundTransport == TransportEnum.SOAPHTTP || outboundTransport == RESTHTTP || outboundTransport == SOAPHTTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
+		}
+
 		String file = gu.getOutputFolder() + "/pom.xml";
 		String xmlFragment = 
 			"\n" +
@@ -191,6 +199,12 @@ public class RequestResponseServiceGenerator implements Generator {
 		// updateConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
+
+		// Add http-connector to common file (one and the same for junit-tests and running mule server) if http-transport is used for the first time
+		if (inboundTransport == TransportEnum.RESTHTTP || inboundTransport == TransportEnum.SOAPHTTP || outboundTransport == RESTHTTP || outboundTransport == SOAPHTTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
+		}
 
 		String file = gu.getOutputFolder() + "/pom.xml";
 		String xmlFragment = 

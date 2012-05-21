@@ -36,7 +36,9 @@ ${xmlNamespace.onewayService}
                 <custom-transformer doc:name="transform-from-db" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
 
 <% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
-				<inbound-endpoint address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+				<inbound-endpoint 
+                    connector-ref="soitoolkit-http-connector"
+				    address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 					exchange-pattern="request-response"
 					transformer-refs="createCorrId logMsgIn mimeToStr"
 					responseTransformer-refs="logRespOut">

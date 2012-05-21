@@ -36,6 +36,8 @@ import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDep
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileConfigFile;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForAppend;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateConfigFileWithSpringImport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,26 +113,27 @@ public class OnewayServiceGenerator implements Generator {
 		// Add vm-connector to common file (one and the same for junit-tests and running mule server) if vm-transport is used for the first time
 		if (inboundTransport == VM || outboundTransport == VM) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the VM-transport";
-    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-vm-connector.xml");
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
 		}
 
 		// Add http-connector to common file (one and the same for junit-tests and running mule server) if http-transport is used for the first time
 		if (inboundTransport == HTTP || outboundTransport == HTTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
-    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-http-connector.xml");
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
 		}
 
 		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
 		if (inboundTransport == FILE || outboundTransport == FILE) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
-    		updateCommonFileWithSpringImport(comment, "soitoolkit-mule-file-connector.xml");
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
 		}
 
 		// TODO: Do the same with JDBC and SFTP as for FTP so we can eliminate selection of transport in the Create Integration Component Wizard!
+
 		// Add ftp-connector to config file (separate connectors used for junit-tests and running mule server) if ftp-transport is used for the first time
 		if (inboundTransport == FTP || outboundTransport == FTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
-    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-ftp-connector-external.xml");
+    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-ftp-connector-external.xml");
 		}
 
 		// Is this flow based on a XA-transaction?
@@ -139,7 +142,7 @@ public class OnewayServiceGenerator implements Generator {
 	    	// Add JMS-XA-Connector if any endpoint is based on the JMS-transport 
 	    	if (inboundTransport == JMS || outboundTransport == JMS) {
 				String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JMS under a XA transaction";
-	    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml");
+	    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml");
 	    	}
 
 	    	// Add JDBC-XA-DataSource if any endpoint is based on the JDBC-transport 
@@ -153,7 +156,7 @@ public class OnewayServiceGenerator implements Generator {
 	    		}
 
 	    	    String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JDBC under a XA transaction";
-	    		updateConfigFileWithSpringImport(comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml");
+	    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml");
 	    	}
 	    }
 				
@@ -484,82 +487,5 @@ public class OnewayServiceGenerator implements Generator {
 		}
 	
 		gu.logInfo("Updated: " + file);
-	}
-
-	private void updateCommonFileWithSpringImport(String comment, String xmlFragment) {
-		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-common.xml";
-		updateXmlFileWithSpringImport(xmlFile, comment, xmlFragment);
-	}
-
-	private void updateConfigFileWithSpringImport(String comment, String xmlFragment) {
-		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + m.getArtifactId() + "-config.xml";
-		updateXmlFileWithSpringImport(xmlFile, comment, xmlFragment);
-	}
-
-	private void updateXmlFileWithSpringImport(String xmlFile, String comment, String xmlFragment) {
-
-		InputStream content = null;
-		String xml = null;
-		try {
-			
-			String xmlFragmentId = "classpath:" + xmlFragment;
-			
-			gu.logDebug("Add: " + xmlFragment + " to " + xmlFile);
-			content = new FileInputStream(xmlFile);
-			
-			Document doc = createDocument(content);
-
-			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
-			namespaceMap.put("spring", "http://www.springframework.org/schema/beans");
-
-			// First verify that the dependency does not exist already
-			NodeList testList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
-			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
-			if (testList.getLength() > 0) {
-				gu.logDebug("Fragment already exists, bail out!!!");
-				return;
-			}
-			
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans");
-			Node root = rootList.item(0);
-		    
-			xmlFragment = 
-				// TODO: Comment not added to the document, simply skippen when the xml ragment is parsed...
-				"<!-- " + comment + " -->\n" + 
-				"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
-
-			// If the spring:beans - element was not founf then add it as well
-			if (root == null) {
-				xmlFragment = 
-					"    <spring:beans xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
-					"    " + xmlFragment + "\n" +
-					"    </spring:beans>";
-				rootList = getXPathResult(doc, namespaceMap, "/mule:mule");
-				root = rootList.item(0);
-			}
-			
-	    	appendXmlFragment(root, xmlFragment);
-			
-		    xml = getXml(doc);
-			
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (content != null) {try {content.close();} catch (IOException e) {}}
-		}
-
-		PrintWriter pw = null;
-		try {
-			gu.logDebug("Writing back:\n" + xml);
-			gu.logDebug("Overwrite file: " + xmlFile);
-			pw = openFileForOverwrite(xmlFile);
-			pw.print(xml);
-			
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (pw != null) {pw.close();}
-		}
 	}
 }

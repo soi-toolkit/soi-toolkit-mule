@@ -8,14 +8,14 @@ ${xmlNamespace.reqRespTeststubService}
 <% if (outboundTransport=="SOAPHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
-        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}" 
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector" 
         component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
         type="jax-ws" />
 
 <% } else if (outboundTransport=="RESTHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
-	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector"
 	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
 	    type="jax-rs" />
 
@@ -34,12 +34,12 @@ ${xmlNamespace.reqRespTeststubService}
 <% } %> 
 
 <% if (inboundTransport=="SOAPSERVLET" && outboundTransport!="SOAPHTTP") { %>
-	<!-- ISSUE 117. WITH A SOAP/SERVLET INBOUND ENDPOINT ASD NOT A SOAP/HTTP BASED OUTBOUND ENDPOINT IT SEEMS THAT A <cxf:proxy-client> IS REQUIRED IN THE CONFIG-FILE STARTING WITH MULE v3.1.1, FOR DETAIS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->
+	<!-- ISSUE 117. WITH A SOAP/SERVLET INBOUND ENDPOINT AND NOT A SOAP/HTTP BASED OUTBOUND ENDPOINT IT SEEMS THAT A <cxf:proxy-client> IS REQUIRED IN THE CONFIG-FILE STARTING WITH MULE v3.1.1, FOR DETAIS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->
 	<model name="${service}-teststub-fix-model">
 		<service name="${service}-teststub-fix-service">
 			<outbound>
 				<pass-through-router>
-                    <outbound-endpoint address="vm://out">
+                    <outbound-endpoint connector-ref="soitoolkit-vm-connector" address="vm://out">
                         <cxf:proxy-client />
                     </outbound-endpoint>
 				</pass-through-router>
