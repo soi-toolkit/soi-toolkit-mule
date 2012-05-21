@@ -60,7 +60,7 @@ ${xmlNamespace.common}
 
     <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
 <% if (servlet) { %>
-	<servlet:connector name="servletConnector" />
+	<servlet:connector name="servlet-connector" />
 <% } %>  
 
 <% if (false) { %>
@@ -74,11 +74,11 @@ ${xmlNamespace.common}
 <% } %>  
 
 <% if (pop3) { %>
-	<pop3:connector name="pop3Connector" checkFrequency="${dollarSymbol}{POP3_CHECK_FREQUENCY_MS}"/>
+	<pop3:connector name="pop3-connector" checkFrequency="${dollarSymbol}{POP3_CHECK_FREQUENCY_MS}"/>
 <% } %>  
 
 <% if (imap) { %>
-	<imap:connector name="imapConnector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
+	<imap:connector name="imap-connector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
 <% } %>  
 
     <rest:config />
