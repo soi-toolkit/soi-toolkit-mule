@@ -8,6 +8,7 @@ ${xmlNamespace.reqRespService}
     <flow name="${service}-service">
 
         <http:inbound-endpoint
+            connector-ref="soitoolkit-http-connector"
             address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
             exchange-pattern="request-response"
             transformer-refs="objToStr logReqIn"
@@ -82,6 +83,7 @@ ${xmlNamespace.reqRespService}
         </response>
 
         <http:outbound-endpoint 
+            connector-ref="soitoolkit-http-connector"
             address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
             exchange-pattern="request-response"
             responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">

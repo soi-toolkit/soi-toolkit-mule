@@ -8,14 +8,14 @@ ${xmlNamespace.reqRespTeststubService}
 <% if (outboundTransport=="SOAPHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
-        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}" 
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector" 
         component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
         type="jax-ws" />
 
 <% } else if (outboundTransport=="RESTHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
-	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector"
 	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
 	    type="jax-rs" />
 
@@ -24,6 +24,7 @@ ${xmlNamespace.reqRespTeststubService}
 <% if (outboundTransport=="JMS") { %>
         <inbound-endpoint 
             name="${service}-teststub-endpoint" 
+            connector-ref="${jmsDefaultConnector}" 
             address="jms://${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" 
             transformer-refs="jmsToStr"
             responseTransformer-refs="strToJms"/>
@@ -38,7 +39,7 @@ ${xmlNamespace.reqRespTeststubService}
 		<service name="${service}-teststub-fix-service">
 			<outbound>
 				<pass-through-router>
-                    <outbound-endpoint address="vm://out">
+                    <outbound-endpoint connector-ref="soitoolkit-vm-connector" address="vm://out">
                         <cxf:proxy-client />
                     </outbound-endpoint>
 				</pass-through-router>

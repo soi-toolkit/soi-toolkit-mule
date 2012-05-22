@@ -38,7 +38,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
     private static final String INBOUND_URL = rb.getString("${uppercaseService}_INBOUND_URL");
  
+    private static final String HTTP_CONNECTOR = "soitoolkit-http-connector";
+    
     private static final String ERROR_LOG_QUEUE = "SOITOOLKIT.LOG.ERROR";
+    
     private AbstractJmsTestUtil jmsUtil = null;
 
     private String ENTITY1_ID = null;
@@ -77,7 +80,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 
 		doSetUpJms();
 
-        restClient = new RestClient(muleContext);
+        restClient = new RestClient(muleContext, HTTP_CONNECTOR);
         
         // Prepare the test-producer of the service with two known sample entities
         ${capitalizedJavaService}TestProducer.clear();
@@ -132,7 +135,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test_getSample_ok() throws Exception {
 
         // Perform call
-        MuleMessage response = restClient.doHttpGetRequest_JsonConent(INBOUND_URL + "/sample/" + ENTITY1_ID);
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(INBOUND_URL + "/sample/" + ENTITY1_ID);
         
         // Assert http-post ok
         assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
@@ -167,7 +170,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test_deleteSample_ok() throws Exception {
 
         // Perform call
-        MuleMessage response = restClient.doHttpDeleteRequest_JsonConent(INBOUND_URL + "/sample/" + ENTITY1_ID);
+        MuleMessage response = restClient.doHttpDeleteRequest_JsonContent(INBOUND_URL + "/sample/" + ENTITY1_ID);
         
         // Assert http-post ok
         assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
@@ -180,7 +183,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test_findSample_ok() throws Exception {
 
         // Perform call
-        MuleMessage response = restClient.doHttpGetRequest_JsonConent(INBOUND_URL + "/sample");
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(INBOUND_URL + "/sample");
         
         // Assert http-post ok
         assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
