@@ -54,12 +54,12 @@ ${xmlNamespace.reqRespService}
           NO MATCH, RETURN AN ERROR!
           -->
         <response>
-            <script:transformer>
-                <script:script engine="groovy">
+            <scripting:transformer>
+                <scripting:script engine="groovy">
                     message.setOutboundProperty("http.status", 500);
                     "This was unfortunate, I don't understand HTTP " + message.getInboundProperty("http.method") + " on the path " + message.getInboundProperty("http.request")
-                </script:script>
-            </script:transformer>
+                </scripting:script>
+            </scripting:transformer>
         </response>
 
         <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>

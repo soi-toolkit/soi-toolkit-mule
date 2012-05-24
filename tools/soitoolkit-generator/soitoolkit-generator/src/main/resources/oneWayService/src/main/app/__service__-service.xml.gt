@@ -44,11 +44,11 @@ ${xmlNamespace.onewayService}
 					responseTransformer-refs="logRespOut">
 			    
 			        <response>
-				        <script:transformer>
-				            <script:script engine="groovy">
+				        <scripting:transformer>
+				            <scripting:script engine="groovy">
 				            	return "OK"
-				            </script:script>
-				        </script:transformer>
+				            </scripting:script>
+				        </scripting:transformer>
 			        </response>
 				</inbound-endpoint>
 

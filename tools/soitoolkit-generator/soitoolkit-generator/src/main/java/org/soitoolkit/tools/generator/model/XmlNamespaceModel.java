@@ -54,7 +54,7 @@ public class XmlNamespaceModel {
 		}
 		sb.append("\txmlns:management=\"http://www.mulesoft.org/schema/mule/management\"\n");
 		sb.append("\txmlns:json=\"http://www.mulesoft.org/schema/mule/json\"\n");
-		sb.append("\txmlns:script=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
+		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txmlns:rest=\"http://www.mulesoft.org/schema/mule/rest\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd\n");
@@ -171,7 +171,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:pop3=\"http://www.mulesoft.org/schema/mule/pop3\"\n");
 		sb.append("\txmlns:smtp=\"http://www.mulesoft.org/schema/mule/smtp\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
-		sb.append("\txmlns:script=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
+		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txmlns:jbossts=\"http://www.mulesoft.org/schema/mule/jbossts\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.1.xsd\n");
@@ -242,7 +242,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:mule-xml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
 		sb.append("\txmlns:smooks=\"http://www.muleforge.org/smooks/schema/mule-module-smooks\"\n");
 		sb.append("\txmlns:json=\"http://www.mulesoft.org/schema/mule/json\"\n");
-		sb.append("\txmlns:script=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
+		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txmlns:rest=\"http://www.mulesoft.org/schema/mule/rest\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.1.xsd\n");
