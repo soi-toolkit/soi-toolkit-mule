@@ -54,6 +54,7 @@
 		numberOfConsumers="${SOITOOLKIT_MULE_WMQ_NO_OF_CONSUMERS}"
 		targetClient="JMS_COMPLIANT"
 		disableTemporaryReplyToDestinations="true"
+		persistentDelivery="true"
 		maxRedelivery="10">
     
 <!-- 
