@@ -57,9 +57,16 @@
 	<logger name="org.mule.DefaultMuleContext">
 		<level value="INFO" />
 	</logger>
-	<logger name="org.mule.component.simple.LogComponent">
-		<level value="INFO" />
-	</logger>
+
+    <!-- Message logging using the old Mule <logger/> - element -->
+    <logger name="org.mule.api.processor.LoggerMessageProcessor">
+        <level value="INFO" />
+    </logger>
+
+    <!-- Message logging using the old Mule <log-component/> - element -->
+    <logger name="org.mule.component.simple.LogComponent">
+        <level value="INFO" />
+    </logger>
 
 	<logger name="org.soitoolkit.commons">
 		<level value="INFO" />
@@ -69,8 +76,7 @@
 		<level value="INFO" />
 	</logger>
 
-
-	<!-- Message logging -->
+    <!-- Message logging using soi-toolkit LogTransformer class -->
 	<logger name="org.soitoolkit.commons.mule.messageLogger">
 		<level value="INFO" />
 	</logger>
