@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<mule 
+    xmlns="http://www.mulesoft.org/schema/mule/core" 
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms" 
+    xmlns:json="http://www.mulesoft.org/schema/mule/json" 
+    xmlns:management="http://www.mulesoft.org/schema/mule/management" 
+    xmlns:rest="http://www.mulesoft.org/schema/mule/rest" 
+    xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" 
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:spring="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/jms        http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd   
+       http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/current/mule-management.xsd   
+       http://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd   
+       http://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd   
+       http://www.mulesoft.org/schema/mule/rest       http://www.mulesoft.org/schema/mule/rest/current/mule-rest.xsd
+       http://www.mulesoft.org/schema/mule/xml        http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+    ">
+
+	<custom-transformer class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer" name="objToXml">
+		<spring:property name="contextPath" value="org.soitoolkit.commons.mule.log"/>
+	</custom-transformer>
+
+    <custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer" name="logMsgIn">
+		<spring:property name="logType" value="msg-in"/>
+		<spring:property name="jaxbObjectToXml" ref="objToXml"/>
+    </custom-transformer>
+
+</mule>
