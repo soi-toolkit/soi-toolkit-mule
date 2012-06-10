@@ -762,7 +762,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			}
 
 			try {
-				content = (String) jaxbToXml.doTransform(jaxbObject,
+				content = (String) jaxbToXml.transform(jaxbObject,
 						outputEncoding);
 			} catch (TransformerException e) {
 				e.printStackTrace();

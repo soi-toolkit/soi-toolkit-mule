@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.bind.JAXBException;
 
+import org.mortbay.log.Log;
 import org.mule.api.lifecycle.InitialisationException;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 
@@ -31,8 +32,8 @@ import org.mule.transformer.AbstractMessageAwareTransformer;
  * @author Magnus Larsson
  */
 public abstract class AbstractJaxbTransformer extends AbstractMessageAwareTransformer {
-    private String   contextPath;
-    private JaxbUtil jaxbUtil;
+    private String   contextPath = null;
+    private JaxbUtil jaxbUtil = null;
 
     private static Map<String, JaxbUtil> jaxbUtilMap = new HashMap<String, JaxbUtil>();
     
@@ -91,6 +92,17 @@ public abstract class AbstractJaxbTransformer extends AbstractMessageAwareTransf
     }
 
 	protected JaxbUtil getJaxbUtil() {
+		
+		if (jaxbUtil == null) {
+	        try {
+	    		logger.debug("null jaxbutil detected, calling initializeCachedJaxbObject()!");
+	        	initializeCachedJaxbObject();
+	        	
+	        } catch (JAXBException e) {
+	            throw new RuntimeException(e);
+			}
+		}
+
         return jaxbUtil;
     }
 
