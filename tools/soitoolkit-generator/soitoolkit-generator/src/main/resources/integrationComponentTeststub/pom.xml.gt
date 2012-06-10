@@ -95,6 +95,18 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                             <groupId>org.mule.modules</groupId>
                             <artifactId>commonretrypolicies</artifactId>
                         </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.transports</groupId>
+                            <artifactId>mule-transport-restlet</artifactId>
+                        </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-rest</artifactId>
+                        </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>devkit</artifactId>
+                        </inclusion>
                     </inclusions>
                 </configuration>
             </plugin>
