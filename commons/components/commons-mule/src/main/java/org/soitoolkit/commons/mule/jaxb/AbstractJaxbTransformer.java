@@ -22,7 +22,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.bind.JAXBException;
 
-import org.mortbay.log.Log;
 import org.mule.api.lifecycle.InitialisationException;
 import org.mule.transformer.AbstractMessageAwareTransformer;
 
