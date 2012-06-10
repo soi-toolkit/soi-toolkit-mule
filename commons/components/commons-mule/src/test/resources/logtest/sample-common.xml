@@ -29,4 +29,11 @@
 		<spring:property name="jaxbObjectToXml" ref="objToXml"/>
     </custom-transformer>
 
+    <mulexml:jaxb-context name="jaxbContext" packageNames="org.soitoolkit.commons.mule.log"/>
+
+    <custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer" name="logMsgOut">
+        <spring:property name="logType" value="msg-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
 </mule>

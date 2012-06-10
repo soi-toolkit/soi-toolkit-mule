@@ -48,11 +48,32 @@ public class LogIntegrationTest extends FunctionalTestCase {
 		jmsUtil.clearQueues(INFO_LOG_QUEUE);
     }
 
+	/**
+	 * Test the old way of handling logging of JAXB payloads, using soi-toolkits deprecated jaxb-transformer, see config-file for details
+	 * 
+	 * @throws TransformerException
+	 * @throws JMSException
+	 */
 	@Test
-	public void testLogDebugWithJaxbPayload() throws TransformerException, JMSException {
-		
-        Transformer transformer = (Transformer)muleContext.getRegistry().lookupTransformer("logMsgIn");
-        assertNotNull(transformer);
+	public void testLogDebugWithJaxbPayload_oldStyle() throws TransformerException, JMSException {
+	    doTestLogDebugWithJaxbPayload("logMsgIn");
+	}
+
+	/**
+	 * Test the new way of handling logging of JAXB payloads, using mule's build-in support for jaxb, see config-file for details
+	 * 
+	 * @throws TransformerException
+	 * @throws JMSException
+	 */
+	@Test
+	public void testLogDebugWithJaxbPayload_newStyle() throws TransformerException, JMSException {
+		doTestLogDebugWithJaxbPayload("logMsgOut");
+	}
+
+	private void doTestLogDebugWithJaxbPayload(String transformerName) throws TransformerException, JMSException {
+
+		Transformer transformer = (Transformer)muleContext.getRegistry().lookupTransformer(transformerName);
+	    assertNotNull(transformer);
 		
 		JaxbPayload payload = new JaxbPayload();
 		payload.setId("1234");
@@ -67,7 +88,7 @@ public class LogIntegrationTest extends FunctionalTestCase {
 		JaxbPayload jaxbResult = (JaxbPayload)resultMsg.getPayload();
 		assertEquals(payload.getId(),jaxbResult.getId());
 		
-		// Read the info-log-queue and assert that the expected payload is in the log event
+		// Read the info-log-queue and assert that the eexpected payload is in the log event
 		assertLogMessages(1, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><JaxbPayload><id>1234</id></JaxbPayload>");
 	}
 

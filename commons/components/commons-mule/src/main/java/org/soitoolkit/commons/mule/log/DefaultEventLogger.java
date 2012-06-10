@@ -25,6 +25,7 @@ import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELAT
 import static org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_INTEGRATION_SCENARIO;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.URI;
@@ -40,7 +41,10 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -83,6 +87,7 @@ import org.soitoolkit.commons.mule.util.XmlUtil;
  * @author Magnus Larsson
  *
  */
+@SuppressWarnings("deprecation")
 public class DefaultEventLogger implements EventLogger, MuleContextAware {
 
 	private static final String CAUSE_EXCEPTION_HEADER = "CauseException";
@@ -111,8 +116,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 
 	private String serverId = null; // Can't read this one at class initialization because it is not set at that time. Can also be different for different loggers in the same JVM (e.g. multiple wars in one servlet container with shared classes?))
 
-	// Used to transform payloads that are jaxb-objects into a xml-string
+	// jaxbToXml and jaxbContext are used to transform payloads that are jaxb-objects into a xml-string
+	/**
+	 * @deprecated use jaxbContext instead
+	 */
 	private JaxbObjectToXmlTransformer jaxbToXml = null;
+	private JAXBContext jaxbContext = null;
 
 	static {
 		try {
@@ -134,6 +143,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	 * Property muleContext 
 	 */
 	private MuleContext muleContext = null;
+
 	public void setMuleContext(MuleContext muleContext) {
 		log.debug("MuleContext injected");
 		this.muleContext = muleContext;
@@ -142,10 +152,21 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	/**
 	 * Setter for the jaxbToXml property
 	 * 
+	 * @deprecated use setJaxbContext to inject a mule-declared jaxb-context instead
+	 * 
 	 * @param jaxbToXml
 	 */
 	public void setJaxbToXml(JaxbObjectToXmlTransformer jaxbToXml) {
 		this.jaxbToXml  = jaxbToXml;
+	}
+	
+	/**
+	 * Setter for the jaxbContext property
+	 * 
+	 * @param jaxbToXml
+	 */
+	public void setJaxbContext(JAXBContext jaxbContext) {
+		this.jaxbContext  = jaxbContext;
 	}
 	
 	// ----------
@@ -745,8 +766,8 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String getJaxbContentAsString(Object jaxbObject, String outputEncoding) {
 		String content;
-		if (jaxbToXml == null) {
-			content = "Missing jaxb2xml injection, can't marshal JAXB object of type: "
+		if (jaxbToXml == null && jaxbContext == null) {
+			content = "Missing jaxbContext or deprecated jaxb2xml injection, can't marshal JAXB object of type: "
 					+ jaxbObject.getClass().getName();
 		} else {
 
@@ -762,14 +783,32 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			}
 
 			try {
-				content = (String) jaxbToXml.transform(jaxbObject,
-						outputEncoding);
+				// Use jabContext if present
+				if (jaxbContext != null) {
+			    	content = marshalJaxbObject(jaxbObject);
+			    	
+			    // Or fall back on the deprecated jaxbToXml-transformer
+				} else {
+					content = (String) jaxbToXml.transform(jaxbObject, outputEncoding);
+				}
 			} catch (TransformerException e) {
 				e.printStackTrace();
 				content = "JAXB object marshalling failed: " + e.getMessage();
 			}
 		}
 		return content;
+	}
+
+	private String marshalJaxbObject(Object jaxbObject) {
+		try {
+		    StringWriter writer = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.marshal(jaxbObject, writer);
+			return writer.toString();
+			
+		} catch (JAXBException e) {
+		    throw new RuntimeException(e);
+		}
 	}
 
 	private String getJaxbWrapperElementName(Object payload) {

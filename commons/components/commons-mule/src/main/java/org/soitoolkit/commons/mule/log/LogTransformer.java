@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.xml.bind.JAXBContext;
+
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
@@ -72,7 +74,12 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 		eventLogger = EventLoggerFactory.getEventLogger(muleContext);
 		// TODO: this is an ugly workaround for injecting the jaxbObjToXml dependency ...
 		if (eventLogger instanceof DefaultEventLogger) {
-			((DefaultEventLogger) eventLogger).setJaxbToXml(jaxbObjectToXml);
+			if (jaxbContext != null) {
+				((DefaultEventLogger) eventLogger).setJaxbContext(jaxbContext);
+			}
+			if (jaxbObjectToXml != null) {
+				((DefaultEventLogger) eventLogger).setJaxbToXml(jaxbObjectToXml);
+			}
 		}
 	}
 
@@ -113,7 +120,6 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 	 * 
      * <custom-transformer name="logKivReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
 	 * 	<spring:property name="logType"  value="Received"/>
-	 * 	<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
 	 *    <spring:property name="businessContextId">
 	 *      <spring:map>
 	 *        <spring:entry key="id1" value="123"/>
@@ -133,7 +139,6 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 	 * 
      * <custom-transformer name="logKivReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
 	 * 	<spring:property name="logType"  value="Received"/>
-	 * 	<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
 	 *    <spring:property name="extraInfo">
 	 *      <spring:map>
 	 *        <spring:entry key="id1" value="123"/>
@@ -152,14 +157,31 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 		//eventLogger = new DefaultEventLogger();		
 	}
 
+
 	/**
+	 * @deprecated use jaxbContext instead
+	 */
+	private JaxbObjectToXmlTransformer jaxbObjectToXml = null;
+
+	 /**
 	 * Setter for the jaxbToXml property
+	 * 
+	 * @deprecated use setJaxbContext to inject a mule-declared jabx-context instead
 	 * 
 	 * @param jaxbToXml
 	 */
-	private JaxbObjectToXmlTransformer jaxbObjectToXml;
 	public void setJaxbObjectToXml(JaxbObjectToXmlTransformer jaxbToXml) {
 		this.jaxbObjectToXml = jaxbToXml;
+	}
+
+	private JAXBContext jaxbContext = null;
+	/**
+	 * Setter for the jaxbContext
+	 * 
+	 * @param jaxbContext
+	 */
+	public void setJaxbContext(JAXBContext jaxbContext) {
+		this.jaxbContext = jaxbContext;
 	}
 	
 	@Override
