@@ -61,9 +61,7 @@
 		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
  -->
 
-    <!--
-    <ee:retry-forever-policy />
-    -->
+    <reconnect-forever frequency="5000"/>
 	</wmq:connector>
   
 </mule>
