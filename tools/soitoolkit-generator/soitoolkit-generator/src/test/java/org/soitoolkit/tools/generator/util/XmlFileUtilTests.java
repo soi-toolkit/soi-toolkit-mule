@@ -1,13 +1,13 @@
 package org.soitoolkit.tools.generator.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.soitoolkit.commons.xml.XPathUtil.createDocument;
 import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.slf4j.Logger;

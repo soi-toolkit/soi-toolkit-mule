@@ -58,6 +58,16 @@ ${xmlNamespace.common}
     </notifications>
 <% } %>  
 
+    <spring:beans profile="integrationtests">
+        <mule>
+            <!--  Allow integration tests to register dynamic listeners by specifying dynamic="true" -->
+            <notifications dynamic="true">
+                <notification event="ENDPOINT-MESSAGE"/>
+                <notification event="COMPONENT-MESSAGE"/>
+            </notifications>
+        </mule>
+    </spring:beans>
+
     <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
 <% if (servlet) { %>
 	<servlet:connector name="servlet-connector" />

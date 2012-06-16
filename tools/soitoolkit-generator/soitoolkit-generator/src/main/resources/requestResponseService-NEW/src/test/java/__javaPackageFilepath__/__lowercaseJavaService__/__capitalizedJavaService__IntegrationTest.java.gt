@@ -53,6 +53,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     private JsonMapper json = new JsonMapper();
 
     public ${capitalizedJavaService}IntegrationTest() {
+        // Activate the spring bean definition profile "integrationtests"
+        System.getProperties().put("spring.profiles.active", "integrationtests");
+
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
@@ -69,7 +72,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		"${artifactId}-jdbc-connector.xml," +
 <% } %>  
 		"${artifactId}-common.xml," +
-        "${artifactId}-integrationtests-common.xml," + 
         "${service}-service.xml," +
 		"teststub-services/${service}-teststub-service.xml";
     }

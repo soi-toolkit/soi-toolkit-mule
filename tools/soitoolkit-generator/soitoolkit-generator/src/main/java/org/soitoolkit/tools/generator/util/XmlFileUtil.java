@@ -133,7 +133,7 @@ public class XmlFileUtil {
 				return;
 			}
 			
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans");
+			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans[not(@profile)]");
 			Node root = rootList.item(0);
 		    
 			xmlFragment = 
@@ -141,7 +141,7 @@ public class XmlFileUtil {
 				"<!-- " + comment + " -->\n" + 
 				"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
 
-			// If the spring:beans - element was not founf then add it as well
+			// If the spring:beans - element was not found then add it as well
 			if (root == null) {
 				xmlFragment = 
 					"    <spring:beans xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
