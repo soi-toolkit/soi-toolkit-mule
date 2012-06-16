@@ -22,18 +22,13 @@ import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
 import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -180,4 +175,111 @@ public class XmlFileUtil {
 		}
 	}
 	
+	public static void updateJaxbContextInConfigFile(GeneratorUtil gu, String xmlFile, String javaPackage) {
+		
+		PrintWriter pw = null;
+		try {
+
+			InputStream content = new FileInputStream(xmlFile);
+			String xml = updateJaxbContextInConfigInputStream(content, javaPackage);
+			
+			gu.logDebug("Writing back:\n" + xml);
+			gu.logDebug("Overwrite file: " + xmlFile);
+			
+			pw = openFileForOverwrite(xmlFile);
+			pw.print(xml);
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (pw != null) {pw.close();}
+		}
+	}
+
+	static String updateJaxbContextInConfigInputStream(InputStream content, String javaPackage) {
+
+		String xml = null;
+		
+		try {
+
+			Document configDoc = createDocument(content);
+
+			Map<String, String> namespaceMap = new HashMap<String, String>();
+			namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
+			namespaceMap.put("mulexml", "http://www.mulesoft.org/schema/mule/xml");
+			
+			// Lookup the fragment...
+			NodeList testList = getXPathResult(configDoc, namespaceMap, "/mule:mule/mulexml:jaxb-context");
+
+			// If not found then add one with the supplied package name
+			if (testList.getLength() == 0) {
+				// Not found, ok try to add it...
+				NodeList rootList = getXPathResult(configDoc, namespaceMap, "/mule:mule");
+				Node root = rootList.item(0);
+			    
+				String xmlFragment = 
+					"    <mulexml:jaxb-context xmlns:mulexml=\"http://www.mulesoft.org/schema/mule/xml\" name=\"jaxbContext\" packageNames=\"" + javaPackage + "\"/>";
+				
+				appendXmlFragment(root, xmlFragment);
+
+			// Add the supplied package name to the existing element if not already there
+			} else if (testList.getLength() == 1) {
+
+				// Lookup the mandatory packageNames - attribute
+				NodeList testList2 = getXPathResult(configDoc, namespaceMap, "/mule:mule/mulexml:jaxb-context/@packageNames");
+				Node packageNamesAttr = testList2.item(0);
+				String packageNames = packageNamesAttr.getNodeValue();
+
+				// Add package name if it doesn't already exist in the jaxb-context
+				if (!existsPackageName(packageNames, javaPackage)) {
+				
+					// Add it
+					if (packageNames.length() > 0) {
+						packageNames += ":";
+					}
+					packageNames += javaPackage;
+	
+					// Update the attribute
+					packageNamesAttr.setNodeValue(packageNames);
+				}
+			}
+
+			xml = getXml(configDoc);
+
+		} catch (RuntimeException e) {
+			throw e;
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return xml;
+	}
+
+	static boolean existsPackageName(String packageNames, String newJavaPackage) {
+		
+		if (packageNames == null) return false;
+		
+		String[] packArr = packageNames.split(":");
+		
+		for (String javaPackage : packArr) {
+			// Got it, return true
+			if (javaPackage.equals(newJavaPackage)) return true;
+		}
+		
+		// Noop, not there, return false.
+		return false;
+	}
+
+	static int packageCount(String packageNames, String newJavaPackage) {
+
+		int count = 0;
+		String[] packArr = packageNames.split(":");
+		
+		for (String javaPackage : packArr) {
+			// Got it, increate counter
+			if (javaPackage.equals(newJavaPackage)) count++;
+		}
+		return count;
+	}
+
 }

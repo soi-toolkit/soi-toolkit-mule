@@ -24,10 +24,11 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
+import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
-import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateJaxbContextInConfigFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,8 +39,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.soitoolkit.tools.generator.Generator;
-import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
@@ -206,6 +205,10 @@ public class RequestResponseServiceGenerator implements Generator {
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
 		}
 
+		String xmlFile     = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-common.xml";
+		String javaPackage = "org.soitoolkit.refapps.sd.crudsample.schema.v1";
+		updateJaxbContextInConfigFile(gu, xmlFile, javaPackage);
+		
 		String file = gu.getOutputFolder() + "/pom.xml";
 		String xmlFragment = 
 			"\n" +

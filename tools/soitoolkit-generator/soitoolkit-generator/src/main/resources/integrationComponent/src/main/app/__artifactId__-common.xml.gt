@@ -96,54 +96,49 @@ ${xmlNamespace.common}
  
     <json:object-to-json-transformer name="jaxbToJson" />
 
+    <!-- The common single jaxb-context for this mule-app -->
+    <!-- Don't create additional jaxb-contexts to avoid problems with implicit jaxb transformations that can't resolve what jaxb-context to use! -->
+    <!-- Use ":" as a separator if jaxb-objects from more than one java package will be used by the jaxb-transformers  -->
+    <mulexml:jaxb-context name="jaxbContext" packageNames="org.soitoolkit.commons.logentry.schema.v1"/>
+	
 	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>
 
 	<custom-transformer name="createCorrId"  class="org.soitoolkit.commons.mule.log.correlationid.CreateCorrelationIdTransformer" />
 	<custom-transformer name="saveCorrId"    class="org.soitoolkit.commons.mule.log.correlationid.SaveCorrelationIdTransformer" />
 	<custom-transformer name="restoreCorrId" class="org.soitoolkit.commons.mule.log.correlationid.RestoreCorrelationIdTransformer" />
 
-	<custom-transformer name="objToXml" class="org.soitoolkit.commons.mule.jaxb.JaxbObjectToXmlTransformer">
-		<spring:property name="contextPath"  value="
-			"/>
-	</custom-transformer>
-
-	<custom-transformer name="xmlToObj" class="org.soitoolkit.commons.mule.jaxb.XmlToJaxbObjectTransformer">
-		<spring:property name="contextPath"  value="
-			"/>
-	</custom-transformer>
-
     <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
 
 	<custom-transformer name="mimeToStr" class="org.soitoolkit.commons.mule.mime.MimeToStringTransformer" />
 
     <custom-transformer name="logMsgIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="msg-in"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="msg-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
 
     <custom-transformer name="logMsgOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="msg-out"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="msg-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
 
     <custom-transformer name="logReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="req-in"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="req-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
 
     <custom-transformer name="logReqOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="req-out"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="req-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
 
     <custom-transformer name="logRespIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="resp-in"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="resp-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
 
     <custom-transformer name="logRespOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
-		<spring:property name="logType"  value="resp-out"/>
-		<spring:property name="jaxbObjectToXml"  ref="objToXml"/>
+		<spring:property name="logType"     value="resp-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>  
 
     <!-- TODO: Add global definitions here -->

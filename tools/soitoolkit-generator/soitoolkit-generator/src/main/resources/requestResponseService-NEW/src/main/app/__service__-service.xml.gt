@@ -65,18 +65,16 @@ ${xmlNamespace.reqRespService}
         <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
     </flow>
 
-    <mulexml:jaxb-context name="${service}-ctx" packageNames="org.soitoolkit.refapps.sd.crudsample.schema.v1"/>
-
     <flow name="${service}-soap-service"> 
 
         <custom-transformer doc:name="transform request" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}RequestTransformer"/>
 
-        <mulexml:jaxb-object-to-xml-transformer doc:name="jaxb to xml" jaxbContext-ref="${service}-ctx"/>
+        <mulexml:jaxb-object-to-xml-transformer doc:name="jaxb to xml" jaxbContext-ref="jaxbContext"/>
 
         <object-to-string-transformer doc:name="object to string"/>
 
         <response>
-            <mulexml:jaxb-xml-to-object-transformer doc:name="xml to jaxb" jaxbContext-ref="${service}-ctx" />
+            <mulexml:jaxb-xml-to-object-transformer doc:name="xml to jaxb" jaxbContext-ref="jaxbContext" />
 
             <custom-transformer doc:name="transform response" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
         </response>
