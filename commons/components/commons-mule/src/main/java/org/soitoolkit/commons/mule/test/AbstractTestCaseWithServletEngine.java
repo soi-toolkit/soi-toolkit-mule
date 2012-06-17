@@ -35,6 +35,9 @@ public abstract class AbstractTestCaseWithServletEngine extends AbstractTestCase
 	public AbstractTestCaseWithServletEngine(String muleServerId, int httpPort, String contextPath, String muleReceiverServletUri) {
 		super();
 
+        // Activate the spring bean definition profile "soitoolkit-integrationtests"
+        System.getProperties().put("spring.profiles.active", "soitoolkit-integrationtests");
+
 	    this.httpPort = httpPort ;
 	    this.contextPath = contextPath;
 	    this.muleReceiverServletUri = muleReceiverServletUri;

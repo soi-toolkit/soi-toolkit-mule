@@ -86,9 +86,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 
     public ${capitalizedJavaService}IntegrationTest() {
-        // Activate the spring bean definition profile "integrationtests"
-        System.getProperties().put("spring.profiles.active", "integrationtests");
-
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);

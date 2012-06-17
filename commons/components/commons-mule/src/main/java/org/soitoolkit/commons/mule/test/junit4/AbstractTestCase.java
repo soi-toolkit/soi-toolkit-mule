@@ -52,6 +52,9 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
     public AbstractTestCase() {
 		super();
 
+        // Activate the spring bean definition profile "soitoolkit-integrationtests"
+        System.getProperties().put("spring.profiles.active", "soitoolkit-integrationtests");
+
 		// Ensure that CXF use LOG4J for logging
 		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Log4jLogger");
 	}

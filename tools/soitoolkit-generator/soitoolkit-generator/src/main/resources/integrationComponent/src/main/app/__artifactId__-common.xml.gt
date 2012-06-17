@@ -58,7 +58,7 @@ ${xmlNamespace.common}
     </notifications>
 <% } %>  
 
-    <spring:beans profile="integrationtests">
+    <spring:beans profile="soitoolkit-integrationtests">
         <mule>
             <!--  Allow integration tests to register dynamic listeners by specifying dynamic="true" -->
             <notifications dynamic="true">
