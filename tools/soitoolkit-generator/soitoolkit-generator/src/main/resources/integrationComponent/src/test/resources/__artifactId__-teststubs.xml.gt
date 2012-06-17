@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mule 
-${xmlNamespace.teststubsOnlyConfig}
-
-    <spring:beans>
-        <spring:import resource="classpath:teststub-services/*-teststub-service.xml"/>
-    </spring:beans>
-
-</mule>

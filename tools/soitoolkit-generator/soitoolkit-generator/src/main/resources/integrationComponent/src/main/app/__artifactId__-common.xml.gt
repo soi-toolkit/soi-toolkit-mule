@@ -68,6 +68,11 @@ ${xmlNamespace.common}
         </mule>
     </spring:beans>
 
+    <spring:beans profile="soitoolkit-teststubs">
+        <!-- Load all teststub services -->
+        <spring:import resource="classpath:teststub-services/*-teststub-service.xml"/>
+    </spring:beans>
+
     <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
 <% if (servlet) { %>
 	<servlet:connector name="servlet-connector" />

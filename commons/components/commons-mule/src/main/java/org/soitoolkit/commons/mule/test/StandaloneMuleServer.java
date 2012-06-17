@@ -48,6 +48,8 @@ public class StandaloneMuleServer {
 	 * 
 	 * @param muleServerId
 	 * @param muleConfig
+	 * 
+	 * @deprecated use StandaloneMuleServer(String muleServerId, boolean loadTestServices, boolean loadServices) instead
 	 */
     public StandaloneMuleServer(String muleServerId, String muleConfig, boolean loadServices) {
     	this.muleServerId = muleServerId;
@@ -57,6 +59,24 @@ public class StandaloneMuleServer {
     	
     	if (muleConfig != null && muleConfig.length() > 0) {
     		this.muleConfig += ", " + muleConfig;
+    	}
+	}
+
+	/**
+	 * Constructor that takes configuration parameters
+	 * 
+	 * @param muleServerId
+	 * @param muleConfig
+	 */
+    public StandaloneMuleServer(String muleServerId, boolean loadTestServices, boolean loadServices) {
+    	this.muleServerId = muleServerId;
+    	
+    	// Initiate the muleConfig with all config files from mule-deploy.properties, optionally filter out service-config files
+    	this.muleConfig = getConfigFileFromMuleDeployPropertyFile(loadServices);	
+    	
+    	if (loadTestServices) {
+            // Activate the spring bean definition profile "soitoolkit-teststubs"
+            System.getProperties().put("spring.profiles.active", "soitoolkit-teststubs");
     	}
 	}
 
