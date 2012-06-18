@@ -47,12 +47,6 @@
 	    <artifactId>jasypt</artifactId>
 	    <version>1.8</version>
 	  </dependency>
-	  <!-- #183: icu is only required by jasypt if JDK < 6, see: http://www.jasypt.org/dependencies.html -->
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <version>3.4.4</version>
-    </dependency>	  
 
 		<dependency>
 			<groupId>xerces</groupId>
