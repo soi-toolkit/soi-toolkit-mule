@@ -51,8 +51,8 @@
 		<soitoolkit.buildinfo.artifact>${project.artifactId}</soitoolkit.buildinfo.artifact>
 		<soitoolkit.buildinfo.version>${project.version}</soitoolkit.buildinfo.version>
     
-    <compiler.target.version>1.5</compiler.target.version>
-    <compiler.source.version>1.5</compiler.source.version>
+    <compiler.target.version>1.6</compiler.target.version>
+    <compiler.source.version>1.6</compiler.source.version>
 
     <!-- ************************************************************* -->
     <!-- dependency versions - please keep list alphabetically ordered -->
