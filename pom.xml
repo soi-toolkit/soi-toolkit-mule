@@ -75,7 +75,8 @@
     <maven-gpg-plugin.version>1.1</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
     <maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
-    <maven-mule-plugin.version>1.7</maven-mule-plugin.version>    
+    <maven-mule-plugin.version>1.7</maven-mule-plugin.version>
+    <maven-plugin-plugin.version>3.0</maven-plugin-plugin.version>
     <!-- maven-release-plugin: version 2.0 is tagging at the wrong level in SVN
       (project level instead of trunk-level) due to bug:
       http://jira.codehaus.org/browse/MRELEASE-526 -->
@@ -194,6 +195,12 @@
           <artifactId>maven-eclipse-plugin</artifactId>
           <version>${maven-eclipse-plugin.version}</version>
         </plugin>
+        <!--
+          Note: maven-enforcer-plugin version specified in sonatype parent
+          pluginManagement-section, we need to be explicit with version
+          where the plugin is declared since override of version here does
+          not seem to work (we pick up the older version from the parent).
+        -->
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>${maven-enforcer-plugin.version}</version>
@@ -215,6 +222,14 @@
           <artifactId>maven-mule-plugin</artifactId>
           <version>${maven-mule-plugin.version}</version>
         </plugin>
+        <!--
+          Note: implicitly used by maven-plugin projects.
+        -->
+        <plugin>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${maven-plugin-plugin.version}</version>
+        </plugin>
+        
         <plugin>
           <artifactId>maven-release-plugin</artifactId>
           <version>${maven-release-plugin.version}</version>
@@ -272,66 +287,42 @@
       </plugin>
       
       <!--
-        TODO: TESTCASE: try deploy + release to see that all plugin versions are specified!
-        
-        TODO: soi-tk 0.1.10-SNAPSHOT, fails release with:
-        
-        [INFO] [INFO] org.apache.maven.plugins.enforcer.RequirePluginVersions failed with message:
-        [INFO] Unable to download the artifact from any repository
-        [INFO] 
-        [INFO]   org.soitoolkit:soitoolkit:pom:0.1.10
-        
-        commented out for now...        
+        Note: maven-enforcer-plugin version specified in sonatype parent
+        pluginManagement-section, we need to be explicit with version
+        where the plugin is declared since override of version here does
+        not seem to work (we pick up the older version from the parent).
       -->
-      <!--
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
-            <id>enforce-plugin-versions</id>
+            <id>soi-toolkit: enforce-versions</id>
             <goals>
               <goal>enforce</goal>
             </goals>
             <configuration>
               <rules>
+
                 <requirePluginVersions>
                   <message>### Best Practice is to always define plugin versions! ###</message>
                 </requirePluginVersions>
+
+                <requireMavenVersion>
+                  <version>[3.0.3,)</version>
+                </requireMavenVersion>
+                
+                <requireJavaVersion>
+                  <version>[1.6.0,)</version>
+                </requireJavaVersion>                
+                
               </rules>
-              <failFast>true</failFast>
+              <failFast>false</failFast>
             </configuration>
           </execution>
         </executions>
       </plugin>
-					MAYBE WE ALSO SHOULD ENFORCE USEAGE OF JAVA SE 1.6 OR HIGHER?
-                    <requireJavaVersion>
-                        <!- - Java version must be 1.6 or higher - ->
-                        <version>[1.6.0,)</version>
-                    </requireJavaVersion>
-
-      -->
       
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <executions>
-              <execution>
-                  <id>enforce-maven-version</id>
-                  <goals>
-                      <goal>enforce</goal>
-                  </goals>
-                  <configuration>
-                      <rules>
-                          <requireMavenVersion>
-                              <!-- minimum version is 3.0.3, higher versions allowed -->
-                              <version>[3.0.3,)</version>
-                          </requireMavenVersion>
-                      </rules>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
-
       <plugin>
         <!-- create test-jar files -->
         <artifactId>maven-jar-plugin</artifactId>

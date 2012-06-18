@@ -189,6 +189,12 @@
           <artifactId>maven-eclipse-plugin</artifactId>
           <version>${maven-eclipse-plugin.version}</version>
         </plugin>
+        <!--
+          Note: maven-enforcer-plugin version specified in sonatype parent
+          pluginManagement-section, we need to be explicit with version
+          where the plugin is declared since override of version here does
+          not seem to work (we pick up the older version from the parent).
+        -->        
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>${maven-enforcer-plugin.version}</version>
@@ -265,34 +271,45 @@
           <downloadJavadocs>false</downloadJavadocs>
         </configuration>
       </plugin>
-      
-      <!-- TODO: maybe not enforce on this level - could force/cause problems on end-users
-        if they add plugins in their build - keep for testing soi-tk internally only?
-        
-        TODO: TESTCASE: try deploy + release to see that all plugin versions are specified!
-        
-        DEFINITELY: add to soi-tk parent-pom where we have full control over the build environemt!
-      -->
+            
       <!--
+        Note: maven-enforcer-plugin version specified in sonatype parent
+        pluginManagement-section, we need to be explicit with version
+        where the plugin is declared since override of version here does
+        not seem to work (we pick up the older version from the parent).
+      -->
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
-            <id>enforce-plugin-versions</id>
+            <id>soi-toolkit: enforce-versions</id>
             <goals>
               <goal>enforce</goal>
             </goals>
             <configuration>
               <rules>
+
                 <requirePluginVersions>
                   <message>### Best Practice is to always define plugin versions! ###</message>
+                  <!-- Don't check soi-tk plugins, i.e. enable SNAPSHOT-builds with soi-tk -->
+                  <unCheckedPluginList>org.soitoolkit.tools.generator:soitoolkit-generator-maven-plugin</unCheckedPluginList>
                 </requirePluginVersions>
+
+                <requireMavenVersion>
+                  <version>[3.0.3,)</version>
+                </requireMavenVersion>
+                
+                <requireJavaVersion>
+                  <version>[1.6.0,)</version>
+                </requireJavaVersion>                
+                
               </rules>
+              <failFast>false</failFast>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      -->
 
       <plugin>
         <!-- create test-jar files -->
