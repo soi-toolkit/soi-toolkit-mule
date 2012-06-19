@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.LoggingHelper;
 <% if (inboundTransport=="RESTHTTP") { %>
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.commons.mule.rest.RestClient;
@@ -86,6 +87,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 
     public ${capitalizedJavaService}IntegrationTest() {
+      // redirect logging to console, will disable all appenders in log4j.xml
+      LoggingHelper.logToConsoleOnly();    
+    
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
     	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
