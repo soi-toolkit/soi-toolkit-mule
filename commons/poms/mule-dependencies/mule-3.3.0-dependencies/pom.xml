@@ -247,6 +247,16 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>${activemq.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.fusesource.fuse-extra</groupId>
+					<artifactId>fusemq-leveldb</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.fusesource.mqtt-client</groupId>
+					<artifactId>mqtt-client</artifactId>
+				</exclusion>				
+			</exclusions>
 		</dependency>
 		<!-- Required to be able to configure a embedded AMQ-broker in spring-config-files -->
 		<dependency>
