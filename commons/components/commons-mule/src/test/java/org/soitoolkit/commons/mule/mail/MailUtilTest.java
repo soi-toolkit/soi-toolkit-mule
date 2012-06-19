@@ -53,8 +53,8 @@ public class MailUtilTest {
 
 	String from         = smtpUsername + "@gmail.com";
 	String to           = imapUsername;
-	String subject      = "Hello soi-toolkit user (ŒŠš€…)";
-	String text         = "Welcome to soi-toolkit at " + new Date() + " (ŒŠš€…)";
+	String subject      = "Hello soi-toolkit user (Ã¥Ã¤Ã¶Ã…Ã„Ã–)";
+	String text         = "Welcome to soi-toolkit at " + new Date() + " (Ã¥Ã¤Ã¶Ã…Ã„Ã–)";
 
 	String attatchment1 = "src/test/resources/testfiles/mail/soi-toolkit-home.pdf";
 	String attatchment2 = "src/test/resources/testfiles/mail/soi-toolkit-home.png";
