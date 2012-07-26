@@ -20,11 +20,17 @@ import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.IntegrationComponentGeneratorTest.EXPECTED_NO_OF_IC_FILES_CREATED;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JDBC;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
@@ -69,44 +75,111 @@ public class RequestResponseServiceGeneratorTest {
 	public void tearDown() throws Exception {
 	}
 
+
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one common integration component.
+	 *  but with two different component names to ensure that we don't have any hardcoded component names in the templates
+	 * 
+	 * @throws IOException
+	 */
 	@Test
-	public void testRequestResponseServices() throws IOException {
+	public void testRequestResponseServicesInOneCommonIC() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-
-//			doTestRequestResponseServices("org.soitoolkit.tool.generator",       "requestResponseWD-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
-//			doTestRequestResponseServices("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 		}
 	}
 
-	private void doTestRequestResponseServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-		TransportEnum[] inboundTransports  = {SOAPHTTP, RESTHTTP};
-		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one common integration component but with another component names to ensure that we don't have any hardcoded component names in the templates
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testRequestResponseServicesInOneCommonICWithOtherName() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+		
+		for (int i = 0; i < muleVersions.length; i++) {
 
-		if (deploymentModel == WAR_DEPLOY) {
-			inboundTransports = appendTransport(inboundTransports, SOAPSERVLET);
+			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 		}
+	}
 
-		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one integration component per service to ensure that each combination of in- and out-bound endpoints are self contained
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testRequestResponseServicesOneICPerService() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+		
+		for (int i = 0; i < muleVersions.length; i++) {
+			doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator",     "requestResponseSA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+		}
+	}
 
-		for (TransportEnum inboundTransport : inboundTransports) {
-			for (TransportEnum outboundTransport : outboundTransports) {
-				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA);
+//	/**
+//	 * Also test with WAR deploy
+//	 * 
+//	 * @throws IOException
+//	 */
+//	@Test
+//	public void testRequestResponseServicesInWarDeploy() throws IOException {
+//		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+//		
+//		for (int i = 0; i < muleVersions.length; i++) {
+//			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseWD-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-WD-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//		}
+//	}
+
+	private void doTestRequestResponseServicesInOneCommonIC(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+
+		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+
+		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);	
+
+		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
+			for (TransportEnum outboundTransport : getOutboundTransports()) {
+				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
 //				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.SMOOKS);
 			}
 		}
 
-		performMavenBuild(groupId, artifactId);
+		performMavenBuild(projectFolder);
 	}
 
-	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+	private void doTestRequestResponseServicesOneICPerService(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+
+		String orgArtifactId = artifactId;
+		
+		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
+			for (TransportEnum outboundTransport : getOutboundTransports()) {
+				artifactId = orgArtifactId + "_" + inboundTransport.name() + "_to_" + outboundTransport.name();
+				String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+				createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);	
+				createRequestResponseService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
+				performMavenBuild(projectFolder);
+			}
+		}
+	}
+	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
+		TransportEnum[] inboundTransports  = {SOAPHTTP, RESTHTTP};
+		if (deploymentModel == WAR_DEPLOY) {
+			inboundTransports = appendTransport(inboundTransports, SOAPSERVLET);
+		}
+		return inboundTransports;
+	}
+
+	private TransportEnum[] getOutboundTransports() {
+		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
+		return outboundTransports;
+	}
+	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
 		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED : 66;
-
-		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 		TRANSPORTS.add(JMS);
 		TRANSPORTS.add(SOAPHTTP);
@@ -120,8 +193,7 @@ public class RequestResponseServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createRequestResponseService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
-		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+	private void createRequestResponseService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String projectFolder) throws IOException {
 
 		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase() + "Using" + capitalize(transformerType.name().toLowerCase()));
 
@@ -151,21 +223,20 @@ public class RequestResponseServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, actualNoOfFiles);
 	}
 
-	private void performMavenBuild(String groupId, String artifactId) throws IOException {
-		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
+	private void performMavenBuild(String projectFolder) throws IOException {
 
 		boolean testOk = false;
 		
 		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
+			SystemUtil.executeCommand(BUILD_COMMAND, projectFolder);
 			testOk = true;
 		} finally {
 			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER);
+			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, projectFolder);
 		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER);
+		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, projectFolder);
 	}
 
 	@SuppressWarnings("unused")

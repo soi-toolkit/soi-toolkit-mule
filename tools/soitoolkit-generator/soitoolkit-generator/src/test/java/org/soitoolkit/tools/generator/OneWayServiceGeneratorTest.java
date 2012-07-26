@@ -78,44 +78,111 @@ public class OneWayServiceGeneratorTest {
 	public void tearDown() throws Exception {
 	}
 
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one common integration component.
+	 *  but with two different component names to ensure that we don't have any hardcoded component names in the templates
+	 * 
+	 * @throws IOException
+	 */
 	@Test
-	public void testOneWayServices() throws IOException {
+	public void testOneWayServicesInOneCommonIC() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-
-//			doTestOneWayServices("org.soitoolkit.tool.generator",       "onewayWD-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
-//			doTestOneWayServices("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
 		}
 	}
 
-	private void doTestOneWayServices(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP, SFTP}; // Waiting for: IMAP, POP3
-		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP, SFTP};       // Waiting for: SMTP  
-
-		if (deploymentModel == WAR_DEPLOY) {
-			inboundTransports = appendTransport(inboundTransports, SERVLET);
-		}
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one common integration component but with another component names to ensure that we don't have any hardcoded component names in the templates
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testOneWayServicesInOneCommonICWithOtherName() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
-		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel);	
+		for (int i = 0; i < muleVersions.length; i++) {
+			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+		}
+	}
 
-		for (TransportEnum inboundTransport : inboundTransports) {
-			for (TransportEnum outboundTransport : outboundTransports) {
-				createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA);
+	/**
+	 * Test all combinations of supported inbound and outbound endpoints with one integration component per service to ensure that each combination of in- and out-bound endpoints are self contained
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testOneWayServicesOneICPerService() throws IOException {
+		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+		
+		for (int i = 0; i < muleVersions.length; i++) {
+			doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+		}
+	}
+
+//	/**
+//	 * Also test with WAR deploy
+//	 * 
+//	 * @throws IOException
+//	 */
+//	@Test
+//	public void testOneWayServicesInWarDeploy() throws IOException {
+//		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+//		
+//		for (int i = 0; i < muleVersions.length; i++) {
+//			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewayWD-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-WD-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], WAR_DEPLOY);
+//		}
+//	}
+
+	private void doTestOneWayServicesInOneCommonIC(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+
+		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+		
+		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);	
+
+		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
+			for (TransportEnum outboundTransport : getOutboundTransports()) {
+				createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
 			}
 		}
 
-		performMavenBuild(groupId, artifactId);
+		performMavenBuild(projectFolder);
 	}
 
-	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+	private void doTestOneWayServicesOneICPerService(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
+
+		String orgArtifactId = artifactId;
+		
+		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
+			for (TransportEnum outboundTransport : getOutboundTransports()) {
+				artifactId = orgArtifactId + "_" + inboundTransport.name() + "_to_" + outboundTransport.name();
+				String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+				createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);	
+				createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
+				performMavenBuild(projectFolder);
+			}
+		}
+	}
+
+	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
+		TransportEnum[] inboundTransports  = {VM, JMS, JDBC, FILE, FTP, HTTP, SFTP}; // Waiting for: IMAP, POP3
+		if (deploymentModel == WAR_DEPLOY) {
+			inboundTransports = appendTransport(inboundTransports, SERVLET);
+		}
+		return inboundTransports;
+	}
+
+	private TransportEnum[] getOutboundTransports() {
+		TransportEnum[] outboundTransports = {VM, JMS, JDBC, FILE, FTP, SFTP};       // Waiting for: SMTP  
+		return outboundTransports;
+	}
+
+	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
 		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED + 5 : 71;
 		
-		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
-
 		TRANSPORTS.add(VM);
 		TRANSPORTS.add(JMS);
 		TRANSPORTS.add(JDBC);
@@ -135,8 +202,7 @@ public class OneWayServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
-	private void createOneWayService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType) throws IOException {
-		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
+	private void createOneWayService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String projectFolder) throws IOException {
 
 		String service = inboundTransport.name().toLowerCase() + "To" + capitalize(outboundTransport.name().toLowerCase());
 
@@ -172,21 +238,20 @@ public class OneWayServiceGeneratorTest {
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 
-	private void performMavenBuild(String groupId, String artifactId) throws IOException {
-		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
+	private void performMavenBuild(String projectFolder) throws IOException {
 
 		boolean testOk = false;
 		
 		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
+			SystemUtil.executeCommand(BUILD_COMMAND, projectFolder);
 			testOk = true;
 		} finally {
 			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, PROJECT_FOLDER);
+			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, projectFolder);
 		}
 		
 		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER);
+		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, projectFolder);
 	}
 
 }
