@@ -111,7 +111,8 @@ public class OnewayServiceGenerator implements Generator {
 
 
 		// Add vm-connector to common file (one and the same for junit-tests and running mule server) if vm-transport is used for the first time
-		if (inboundTransport == VM || outboundTransport == VM) {
+		// Used by VM-IN, VM-OUT and SFTP-OUT
+		if (inboundTransport == VM || outboundTransport == VM || outboundTransport == SFTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the VM-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
 		}
@@ -123,7 +124,8 @@ public class OnewayServiceGenerator implements Generator {
 		}
 
 		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
-		if (inboundTransport == FILE || outboundTransport == FILE) {
+		// Used by FILE-IN, FILE-OUT and SFTP-OUT
+		if (inboundTransport == FILE || outboundTransport == FILE || outboundTransport == SFTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
 		}
