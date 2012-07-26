@@ -198,11 +198,7 @@ ${xmlNamespace.onewayService}
                     connector-ref="soitoolkit-sftp-connector"
 					address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-<% if (inboundTransport=="FTP") { %> 
 					outputPattern="#[header:INBOUND:originalFilename]"
-<% } else { %> 
-					outputPattern="#[header:originalFilename]"
-<% } %> 
 <% } else { %> 
 					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
