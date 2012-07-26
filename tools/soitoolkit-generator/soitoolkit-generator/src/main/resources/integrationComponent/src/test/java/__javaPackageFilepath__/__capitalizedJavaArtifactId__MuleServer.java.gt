@@ -34,10 +34,16 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 
         // Configure the mule-server:
-        // 1. Specify the "${artifactId}-teststubs.xml" file if teststub-services are to be loaded
-        // 2. Specify true if all files including the services are to be loaded from the mule-deploy.properties - file
-        // 3. Specify false if services are NOT to be loaded from the mule-deploy.properties - file, only common config files will be loaded
-        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, "${artifactId}-teststubs.xml", true);
+        //
+        // Arg #1: The name of the Mule Server
+        //
+        // Arg #2: Start teststub-services if true
+        //         Note: Actually enables the spring-beans-profile "soitoolkit-teststubs" in the file "src/main/app/${artifactId}-common.xml"
+        //
+        // Arg #3: Start services if true 
+        //         Note: Actually loads all *-service.xml files that are specified in the file "src/main/app/mule-deploy.properties"
+        //
+        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, true, true);
 <% } %> 
         // Start the server
 		muleServer.run();
