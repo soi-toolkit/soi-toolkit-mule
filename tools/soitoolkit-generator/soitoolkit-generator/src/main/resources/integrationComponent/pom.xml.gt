@@ -85,6 +85,9 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 <!-- Add mule-nature to the eclipse-.project-file -->
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <configuration>
+                    <additionalBuildcommands>
+                        <buildcommand>org.mule.tooling.core.muleBuilder</buildcommand>
+                    </additionalBuildcommands>
                     <additionalProjectnatures>
                         <projectnature>org.mule.tooling.core.muleNature</projectnature>
                     </additionalProjectnatures>
