@@ -32,19 +32,4 @@ ${xmlNamespace.reqRespTeststubService}
         <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
     </flow>
 <% } %> 
-
-<% if (inboundTransport=="SOAPSERVLET" && outboundTransport!="SOAPHTTP") { %>
-	<!-- ISSUE 117. WITH A SOAP/SERVLET INBOUND ENDPOINT AND NOT A SOAP/HTTP BASED OUTBOUND ENDPOINT IT SEEMS THAT A <cxf:proxy-client> IS REQUIRED IN THE CONFIG-FILE STARTING WITH MULE v3.1.1, FOR DETAIS SEE http://code.google.com/p/soi-toolkit/issues/detail?id=117 -->
-	<model name="${service}-teststub-fix-model">
-		<service name="${service}-teststub-fix-service">
-			<outbound>
-				<pass-through-router>
-                    <outbound-endpoint connector-ref="soitoolkit-vm-connector" address="vm://out">
-                        <cxf:proxy-client />
-                    </outbound-endpoint>
-				</pass-through-router>
-			</outbound>
-		</service>
-	</model>
-<% } %> 
 </mule>
