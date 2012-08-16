@@ -18,13 +18,13 @@ ${xmlNamespace.reqRespService}
 			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
 			exchange-pattern="request-response"
 			transformer-refs="objToStr logReqIn"
-			responseTransformer-refs="createSoapFaultIfException logRespOut">
-			<cxf:proxy-service 
-				service="sampleService"
-				wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
-				namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
-			</cxf:proxy-service>
-		</http:inbound-endpoint>
+			responseTransformer-refs="createSoapFaultIfException logRespOut" />
+			
+        <cxf:proxy-service 
+            service="sampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+        </cxf:proxy-service>
 <% } else if (inboundTransport=="RESTHTTP") { %>
         <http:inbound-endpoint
             connector-ref="soitoolkit-http-connector"
