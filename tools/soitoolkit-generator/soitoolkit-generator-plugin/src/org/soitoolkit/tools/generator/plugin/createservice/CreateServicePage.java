@@ -19,9 +19,13 @@ package org.soitoolkit.tools.generator.plugin.createservice;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -42,6 +46,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.model.enums.MepEnum;
@@ -338,6 +343,35 @@ public class CreateServicePage extends WizardPage {
 			}
 		});
 
+		// Default the IC, if an IC is selected in workspace...
+//		ISelection projSelection =
+//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
+//		
+//		if (projSelection instanceof IStructuredSelection) {
+//			Object[] selectedObjects = ((IStructuredSelection)projSelection).toArray();
+//			IProject project = null;
+//			
+//			if (selectedObjects.length > 0) {
+//				
+//				if (selectedObjects[0] instanceof IJavaProject) {
+//					project = ((IJavaProject)selectedObjects[0]).getProject();
+//				} else if (selectedObjects[0] instanceof IResource) {
+//					project= ((IResource)selectedObjects[0]).getProject();
+//				} else if (selectedObjects[0] instanceof PackageFragmentRootContainer) {
+//					IJavaProject jProject = ((PackageFragmentRootContainer)selectedObjects[0]).getJavaProject();
+//					project = jProject.getProject();
+//				} else if (selectedObjects[0] instanceof IJavaElement) {
+//					IJavaProject jProject= ((IJavaElement)selectedObjects[0]).getJavaProject();
+//					project = jProject.getProject();
+//				}
+//				
+//				if (project != null) {
+//					projectText.setText(project.getName());
+//				}
+//			}
+//		}
+
+
 		Button button = new Button(projectContainer, SWT.PUSH);
 		button.setText("Browse...");
 		button.addSelectionListener(new SelectionAdapter() {
@@ -366,17 +400,24 @@ public class CreateServicePage extends WizardPage {
 	private void initialize() {
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
-			if (ssel.size() > 1)
-				return;
-			Object obj = ssel.getFirstElement();
-			if (obj instanceof IResource) {
-				IContainer container;
-				if (obj instanceof IContainer)
-					container = (IContainer) obj;
-				else
-					container = ((IResource) obj).getParent();
-				projectText.setText(container.getFullPath().toString());
+			IStructuredSelection iStructuredSelection = (IStructuredSelection) selection;
+			
+			if (iStructuredSelection.size() > 0) {
+				Object selectedObject = iStructuredSelection.getFirstElement();
+				IProject project = null;
+				
+				if (selectedObject instanceof IJavaProject) {
+					project = ((IJavaProject)selectedObject).getProject();
+				} else if (selectedObject instanceof IJavaElement) {
+					IJavaProject jProject= ((IJavaElement)selectedObject).getJavaProject();
+					project = jProject.getProject();
+				} else if (selectedObject instanceof IResource) {
+					project = ((IResource)selectedObject).getProject();
+				} 
+				
+				if (project != null) {
+					projectText.setText(project.getName());
+				}
 			}
 		}
 		serviceText.setText("mySample");
