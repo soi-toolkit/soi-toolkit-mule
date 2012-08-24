@@ -1,0 +1,3 @@
+<!-- BEGIN_INCLUDE(soitoolkitlogger:log) -->
+    <soitoolkitlogger:log message="hello" />
+<!-- END_INCLUDE(soitoolkitlogger:log) -->

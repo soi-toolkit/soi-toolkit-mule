@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:soitoolkitlogger="http://www.mulesoft.org/schema/mule/soitoolkitlogger"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" 
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/soitoolkitlogger http://www.mulesoft.org/schema/mule/soitoolkitlogger/current/mule-soitoolkitlogger.xsd">
+
+    <spring:beans>
+        <context:component-scan base-package="org.soitoolkit.commons.module.logger" />
+        <spring:import resource="classpath:soitoolkit-mule-jms-connector-activemq-embedded.xml"/>
+    </spring:beans>
+
+    <mulexml:jaxb-context name="jaxbContext" packageNames="org.soitoolkit.commons.logentry.schema.v1"/>
+
+    <soitoolkitlogger:config myProperty="Some string"/>
+
+        <!-- 
+            <soitoolkitlogger:extra id="commonValues">
+                <soitoolkitlogger:extra key="4">value-4</soitoolkitlogger:extra>
+                <soitoolkitlogger:extra key="5">value-5</soitoolkitlogger:extra>
+                <soitoolkitlogger:extra key="6">value-6</soitoolkitlogger:extra>
+            </soitoolkitlogger:extra>
+ -->
+    <flow name="vmFlow">
+      <inbound-endpoint address="vm:/in" exchange-pattern="request-response"/>
+      <flow-ref name="testFlow"/>
+    </flow>
+
+    <flow name="testFlow">
+        <soitoolkitlogger:log-warning message="1. Payload in log-message: #[payload]"/>
+        <soitoolkitlogger:log-info message="2.3 Another string">
+<!-- 
+            <soitoolkitlogger:extra ref="commonValues">
+ -->
+            <soitoolkitlogger:extra>
+	            <soitoolkitlogger:extra key="1">value-1</soitoolkitlogger:extra>
+	            <soitoolkitlogger:extra key="2">value-2</soitoolkitlogger:extra>
+	            <soitoolkitlogger:extra key="3">value-3</soitoolkitlogger:extra>
+            </soitoolkitlogger:extra>
+        </soitoolkitlogger:log-info>
+    </flow>
+
+</mule>
