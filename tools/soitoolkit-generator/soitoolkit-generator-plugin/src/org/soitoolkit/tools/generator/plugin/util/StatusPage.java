@@ -109,6 +109,7 @@ public class StatusPage extends WizardPage {
 		statusTextArea.setLayoutData(new GridData(GridData.FILL_BOTH
 				| GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 		statusTextArea.setEditable(false);
+		statusTextArea.setText("Press Finish to start the generator!");
 		
 		initialize();
 		dialogChanged();
