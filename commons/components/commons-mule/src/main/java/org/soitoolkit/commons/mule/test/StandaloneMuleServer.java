@@ -90,6 +90,9 @@ public class StandaloneMuleServer {
 		// Start me up...
         log.info("Startup...");
 		start();
+		
+		// issue #222: avoid hang in Eclipse on Windows
+		sleepShortOnWindowsHostToAvoidHangDuringStart_issue222();
 
         // Run until the return key is hit...
         log.info("Hit the RETURN - key to shutdown");
@@ -99,6 +102,14 @@ public class StandaloneMuleServer {
         log.info("Shutdown...");
         shutdown();
         log.info("Shutdown complete");
+	}
+
+	private void sleepShortOnWindowsHostToAvoidHangDuringStart_issue222() throws InterruptedException {
+		int sleepTimeMillis = 2000;
+		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+			log.info("#issue 222: Windows OS detected, sleeping for {} ms to avoid hang in Eclipse", sleepTimeMillis);
+			Thread.sleep(sleepTimeMillis);
+		}
 	}
 
 	/**
