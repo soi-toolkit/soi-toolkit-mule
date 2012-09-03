@@ -30,7 +30,7 @@ public class ${capitalizedJavaService}RequestTransformer extends AbstractMessage
 	 */
 	protected Object pojoTransform(Object src, String encoding) throws TransformerException {
 
-<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="RESTHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS" || outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 		log.debug("Transforming payload: {}", src);
 		
 		return src;

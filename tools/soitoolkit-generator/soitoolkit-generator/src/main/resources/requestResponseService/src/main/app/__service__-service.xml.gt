@@ -5,7 +5,7 @@ ${xmlNamespace.reqRespService}
 
 	<!-- TODO: Add service specific definitions here -->
 
-<% if (outboundTransport=="RESTHTTP") { %>
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 	<mule-xml:namespace-manager includeConfigNamespaces="true">
 		<mule-xml:namespace prefix="ns"  uri="urn:org.soitoolkit.refapps.sd.sample.schema:v1"/>
 	</mule-xml:namespace-manager>
@@ -25,6 +25,19 @@ ${xmlNamespace.reqRespService}
             wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
             namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
         </cxf:proxy-service>
+<% } else if (inboundTransport=="SOAPHTTPS") { %>
+		<https:inbound-endpoint
+            connector-ref="soitoolkit-https-connector"
+			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+			exchange-pattern="request-response"
+			transformer-refs="objToStr logReqIn"
+			responseTransformer-refs="createSoapFaultIfException logRespOut">
+		</https:inbound-endpoint>
+		<cxf:proxy-service 
+			service="sampleService"
+			wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/sample/sampleService.wsdl" 
+			namespace="urn:org.soitoolkit.refapps.sd.sample.wsdl:v1">
+		</cxf:proxy-service>
 <% } else if (inboundTransport=="RESTHTTP") { %>
         <http:inbound-endpoint
             connector-ref="soitoolkit-http-connector"
@@ -33,6 +46,14 @@ ${xmlNamespace.reqRespService}
             transformer-refs="objToStr logReqIn"
             responseTransformer-refs="logRespOut">
         </http:inbound-endpoint>
+<% } else if (inboundTransport=="RESTHTTPS") { %>
+		<https:inbound-endpoint
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="objToStr logReqIn"
+            responseTransformer-refs="logRespOut">
+        </https:inbound-endpoint>
 <% } %> 
 
 <% if (transformerType=="JAVA") { %>
@@ -58,6 +79,17 @@ ${xmlNamespace.reqRespService}
 			transformer-refs="logReqOut"
 			responseTransformer-refs="logRespIn">
 		</http:outbound-endpoint>
+<% } else if (outboundTransport=="SOAPHTTPS") { %>		
+		<cxf:proxy-client />
+        
+		<https:outbound-endpoint 
+            connector-ref="soitoolkit-https-connector"
+			address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+			exchange-pattern="request-response"
+			responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+			transformer-refs="logReqOut"
+			responseTransformer-refs="logRespIn">
+		</https:outbound-endpoint>
 <% } else if (outboundTransport=="RESTHTTP") { %>
 		<http:outbound-endpoint 
             connector-ref="soitoolkit-http-connector"
@@ -67,6 +99,15 @@ ${xmlNamespace.reqRespService}
 			responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
 			transformer-refs="logReqOut"
 			responseTransformer-refs="objToStr logRespIn" />
+<% } else if (outboundTransport=="RESTHTTPS") { %>
+		<https:outbound-endpoint 
+            connector-ref="soitoolkit-https-connector"
+			address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/sample/#[xpath:/ns:sample/ns:id]" 
+			method="GET"
+			exchange-pattern="request-response"
+			responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+			transformer-refs="logReqOut"
+			responseTransformer-refs="objToStr logRespIn" />			
 <% } else if (outboundTransport=="JMS") { %>
 		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
 			<jms:outbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" transformer-refs="objToStr strToJms logReqOut" />

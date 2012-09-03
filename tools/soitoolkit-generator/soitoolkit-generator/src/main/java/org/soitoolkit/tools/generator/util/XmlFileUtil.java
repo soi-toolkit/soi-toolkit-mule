@@ -98,9 +98,9 @@ public class XmlFileUtil {
 		System.err.println("Updated: " + filename);
 	}    
 
-	public static void updateCommonFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
+	public static boolean updateCommonFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
 		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-common.xml";
-		updateXmlFileWithSpringImport(gu, xmlFile, comment, xmlFragment);
+		return updateXmlFileWithSpringImport(gu, xmlFile, comment, xmlFragment);
 	}
 
 	public static void updateConfigFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
@@ -108,7 +108,7 @@ public class XmlFileUtil {
 		updateXmlFileWithSpringImport(gu, xmlFile, comment, xmlFragment);
 	}
 
-	private static void updateXmlFileWithSpringImport(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment) {
+	private static boolean updateXmlFileWithSpringImport(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment) {
 
 		InputStream content = null;
 		String xml = null;
@@ -130,7 +130,7 @@ public class XmlFileUtil {
 			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
 			if (testList.getLength() > 0) {
 				gu.logDebug("Fragment already exists, bail out!!!");
-				return;
+				return false;
 			}
 			
 			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans[not(@profile)]");
@@ -173,6 +173,7 @@ public class XmlFileUtil {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
+		return true;
 	}
 	
 	public static void updateJaxbContextInConfigFile(GeneratorUtil gu, String xmlFile, String javaPackage) {

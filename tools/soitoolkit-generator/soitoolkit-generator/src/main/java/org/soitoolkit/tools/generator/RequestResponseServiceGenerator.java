@@ -22,7 +22,9 @@ import static org.soitoolkit.commons.xml.XPathUtil.getXPathResult;
 import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTPS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTPS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
@@ -30,6 +32,7 @@ import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDep
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateJaxbContextInConfigFile;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +58,7 @@ public class RequestResponseServiceGenerator implements Generator {
 	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String outputFolder) {
 
 		String templateFolder = "/requestResponseService";
-		if (inboundTransport == TransportEnum.RESTHTTP && outboundTransport == SOAPHTTP) {
+		if ((inboundTransport == TransportEnum.RESTHTTP || inboundTransport == RESTHTTPS) && (outboundTransport == TransportEnum.SOAPHTTP || outboundTransport == SOAPHTTPS)) {
 			templateFolder = "/requestResponseService-NEW";
 		}
 
@@ -67,7 +70,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 		
-		if (inboundTransport == TransportEnum.RESTHTTP && outboundTransport == SOAPHTTP) {
+		if ((inboundTransport == TransportEnum.RESTHTTP || inboundTransport == RESTHTTPS) && (outboundTransport == TransportEnum.SOAPHTTP || outboundTransport == SOAPHTTPS)) {
 			startNewGenerator();
 		} else {
 			startOldGenerator();
@@ -93,12 +96,12 @@ public class RequestResponseServiceGenerator implements Generator {
     	}
 
 		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-input.xml.gt");
-	    if (inboundTransport == RESTHTTP) {
+	    if (inboundTransport == RESTHTTP || inboundTransport == RESTHTTPS) {
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-fault-invalid-input.xml.gt");
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-fault-timeout-input.xml.gt");
 	    }
 	    gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/request-expected-result.csv.gt");
-	    if (outboundTransport == RESTHTTP) {
+	    if (outboundTransport == RESTHTTP || outboundTransport == RESTHTTPS) {
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-input.rest.gt");
 	    } else {
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/response-input.csv.gt");
@@ -127,6 +130,41 @@ public class RequestResponseServiceGenerator implements Generator {
 		if (inboundTransport == TransportEnum.RESTHTTP || inboundTransport == TransportEnum.SOAPHTTP || outboundTransport == RESTHTTP || outboundTransport == SOAPHTTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
+		}
+		
+		if (inboundTransport == TransportEnum.RESTHTTPS || inboundTransport == TransportEnum.SOAPHTTPS || outboundTransport == RESTHTTPS || outboundTransport == SOAPHTTPS) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTPS-transport";
+    		boolean isUpdated = updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-https-connector.xml");
+    		
+    		if (isUpdated) {
+    			gu.copyContentAndCreateFile("src/test/certs/client.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/truststore.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/server.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/readme.txt.gt");
+    		
+    	    	String httpsProperties =
+    	    		"# Properties for the default soitoolkit-https-connector's\n" +
+    	    		"# TODO: Update to reflect your settings\n" +
+    	    		"SOITOOLKIT_HTTPS_CLIENT_SO_TIMEOUT=${SERVICE_TIMEOUT_MS}\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEYSTORE=src/test/certs/server.jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEY_TYPE=jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE=src/test/certs/truststore.jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE_REQUIRE_CLIENT_AUTH=true\n" +
+
+    	    		"SOITOOLKIT_HTTPS_TLS_KEYSTORE_PASSWORD=password\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEY_PASSWORD=password\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE_PASSWORD=password\n";
+    	    	
+    	    	addProperties(httpsProperties);
+    		}
+    		
+	    	if (inboundTransport == TransportEnum.SOAPHTTPS) {
+	    		File cxfFile = new File("src/test/resources/cxf.xml");
+	    		
+	    		if (!cxfFile.exists())    		
+	    			gu.generateContentAndCreateFile("src/test/resources/cxf.xml.gt");
+	    	}
+    		
 		}
 
 		String file = gu.getOutputFolder() + "/pom.xml";
@@ -204,6 +242,40 @@ public class RequestResponseServiceGenerator implements Generator {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
 		}
+		
+		if (inboundTransport == TransportEnum.RESTHTTPS || inboundTransport == TransportEnum.SOAPHTTPS || outboundTransport == RESTHTTPS || outboundTransport == SOAPHTTPS) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTPS-transport";
+    		boolean isUpdated = updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-https-connector.xml");
+    		
+    		if (isUpdated) {
+    			gu.copyContentAndCreateFile("src/test/certs/client.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/truststore.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/server.jks.gt");
+    	    	gu.copyContentAndCreateFile("src/test/certs/readme.txt.gt");
+    		
+    	    	String httpsProperties =
+    	    		"# Properties for the default soitoolkit-https-connector's\n" +
+    	    		"# TODO: Update to reflect your settings\n" +
+    	    		"SOITOOLKIT_HTTPS_CLIENT_SO_TIMEOUT=${SERVICE_TIMEOUT_MS}\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEYSTORE=src/test/certs/server.jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEY_TYPE=jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE=src/test/certs/truststore.jks\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE_REQUIRE_CLIENT_AUTH=true\n" +
+
+    	    		"SOITOOLKIT_HTTPS_TLS_KEYSTORE_PASSWORD=password\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_KEY_PASSWORD=password\n" +
+    	    		"SOITOOLKIT_HTTPS_TLS_TRUSTSTORE_PASSWORD=password\n";
+    	    	
+    	    	addProperties(httpsProperties);
+    		}
+    		
+    		if (inboundTransport == TransportEnum.SOAPHTTPS) {
+	    		File cxfFile = new File("src/test/resources/cxf.xml");
+	    		
+	    		if (!cxfFile.exists())    		
+	    			gu.generateContentAndCreateFile("src/test/resources/cxf.xml.gt");
+	    	}
+		}
 
 		String xmlFile     = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-common.xml";
 		String javaPackage = "org.soitoolkit.refapps.sd.crudsample.schema.v1";
@@ -246,6 +318,19 @@ public class RequestResponseServiceGenerator implements Generator {
 			addDependency(file, xmlFragment, "milyn-smooks-csv");
     	}
     }
+    
+    private void addProperties(String properties) {
+    	PrintWriter cfg = null;
+		try {
+			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
+			cfg.println("");
+			cfg.println(properties);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (cfg != null) {cfg.close();}
+		}
+    }
 
 	private void updateOldPropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
@@ -264,20 +349,25 @@ public class RequestResponseServiceGenerator implements Generator {
 
 		    if (inboundTransport == SOAPHTTP || inboundTransport == RESTHTTP) {
 			    cfg.println(service + "_INBOUND_URL=http://localhost:" + m.getHttpPort() + "/" + artifactId + "/services/" + serviceName + "/v1");
-
+		    } else if (inboundTransport == SOAPHTTPS || inboundTransport == RESTHTTPS) {
+		    	cfg.println(service + "_INBOUND_URL=https://localhost:" + m.getHttpPort() + "/" + artifactId + "/services/" + serviceName + "/v1");
 		    } else if (inboundTransport == SOAPSERVLET) {
 			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
 		    }
-
 		    
 		    if (outboundTransport == SOAPHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
 			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-soap-teststub/v1");
-	
+		    } else if (outboundTransport == SOAPHTTPS) {
+		    	cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
+		    	cfg.println(service + "_TESTSTUB_INBOUND_URL=https://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-soap-teststub/v1");
 		    } else if (outboundTransport == RESTHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
 			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-rest-teststub/v1");
 
+		    } else if (outboundTransport == RESTHTTPS) { 
+		    	cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
+		    	cfg.println(service + "_TESTSTUB_INBOUND_URL=https://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-rest-teststub/v1");
 		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + m.getJmsRequestQueue());
 			    cfg.println(service + "_RESPONSE_QUEUE=" + m.getJmsResponseQueue());
@@ -290,7 +380,6 @@ public class RequestResponseServiceGenerator implements Generator {
 		}
 	}
 	
-
 	private void updateNewPropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 		
 		PrintWriter cfg = null;
@@ -318,19 +407,27 @@ public class RequestResponseServiceGenerator implements Generator {
 			    cfg.println(service + "_SAMPLE_PATH=${" + service + "_BASE_PATH}/sample");
 			    cfg.println(service + "_INBOUND_URL=${" + service + "_BASE_URL}${" + service + "_BASE_PATH}");
 
+		    } else if (inboundTransport == SOAPHTTPS || inboundTransport == RESTHTTPS) { 
+		    	cfg.println(service + "_BASE_URL=https://localhost:" + m.getHttpPort());
+		    	cfg.println(service + "_BASE_PATH=/" + artifactId + "/" + serviceName + "/rest");
+		    	cfg.println(service + "_SAMPLE_PATH=${" + service + "_BASE_PATH}/sample");
+		    	cfg.println(service + "_INBOUND_URL=${" + service + "_BASE_URL}${" + service + "_BASE_PATH}");
 		    } else if (inboundTransport == SOAPSERVLET) {
 			    cfg.println(service + "_INBOUND_URL=servlet://" + serviceName + "/v1");
 		    }
-
 		    
 		    if (outboundTransport == SOAPHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
 			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-soap-teststub/v1");
-	
+		    } else if (outboundTransport == SOAPHTTPS) {
+		    	cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
+		    	cfg.println(service + "_TESTSTUB_INBOUND_URL=https://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-soap-teststub/v1");
 		    } else if (outboundTransport == RESTHTTP) {
 			    cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
 			    cfg.println(service + "_TESTSTUB_INBOUND_URL=http://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-rest-teststub/v1");
-
+		    } else if (outboundTransport == RESTHTTPS) {
+		    	cfg.println(service + "_OUTBOUND_URL=${" + service + "_TESTSTUB_INBOUND_URL}");
+		    	cfg.println(service + "_TESTSTUB_INBOUND_URL=https://localhost:" + m.getHttpTeststubPort() + "/" + artifactId + "/services/" + serviceName + "-rest-teststub/v1");
 		    } else if (outboundTransport == JMS) {
 			    cfg.println(service + "_REQUEST_QUEUE="  + m.getJmsRequestQueue());
 			    cfg.println(service + "_RESPONSE_QUEUE=" + m.getJmsResponseQueue());

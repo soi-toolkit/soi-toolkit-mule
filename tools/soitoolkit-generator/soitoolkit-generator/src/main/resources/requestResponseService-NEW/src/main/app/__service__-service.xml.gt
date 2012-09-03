@@ -6,7 +6,7 @@ ${xmlNamespace.reqRespService}
 	<!-- TODO: Add service specific definitions here -->
 
     <flow name="${service}-service">
-
+		<% if (inboundTransport=="RESTHTTP") { %>
         <http:inbound-endpoint
             connector-ref="soitoolkit-http-connector"
             address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
@@ -14,7 +14,15 @@ ${xmlNamespace.reqRespService}
             transformer-refs="objToStr logReqIn"
             responseTransformer-refs="jaxbToJson setJsonContentType logRespOut">
         </http:inbound-endpoint>
- 
+ 		<% } else if (inboundTransport=="RESTHTTPS") { %> 
+ 		<https:inbound-endpoint
+ 			connector-ref="soitoolkit-https-connector"
+ 			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+ 			exchange-pattern="request-response"
+ 			transformer-refs="objToStr logReqIn"
+ 			responseTransformer-refs="jaxbToJson setJsonContentType logRespOut">
+ 		</https:inbound-endpoint>
+ 		<% } %> 		
         <rest:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample">
 
             <!-- FIND: HTTP GET on /sample -->
@@ -78,7 +86,8 @@ ${xmlNamespace.reqRespService}
 
             <custom-transformer doc:name="transform response" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ResponseTransformer"/>
         </response>
-
+		
+		<% if (outboundTransport=="SOAPHTTP") { %>
         <http:outbound-endpoint 
             connector-ref="soitoolkit-http-connector"
             address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
@@ -87,7 +96,16 @@ ${xmlNamespace.reqRespService}
             responseTransformer-refs="objToStr">
             <cxf:proxy-client />
         </http:outbound-endpoint>
- 
+        <% } else if (outboundTransport=="SOAPHTTPS") { %>
+        <https:outbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+        	address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+        	exchange-pattern="request-response"
+        	responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+        	responseTransformer-refs="objToStr">
+        	<cxf:proxy-client />
+         </https:outbound-endpoint> 
+         <% } %>
         <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
     </flow>
 </mule>

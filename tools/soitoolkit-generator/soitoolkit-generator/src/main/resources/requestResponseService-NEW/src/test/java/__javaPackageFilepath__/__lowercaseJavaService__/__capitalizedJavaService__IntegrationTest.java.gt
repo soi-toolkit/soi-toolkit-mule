@@ -38,10 +38,13 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
     private static final String INBOUND_URL = rb.getString("${uppercaseService}_INBOUND_URL");
  
-    private static final String HTTP_CONNECTOR = "soitoolkit-http-connector";
-    
+<% if (inboundTransport=="RESTHTTPS") { %> 
+    private static final String HTTP_CONNECTOR = "soitoolkit-https-connector";
+<% } else { %>
+	private static final String HTTP_CONNECTOR = "soitoolkit-http-connector";
+<% } %>  
     private static final String ERROR_LOG_QUEUE = "SOITOOLKIT.LOG.ERROR";
-    
+
     private AbstractJmsTestUtil jmsUtil = null;
 
     private String ENTITY1_ID = null;

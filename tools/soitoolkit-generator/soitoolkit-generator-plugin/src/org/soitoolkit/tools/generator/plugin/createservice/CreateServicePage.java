@@ -225,8 +225,8 @@ public class CreateServicePage extends WizardPage {
 
 				switch (MepEnum.get(c.getSelectionIndex())) {
 				case MEP_REQUEST_RESPONSE:
-					inboundTransportCombo.setItems  (new String [] {"SOAP/HTTP", "REST/HTTP"}); // "SOAP/Servlet"});
-					outboundTransportCombo.setItems (new String [] {"SOAP/HTTP", "REST/HTTP", "JMS"}); // "JDBC"});
+					inboundTransportCombo.setItems  (new String [] {"SOAP/HTTP", "SOAP/HTTPS", "REST/HTTP", "REST/HTTPS"}); // "SOAP/Servlet"});
+					outboundTransportCombo.setItems (new String [] {"SOAP/HTTP", "SOAP/HTTPS", "REST/HTTP", "REST/HTTPS", "JMS"}); // "JDBC"});
 					break;
 				case MEP_ONE_WAY:
 					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "Servlet (Multipart POST)", 
@@ -584,7 +584,13 @@ public class CreateServicePage extends WizardPage {
 			t = TransportEnum.SOAPHTTP;
 			break;
 		case 1: 
+			t = TransportEnum.SOAPHTTPS;
+			break;
+		case 2: 
 			t = TransportEnum.RESTHTTP;
+			break;
+		case 3: 
+			t = TransportEnum.RESTHTTPS;
 			break;
 		}
 		return t;
@@ -658,9 +664,15 @@ public class CreateServicePage extends WizardPage {
 			t = TransportEnum.SOAPHTTP;
 			break;
 		case 1: 
-			t = TransportEnum.RESTHTTP;
+			t = TransportEnum.SOAPHTTPS;
 			break;
 		case 2: 
+			t = TransportEnum.RESTHTTP;
+			break;
+		case 3: 
+			t = TransportEnum.RESTHTTPS;
+			break;
+		case 4: 
 			t = TransportEnum.JMS;
 			break;
 		}

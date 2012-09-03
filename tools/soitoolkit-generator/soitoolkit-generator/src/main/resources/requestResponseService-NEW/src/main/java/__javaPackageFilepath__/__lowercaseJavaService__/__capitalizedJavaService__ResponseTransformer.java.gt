@@ -7,7 +7,7 @@ import org.mule.config.i18n.MessageFactory;
 import org.mule.transformer.AbstractMessageTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<% if (inboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS" || outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
@@ -19,7 +19,7 @@ import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
 public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ResponseTransformer.class);
-<% if (outboundTransport=="RESTHTTP") { %>
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 	private static final JaxbUtil jaxbUtil = new JaxbUtil(SampleResponse.class);
 <% } %>
     /**
@@ -29,7 +29,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
     public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
 
         // Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
-<% if (inboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
         if (message.getExceptionPayload() != null) {
             return createFault(message.getExceptionPayload());
         }
@@ -43,7 +43,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
     public Object pojoTransform(Object response, String outputEncoding) throws TransformerException {
         log.debug("Transforming payload: {}", response);
 
-<% if (outboundTransport=="SOAPHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
         if ((response instanceof CreateSampleResponse) ||
             (response instanceof FindSamplesResponse) ||
             (response instanceof GetSampleResponse) ||
@@ -56,7 +56,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
         } else {
             throw new TransformerException(MessageFactory.createStaticMessage("Unknown type: " + response.getClass().getName()), this);
         }
-<% } else if (outboundTransport=="RESTHTTP") { %>
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 		SampleResponse request = new SampleResponse();
 		request.setValue(response.toString());
 		String xml = jaxbUtil.marshal(request);
@@ -91,7 +91,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
 		return xml;
 <% } %>
 	}
-<% if (inboundTransport=="SOAPHTTP") { %>
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
 	private String createFault(String errorMessage) {
 		return 
 		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
@@ -100,7 +100,7 @@ public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessag
 		"<faultstring>" + errorMessage + "</faultstring>" + 
 		"</soap:Fault>";
 	}
-<% } else if (inboundTransport=="RESTHTTP") { %>
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
 
     // TODO: Move to soitoolkit-commons-mule?
     private String createFault(ExceptionPayload ep) {

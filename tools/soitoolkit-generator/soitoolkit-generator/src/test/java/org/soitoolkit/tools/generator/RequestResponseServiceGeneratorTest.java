@@ -20,23 +20,20 @@ import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.IntegrationComponentGeneratorTest.EXPECTED_NO_OF_IC_FILES_CREATED;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JDBC;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTPS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTP;
+import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPHTTPS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SOAPSERVLET;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +47,8 @@ import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
-import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
+import org.soitoolkit.tools.generator.util.SystemUtil;
 
 public class RequestResponseServiceGeneratorTest {
 
@@ -166,7 +163,9 @@ public class RequestResponseServiceGeneratorTest {
 		}
 	}
 	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
-		TransportEnum[] inboundTransports  = {SOAPHTTP, RESTHTTP};
+		
+		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS};
+		
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports = appendTransport(inboundTransports, SOAPSERVLET);
 		}
@@ -174,7 +173,8 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	private TransportEnum[] getOutboundTransports() {
-		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS}; 
+		TransportEnum[] outboundTransports = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS, JMS};
+
 		return outboundTransports;
 	}
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
@@ -199,13 +199,29 @@ public class RequestResponseServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
+		// SSL 
+		File cxf = new File(projectFolder + "/src/test/resources/cxf.xml");
+		File certDir = new File(projectFolder + "/src/test/certs");
+		
+		int expectedNoSslFiles = 0;
+		if (!cxf.exists() && inboundTransport == SOAPHTTPS) {
+			// cxf.xml is expected to be generated...
+			expectedNoSslFiles += 1;
+		}
+	
+		if (!certDir.exists() && (inboundTransport == SOAPHTTPS || outboundTransport == SOAPHTTPS || inboundTransport == RESTHTTPS || outboundTransport == RESTHTTPS)) {
+			// certs is expected to be generated...
+			expectedNoSslFiles += 5;
+		}
+		
+		// END SSL
+		
+		int expectedNoOfFiles = (outboundTransport == JMS) ? 19 : 17;
+		
 //		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, null, null, null);
 		new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
-//		int expectedNoOfFiles = (transformerType == TransformerEnum.JAVA) ? 17 : 17;
-		int expectedNoOfFiles = (outboundTransport == JMS) ? 19 : 17;
-		
-		if (inboundTransport == RESTHTTP) expectedNoOfFiles += 2;
+		if (inboundTransport == RESTHTTP || inboundTransport == RESTHTTPS) expectedNoOfFiles += 2;
 		
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		
@@ -218,9 +234,13 @@ public class RequestResponseServiceGeneratorTest {
 		}
 
 		// A new generation of the generator is on its way...
-		if (inboundTransport == RESTHTTP && outboundTransport == SOAPHTTP) expectedNoOfFiles = 12;
+		if ((inboundTransport == RESTHTTP || inboundTransport == RESTHTTPS) && (outboundTransport == SOAPHTTP || outboundTransport == SOAPHTTPS)) {
+			expectedNoOfFiles = 12;
+		}
+		
+		expectedNoOfFiles += expectedNoSslFiles;
 
-		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, actualNoOfFiles);
+		assertEquals("Missmatch in expected number of created files and folders." , expectedNoOfFiles, actualNoOfFiles);
 	}
 
 	private void performMavenBuild(String projectFolder) throws IOException {

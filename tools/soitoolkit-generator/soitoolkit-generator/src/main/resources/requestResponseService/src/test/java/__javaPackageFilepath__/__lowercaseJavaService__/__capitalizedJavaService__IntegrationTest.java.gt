@@ -13,7 +13,7 @@ import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}Te
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
 import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_TIMEOUT;
 
-<% if (inboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
 import static org.soitoolkit.commons.xml.XPathUtil.normalizeXmlString;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.commons.mule.test.LoggingHelper;
-<% if (inboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.soitoolkit.commons.mule.rest.RestClient;
 <% } %> 
@@ -74,6 +74,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
 <% if (inboundTransport=="RESTHTTP") { %>
     private static final String HTTP_CONNECTOR = "soitoolkit-http-connector";
+<% } else if (inboundTransport=="RESTHTTPS") { %>
+	private static final String HTTP_CONNECTOR = "soitoolkit-https-connector";
 <% } %> 
 <% if (outboundTransport=="JMS") { %>
 	private static final String REQUEST_QUEUE   = rb.getString("${uppercaseService}_REQUEST_QUEUE");
@@ -81,7 +83,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 <% } %> 
 	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
 	private AbstractJmsTestUtil jmsUtil = null;
-<% if (inboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
     private JaxbUtil jabxUtil = new JaxbUtil(FaultInfo.class);
     private RestClient restClient;
 <% } %> 
@@ -115,7 +117,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		super.doSetUp();
 
 		doSetUpJms();
-<% if (inboundTransport=="RESTHTTP") { %>
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
        restClient = new RestClient(muleContext, HTTP_CONNECTOR);
 <% } %>  
      }
@@ -134,7 +136,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
     }
 
-<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPSERVLET") { %>
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS" || inboundTransport=="SOAPSERVLET") { %>
     @Test
     public void test_ok() throws Fault {
     	String id = TEST_ID_OK;
@@ -151,9 +153,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 			Object response = consumer.callService(id);
 	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
 	    } catch (SOAPFaultException e) {
-<% if (outboundTransport=="RESTHTTP") { %>
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
             assertEquals("Internal Server Error, code: 500", e.getMessage());
-<% } else if (outboundTransport=="SOAPHTTP") { %>
+<% } else if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
 	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
 <% } else if (outboundTransport=="JMS") { %>
 	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
@@ -177,7 +179,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {}
     }
-<% } else if (inboundTransport=="RESTHTTP") { %>
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
     @Test
     public void test_ok() throws MuleException {
         String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-input.xml");
@@ -201,10 +203,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         // Call the http-service with invalid input
         MuleMessage response = restClient.doHttpPostRequest_XmlContent(DEFAULT_SERVICE_ADDRESS, input);
 
-<% if (outboundTransport=="SOAPHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
         // Assert http-post internal server error
         assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
-<% } else if (outboundTransport=="RESTHTTP") { %>
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
         // Assert expected FaultInfo-response and expected error message
         String payload = MiscUtil.convertStreamToString((InputStream)response.getPayload());
         FaultInfo fi = (FaultInfo)jabxUtil.unmarshal(payload);

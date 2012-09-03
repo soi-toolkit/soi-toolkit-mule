@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
-<% if (outboundTransport=="RESTHTTP") { %>
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 <% } %>
-<% if (outboundTransport=="SOAPHTTP") { %>
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
 import javax.jws.WebService;
 
 import org.soitoolkit.refapps.sd.sample.schema.v1.Sample;
@@ -57,7 +57,7 @@ public class ${capitalizedJavaService}TestProducer implements SampleInterface {
 	}
 }
 
-<% } else if (outboundTransport=="RESTHTTP") { %>
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
 
 @Path("/sample")
 public class ${capitalizedJavaService}TestProducer {

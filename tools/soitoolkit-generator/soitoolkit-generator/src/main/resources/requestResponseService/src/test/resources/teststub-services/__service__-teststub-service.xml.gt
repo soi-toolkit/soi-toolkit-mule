@@ -11,14 +11,27 @@ ${xmlNamespace.reqRespTeststubService}
         address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector" 
         component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
         type="jax-ws" />
-
+<% } else if (outboundTransport=="SOAPHTTPS") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-https-connector" 
+        component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+        type="jax-ws" />
+        
 <% } else if (outboundTransport=="RESTHTTP") { %>
 	<simple-service 
 		name="${service}-teststub-service"
 	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector"
 	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
 	    type="jax-rs" />
-
+	    
+<% } else if (outboundTransport=="RESTHTTPS") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-https-connector"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    type="jax-rs" />
+	    
 <% } else { %> 
     <flow name="${service}-teststub-service">
 <% if (outboundTransport=="JMS") { %>
