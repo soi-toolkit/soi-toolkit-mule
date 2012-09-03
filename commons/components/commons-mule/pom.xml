@@ -33,6 +33,7 @@
     <properties>
         <hornetq.version>2.2.5.Final</hornetq.version>
         <netty.version>3.2.3.Final</netty.version>
+	<mockito.version>1.8.5</mockito.version>
     </properties>
     
    	<dependencies>
@@ -144,7 +145,20 @@
 	        <artifactId>hornetq-core</artifactId>
 	        <version>${hornetq.version}</version>
 	        <scope>test</scope>
-	    </dependency>  
+	    </dependency>
 
+	<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
