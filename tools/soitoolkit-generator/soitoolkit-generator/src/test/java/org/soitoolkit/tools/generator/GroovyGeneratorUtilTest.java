@@ -51,11 +51,11 @@ public class GroovyGeneratorUtilTest {
 	}
 
 	private void haveARunOneWay(TransportEnum in, TransportEnum out) throws FileNotFoundException {
-		haveARun(in, out, "GenerateOneWayMFlow.groovy");
+		haveARun(in, out, "GenerateOneWayMflow.groovy");
 	}
 
 	private void haveARunRequestRespons(TransportEnum in, TransportEnum out) throws FileNotFoundException {
-		haveARun(in, out, "GenerateRequestResponseMFlow.groovy");
+		haveARun(in, out, "GenerateRequestResponseMflow.groovy");
 	}
 
 	private void haveARunMinimal(TransportEnum in, TransportEnum out) throws FileNotFoundException {
