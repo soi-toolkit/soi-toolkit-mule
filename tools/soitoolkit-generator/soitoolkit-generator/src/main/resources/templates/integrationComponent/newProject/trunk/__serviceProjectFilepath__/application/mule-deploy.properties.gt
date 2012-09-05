@@ -1,5 +1,0 @@
-# Mule Application Deployment Descriptor
-redeployment.enabled=true
-encoding=UTF-8
-config.resources=
-domain=default
