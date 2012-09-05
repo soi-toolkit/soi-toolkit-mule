@@ -53,47 +53,5 @@
 		persistentDelivery="true"
 		numberOfConsumers="${SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS}"
 		specification="1.1"
-		maxRedelivery="-1">
-
-<!-- NOTE: The use below of Mule rety-policies are under development... -->
-
-<!-- 
- 		<spring:property name="retryPolicyTemplate" ref="threadingPolicyTemplate" />
- -->
-		
-<!-- 
-		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
- -->
-
-<!-- 
-        <default-connector-exception-strategy>
-            <outbound-endpoint address="file://./mule-connector-errors">
-            	<jms:transaction action="JOIN_IF_POSSIBLE" />
-            </outbound-endpoint>
-        </default-connector-exception-strategy>
- -->
-        		
-	</jms:connector>
-
-	<spring:bean id="threadingPolicyTemplate"
-		class="org.mule.modules.common.retry.policies.AdaptiveRetryPolicyTemplateWrapper">
-		<spring:property name="delegate" ref="exhaustingRetryPolicyTemplate" />
-	</spring:bean>
-
-	<spring:bean id="exhaustingRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ExhaustingRetryPolicyTemplate">
-	    <spring:property name="sleepTime" value="1000"/>
-	    <spring:property name="retryLimit" value="2"/>
-	</spring:bean>
-
-<!-- 
-	<spring:bean id="foreverRetryPolicyTemplate" class="org.mule.modules.common.retry.policies.ForeverRetryPolicyTemplate" />
-
-	<jms:activemq-connector name="soitoolkit-jms-connector"
-		brokerURL="failover:(tcp://localhost:61616)"
-		disableTemporaryReplyToDestinations="true" persistentDelivery="true"
-		numberOfConsumers="2" specification="1.1">
-		<spring:property name="retryPolicyTemplate" ref="ThreadingPolicyTemplate" />
-	</jms:activemq-connector>
- -->
-
+		maxRedelivery="-1" />
 </mule>

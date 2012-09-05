@@ -47,10 +47,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 <!-- Include mule-dependencies that doesn't come with Mule 3.1.1 otherwise we can't install to a vanilla Mule 3.1.1 installation -->
 			    <configuration>
 			        <inclusions>
-			            <inclusion>
-							<groupId>org.mule.modules</groupId>
-							<artifactId>commonretrypolicies</artifactId>
-			            </inclusion>
 			        </inclusions>
 			    </configuration>
             </plugin>
