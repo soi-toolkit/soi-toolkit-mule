@@ -36,7 +36,6 @@
         <hornetq.version>2.2.5.Final</hornetq.version>
         <netty.version>3.2.3.Final</netty.version>
 
-		<mule-transport-restlet.version>1.3</mule-transport-restlet.version>
         <mule-module-rest.version>1.0</mule-module-rest.version>
 
 		<!-- Used by servlet-api-2.5 -->
@@ -180,42 +179,6 @@
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-quartz</artifactId>
 			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-    		<!-- NOTE: This is a muleforge transport so watch out for dependencies here to old versions of Mule, need to be excluded as they are added in new versions!!! -->
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-restlet</artifactId>
-			<version>${mule-transport-restlet.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.safehaus.jug</groupId>
-					<artifactId>jug</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule</groupId>
-					<artifactId>mule-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule.transports</groupId>
-					<artifactId>mule-transport-http</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule.transports</groupId>
-					<artifactId>mule-transport-vm</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule.modules</groupId>
-					<artifactId>mule-module-client</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule.tests</groupId>
-					<artifactId>mule-tests-functional</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mule.modules</groupId>
-					<artifactId>mule-module-spring-config</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.transports</groupId>

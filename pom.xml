@@ -105,7 +105,7 @@
 			<layout>default</layout>
 		</repository>
 
-		<!-- for mule-addons such as jersey and restlet transports -->
+        <!-- for mule-addons from the muleforge such as jersey and restlet transports -->
 		<repository>
 			<id>muleforge</id>
 			<name>MuleForge Repository</name>
