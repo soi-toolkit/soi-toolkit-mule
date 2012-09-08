@@ -48,6 +48,7 @@ import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.model.impl.DefaultModelImpl;
 import org.soitoolkit.tools.generator.model.impl.ModelReadOnlyMap;
+import org.soitoolkit.tools.generator.util.SourceFormatterUtil;
 
 public class GeneratorUtil {
 
@@ -344,6 +345,7 @@ public class GeneratorUtil {
 	}
 
 	private void createFile(String filename, String content) {
+		content = SourceFormatterUtil.formatSource(content);
 		Writer out = null;
 		try {
 			out = new BufferedWriter(new FileWriter(filename));

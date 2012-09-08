@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.model;
 
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.util.SourceFormatterUtil;
 
 public class XmlNamespaceModel {
 
@@ -80,7 +81,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml        http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd\n"); 
 		sb.append("\t\">");
 		
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
 		sb.append("\t\">");
 		
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -116,7 +117,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/" + xsdNsMuleVersion + "/mule-jdbc.xsd\n");
 		sb.append("\t\">");
 		
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
 		sb.append("\t\">");
 		
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -150,7 +151,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
 		sb.append("\t\">");
 		
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -192,7 +193,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jbossts   http://www.mulesoft.org/schema/mule/jbossts/" + xsdNsMuleVersion + "/mule-jbossts.xsd\n");
 		sb.append("\t\">");
 
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -223,7 +224,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/vm      http://www.mulesoft.org/schema/mule/vm/" + xsdNsMuleVersion + "/mule-vm.xsd\n");
 		sb.append("\t\">");
 
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -265,7 +266,7 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml       http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd\n"); 
 		sb.append("\t\">");
 
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 
 	/**
@@ -286,6 +287,6 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\">");
 
-		return sb.toString();
+		return SourceFormatterUtil.formatSource(sb.toString());
 	}
 }

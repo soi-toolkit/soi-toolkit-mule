@@ -63,7 +63,7 @@ public class MiscUtil {
 			// Ignore exceptions on call to the close method
             try {is.close();} catch (IOException e) {}
         }
-        return sb.toString();
+        return SourceFormatterUtil.formatSource(sb.toString());
     }
 
      public static TransportEnum[] appendTransport(TransportEnum[] transports, TransportEnum newTransport) {

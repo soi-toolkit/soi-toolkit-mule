@@ -154,6 +154,7 @@ public class XmlFileUtil {
 	    	appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
+		    xml = SourceFormatterUtil.formatSource(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -46,6 +46,7 @@ import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+import org.soitoolkit.tools.generator.util.SourceFormatterUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -320,6 +321,7 @@ public class RequestResponseServiceGenerator implements Generator {
     }
     
     private void addProperties(String properties) {
+    	properties = SourceFormatterUtil.formatSource(properties);
     	PrintWriter cfg = null;
 		try {
 			cfg = openPropertyFileForAppend(gu.getOutputFolder(), m.getConfigPropertyFile());
@@ -466,6 +468,7 @@ public class RequestResponseServiceGenerator implements Generator {
 		    appendXmlFragment(root, xmlFragment);
 			
 		    xml = getXml(doc);
+		    xml = SourceFormatterUtil.formatSource(xml);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
