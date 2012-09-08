@@ -35,7 +35,7 @@ public class ${capitalizedJavaTeststubArtifactId}MuleServer {
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 
         // Configure the mule-server
-        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, null, false);        
+        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, true, true);
 <% } %> 
         // Start the server
 		muleServer.run();
