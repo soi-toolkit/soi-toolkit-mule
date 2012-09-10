@@ -8,6 +8,10 @@ ${xmlNamespace.servicesOnlyConfig}
       
       <!-- Load property files and other common declarations -->
       <spring:import resource="classpath:${artifactId}-common.xml"/>
+      
+      <!-- Load all teststub services -->
+      <spring:import resource="classpath:teststub-services/*-teststub-service.xml"/>
+            
     </spring:beans>
 
 </mule>

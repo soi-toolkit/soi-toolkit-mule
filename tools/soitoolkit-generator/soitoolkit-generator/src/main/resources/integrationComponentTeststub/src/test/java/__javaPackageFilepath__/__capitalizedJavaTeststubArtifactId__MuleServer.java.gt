@@ -35,7 +35,10 @@ public class ${capitalizedJavaTeststubArtifactId}MuleServer {
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 
         // Configure the mule-server
-        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, true, true);
+        // Note: do not activate the "soitoolkit-teststubs" profile here since it sets a
+        // system property, which is JVM global and may activate all teststubs in a Mule-instance.
+        // Teststubs are always loaded by the top-level config.xml file.
+        StandaloneMuleServer muleServer = new StandaloneMuleServer(MULE_SERVER_ID, false, true);
 <% } %> 
         // Start the server
 		muleServer.run();
