@@ -75,8 +75,8 @@ public class StandaloneMuleServer {
     	this.muleConfig = getConfigFileFromMuleDeployPropertyFile(loadServices);	
     	
     	if (loadTestServices) {
-            // Activate the spring bean definition profile "soitoolkit-teststubs"
-            System.getProperties().put("spring.profiles.active", "soitoolkit-teststubs");
+            // Activate the spring bean definition profile "soitoolkit-teststubs" + the default profile.
+            System.getProperties().put("spring.profiles.active", "default,soitoolkit-teststubs");
     	}
 	}
 

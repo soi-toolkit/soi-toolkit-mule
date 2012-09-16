@@ -37,7 +37,6 @@ import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDep
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForAppend;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
-import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateConfigFileWithSpringImport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -135,7 +134,7 @@ public class OnewayServiceGenerator implements Generator {
 		// Add ftp-connector to config file (separate connectors used for junit-tests and running mule server) if ftp-transport is used for the first time
 		if (inboundTransport == FTP || outboundTransport == FTP) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
-    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-ftp-connector-external.xml");
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-ftp-connector-external.xml", "default");
 		}
 
 		// Is this flow based on a XA-transaction?
@@ -144,7 +143,7 @@ public class OnewayServiceGenerator implements Generator {
 	    	// Add JMS-XA-Connector if any endpoint is based on the JMS-transport 
 	    	if (inboundTransport == JMS || outboundTransport == JMS) {
 				String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JMS under a XA transaction";
-	    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml");
+	    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml", "default");
 	    	}
 
 	    	// Add JDBC-XA-DataSource if any endpoint is based on the JDBC-transport 
@@ -158,7 +157,7 @@ public class OnewayServiceGenerator implements Generator {
 	    		}
 
 	    	    String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JDBC under a XA transaction";
-	    		updateConfigFileWithSpringImport(gu, comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml");
+	    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml", "default");
 	    	}
 	    }
 				

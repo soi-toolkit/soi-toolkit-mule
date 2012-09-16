@@ -23,16 +23,20 @@ import static org.soitoolkit.commons.xml.XPathUtil.getXml;
 import static org.soitoolkit.tools.generator.util.FileUtil.openFileForOverwrite;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class XmlFileUtil {
 
@@ -46,17 +50,17 @@ public class XmlFileUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
-	public static void updateConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
+	public static void x_updateConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
 		String filename  = outputFolder + "/src/main/app/" + icName + "-config.xml";
-		updateXmlConfigFileWithNewService(filename, serviceName);
+		x_updateXmlConfigFileWithNewService(filename, serviceName);
     }
 
-	public static void updateTeststubsAndServicesConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
+	public static void x_updateTeststubsAndServicesConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
 		String filename  = outputFolder + "/src/test/resources/" + icName + "-teststubs-and-services-config.xml";
-		updateXmlConfigFileWithNewService(filename, serviceName);
+		x_updateXmlConfigFileWithNewService(filename, serviceName);
     }
 
-	private static void updateXmlConfigFileWithNewService(String filename, String serviceName) {
+	private static void x_updateXmlConfigFileWithNewService(String filename, String serviceName) {
 		String xmlFragment = "<spring:import xmlns:spring=\"" + NAMESPACE_SPRING + "\" resource=\"classpath:" + serviceName + "-service.xml\"/>";
 		
 		InputStream content = null;
@@ -99,64 +103,31 @@ public class XmlFileUtil {
 	}    
 
 	public static boolean updateCommonFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
+		return updateCommonFileWithSpringImport(gu, comment, xmlFragment, null);
+	}    
+
+	public static boolean updateCommonFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment, String springBeanProfile) {
 		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-common.xml";
-		return updateXmlFileWithSpringImport(gu, xmlFile, comment, xmlFragment);
+		return updateSpringImportInXmlFile(gu, xmlFile, comment, xmlFragment, springBeanProfile);
 	}
 
-	public static void updateConfigFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
+	public static void x_updateConfigFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment, String springBeanProfile) {
 		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-config.xml";
-		updateXmlFileWithSpringImport(gu, xmlFile, comment, xmlFragment);
+		updateSpringImportInXmlFile(gu, xmlFile, comment, xmlFragment, springBeanProfile);
 	}
 
-	private static boolean updateXmlFileWithSpringImport(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment) {
+	static boolean updateSpringImportInXmlFile(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment, String springBeanProfile) {
 
 		InputStream content = null;
 		String xml = null;
 		try {
 			
-			String xmlFragmentId = "classpath:" + xmlFragment;
-			
 			gu.logDebug("Add: " + xmlFragment + " to " + xmlFile);
 			content = new FileInputStream(xmlFile);
 			
-			Document doc = createDocument(content);
-
-			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
-			namespaceMap.put("spring", "http://www.springframework.org/schema/beans");
-
-			// First verify that the dependency does not exist already
-			NodeList testList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
-			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
-			if (testList.getLength() > 0) {
-				gu.logDebug("Fragment already exists, bail out!!!");
-				return false;
-			}
+			xml = updateSpringImportInXmlInputStream(gu, content, comment, xmlFragment, springBeanProfile);
 			
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans[not(@profile)]");
-			Node root = rootList.item(0);
-		    
-			xmlFragment = 
-				// TODO: Comment not added to the document, simply skippen when the xml ragment is parsed...
-				"<!-- " + comment + " -->\n" + 
-				"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
-
-			// If the spring:beans - element was not found then add it as well
-			if (root == null) {
-				xmlFragment = 
-					"    <spring:beans xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
-					"    " + xmlFragment + "\n" +
-					"    </spring:beans>";
-				rootList = getXPathResult(doc, namespaceMap, "/mule:mule");
-				root = rootList.item(0);
-			}
-			
-	    	appendXmlFragment(root, xmlFragment);
-			
-		    xml = getXml(doc);
-		    xml = SourceFormatterUtil.formatSource(xml);
-			
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		} finally {
 			if (content != null) {try {content.close();} catch (IOException e) {}}
@@ -176,13 +147,81 @@ public class XmlFileUtil {
 		}
 		return true;
 	}
+
+	static String updateSpringImportInXmlInputStream(GeneratorUtil gu, InputStream content, String comment, String xmlFragment, String springBeanProfile) {
+
+		try {
+			String xmlFragmentId = "classpath:" + xmlFragment;
+
+			Document doc = createDocument(content);
+
+			Map<String, String> namespaceMap = new HashMap<String, String>();
+			namespaceMap.put("mule", "http://www.mulesoft.org/schema/mule/core");
+			namespaceMap.put("spring", "http://www.springframework.org/schema/beans");
+
+			// First verify that the dependency does not exist already
+			NodeList testList = getXPathResult(doc, namespaceMap, "/mule:mule/spring:beans/spring:import/@resource[.='" + xmlFragmentId + "']");
+			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
+
+			if (testList.getLength() == 0) {
+				gu.logDebug("Fragment does not exist, let's add it!!!");
+				
+				// Look up the beans-element, with or without profile-attribute
+				String xpathExpression = "/mule:mule/spring:beans";
+				if (springBeanProfile == null) {
+					// With no profile we look for the first <beans> - element and set it as root
+					xpathExpression += "[not(@profile)]";
+				} else {
+					// With a profile we look for the <beans> - profile attribute that match the specified profile and set its parent (i.e. the its <beans> - element as root
+					xpathExpression += "[@profile='" + springBeanProfile + "']";
+				}
+				NodeList rootList = getXPathResult(doc, namespaceMap, xpathExpression);
+				Node root = rootList.item(0);
+			    
+				xmlFragment = 
+					// TODO: Comment not added to the document, simply skippen when the xml ragment is parsed...
+					"<!-- " + comment + " -->\n" + 
+					"    <spring:import xmlns:spring=\"http://www.springframework.org/schema/beans\" resource=\"" + xmlFragmentId + "\"/>";
+
+				// If the spring:beans - element was not found then add it as well
+				if (root == null) {
+					String profileAttribute = "";
+					if (springBeanProfile != null) {
+						profileAttribute = "profile=\"" + springBeanProfile + "\"";
+					}
+					
+					xmlFragment = 
+						"    <spring:beans " + profileAttribute + " xmlns:spring=\"http://www.springframework.org/schema/beans\">\n" +
+						"    " + xmlFragment + "\n" +
+						"    </spring:beans>";
+					rootList = getXPathResult(doc, namespaceMap, "/mule:mule");
+					root = rootList.item(0);
+				}
+				
+				appendXmlFragment(root, xmlFragment);
+			}
+			
+			String xml = getXml(doc);
+			xml = SourceFormatterUtil.formatSource(xml);
+			
+			return xml;
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	public static void updateJaxbContextInConfigFile(GeneratorUtil gu, String xmlFile, String javaPackage) {
 		
 		PrintWriter pw = null;
+		InputStream content = null;
 		try {
 
-			InputStream content = new FileInputStream(xmlFile);
+			content = new FileInputStream(xmlFile);
 			String xml = updateJaxbContextInConfigInputStream(content, javaPackage);
 			
 			gu.logDebug("Writing back:\n" + xml);
@@ -194,6 +233,7 @@ public class XmlFileUtil {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
+			if (content != null) {try {content.close();} catch (IOException e) {}}
 			if (pw != null) {pw.close();}
 		}
 	}
