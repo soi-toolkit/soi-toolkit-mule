@@ -29,10 +29,6 @@
 	<artifactId>soitoolkit-commons-mule</artifactId>
 	<name>soitoolkit-commons-mule</name>
 	<url>http://soi-toolkit.org</url>
-
-    <properties>
-		<mockito.version>1.8.5</mockito.version>
-    </properties>
     
    	<dependencies>
     <!-- The SOI-toolkit default Mule-version with dependencies -->
@@ -118,13 +114,11 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

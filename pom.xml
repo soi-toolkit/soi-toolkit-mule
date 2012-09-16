@@ -58,6 +58,7 @@
     <!-- dependency versions - please keep list alphabetically ordered -->
     <!-- ************************************************************* -->
     <log4j.version>1.2.16</log4j.version>
+	<mockito.version>1.8.5</mockito.version>
     <slf4j.version>1.6.1</slf4j.version>
 
     
@@ -138,6 +139,18 @@
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
       </dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>

@@ -32,9 +32,12 @@
     <name>soitoolkit-module-logger</name>
 
     <properties>
+<!-- 
+		Fails on downloading:  http://dev.ee.mulesource.com/repository/content/groups/mule-ee-dependencies/com/mulesoft/licm/licm/1.1.2/licm-1.1.2.pom
+        <mule.devkit.version>3.3.1</mule.devkit.version>
+ -->
         <mule.devkit.version>3.3.0</mule.devkit.version>
         <junit.version>4.9</junit.version>
-        <mockito.version>1.8.2</mockito.version>
         <jdk.version>1.6</jdk.version>
 
 <!-- 
@@ -91,7 +94,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.5</version>
                 <executions>
                     <execution>
                         <id>default-compile</id>
@@ -337,7 +340,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
