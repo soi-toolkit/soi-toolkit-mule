@@ -2,6 +2,8 @@ package ${javaPackage}.${lowercaseJavaService};
 
 import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
 
+import java.net.URL;
+import org.apache.cxf.bus.spring.SpringBusFactory;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,13 @@ public class ${capitalizedJavaService}TestConsumer {
 		JaxWsProxyFactoryBean proxyFactory = new JaxWsProxyFactoryBean();
 		proxyFactory.setServiceClass(SampleInterface.class);
 		proxyFactory.setAddress(serviceAddress);
+		
+		//Used for HTTPS
+		SpringBusFactory bf = new SpringBusFactory();
+		URL cxfConfig = ${capitalizedJavaService}TestConsumer.class.getClassLoader().getResource("cxf-test-consumer-config.xml");
+		if (cxfConfig != null) {
+			proxyFactory.setBus(bf.createBus(cxfConfig));
+		}
 		
 		_service  = (SampleInterface) proxyFactory.create(); 
     }

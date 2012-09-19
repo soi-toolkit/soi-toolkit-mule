@@ -200,7 +200,7 @@ public class RequestResponseServiceGeneratorTest {
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
 		// SSL 
-		File cxf = new File(projectFolder + "/src/test/resources/cxf.xml");
+		File cxf = new File(projectFolder + "/src/test/resources/cxf-test-consumer-config.xml");
 		File certDir = new File(projectFolder + "/src/test/certs");
 		
 		int expectedNoSslFiles = 0;

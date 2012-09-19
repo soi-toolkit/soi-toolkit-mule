@@ -160,10 +160,10 @@ public class RequestResponseServiceGenerator implements Generator {
     		}
     		
 	    	if (inboundTransport == TransportEnum.SOAPHTTPS) {
-	    		File cxfFile = new File("src/test/resources/cxf.xml");
+	    		File cxfFile = new File("src/test/resources/cxf-test-consumer-config.xml");
 	    		
 	    		if (!cxfFile.exists())    		
-	    			gu.generateContentAndCreateFile("src/test/resources/cxf.xml.gt");
+	    			gu.generateContentAndCreateFile("src/test/resources/cxf-test-consumer-config.xml.gt");
 	    	}
     		
 		}
@@ -271,10 +271,10 @@ public class RequestResponseServiceGenerator implements Generator {
     		}
     		
     		if (inboundTransport == TransportEnum.SOAPHTTPS) {
-	    		File cxfFile = new File("src/test/resources/cxf.xml");
+	    		File cxfFile = new File("src/test/resources/cxf-test-consumer-config.xml");
 	    		
 	    		if (!cxfFile.exists())    		
-	    			gu.generateContentAndCreateFile("src/test/resources/cxf.xml.gt");
+	    			gu.generateContentAndCreateFile("src/test/resources/cxf-test-consumer-config.xml.gt");
 	    	}
 		}
 
