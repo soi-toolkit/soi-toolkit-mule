@@ -28,5 +28,12 @@
       <outputDirectory>schemas</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
+    <fileSet>
+    	<outputDirectory>wcf</outputDirectory>
+    	<useDefaultExcludes>true</useDefaultExcludes>
+    	<includes>
+    		<include>wcf.bat</include>
+    	</includes>
+    </fileSet>
   </fileSets>
 </assembly>

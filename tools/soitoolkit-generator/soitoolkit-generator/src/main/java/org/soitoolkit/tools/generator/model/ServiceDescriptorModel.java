@@ -18,22 +18,92 @@ package org.soitoolkit.tools.generator.model;
 
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.makeJavaName;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.soitoolkit.tools.generator.util.FileUtil;
 
 public class ServiceDescriptorModel {
 
 	private IModel model;
-	private String serviceDescriptor;
+	
 	private List<ServiceDescriptorOperationModel> operations = new ArrayList<ServiceDescriptorOperationModel>();
+	
+	// Includes both xsd:import + xsd:include
+	private List<ServiceDescriptorXmlSchemaModel> schemaImports = new ArrayList<ServiceDescriptorXmlSchemaModel>();
 
+	private String wsdlRelativeFilepath;
+	private URI targetNamespace;
+	
+	private String name;
+
+	private File targetDir;
+
+	private String serviceDescriptor;
+	
+	public ServiceDescriptorModel(IModel model, String name, String wsdlRelativeFilepath) {
+		this.model = model;
+		this.name = name;
+		this.wsdlRelativeFilepath = wsdlRelativeFilepath;
+	}
+	
 	public ServiceDescriptorModel(IModel model, String serviceDescriptor, List<String> operations) {
 		this.model = model;
 		this.serviceDescriptor = serviceDescriptor;
 
 		initOperations(model, serviceDescriptor, operations);
 	}
+	
+	public String getName() {
+		return name;
+	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public List<URI> getNamespaces() {
+		
+		List<URI> namespaces = new ArrayList<URI>();
+		namespaces.add(targetNamespace);
+		
+		for (ServiceDescriptorXmlSchemaModel schemaImport : schemaImports) {
+			namespaces.addAll(schemaImport.getNamespaces());
+		}
+		return namespaces;
+	}
+	
+	public List<File> getXmlSchemas() throws MalformedURLException, IOException {
+		
+		List<File> files = new ArrayList<File>();
+		
+		File wsdlFile = new File(targetDir.getPath() + "/" + wsdlRelativeFilepath);
+		
+		for (ServiceDescriptorXmlSchemaModel schemaImport : schemaImports) {
+			
+			if (schemaImport.getSchemaLocation() != null && !schemaImport.getSchemaLocation().toString().startsWith("http:")) {
+				
+				File file = new File(schemaImport.getSchemaLocation().getPath());
+
+				if (!file.isAbsolute()) {
+					file = new File(wsdlFile.getParentFile() + "/" + schemaImport.getSchemaLocation().toString());
+					
+					String relativePath = FileUtil.getRelativePath(file.getCanonicalFile(), targetDir);
+					
+					if (file.exists()) {
+						files.add(new File(relativePath));
+					}
+				} 
+				files.addAll(schemaImport.getXmlSchemaFiles(wsdlFile.getParentFile(), targetDir));
+			}
+		}
+		return files;
+	}
+	
 	public String getSchema() {
 		return serviceDescriptor;
 	}
@@ -79,6 +149,22 @@ public class ServiceDescriptorModel {
 
 	// -----------------
 
+	public String getWsdlRelativeFilepath() {
+		return wsdlRelativeFilepath;
+	}
+
+	public void setWsdlRelativeFilepath(String wsdlRelativeFilepath) {
+		this.wsdlRelativeFilepath = wsdlRelativeFilepath;
+	}
+
+	public URI getTargetNamespace() {
+		return targetNamespace;
+	}
+
+	public void setTargetNamespace(URI targetNamespace) {
+		this.targetNamespace = targetNamespace;
+	}
+
 	private void initOperations(IModel model, String serviceDescriptor, List<String> operations) {
 
 		// If no operations are supplied then use the serviceDescriptor-name as the name of the single operation
@@ -95,4 +181,23 @@ public class ServiceDescriptorModel {
 		return model.getJavaPackage() + "." + makeJavaName(getSchema());
 	}
 	
+	public String getSchemaJavaPackage(String schema) {
+		return model.getSchemaJavaPackage(schema);
+	}
+	
+	public List<ServiceDescriptorXmlSchemaModel> getSchemaImports() {
+		return schemaImports;
+	}
+	
+	public void setSchemaImports(List<ServiceDescriptorXmlSchemaModel> schemaImports) {
+		this.schemaImports = schemaImports;
+	}
+	
+	public File getTargetDir() {
+		return targetDir;
+	}
+
+	public void setTargetDir(File targetDir) {
+		this.targetDir = targetDir;
+	}
 }

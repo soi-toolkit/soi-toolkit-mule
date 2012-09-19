@@ -73,19 +73,15 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 						<phase>generate-sources</phase>
 						<configuration>
 							<sourceRoot>${dollarSymbol}{schema.gen.src.dir}</sourceRoot>
-							<wsdlOptions>
-              
-								<wsdlOption>
-									<wsdl>${dollarSymbol}{schema.path}/${sd.schemaFilepath}/${sd.wsdl}.wsdl</wsdl>
+							<wsdlOptions><% sds.each { sd -> %>
+	                            <wsdlOption>
+									<wsdl>${dollarSymbol}{schema.path}/${sd.wsdlRelativeFilepath}</wsdl>
 									<extraargs>
-										<extraarg>-validate</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>${sd.wsdlNamespace}=${sd.wsdlJavaPackage}</extraarg>
-										<extraarg>-p</extraarg>
-										<extraarg>${sd.schemaNamespace}=${sd.schemaJavaPackage}</extraarg>
+									<extraarg>-validate</extraarg> <% sd.namespaces.unique().each { %>
+									<extraarg>-p</extraarg>
+									<extraarg>${it}=${sd.getSchemaJavaPackage(it.toString())}</extraarg> <% } %>
 									</extraargs>
-								</wsdlOption>
-
+	            				</wsdlOption><% } %>
 							</wsdlOptions>
 						</configuration>
 						<goals>

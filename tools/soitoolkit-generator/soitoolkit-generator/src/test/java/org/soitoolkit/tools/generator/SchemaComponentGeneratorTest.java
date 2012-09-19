@@ -33,10 +33,13 @@ import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
 public class SchemaComponentGeneratorTest {
 
-	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
-	private static final String PROJECT = "dealernetwork";	
-	private static final String SCHEMA  = "dealernetwork";	
-	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT + "-schemas";
+	private static final String TEST_OUT_FOLDER = PreferencesUtil
+			.getDefaultRootFolder() + "/jUnitTests";
+
+	private static final String PROJECT = "dealernetwork";
+	private static final String SCHEMA = "dealernetwork";
+	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/"
+			+ PROJECT + "-schemas";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -58,39 +61,38 @@ public class SchemaComponentGeneratorTest {
 	public void testGenerateSchemaWithDefaultOperation() throws IOException {
 		SystemUtil.delDirs(PROJECT_FOLDER);
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
-		
-		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT, "1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(PROJECT_FOLDER));
-		
-/* FIXME: How do we launch maven in cloudbees Jeniks servers???
 
-		System.out.println("*** EnvVars:");
-		Map<String, String> env = System.getenv();
-		Set<Entry<String, String>> envSet = env.entrySet();
-		for (Entry<String, String> entry : envSet) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
-		
-		System.out.println("\n*** Properties:");
-		Set<Entry<Object, Object>> propSet = System.getProperties().entrySet();
-		for (Entry<Object, Object> entry : propSet) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
-		
-//		String home = "/Users/magnuslarsson";
-//		home = "/home/hudson";
-//		home = "/home/soi-toolkit/hudson_home";
-//
-//		System.out.println("*** ls " + home + "/.hudson");
-//		SystemUtil.executeCommand("ls " + home + "/.hudson", home);
-		
-		System.out.println("*** whereis mvn:");
-		SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER);
+		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT,
+				"1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER, null).startGenerator();
+		assertEquals(
+				"Missmatch in expected number of created files and folders",
+				9, SystemUtil.countFiles(PROJECT_FOLDER));
 
-		System.out.println("*** mvn -version:");
-		SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER);
-*/
-		
+		/*
+		 * FIXME: How do we launch maven in cloudbees Jeniks servers???
+		 * 
+		 * System.out.println("*** EnvVars:"); Map<String, String> env =
+		 * System.getenv(); Set<Entry<String, String>> envSet = env.entrySet();
+		 * for (Entry<String, String> entry : envSet) {
+		 * System.out.println(entry.getKey() + "=" + entry.getValue()); }
+		 * 
+		 * System.out.println("\n*** Properties:"); Set<Entry<Object, Object>>
+		 * propSet = System.getProperties().entrySet(); for (Entry<Object,
+		 * Object> entry : propSet) { System.out.println(entry.getKey() + "=" +
+		 * entry.getValue()); }
+		 * 
+		 * // String home = "/Users/magnuslarsson"; // home = "/home/hudson"; //
+		 * home = "/home/soi-toolkit/hudson_home"; // //
+		 * System.out.println("*** ls " + home + "/.hudson"); //
+		 * SystemUtil.executeCommand("ls " + home + "/.hudson", home);
+		 * 
+		 * System.out.println("*** whereis mvn:");
+		 * SystemUtil.executeCommand("whereis mvn", PROJECT_FOLDER);
+		 * 
+		 * System.out.println("*** mvn -version:");
+		 * SystemUtil.executeCommand("mvn -version", PROJECT_FOLDER);
+		 */
+
 		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
 	}
 
@@ -98,13 +100,17 @@ public class SchemaComponentGeneratorTest {
 	public void testGenerateSchemaWithOperations() throws IOException {
 		SystemUtil.delDirs(PROJECT_FOLDER);
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
-		
+
 		List<String> ops = new ArrayList<String>();
 		ops.add("createOrder");
 		ops.add("getOrderStatus");
-		new SchemaComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT, "1.0-SNAPSHOT", SCHEMA, ops, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(PROJECT_FOLDER));
-		
+		new SchemaComponentGenerator(System.out,
+				"org.soitoolkit.refapps.dealernetwork", PROJECT,
+				"1.0-SNAPSHOT", SCHEMA, ops, TEST_OUT_FOLDER, null).startGenerator();
+		assertEquals(
+				"Missmatch in expected number of created files and folders",
+				9, SystemUtil.countFiles(PROJECT_FOLDER));
+
 		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
 	}
 
@@ -114,12 +120,18 @@ public class SchemaComponentGeneratorTest {
 		String name = "picsara2melior-sas-003";
 
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name + "-schemas");
-		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
-		
-		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", name, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
-		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas");
+		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name
+				+ "-schemas"));
+
+		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT",
+				name, null, TEST_OUT_FOLDER, null).startGenerator();
+		assertEquals(
+				"Missmatch in expected number of created files and folders",
+				9, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name
+						+ "-schemas"));
+
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name
+				+ "-schemas");
 	}
 
 	@Test
@@ -131,11 +143,34 @@ public class SchemaComponentGeneratorTest {
 		name = "vf_sd_faktura_external_svefaktura";
 
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name + "-schemas");
-		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
-		
-		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT", schema, null, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", 12, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name + "-schemas"));
-		
-		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name + "-schemas");
+		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name
+				+ "-schemas"));
+
+		new SchemaComponentGenerator(System.out, grp, name, "1.0-SNAPSHOT",
+				schema, null, TEST_OUT_FOLDER, null).startGenerator();
+		assertEquals(
+				"Missmatch in expected number of created files and folders",
+				9, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name
+						+ "-schemas"));
+
+		SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name
+				+ "-schemas");
 	}
+
+	@Test
+	public void testGenerateSchemaFromWsdlFolder() throws IOException {
+		SystemUtil.delDirs(PROJECT_FOLDER);
+		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER));
+		
+		String wsdlSourceFolder = "src/test/resources/schemas";
+		new SchemaComponentGenerator(System.out, "se.callista.test", PROJECT,
+				"1.1-SNAPSHOT", SCHEMA, null, TEST_OUT_FOLDER, wsdlSourceFolder)
+				.startGenerator();
+		assertEquals(
+				"Missmatch in expected number of created files and folders",
+				14, SystemUtil.countFiles(PROJECT_FOLDER));
+
+		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
+	}
+
 }

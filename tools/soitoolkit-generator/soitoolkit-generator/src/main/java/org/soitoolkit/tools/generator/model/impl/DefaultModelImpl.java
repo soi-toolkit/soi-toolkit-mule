@@ -27,10 +27,13 @@ import static org.soitoolkit.tools.generator.model.impl.ModelUtil.makeJavaName;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.soitoolkit.commons.xml.XPathUtil;
 import org.soitoolkit.tools.generator.model.IModel;
@@ -64,7 +67,7 @@ public class DefaultModelImpl implements IModel {
 	private TransportEnum outboundTransport;
 	private TransformerEnum transformerType;
 	
-	private ServiceDescriptorModel serviceDescriptorModel;
+	private List<ServiceDescriptorModel> serviceDescriptorModels = new ArrayList<ServiceDescriptorModel>();
 	private XmlNamespaceModel xmlNamespaceModel;
 
 	private Map<String, Object> extentions = new HashMap<String, Object>();
@@ -95,7 +98,7 @@ public class DefaultModelImpl implements IModel {
 		this.outboundTransport = outboundTransport;
 		this.transformerType = transformerType;
 
-		serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
+		//serviceDescriptorModel = (serviceDescriptor == null) ? null : new ServiceDescriptorModel(this, serviceDescriptor, operations);
 		xmlNamespaceModel = new XmlNamespaceModel(this);
 		
 		groovy.lang.Binding binding = new Binding();
@@ -123,10 +126,10 @@ public class DefaultModelImpl implements IModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.soitoolkit.tools.generator.model.IModel#getSd()
+	 * @see org.soitoolkit.tools.generator.model.IModel#getSds()
 	 */
-	public ServiceDescriptorModel getSd() {
-		return serviceDescriptorModel;
+	public List<ServiceDescriptorModel> getSds() {
+		return serviceDescriptorModels;
 	}
 	
 	public XmlNamespaceModel getXmlNamespace() {
@@ -314,6 +317,28 @@ public class DefaultModelImpl implements IModel {
 	 */
 	public String getSchemaProjectFilepath() {
 		return getSchemaProject();
+	}
+	
+	public String getSchemaJavaPackage(String schema) {
+		
+		String replace = ""; //this.getJavaPackage().substring(0, this.getJavaPackage().indexOf('.'));
+
+		schema = schema.replace("urn:", replace);
+		schema = schema.toLowerCase().replace(":", ".");
+		
+		Pattern pattern = Pattern.compile("\\.(\\d)");
+		Matcher matcher = pattern.matcher(schema);
+		boolean matchFound = matcher.find();
+
+		if (matchFound) {	
+			if (matcher.groupCount() > 0) {
+				String version = matcher.group(1);
+				schema = schema.replaceFirst(version, "v" + version);
+			}
+		}
+		String javaPackage = schema;
+
+		return javaPackage.toLowerCase();			
 	}
 	
 	/* (non-Javadoc)

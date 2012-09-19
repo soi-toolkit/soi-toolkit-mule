@@ -17,6 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.INTEGRATION_COMPONENT;
+import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.SD_SCHEMA_COMPONENT;
 import static org.soitoolkit.tools.generator.model.enums.ComponentEnum.UTILITY_COMPONENT;
 import static org.soitoolkit.tools.generator.model.enums.MavenEclipseGoalEnum.ECLIPSE_ECLIPSE;
 import static org.soitoolkit.tools.generator.plugin.createcomponent.CreateComponentUtil.getComponentProjectName;
@@ -69,10 +70,24 @@ public class CreateComponentStartPage extends WizardPage {
 	@Override
 	public IWizardPage getNextPage() {
 		// TODO: Needs to be cleaned up, this design is tied to a two page design and can't handle a third page, e.g. used for some other component type...
-		WizardPage p = (WizardPage)super.getNextPage();
+//		WizardPage p = (WizardPage)super.getNextPage();
+//		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
+//		p = (compEnum != INTEGRATION_COMPONENT) ? null : p;	
+//		return p;
+		
+		IWizardPage[] pages = getWizard().getPages();
+
 		ComponentEnum compEnum = ComponentEnum.get(componentType.value);
-		p = (compEnum != INTEGRATION_COMPONENT) ? null : p;	
-		return p;
+
+		if (compEnum == INTEGRATION_COMPONENT) {
+			return pages[1];
+		}
+		
+		else if (compEnum == SD_SCHEMA_COMPONENT) {
+			return pages[2];
+		}
+		
+		return null;
 	}
 
 	private ValueHolder<Integer> componentType = new ValueHolder<Integer>(INTEGRATION_COMPONENT.ordinal());
@@ -281,6 +296,11 @@ public class CreateComponentStartPage extends WizardPage {
 		p.setMustBeDisplayed(compEnum == INTEGRATION_COMPONENT);
 		getContainer().updateButtons();
 
+		// If creating an schema description integration component then force viewing page #2 otherwise mark it as completed
+		CreateServiceDescriptionComponentPage p2 = ((CreateComponentWizard)getWizard()).getCreateServiceDescriptionComponentPage();
+		p2.setMustBeDisplayed(compEnum == SD_SCHEMA_COMPONENT);
+		getContainer().updateButtons();
+		
 		String rootFolderName = getRootFolder();
 
 		if (rootFolderName.length() == 0) {

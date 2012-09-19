@@ -26,6 +26,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -74,6 +75,16 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //		System.err.println("CreateIntegrationComponentPage.getPreviousPage() returns: " + ((p == null)? "NULL" : p.getTitle()));
 //		return p;
 //	}
+	
+	@Override
+	public IWizardPage getNextPage() {
+		IWizardPage[] pages = getWizard().getPages();
+		
+		// Skip CreateServiceDescriptionComponentPage - FIX
+		((CreateServiceDescriptionComponentPage)pages[2]).setPageComplete(true);
+		// Next Page: "Status Page".
+		return pages[3];
+	}
 
 	public void setMustBeDisplayed(boolean mustBeDisplayed) {
 		this.mustBeDisplayed = mustBeDisplayed;

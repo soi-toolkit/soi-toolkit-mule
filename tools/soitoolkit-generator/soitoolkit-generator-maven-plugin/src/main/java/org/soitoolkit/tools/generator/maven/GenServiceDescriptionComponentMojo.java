@@ -67,6 +67,13 @@ public class GenServiceDescriptionComponentMojo extends AbstractMojo {
      * @required
      */
     private File outDir;
+    
+	/**
+     * Location of the source WSDL folder.
+     * @parameter expression="${srcDir}"
+     * @optional
+     */
+    private File srcDir;
 
     public void execute() throws MojoExecutionException {
 
@@ -80,6 +87,7 @@ public class GenServiceDescriptionComponentMojo extends AbstractMojo {
         getLog().info("(change an arg by suppling: -Darg=value):");
         getLog().info("");
         getLog().info("outDir=" + outDir.getPath());
+        getLog().info("srcDir=" + ((srcDir != null) ? srcDir.getPath() : ""));
 //        getLog().info("outDir=" + outDir.getAbsolutePath());
 //        try {
 //			getLog().info("outDir=" + outDir.getCanonicalPath());
@@ -93,7 +101,7 @@ public class GenServiceDescriptionComponentMojo extends AbstractMojo {
         getLog().info("schema=" + schema);
         getLog().info("");
 
-		Generator g = new SchemaComponentGenerator(System.out, groupId, artifactId, version, schema, null, outDir.getPath());
+		Generator g = new SchemaComponentGenerator(System.out, groupId, artifactId, version, schema, null, outDir.getPath(), ((srcDir != null) ? srcDir.getPath() : null));
 
 		g.startGenerator();
     }

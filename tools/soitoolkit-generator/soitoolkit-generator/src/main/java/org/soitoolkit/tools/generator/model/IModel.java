@@ -16,6 +16,7 @@
  */
 package org.soitoolkit.tools.generator.model;
 
+import java.util.List;
 import java.util.Map;
 
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
@@ -28,7 +29,7 @@ public interface IModel {
 
 	public XmlNamespaceModel getXmlNamespace();
 
-	public ServiceDescriptorModel getSd();
+	public List<ServiceDescriptorModel> getSds();
 
 	public Map<String, Object> getExt();
 
@@ -79,8 +80,11 @@ public interface IModel {
 	public String getServiceProject();
 	public String getServiceProjectFilepath();
 
+	public String getSchemaJavaPackage(String schema);
+
 	public String getSchemaProject();
 	public String getSchemaProjectFilepath();
+	
 
 	public String getStandaloneProject();
 	public String getStandaloneProjectFilepath();

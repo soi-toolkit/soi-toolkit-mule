@@ -74,7 +74,8 @@ import org.soitoolkit.tools.generator.util.SystemUtil;
 
 public class CreateComponentWizard extends Wizard implements INewWizard {
 	private CreateComponentStartPage  page;
-	private CreateIntegrationComponentPage page2;
+	private CreateIntegrationComponentPage integrationComponentPage;
+	private CreateServiceDescriptionComponentPage serviceDescriptionComponentPage;
 	private StatusPage page3;
 	private ISelection selection;
 
@@ -85,7 +86,11 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	 * @return
 	 */
 	CreateIntegrationComponentPage getCreateIntegrationComponentPage() {
-		return page2;
+		return integrationComponentPage;
+	}
+	
+	CreateServiceDescriptionComponentPage getCreateServiceDescriptionComponentPage() {
+		return serviceDescriptionComponentPage;
 	}
 	
 	/**
@@ -111,8 +116,12 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	public void addPages() {
 		page = new CreateComponentStartPage(selection);
 		addPage(page);
-		page2 = new CreateIntegrationComponentPage(selection);
-		addPage(page2);
+		integrationComponentPage = new CreateIntegrationComponentPage(selection);
+		addPage(integrationComponentPage);
+		
+		serviceDescriptionComponentPage = new CreateServiceDescriptionComponentPage(selection);
+		addPage(serviceDescriptionComponentPage);
+		
 		page3 = new StatusPage(selection);
 		addPage(page3);
 	}
@@ -126,11 +135,24 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 			@Override
 			public void handlePageChanging(PageChangingEvent event) {
 				Object p = (event == null) ? null : event.getTargetPage();
-				boolean isPage2 = (p != null && p == page2);
-				if (isPage2) page2.setMustBeDisplayed(false);
+				boolean isPage2 = (p != null && p == integrationComponentPage);
+				if (isPage2) integrationComponentPage.setMustBeDisplayed(false);
 			}
 		};
 		((WizardDialog)getContainer()).addPageChangingListener(pageChaninglistener);
+		
+		IPageChangingListener pageChaninglistener2 = new IPageChangingListener() {
+			@Override
+			public void handlePageChanging(PageChangingEvent event) {
+				Object p = (event == null) ? null : event.getTargetPage();
+				boolean isPage2 = (p != null && p == serviceDescriptionComponentPage);
+				if (isPage2) serviceDescriptionComponentPage.setMustBeDisplayed(false);
+			}
+		};
+		((WizardDialog)getContainer()).addPageChangingListener(pageChaninglistener2);
+
+		
+		
 		
 		IPageChangedListener pageChanedlistener = new IPageChangedListener() {
 			@Override
@@ -163,11 +185,13 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		
 		
 		ComponentEnum compTypeEnum = ComponentEnum.get(componentType);
-		final List<TransportEnum> transports = (compTypeEnum == INTEGRATION_COMPONENT) ? page2.getTransports() : null;
+		final List<TransportEnum> transports = (compTypeEnum == INTEGRATION_COMPONENT) ? integrationComponentPage.getTransports() : null;
 
-		final MuleVersionEnum muleVersion = page2.getMuleVersion();
+		final MuleVersionEnum muleVersion = integrationComponentPage.getMuleVersion();
 
-		final DeploymentModelEnum deploymentModel = page2.getDeploymentModel();
+		final DeploymentModelEnum deploymentModel = integrationComponentPage.getDeploymentModel();
+		
+		final String wsdlResource = serviceDescriptionComponentPage.getWsdlResource();
 		
 		if (compTypeEnum == INTEGRATION_COMPONENT) {
 			raiseSecurityNotice(transports);
@@ -176,7 +200,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(mavenHome, mavenEclipseGoalType, componentType, artifactId, groupId, version, muleVersion, transports, deploymentModel, folderName, monitor);
+					doFinish(mavenHome, mavenEclipseGoalType, componentType, artifactId, groupId, version, muleVersion, transports, deploymentModel, folderName, monitor, wsdlResource);
 				} catch (CoreException e) {
 					e.printStackTrace();
 					throw new InvocationTargetException(e);
@@ -247,7 +271,7 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 	 * @param deploymentModel 
 	 */
 
-	private void doFinish(String mavenHome, int mavenEclipseGoalType, int componentType, String artifactId, String groupId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, DeploymentModelEnum deploymentModel, String folderName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String mavenHome, int mavenEclipseGoalType, int componentType, String artifactId, String groupId, String version, MuleVersionEnum muleVersion, List<TransportEnum> transports, DeploymentModelEnum deploymentModel, String folderName, IProgressMonitor monitor, String wsdlResource) throws CoreException {
 
 		// create a sample folder
 		monitor.beginTask("Starting the generator...", 3);
@@ -282,7 +306,12 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 				
 				String schemaName = artifactId;
 				List<String> operations = null;
-				new SchemaComponentGenerator(out, groupId, artifactId, version, schemaName, operations, folderName).startGenerator();								
+				
+				if (wsdlResource != null && wsdlResource.length() > 0) {
+					new SchemaComponentGenerator(out, groupId, artifactId, version, schemaName, operations, folderName, wsdlResource).startGenerator();
+				} else {
+					new SchemaComponentGenerator(out, groupId, artifactId, version, schemaName, operations, folderName, null).startGenerator();
+				}
 				break;
 
 			default:
