@@ -83,10 +83,11 @@
 	
 	<root>
 		<priority value="WARN" />
-		<!--
+
 		<appender-ref ref="CONSOLE" />
-		-->
+		<!--
 		<appender-ref ref="ROLLINGFILE"/>
+		-->
 		
 	</root>
 </log4j:configuration>

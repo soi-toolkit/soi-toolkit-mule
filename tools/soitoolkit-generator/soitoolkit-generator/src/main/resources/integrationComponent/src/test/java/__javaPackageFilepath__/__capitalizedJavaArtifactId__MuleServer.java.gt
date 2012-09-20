@@ -5,7 +5,6 @@ import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
 <% } else { %> 
 import org.soitoolkit.commons.mule.test.StandaloneMuleServer;
 <% } %>
-import org.soitoolkit.commons.mule.test.LoggingHelper;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 import org.slf4j.Logger;
@@ -27,9 +26,6 @@ public class ${capitalizedJavaArtifactId}MuleServer {
 
 	public static void main(String[] args) throws Exception {
 	
-        // redirect logging to console, will disable all appenders in log4j.xml
-        LoggingHelper.logToConsoleOnly();
-
 <% if (servlet) { %>
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
 <% } else { %> 

@@ -15,7 +15,6 @@ import org.soitoolkit.commons.mule.rest.RestClient;
 import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
-import org.soitoolkit.commons.mule.test.LoggingHelper;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
@@ -57,8 +56,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     private JsonMapper json = new JsonMapper();
 
     public ${capitalizedJavaService}IntegrationTest() {
-      // redirect logging to console, will disable all appenders in log4j.xml
-      LoggingHelper.logToConsoleOnly();
       
 <% if (inboundTransport=="SOAPSERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values

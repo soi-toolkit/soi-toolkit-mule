@@ -1,6 +1,5 @@
 package ${javaPackage};
 
-import org.soitoolkit.commons.mule.test.LoggingHelper;
 <% if (servlet) { %>
 import org.soitoolkit.commons.mule.test.MuleServerWithServletContainer;
 <% } else { %> 
@@ -26,10 +25,6 @@ public class ${capitalizedJavaTeststubArtifactId}MuleServer {
     private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 
 	public static void main(String[] args) throws Exception {
-	
-	  // redirect logging to console, will disable all appenders in log4j.xml
-	  LoggingHelper.logToConsoleOnly();
-
 
 <% if (servlet) { %>
 		MuleServerWithServletContainer muleServer = new MuleServerWithServletContainer(MULE_SERVER_ID, muleConfig, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);

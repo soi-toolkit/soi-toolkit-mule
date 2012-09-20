@@ -47,7 +47,6 @@ import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
 import org.soitoolkit.commons.mule.test.Dispatcher;
-import org.soitoolkit.commons.mule.test.LoggingHelper;
 import org.soitoolkit.commons.mule.util.MiscUtil;
 import org.soitoolkit.commons.mule.util.MuleUtil;
 import org.soitoolkit.commons.mule.ftp.FtpUtil;
@@ -127,8 +126,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
      * 
      */
     public ${capitalizedJavaService}IntegrationTest() {
-	    // redirect logging to console, will disable all appenders in log4j.xml
-	    LoggingHelper.logToConsoleOnly();
       
 <% if (inboundTransport=="SERVLET") { %>
     	// Initialize servlet engine in baseclass with proper values
