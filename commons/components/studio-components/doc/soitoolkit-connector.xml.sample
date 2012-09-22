@@ -1,0 +1,6 @@
+<!-- BEGIN_INCLUDE(soitoolkit:log-trace) -->
+    <st-logger:log-trace message="Payload passed here: #[payload:]" />
+<!-- END_INCLUDE(soitoolkit:log-trace) -->
+<!-- BEGIN_INCLUDE(soitoolkit:my-processor) -->
+    <soitoolkit:my-processor content="#[map-payload:content]" />
+<!-- END_INCLUDE(soitoolkit:my-processor) -->
