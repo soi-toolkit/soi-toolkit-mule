@@ -43,7 +43,7 @@
 		<module>components/commons-log</module>
 		<module>components/commons-mule</module>
         <module>components/commons-xml</module>
-        <module>components/module-logger</module>
+        <module>components/studio-components</module>
 		
 	</modules>
 
