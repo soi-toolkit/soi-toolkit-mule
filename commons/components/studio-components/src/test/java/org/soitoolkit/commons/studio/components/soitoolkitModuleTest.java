@@ -3,12 +3,12 @@
  */
 package org.soitoolkit.commons.studio.components;
 
+import org.junit.Test;
 import org.mule.api.MuleEvent;
 import org.mule.construct.Flow;
-import org.mule.tck.FunctionalTestCase;
 import org.mule.tck.AbstractMuleTestCase;
+import org.mule.tck.FunctionalTestCase;
 
-import org.junit.Test;
 
 public class soitoolkitModuleTest extends FunctionalTestCase
 {

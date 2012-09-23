@@ -1,6 +1,23 @@
+<!-- BEGIN_INCLUDE(soitoolkit:log-info) -->
+    <st-logger:log-info message="Payload passed here: #[payload:]" />
+<!-- END_INCLUDE(soitoolkit:log-info) -->
+
+<!-- BEGIN_INCLUDE(soitoolkit:log-warning) -->
+    <st-logger:log-warning message="Payload passed here: #[payload:]" />
+<!-- END_INCLUDE(soitoolkit:log-warning) -->
+
+<!-- BEGIN_INCLUDE(soitoolkit:log-error) -->
+    <st-logger:log-error message="Payload passed here: #[payload:]" />
+<!-- END_INCLUDE(soitoolkit:log-error) -->
+
+<!-- BEGIN_INCLUDE(soitoolkit:log-debug) -->
+    <st-logger:log-debug message="Payload passed here: #[payload:]" />
+<!-- END_INCLUDE(soitoolkit:log-debug) -->
+
 <!-- BEGIN_INCLUDE(soitoolkit:log-trace) -->
     <st-logger:log-trace message="Payload passed here: #[payload:]" />
 <!-- END_INCLUDE(soitoolkit:log-trace) -->
+
 <!-- BEGIN_INCLUDE(soitoolkit:my-processor) -->
     <soitoolkit:my-processor content="#[map-payload:content]" />
 <!-- END_INCLUDE(soitoolkit:my-processor) -->

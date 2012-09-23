@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:st-logger="http://www.mulesoft.org/schema/mule/st-logger"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" 
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+		http://www.mulesoft.org/schema/mule/st-logger http://www.mulesoft.org/schema/mule/st-logger/current/mule-st-logger.xsd 
+        ">
+
+    <spring:beans>
+        <context:component-scan base-package="org.soitoolkit.commons.studio.components.logger.impl" />
+        <spring:import resource="classpath:soitoolkit-mule-jms-connector-activemq-embedded.xml"/>
+    </spring:beans>
+
+    <mulexml:jaxb-context name="jaxbContext" packageNames="org.soitoolkit.commons.logentry.schema.v1"/>
+
+	<st-logger:config name="St_Logger" doc:name="St Logger" integrationScenario="IS1" />
+
+        <!-- 
+            <soitoolkitlogger:extra id="commonValues">
+                <soitoolkitlogger:extra key="4">value-4</soitoolkitlogger:extra>
+                <soitoolkitlogger:extra key="5">value-5</soitoolkitlogger:extra>
+                <soitoolkitlogger:extra key="6">value-6</soitoolkitlogger:extra>
+            </soitoolkitlogger:extra>
+ -->
+    <flow name="vmFlow">
+      <inbound-endpoint address="vm:/in" exchange-pattern="request-response"/>
+      <flow-ref name="testFlow"/>
+    </flow>
+
+    <flow name="testFlow">
+        <st-logger:log-warning message="1. Payload in log-message: #[payload]"/>
+        <st-logger:log-info message="2.3 Another string">
+<!-- 
+            <st-logger:extra ref="commonValues">
+ -->
+			<st-logger:extra-info>
+				<st-logger:extra-info key="1">value-1</st-logger:extra-info>
+				<st-logger:extra-info key="2">value-2</st-logger:extra-info>
+				<st-logger:extra-info key="3">value-3</st-logger:extra-info>
+			</st-logger:extra-info>
+        </st-logger:log-info>
+    </flow>
+
+</mule>

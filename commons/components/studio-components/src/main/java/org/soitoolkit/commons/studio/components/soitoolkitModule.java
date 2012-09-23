@@ -3,9 +3,8 @@
  */
 package org.soitoolkit.commons.studio.components;
 
-import org.mule.api.annotations.Module;
-import org.mule.api.ConnectionException;
 import org.mule.api.annotations.Configurable;
+import org.mule.api.annotations.Module;
 import org.mule.api.annotations.Processor;
 
 /**
