@@ -118,7 +118,7 @@ public class FileUtil {
 				String relativePath = getRelativePath(file, rootDir);
 				File target = new File(targetDir + "/" + relativePath);
 
-				if (!target.exists()) {
+				if (!target.exists() && file.isHidden() == false) {
 					if (file.isDirectory()) {
 						target.mkdir();
 						copyFiles(rootDir, file, targetDir);
