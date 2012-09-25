@@ -35,5 +35,11 @@
         <spring:property name="logType" value="msg-out"/>
         <spring:property name="jaxbContext" ref="jaxbContext"/>
     </custom-transformer>
+    
+    <custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer" name="logWarnMsg">
+        <spring:property name="logType" value="msg-warning"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+        <spring:property name="logLevel" value="WARNING" />
+    </custom-transformer>
 
 </mule>

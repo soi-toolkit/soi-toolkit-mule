@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 
+import org.apache.log4j.lf5.LogLevel;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
@@ -252,7 +253,6 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 
 			case FATAL:
 			case ERROR:
-			case WARNING:
 				//eventLogger.logErrorEvent(new RuntimeException(logType), message, integrationScenario, contractId, null, extraInfo);
 				EventLogMessage errorMsg = new EventLogMessage();
 				errorMsg.setMuleMessage(message);
@@ -272,6 +272,29 @@ public class LogTransformer extends AbstractMessageTransformer implements MuleCo
 				} else {
 					String evaluatedLogType = evaluateValue("logType", logType, message);
 					eventLogger.logErrorEvent(new RuntimeException(evaluatedLogType), errorMsg);
+				}
+				break;
+				
+			case WARNING:
+				//eventLogger.logErrorEvent(new RuntimeException(logType), message, integrationScenario, contractId, null, extraInfo);
+				EventLogMessage errorMsg2 = new EventLogMessage();
+				errorMsg2.setMuleMessage(message);
+				//errorMsg.setLogMessage(logType);
+				errorMsg2.setIntegrationScenario(integrationScenario);
+				errorMsg2.setContractId(contractId);
+				errorMsg2.setBusinessContextId(evaluatedBusinessContextId);
+				errorMsg2.setExtraInfo(evaluatedExtraInfo);
+				
+				if (message.getPayload() instanceof ExceptionMessage) {
+					ExceptionMessage me = (ExceptionMessage)message.getPayload();
+					Throwable ex = me.getException();
+					if (ex.getCause() != null) {
+						ex = ex.getCause();
+					}
+					eventLogger.logErrorEvent(LogLevelType.WARNING, ex, errorMsg2);
+				} else {
+					String evaluatedLogType = evaluateValue("logType", logType, message);
+					eventLogger.logErrorEvent(new RuntimeException(evaluatedLogType), errorMsg2);
 				}
 				break;
 			}

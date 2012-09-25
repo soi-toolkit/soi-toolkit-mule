@@ -169,51 +169,41 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		this.jaxbContext  = jaxbContext;
 	}
 	
-	// ----------
-	//
-	// PUBLIC API
-	//
-	// ----------
-
-	/**
-	 * Implements EventLogger.logInfoEvent()
-	 */
-	public void logInfoEvent(EventLogMessage elm) {
-		logInfoEvent(elm.getMuleMessage(), elm.getLogMessage(), elm.getIntegrationScenario(),
-				elm.getContractId(), elm.getBusinessContextId(), elm.getExtraInfo());		
-	}
-
-	/**
-	 * Implements EventLogger.logErrorEvent()
-	 */
-	public void logErrorEvent(Throwable error, EventLogMessage elm) {
-		logErrorEvent(error, elm.getMuleMessage(), elm.getIntegrationScenario(),
-				elm.getContractId(), elm.getBusinessContextId(), elm.getExtraInfo());
-	}
-
-	/**
-	 * Implements EventLogger.logErrorEvent()
-	 */
-	public void logErrorEvent(Throwable error, Object payload,
+	public void logErrorEvent(LogLevelType logLevel, Throwable error,
 			EventLogMessage elm) {
-		logErrorEvent(error, payload, elm.getBusinessContextId(), elm.getExtraInfo());
+
+		if (logLevel == null) {
+			logLevel = LogLevelType.ERROR;
+		}
+
+		logErrorEvent(logLevel, error, elm.getMuleMessage(),
+				elm.getIntegrationScenario(), elm.getContractId(),
+				elm.getBusinessContextId(), elm.getExtraInfo());
 	}
 
+	public void logErrorEvent(Throwable error, EventLogMessage elm) {
+		logErrorEvent(LogLevelType.ERROR, error, elm);
+	}
 
-	/**
-	 * Old logInfoEvent() wrapped by the new
-	 */
-	private void logInfoEvent (
-		MuleMessage message,
-		String      logMessage,
-		String      integrationScenario, 
-		String      contractId, 
-		Map<String, String> businessContextId,
-		Map<String, String> extraInfo) {
-		
+	public void logInfoEvent(LogLevelType logLevel, EventLogMessage elm) {
+		logInfoEvent(logLevel, elm.getMuleMessage(), elm.getLogMessage(),
+				elm.getIntegrationScenario(), elm.getContractId(),
+				elm.getBusinessContextId(), elm.getExtraInfo());
+	}
+
+	public void logInfoEvent(EventLogMessage elm) {
+		logInfoEvent(LogLevelType.INFO, elm);
+	}
+
+	protected void logInfoEvent(LogLevelType logLevel, MuleMessage message,
+			String logMessage, String integrationScenario, String contractId,
+			Map<String, String> businessContextId, Map<String, String> extraInfo) {
+
 		if (messageLogger.isInfoEnabled()) {
-			LogEvent logEvent = createLogEntry(LogLevelType.INFO, message, logMessage, integrationScenario, contractId, businessContextId, extraInfo, message.getPayload(), null);
-			
+			LogEvent logEvent = createLogEntry(logLevel, message, logMessage,
+					integrationScenario, contractId, businessContextId,
+					extraInfo, message.getPayload(), null);
+
 			String logMsg = formatLogMessage(LOG_EVENT_INFO, logEvent);
 			messageLogger.info(logMsg);
 
@@ -223,37 +213,13 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		}
 	}
 
-	/**
-	 * Old logErrorEvent() wrapped by the new
-	 */
-	private void logErrorEvent (
-		Throwable   error,
-		MuleMessage message,
-		String      integrationScenario, 
-		String      contractId, 
-		Map<String, String> businessContextId,
-		Map<String, String> extraInfo) {
+	protected void logErrorEvent(LogLevelType logLevel, Throwable error,
+			MuleMessage message, String integrationScenario, String contractId,
+			Map<String, String> businessContextId, Map<String, String> extraInfo) {
 
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, message, error.toString(), integrationScenario, contractId, businessContextId, extraInfo, message.getPayload(), error);
-		
-		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
-		messageLogger.error(logMsg);
-
-		// TODO: Move JAXB processing into the dispatch method
-		String xmlString = JAXB_UTIL.marshal(logEvent);
-		dispatchErrorEvent(xmlString);
-	}
-
-	/**
-	 * Old logErrorEvent() wrapped by the new
-	 */
-	private void logErrorEvent (
-		Throwable   error,
-		Object      payload,
-		Map<String, String> businessContextId,
-		Map<String, String> extraInfo) {
-
-		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), null, null, businessContextId, extraInfo, payload, error);
+		LogEvent logEvent = createLogEntry(logLevel, message, error.toString(),
+				integrationScenario, contractId, businessContextId, extraInfo,
+				message.getPayload(), error);
 
 		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
 		messageLogger.error(logMsg);
@@ -262,13 +228,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		String xmlString = JAXB_UTIL.marshal(logEvent);
 		dispatchErrorEvent(xmlString);
 	}
-
-	// ---------------------
-	//
-	// HOOKS FOR SUB-CLASSES
-	//
-	// ---------------------
-
+	
+	public void logErrorEvent(Throwable error, Object payload,
+			EventLogMessage elm) {
+		logErrorEvent(error, payload, elm.getBusinessContextId(), elm.getExtraInfo());
+	}
+	
 	/**
 	 * Creates a LogEvent
 	 */
@@ -317,6 +282,12 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			messageId             = message.getUniqueId();
 			contractId            = message.getInboundProperty(SOITOOLKIT_CONTRACT_ID, "");
 			businessCorrelationId = message.getSessionProperty(SOITOOLKIT_CORRELATION_ID, "");
+			
+			// Required to propagate correlation id (jms->http)
+			if ("".equals(businessCorrelationId)) {
+				businessCorrelationId = message.getInboundProperty(SOITOOLKIT_CORRELATION_ID, "");
+			}
+			
 			integrationScenarioId = message.getInboundProperty(SOITOOLKIT_INTEGRATION_SCENARIO, "");
 			propertyBusinessContextId = message.getInboundProperty(SOITOOLKIT_BUSINESS_CONTEXT_ID, null);
 			
@@ -470,6 +441,33 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		// We are actually done :-)
 		return logEvent;
 	}
+
+	/**
+	 * Old logErrorEvent() wrapped by the new
+	 */
+	private void logErrorEvent (
+		Throwable   error,
+		Object      payload,
+		Map<String, String> businessContextId,
+		Map<String, String> extraInfo) {
+
+		LogEvent logEvent = createLogEntry(LogLevelType.ERROR, null, error.toString(), null, null, businessContextId, extraInfo, payload, error);
+
+		String logMsg = formatLogMessage(LOG_EVENT_ERROR, logEvent);
+		messageLogger.error(logMsg);
+
+		// TODO: Move JAXB processing into the dispatch method
+		String xmlString = JAXB_UTIL.marshal(logEvent);
+		dispatchErrorEvent(xmlString);
+	}
+
+	// ---------------------
+	//
+	// HOOKS FOR SUB-CLASSES
+	//
+	// ---------------------
+
+	
 
 	/**
 	 * Pick up the most relevant endpoint information:

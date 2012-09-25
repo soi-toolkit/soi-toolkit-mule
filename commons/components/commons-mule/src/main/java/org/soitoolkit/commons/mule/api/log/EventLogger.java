@@ -16,32 +16,19 @@
  */
 package org.soitoolkit.commons.mule.api.log;
 
+import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
+
 public interface EventLogger {
 
-	/*
-	 * public void logInfoEvent(MuleMessage message, String logMessage, String
-	 * integrationScenario, String contractId, Map<String, String>
-	 * businessContextId, Map<String, String> extraInfo);
-	 */
-	/*
-	 * public void logErrorEvent(Throwable error, MuleMessage message, String
-	 * integrationScenario, String contractId, Map<String, String>
-	 * businessContextId, Map<String, String> extraInfo);
-	 */
-	/*
-	 * public void logErrorEvent(Throwable error, Object payload, Map<String,
-	 * String> businessContextId, Map<String, String> extraInfo);
-	 */
-	/*
-	 * //TODO: ugly but required by LogTransformer ... public void
-	 * setJaxbToXml(JaxbObjectToXmlTransformer jaxbToXml);
-	 */
+	public void logInfoEvent(LogLevelType logLevel, EventLogMessage elm);
 
 	public void logInfoEvent(EventLogMessage eventLogMessage);
+	
+	public void logErrorEvent(LogLevelType logLevel, Throwable error,
+			EventLogMessage elm);
 
 	public void logErrorEvent(Throwable error, EventLogMessage eventLogMessage);
 
 	public void logErrorEvent(Throwable error, Object payload,
 			EventLogMessage eventLogMessage);
-
 }
