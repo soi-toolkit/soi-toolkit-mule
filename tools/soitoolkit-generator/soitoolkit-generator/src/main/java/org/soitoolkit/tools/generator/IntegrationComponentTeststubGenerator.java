@@ -40,7 +40,7 @@ public class IntegrationComponentTeststubGenerator implements Generator {
 
 		gu.generateContentAndCreateFile("src/main/app/__teststubStandaloneProject__-config.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
-		gu.generateContentAndCreateFile("src/main/app/mule-app.properties.gt");
+//		gu.generateContentAndCreateFile("src/main/app/mule-app.properties.gt");
 
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaTeststubArtifactId__MuleServer.java.gt");
 		gu.generateContentAndCreateFile("src/main/resources/log4j.dtd.gt");
