@@ -84,20 +84,24 @@ public class XmlFileUtilTests {
 	@Test
 	public void testUpdateXmlFileWithSpringImport() {
 		
-		doTestUpdateXmlFileWithSpringImport("test-common-beans-without-beans-element.xml",             "soitoolkit-mule-http-connector.xml", null);
-		doTestUpdateXmlFileWithSpringImport("test-common-beans-with-beans-element-without-import.xml", "soitoolkit-mule-http-connector.xml", null);
-		doTestUpdateXmlFileWithSpringImport("test-common-beans-with-beans-element-with-import.xml",    "soitoolkit-mule-http-connector.xml", null);
+		doTestUpdateXmlFileWithSpringImport("test-common-beans-without-beans-element.xml",             "soitoolkit-mule-http-connector.xml", null, true);
+		doTestUpdateXmlFileWithSpringImport("test-common-beans-with-beans-element-without-import.xml", "soitoolkit-mule-http-connector.xml", null, true);
+		doTestUpdateXmlFileWithSpringImport("test-common-beans-with-beans-element-with-import.xml",    "soitoolkit-mule-http-connector.xml", null, false);
 
-		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-without-profile.xml",       "soitoolkit-mule-ftp-connector-external.xml", "default");
-		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-without-ftp-connector.xml", "soitoolkit-mule-ftp-connector-external.xml", "default");
-		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-with-ftp-connector.xml",    "soitoolkit-mule-ftp-connector-external.xml", "default");
+		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-without-profile.xml",       "soitoolkit-mule-ftp-connector-external.xml", "default", true);
+		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-without-ftp-connector.xml", "soitoolkit-mule-ftp-connector-external.xml", "default", true);
+		doTestUpdateXmlFileWithSpringImport("test-common-default-profile-with-ftp-connector.xml",    "soitoolkit-mule-ftp-connector-external.xml", "default", false);
 	}
 
-	private void doTestUpdateXmlFileWithSpringImport(String configFile, String xmlFragment, String profile) {
-		String xmlStr = updateSpringImportInXmlInputStream(gu, getClass().getResourceAsStream(configFile), "some new connector...", xmlFragment, profile);		
+	private void doTestUpdateXmlFileWithSpringImport(String configFile, String xmlFragment, String profile, boolean expectedToBeUpdated) {
+		
+		Holder<Boolean> wasUpdated = new Holder<Boolean>();
+		String xmlStr = updateSpringImportInXmlInputStream(gu, getClass().getResourceAsStream(configFile), "some new connector...", xmlFragment, profile, wasUpdated);		
 		log.info(xmlStr);
-		System.err.println(xmlStr);
+		System.err.println("Updated: " + wasUpdated.value); // + ", xml: " + xmlStr);
 
+		assertEquals(expectedToBeUpdated, wasUpdated.value);
+		
 		Document configDoc = createDocument(xmlStr);
 
 		Map<String, String> namespaceMap = new HashMap<String, String>();

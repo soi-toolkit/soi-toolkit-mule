@@ -40,9 +40,6 @@ import org.xml.sax.SAXException;
 
 public class XmlFileUtil {
 
-	private static final String NAMESPACE_CORE   = "http://www.mulesoft.org/schema/mule/core";
-	private static final String NAMESPACE_SPRING = "http://www.springframework.org/schema/beans";
-
 	/**
      * Hidden constructor.
      */
@@ -50,57 +47,6 @@ public class XmlFileUtil {
         throw new UnsupportedOperationException("Not allowed to create an instance of this class");
     }
 
-	public static void x_updateConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
-		String filename  = outputFolder + "/src/main/app/" + icName + "-config.xml";
-		x_updateXmlConfigFileWithNewService(filename, serviceName);
-    }
-
-	public static void x_updateTeststubsAndServicesConfigXmlFileWithNewService(String outputFolder, String icName, String serviceName) {
-		String filename  = outputFolder + "/src/test/resources/" + icName + "-teststubs-and-services-config.xml";
-		x_updateXmlConfigFileWithNewService(filename, serviceName);
-    }
-
-	private static void x_updateXmlConfigFileWithNewService(String filename, String serviceName) {
-		String xmlFragment = "<spring:import xmlns:spring=\"" + NAMESPACE_SPRING + "\" resource=\"classpath:" + serviceName + "-service.xml\"/>";
-		
-		InputStream content = null;
-		String xml = null;
-		try {
-			System.err.println("Add: " + xmlFragment + " to " + filename);
-			content = new FileInputStream(filename);
-			Document doc = createDocument(content);
-
-			Map<String, String> namespaceMap = new HashMap<String, String>();
-			namespaceMap.put("ns",     NAMESPACE_CORE);
-			namespaceMap.put("spring", NAMESPACE_SPRING);
-
-			NodeList rootList = getXPathResult(doc, namespaceMap, "/ns:mule/spring:beans");
-			Node root = rootList.item(0);
-			System.err.println("Root node: " + ((root == null) ? " NULL" : root.getLocalName()));		    
-		    
-		    appendXmlFragment(root, xmlFragment);
-			
-			xml = getXml(doc);
-			
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (content != null) {try {content.close();} catch (IOException e) {}}
-		}
-
-		PrintWriter pw = null;
-		try {
-			System.err.println("Overwrite file: " + filename);
-			pw = openFileForOverwrite(filename);
-			pw.print(xml);
-			
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (pw != null) {pw.close();}
-		}
-		System.err.println("Updated: " + filename);
-	}    
 
 	public static boolean updateCommonFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment) {
 		return updateCommonFileWithSpringImport(gu, comment, xmlFragment, null);
@@ -111,21 +57,18 @@ public class XmlFileUtil {
 		return updateSpringImportInXmlFile(gu, xmlFile, comment, xmlFragment, springBeanProfile);
 	}
 
-	public static void x_updateConfigFileWithSpringImport(GeneratorUtil gu, String comment, String xmlFragment, String springBeanProfile) {
-		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-config.xml";
-		updateSpringImportInXmlFile(gu, xmlFile, comment, xmlFragment, springBeanProfile);
-	}
-
 	static boolean updateSpringImportInXmlFile(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment, String springBeanProfile) {
 
 		InputStream content = null;
 		String xml = null;
+		Holder<Boolean> wasUpdated = new Holder<Boolean>();
+		
 		try {
 			
 			gu.logDebug("Add: " + xmlFragment + " to " + xmlFile);
 			content = new FileInputStream(xmlFile);
 			
-			xml = updateSpringImportInXmlInputStream(gu, content, comment, xmlFragment, springBeanProfile);
+			xml = updateSpringImportInXmlInputStream(gu, content, comment, xmlFragment, springBeanProfile, wasUpdated);
 			
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -145,12 +88,15 @@ public class XmlFileUtil {
 		} finally {
 			if (pw != null) {pw.close();}
 		}
-		return true;
+		return wasUpdated.value;
 	}
 
-	static String updateSpringImportInXmlInputStream(GeneratorUtil gu, InputStream content, String comment, String xmlFragment, String springBeanProfile) {
+	static String updateSpringImportInXmlInputStream(GeneratorUtil gu, InputStream content, String comment, String xmlFragment, String springBeanProfile, Holder<Boolean> wasUpdated) {
 
 		try {
+			
+			wasUpdated.value = false;
+			
 			String xmlFragmentId = "classpath:" + xmlFragment;
 
 			Document doc = createDocument(content);
@@ -164,6 +110,9 @@ public class XmlFileUtil {
 			gu.logDebug("Look for: " + xmlFragmentId + ", resulted in " + testList.getLength() + " elements");
 
 			if (testList.getLength() == 0) {
+				
+				wasUpdated.value = true;
+				
 				gu.logDebug("Fragment does not exist, let's add it!!!");
 				
 				// Look up the beans-element, with or without profile-attribute
