@@ -134,8 +134,12 @@ public class RequestResponseServiceGenerator implements Generator {
 		}
 		
 		if (inboundTransport == TransportEnum.RESTHTTPS || inboundTransport == TransportEnum.SOAPHTTPS || outboundTransport == RESTHTTPS || outboundTransport == SOAPHTTPS) {
+			
+			// Add a https-connector if not already existing + properties for it. 
+			// Also add a http connector for the case where a developer wants to temporary degrade https to plain http, e.g. for troubleshooting
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTPS-transport";
     		boolean isUpdated = updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-https-connector.xml");
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
     		
     		if (isUpdated) {
     			gu.copyContentAndCreateFile("src/test/certs/client.jks.gt");
