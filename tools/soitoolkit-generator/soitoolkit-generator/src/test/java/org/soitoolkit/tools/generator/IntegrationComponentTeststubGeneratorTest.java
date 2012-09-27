@@ -46,7 +46,7 @@ public class IntegrationComponentTeststubGeneratorTest {
 	public static final String IC_GROUPID = IntegrationComponentTeststubGeneratorTest.class
 			.getPackage().getName();
 	public static final String IC_VERSION = "1.0.0-SNAPSHOT";
-	public static final int EXPECTED_NO_OF_IC_FILES_CREATED = 31;
+	public static final int EXPECTED_NO_OF_IC_FILES_CREATED = 33;
 	public static final int EXPECTED_NO_OF_TESTSTUB_FILES_CREATED = 19;
 
 	@BeforeClass

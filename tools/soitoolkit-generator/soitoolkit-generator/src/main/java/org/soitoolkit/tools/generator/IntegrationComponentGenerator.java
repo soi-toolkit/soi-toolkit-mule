@@ -41,7 +41,9 @@ public class IntegrationComponentGenerator implements Generator {
 
 		gu.generateFolder("src/main/java/__javaPackageFilepath__");
 		gu.generateFolder("src/environment");
+		gu.generateFolder("mappings");
 		gu.generateFolder("flows");
+    	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__artifactId__-common.mflow");
 
 		gu.generateContentAndCreateFile("src/main/app/__artifactId__-common.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
