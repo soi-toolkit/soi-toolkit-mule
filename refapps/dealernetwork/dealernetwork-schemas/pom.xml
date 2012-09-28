@@ -29,7 +29,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
   <parent>
     <groupId>org.soitoolkit</groupId>
     <artifactId>soitoolkit</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 

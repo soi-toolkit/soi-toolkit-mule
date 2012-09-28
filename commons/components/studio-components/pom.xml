@@ -15,8 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
          
 <!-- 
 mvn archetype:generate \
@@ -52,7 +51,7 @@ mvn package -Ddevkit.studio.package.skip=false
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.soitoolkit.commons.components</groupId>
     <artifactId>soitoolkit-studio-components</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
     <packaging>mule-module</packaging>
     <name>soitoolkit-studio-components</name>
 
@@ -96,7 +95,7 @@ mvn package -Ddevkit.studio.package.skip=false
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -384,4 +383,10 @@ mvn package -Ddevkit.studio.package.skip=false
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+  <scm>
+    <connection>scm:svn:http://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</connection>
+    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</developerConnection>
+    <url>http://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</url>
+  </scm>
 </project>
