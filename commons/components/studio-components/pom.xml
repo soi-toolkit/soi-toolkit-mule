@@ -51,7 +51,7 @@ mvn package -Ddevkit.studio.package.skip=false
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.soitoolkit.commons.components</groupId>
     <artifactId>soitoolkit-studio-components</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1-SNAPSHOT</version>
     <packaging>mule-module</packaging>
     <name>soitoolkit-studio-components</name>
 
@@ -383,10 +383,4 @@ mvn package -Ddevkit.studio.package.skip=false
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-  <scm>
-    <connection>scm:svn:http://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</connection>
-    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/soitoolkit-0.6.0</url>
-  </scm>
 </project>
