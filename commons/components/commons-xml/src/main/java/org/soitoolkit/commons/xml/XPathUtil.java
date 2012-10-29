@@ -118,8 +118,7 @@ public class XPathUtil {
 		}
 	}
 
-	private static DocumentBuilder getBuilder()
-			throws ParserConfigurationException {
+	static public DocumentBuilder getBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setNamespaceAware(true);
 		DocumentBuilder builder = domFactory.newDocumentBuilder();
