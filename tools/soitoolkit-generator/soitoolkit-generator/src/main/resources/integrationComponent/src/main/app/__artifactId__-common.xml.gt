@@ -118,7 +118,7 @@ ${xmlNamespace.common}
 	<imap:connector name="imap-connector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
 <% } %>  
 
-    <rest:config />
+    <rest-router:config />
 
     <spring:beans>
 <% if (false) { %>

@@ -11,7 +11,7 @@
 	xmlns:management="http://www.mulesoft.org/schema/mule/management"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
-	xmlns:rest="http://www.mulesoft.org/schema/mule/rest"
+	xmlns:rest-router="http://www.mulesoft.org/schema/mule/rest-router"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-current.xsd
 		http://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/current/mule.xsd
@@ -22,7 +22,7 @@
 		http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/current/mule-management.xsd
 		http://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 		http://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
-		http://www.mulesoft.org/schema/mule/rest       http://www.mulesoft.org/schema/mule/rest/current/mule-rest.xsd
+		http://www.mulesoft.org/schema/mule/rest-router       http://www.mulesoft.org/schema/mule/rest-router/current/mule-rest-router.xsd
 	">
 
   <!-- Load property files in three steps... -->
@@ -93,7 +93,7 @@
 	<imap:connector name="imap-connector" deleteReadMessages="true" checkFrequency="${IMAP_CHECK_FREQUENCY_MS}"/>
   
 
-    <rest:config />
+    <rest-router:config />
 
     <spring:beans>
   

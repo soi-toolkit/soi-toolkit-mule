@@ -23,40 +23,40 @@ ${xmlNamespace.reqRespService}
  			responseTransformer-refs="jaxbToJson setJsonContentType logRespOut">
  		</https:inbound-endpoint>
  		<% } %> 		
-        <rest:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample">
+        <rest-router:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample">
 
             <!-- FIND: HTTP GET on /sample -->
-            <rest:get>
+            <rest-router:get>
                 <flow-ref name="${service}-soap-service"/> 
-            </rest:get>
+            </rest-router:get>
 
             <!-- CREATE: HTTP POST on /sample -->
-            <rest:post>
+            <rest-router:post>
                 <json:json-to-object-transformer doc:name="json to CreateSample-object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample"/>
                 <flow-ref name="${service}-soap-service"/> 
-            </rest:post>
+            </rest-router:post>
 
-        </rest:router> 
+        </rest-router:router> 
         
-        <rest:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample/{id}">
+        <rest-router:router templateUri="${dollarSymbol}{${uppercaseService}_BASE_PATH}/sample/{id}">
 
             <!-- READ: HTTP GET on /sample/{id} -->
-            <rest:get>
+            <rest-router:get>
                 <flow-ref name="${service}-soap-service"/> 
-            </rest:get>
+            </rest-router:get>
 
             <!-- UPDATE: HTTP PUT on /sample/{id} -->
-            <rest:put>
+            <rest-router:put>
                 <json:json-to-object-transformer doc:name="json to UpdateSample-object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample"/>
                 <flow-ref name="${service}-soap-service"/> 
-            </rest:put>
+            </rest-router:put>
 
             <!-- DELETE: HTTP DELETE on /sample/{id} -->
-            <rest:delete>
+            <rest-router:delete>
                 <flow-ref name="${service}-soap-service"/> 
-            </rest:delete>
+            </rest-router:delete>
 
-        </rest:router> 
+        </rest-router:router> 
 
         <!-- 
           NO MATCH, RETURN AN ERROR!

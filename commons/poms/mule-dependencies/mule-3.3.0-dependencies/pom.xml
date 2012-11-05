@@ -36,7 +36,7 @@
         <hornetq.version>2.2.5.Final</hornetq.version>
         <netty.version>3.2.3.Final</netty.version>
 
-        <mule-module-rest.version>1.1</mule-module-rest.version>
+        <mule-module-rest-router.version>1.2</mule-module-rest-router.version>
 
 		<!-- Used by servlet-api-2.5 -->
 		<jetty.version>6.1.11</jetty.version>
@@ -120,8 +120,8 @@
         <!-- NOTE: This is a muleforge module so watch out for dependencies here to old versions of Mule, need to be excluded as they are added in new versions!!! -->
         <dependency>
             <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-rest</artifactId>
-            <version>${mule-module-rest.version}</version>
+            <artifactId>mule-module-rest-router</artifactId>
+            <version>${mule-module-rest-router.version}</version>
         </dependency>
 
 		<!-- Mule ESB Transports -->
