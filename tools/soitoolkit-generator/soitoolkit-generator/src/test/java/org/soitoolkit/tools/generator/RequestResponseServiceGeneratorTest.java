@@ -164,8 +164,7 @@ public class RequestResponseServiceGeneratorTest {
 	}
 	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
 		
-//		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS};
-		TransportEnum[] inboundTransports  = {SOAPHTTP, RESTHTTP};
+		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS};
 		
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports = appendTransport(inboundTransports, SOAPSERVLET);
@@ -174,8 +173,7 @@ public class RequestResponseServiceGeneratorTest {
 	}
 
 	private TransportEnum[] getOutboundTransports() {
-//		TransportEnum[] outboundTransports = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS, JMS};
-		TransportEnum[] outboundTransports = {SOAPHTTP, RESTHTTP, JMS};
+		TransportEnum[] outboundTransports = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS, JMS};
 
 		return outboundTransports;
 	}
