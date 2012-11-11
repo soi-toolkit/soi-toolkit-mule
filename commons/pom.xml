@@ -37,6 +37,7 @@
 		<module>poms/assembly-descriptors</module>
 		<module>poms/schemas-jax-ws-dependencies</module>
 		<module>poms/mule-dependencies/mule-3.3.0-dependencies</module>
+		<module>poms/mule-dependencies/mule-ee-3.3.1-dependencies</module>
 		<module>poms/test-dependencies</module>
 		
 		<module>components/commons-schemas</module>
