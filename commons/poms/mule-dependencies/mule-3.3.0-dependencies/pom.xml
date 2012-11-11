@@ -29,9 +29,9 @@
 		<xercesImpl.version>2.9.1</xercesImpl.version>
 		<mule.version>3.3.0</mule.version>
 
-		<activemq.version>5.6.0</activemq.version>
+		<activemq.version>5.7.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
-		<xbean.version>3.9</xbean.version>
+		<xbean.version>3.11.1</xbean.version>
 
         <hornetq.version>2.2.5.Final</hornetq.version>
         <netty.version>3.2.3.Final</netty.version>

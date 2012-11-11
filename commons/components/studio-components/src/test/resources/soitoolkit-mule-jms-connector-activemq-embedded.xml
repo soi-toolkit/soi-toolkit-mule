@@ -51,7 +51,7 @@
 		</amq:broker>
     </spring:beans>
 
-	<spring:bean name="soitoolkit-jms-connection-factory"
+	<spring:bean name="soitoolkit-jms-connection-factory-1"
 		class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
 		<spring:property name="brokerURL" value="vm://localhost" />
 		<spring:property name="redeliveryPolicy">
@@ -63,7 +63,7 @@
 	</spring:bean>
 
 	<jms:connector name="soitoolkit-jms-connector"
-		connectionFactory-ref="soitoolkit-jms-connection-factory"
+		connectionFactory-ref="soitoolkit-jms-connection-factory-1"
 		disableTemporaryReplyToDestinations="true" 
 		persistentDelivery="true"
 		numberOfConsumers="2"
