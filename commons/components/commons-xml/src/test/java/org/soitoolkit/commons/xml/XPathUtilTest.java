@@ -148,13 +148,62 @@ public class XPathUtilTest {
 	
 	@Test
 	public void testNormalizer() {
-		String xml1 = readFileAsString("src/test/resources/response-expected-result-1.xml");
-		String xml2 = readFileAsString("src/test/resources/response-expected-result-2.xml");
+		String xml1 = readFileAsString("src/test/resources/response-expected-result-single-line.xml");
+		String xml2 = readFileAsString("src/test/resources/response-expected-result-formatted.xml");
 
 		xml1 = XPathUtil.normalizeXmlString(xml1);
 		xml2 = XPathUtil.normalizeXmlString(xml2);
 
 		assertEquals(xml1, xml2);
+	}
+	
+	@Test
+	public void testDefaultNoFormatting() throws FileNotFoundException {
+
+		// Parse a formatted xml document
+		Node xml_input_formatted = XPathUtil.createDocument(new FileInputStream("src/test/resources/response-expected-result-formatted.xml"));
+
+		// Create a default string, expect it to be a single-line
+		String xml_result = XPathUtil.getXml(xml_input_formatted);
+
+		// Read an expected single line xml
+		String xml_expected_sinlge_line = readFileAsString("src/test/resources/response-expected-result-single-line.xml");
+
+		// Assert they are the same
+		assertEquals(xml_expected_sinlge_line, xml_result);
+	}
+	
+	@Test
+	public void testNoFormatting() throws FileNotFoundException {
+
+		// Parse a formatted xml document
+		Node xml_input_formatted = XPathUtil.createDocument(new FileInputStream("src/test/resources/response-expected-result-formatted.xml"));
+
+		// Create a single line string
+		String xml_result = XPathUtil.getXml(xml_input_formatted, false, 0);
+
+		// Read an expected single line xml
+		String xml_expected_sinlge_line = readFileAsString("src/test/resources/response-expected-result-single-line.xml");
+
+		// Assert they are the same
+		assertEquals(xml_expected_sinlge_line, xml_result);
+	}
+	
+	@Test
+	public void testFormatting() throws FileNotFoundException {
+
+		// Parse an unformatted xml document
+		Node xml_input_single_line = XPathUtil.createDocument(new FileInputStream("src/test/resources/response-expected-result-single-line.xml"));
+
+		// Create a single line string
+		String xml_result = XPathUtil.getXml(xml_input_single_line, true, 2);
+		
+		// Read an expected single line xml
+		String xml_expected_formatted = readFileAsString("src/test/resources/response-expected-result-formatted.xml");
+		xml_expected_formatted += "\n"; // Somewhere a new-line is added in the processing of the result. We don't care, just add it...
+		
+		// Assert they are the same
+		assertEquals(xml_expected_formatted, xml_result);
 	}
 	
 	@Test

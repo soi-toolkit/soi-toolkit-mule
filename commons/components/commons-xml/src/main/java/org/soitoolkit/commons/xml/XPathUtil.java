@@ -196,18 +196,28 @@ public class XPathUtil {
 	}
 
     public static String getXml(Node node) {
-    	return getXml(node, true, 2);
+    	return getXml(node, false, 0);
 	}
 
+
+    /**
+     * Creates a string representation of the dom node.
+     * NOTE: The string can be formatted and indented with a specified indent size, but be aware that this is depending on a Xalan implementation of the XSLT library.
+     * 
+     * @param node
+     * @param indentXml
+     * @param indentSize
+     * @return
+     */
     public static String getXml(Node node, boolean indentXml, int indentSize) {
     	try {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer;
 			
 			if (indentXml) {
-				tf.setAttribute("indent-number", new Integer(indentSize));
 				transformer = tf.newTransformer();
 				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", new Integer(indentSize).toString());
 			} else {
 				transformer = tf.newTransformer(new StreamSource(XPathUtil.class.getResourceAsStream("remove-whitespace.xsl")));
 			}
