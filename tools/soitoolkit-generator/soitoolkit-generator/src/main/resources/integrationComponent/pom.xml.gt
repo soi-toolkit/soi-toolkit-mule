@@ -196,7 +196,31 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                 </execution>
               </executions>
             </plugin>
-            
+		    <plugin>
+			  <artifactId>maven-resources-plugin</artifactId>
+			  <executions>
+			    <execution>
+			    <id>copy-log4j-resource</id>
+			    <phase>prepare-package</phase>
+				<goals>
+			      <goal>copy-resources</goal>
+			    </goals>
+				<configuration>
+				<!--<outputDirectory>target/classes</outputDirectory> -->
+				<outputDirectory>${dollarSymbol}{project.build.outputDirectory}</outputDirectory>
+				<resources>
+				  <resource>
+				    <directory>src/environment</directory>
+					  <includes>
+					    <include>log4j.xml</include>
+					    <include>log4j.dtd</include>
+					  </includes>
+				  </resource>
+				</resources>
+			  </configuration>
+		    </execution>
+		  </executions>
+		</plugin>
       </plugins>
 
     </build>
