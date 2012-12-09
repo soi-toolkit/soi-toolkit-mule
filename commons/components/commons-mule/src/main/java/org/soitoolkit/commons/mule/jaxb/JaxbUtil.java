@@ -72,6 +72,10 @@ public class JaxbUtil {
     	setContextPath(contextPath);
     }
 
+    public JAXBContext getContext() {
+    	return jaxbContext;
+    }
+    
     public void setContextPath(String contextPath) {
         try {
         	if (contextPath == null || contextPath.length() == 0) {
