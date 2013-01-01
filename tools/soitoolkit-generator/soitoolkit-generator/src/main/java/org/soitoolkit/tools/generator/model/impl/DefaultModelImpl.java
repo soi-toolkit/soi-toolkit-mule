@@ -324,6 +324,7 @@ public class DefaultModelImpl implements IModel {
 		String replace = ""; //this.getJavaPackage().substring(0, this.getJavaPackage().indexOf('.'));
 
 		schema = schema.replace("urn:", replace);
+		schema = schema.toLowerCase().replace(".", "_");
 		schema = schema.toLowerCase().replace(":", ".");
 		
 		Pattern pattern = Pattern.compile("\\.(\\d)");

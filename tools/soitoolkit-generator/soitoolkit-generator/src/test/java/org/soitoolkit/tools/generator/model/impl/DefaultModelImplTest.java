@@ -16,10 +16,13 @@
  */
 package org.soitoolkit.tools.generator.model.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
@@ -28,6 +31,19 @@ import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 
 public class DefaultModelImplTest {
+	
+	DefaultModelImpl impl = new DefaultModelImpl();
+
+	@Test
+	public void testGetSchemaJavaPackage() {
+		
+		String expectedPackageName = "riv.crm.scheduling.getalltimetypesresponder.v1_1";
+		String namespace = "urn:riv:crm:scheduling:GetAllTimeTypesResponder:1.1";
+		
+		String actualPackageName = impl.getSchemaJavaPackage(namespace);
+		
+		assertEquals(expectedPackageName, actualPackageName);
+	}
 
 	@Test
 	public void testIsGroupIdSuffixedWithArtifactId() {
