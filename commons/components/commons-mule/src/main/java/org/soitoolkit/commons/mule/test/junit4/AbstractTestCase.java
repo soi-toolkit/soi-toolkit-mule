@@ -278,6 +278,16 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
     }
 
     /**
+     * Helper method that waits for an exception to be throwed
+     *
+     * @param timeout
+     * @return
+     */
+    protected Exception waitForException(long timeout) {
+    	return dispatchAndWaitForException(null, null, null, timeout);
+    }
+
+    /**
      * Helper method for initiating a test and wait for an exception to be throwed
      *
      * @param inboundEndpointAddress
@@ -326,8 +336,10 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			// Now register an exception-listener on the connector that expects to fail
 			muleContext.getNotificationManager().addListener(listener);
 
-			// Perform the actual dispatch
-			muleClient.dispatch(inboundEndpointAddress, payload, headers);
+			// Perform the actual dispatch if the inboundEndpointAddress is not null
+			if (inboundEndpointAddress != null) {
+				muleClient.dispatch(inboundEndpointAddress, payload, headers);
+			}
 
 			// Wait for the exception to occur...
 			if (logger.isDebugEnabled()) logger.debug("Waiting for an exception to occur...");
