@@ -24,7 +24,7 @@
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns:rest="http://www.mulesoft.org/schema/mule/rest"
-  xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+  xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty-ssl"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/current/mule.xsd
@@ -33,7 +33,7 @@
 		http://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 		http://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 		http://www.mulesoft.org/schema/mule/rest       http://www.mulesoft.org/schema/mule/rest/current/mule-rest.xsd
-    http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/current/mule-jetty.xsd
+    http://www.mulesoft.org/schema/mule/jetty-ssl http://www.mulesoft.org/schema/mule/jetty-ssl/current/mule-jetty-ssl.xsd
 	">
 
   <!-- Load property files in three steps... -->
@@ -76,16 +76,12 @@
       http://www.mulesoft.org/documentation/display/MULE3EXAMPLES/Bookstore+Example
   -->
   <jetty:connector name="jettyConnector">
-    <!-- note: port defined as xsd:integer, fails validation if configured with substitution param ... VERIFY! -->
-    <jetty:webapps directory="${app.home}/webapps" port="9098"/>
+    <!--
+  	<jetty:tls-client path="clientKeyStore" storePassword="password"/>
+  	-->
+  	<jetty:tls-key-store path="${HTTPS_TLS_KEYSTORE}" keyPassword="${HTTPS_TLS_KEY_PASSWORD}" storePassword="${HTTPS_TLS_KEYSTORE_PASSWORD}"/>
+  	<jetty:tls-server path="${HTTPS_TLS_TRUSTSTORE}" storePassword="${HTTPS_TLS_TRUSTSTORE_PASSWORD}"/>
+  	<jetty:webapps directory="${app.home}/webapps" host="${HTTPS_HOST}" port="${HTTPS_PORT}"/>
   </jetty:connector>
-<!--
-DOESN'T SEEM POSSIBLE TO RUN MULE_EMBEDDED WEBAPP WITH SSL .. VERIFY!
-  <jetty:connector name="jettyConnector">
-    <jetty:tls-client path="clientKeystore" storePassword="mulepassword" /> 
-    <jetty:tls-key-store path="serverKeystore" keyPassword="mulepassword" storePassword="mulepassword" /> 
-    <jetty:tls-server path="trustStore" storePassword="mulepassword" /> 
-  </jetty:connector>  
--->
-    
+  
 </mule>

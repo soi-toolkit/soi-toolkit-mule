@@ -32,6 +32,9 @@ public class SoitoolkitEncryptionWebToolMuleServer {
 
 	public static void main(String[] args) throws Exception {
 
+		// setup environment for testing
+		System.setProperty("app.home", "src/main/app");
+		
 		// Configure the mule-server:
 		// 1. Specify the "soitoolkit-encryption-web-tool-teststubs.xml" file if
 		// teststub-services are to be loaded

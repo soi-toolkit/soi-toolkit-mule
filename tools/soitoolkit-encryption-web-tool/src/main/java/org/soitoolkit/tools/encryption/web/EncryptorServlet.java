@@ -59,6 +59,9 @@ public class EncryptorServlet extends HttpServlet {
 
 	void produceUI(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
+		
+		resp.setContentType("text/html");
+		
 		PrintWriter out = resp.getWriter();
 		out.print("<html><head><title>soi-toolkit encryption web tool</title></head><body>");
 		out.print("<h2>soi-toolkit encryption web tool</h2>");

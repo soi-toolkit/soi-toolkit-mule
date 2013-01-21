@@ -27,7 +27,6 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
   
-<!--
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>SECURE_ALL_URLS</web-resource-name>
@@ -39,6 +38,5 @@
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
--->
   
 </web-app>

@@ -64,6 +64,13 @@
       <!-- set scope=provided to avoid including activemq-drivers etc for *this* component -->
       <scope>provided</scope>
 		</dependency>
+		<!-- Jetty-transport needed for publishing webapp over jetty-ssl -->
+		<dependency>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-jetty</artifactId>
+			<version>3.3.0</version>
+			<scope>provided</scope>
+		</dependency>		
     
   </dependencies> 
 
