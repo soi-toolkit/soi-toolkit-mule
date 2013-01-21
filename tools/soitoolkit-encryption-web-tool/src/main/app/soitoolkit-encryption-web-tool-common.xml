@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<mule 
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:management="http://www.mulesoft.org/schema/mule/management"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:rest="http://www.mulesoft.org/schema/mule/rest"
+  xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/jms        http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+		http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/current/mule-management.xsd
+		http://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+		http://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+		http://www.mulesoft.org/schema/mule/rest       http://www.mulesoft.org/schema/mule/rest/current/mule-rest.xsd
+    http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/current/mule-jetty.xsd
+	">
+
+  <!-- Load property files in three steps... -->
+  
+  <!-- 1. Support for decrypting encrypted properties.
+       The encryption password will be read from an environment variable
+       called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once
+       the application has been started, could be safely unset. -->
+  <spring:bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+    <spring:property name="algorithm" value="PBEWithMD5AndDES"/>
+    <spring:property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD"/>
+  </spring:bean>
+  
+  
+  <!-- 2. Support for decrypting encrypted properties -->
+  <spring:bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+    <spring:property name="config" ref="environmentVariablesConfiguration"/>
+  </spring:bean>
+  
+  
+  <!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+       that supports decrypting encrypted property values -->
+  <spring:bean id="propertyConfigurer" class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+    <spring:constructor-arg ref="configurationEncryptor"/>
+    <spring:property name="ignoreResourceNotFound" value="true"/>
+    <spring:property name="locations">
+      <spring:list>
+        <spring:value>classpath:soitoolkit-encryption-web-tool-config.properties</spring:value>
+        <spring:value>classpath:soitoolkit-encryption-web-tool-config-override.properties</spring:value>
+      </spring:list>
+    </spring:property>
+  </spring:bean>
+
+
+    <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
+    
+  <!--
+    Configure the webapp.
+    See the Mule 3.2.1 Bookstore-example for reference on how this is done:
+      http://www.mulesoft.org/documentation/display/MULE3EXAMPLES/Bookstore+Example
+  -->
+  <jetty:connector name="jettyConnector">
+    <!-- note: port defined as xsd:integer, fails validation if configured with substitution param ... VERIFY! -->
+    <jetty:webapps directory="${app.home}/webapps" port="9098"/>
+  </jetty:connector>
+<!--
+DOESN'T SEEM POSSIBLE TO RUN MULE_EMBEDDED WEBAPP WITH SSL .. VERIFY!
+  <jetty:connector name="jettyConnector">
+    <jetty:tls-client path="clientKeystore" storePassword="mulepassword" /> 
+    <jetty:tls-key-store path="serverKeystore" keyPassword="mulepassword" storePassword="mulepassword" /> 
+    <jetty:tls-server path="trustStore" storePassword="mulepassword" /> 
+  </jetty:connector>  
+-->
+    
+</mule>
