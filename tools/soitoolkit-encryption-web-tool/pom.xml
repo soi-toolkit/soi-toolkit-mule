@@ -23,6 +23,7 @@
         <groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
 		<version>0.6.1-M2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
 	</parent>
     
     
