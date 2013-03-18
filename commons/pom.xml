@@ -36,7 +36,8 @@
 		<module>poms/default-parent</module>
 		<module>poms/assembly-descriptors</module>
 		<module>poms/schemas-jax-ws-dependencies</module>
-		<module>poms/mule-dependencies/mule-3.3.0-dependencies</module>
+        <module>poms/mule-dependencies/mule-3.3.0-dependencies</module>
+        <module>poms/mule-dependencies/mule-3.3.1-dependencies</module>
 		<module>poms/mule-dependencies/mule-ee-3.3.1-dependencies</module>
 		<module>poms/test-dependencies</module>
 		
@@ -44,7 +45,12 @@
 		<module>components/commons-log</module>
 		<module>components/commons-mule</module>
         <module>components/commons-xml</module>
+
+<!-- TODO: Problems with building on JDK 1.7, require:
+Unresolveable build extension: Plugin org.mule.tools.devkit:mule-devkit-maven-plugin:3.3.1 or one of its dependencies could not be resolved: Could not find artifact com.sun:tools:jar:1.6 at specified path /Library/Java/JavaVirtualMachines/jdk1.7.0_11.jdk/Contents/Home/jre/../Classes/classes.jar
+
         <module>components/studio-components</module>
+  -->
 		
 	</modules>
 

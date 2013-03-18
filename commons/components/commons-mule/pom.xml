@@ -34,7 +34,7 @@
     <!-- The SOI-toolkit default Mule-version with dependencies -->
     <dependency>
       <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-      <artifactId>soitoolkit-mule-3.3.0-dependencies</artifactId>
+      <artifactId>soitoolkit-mule-3.3.1-dependencies</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>provided</scope>      

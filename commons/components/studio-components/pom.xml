@@ -56,11 +56,11 @@ mvn package -Ddevkit.studio.package.skip=false
     <name>soitoolkit-studio-components</name>
 
     <properties>
-        <mule.version>3.3.0</mule.version>
+        <mule.version>3.3.1</mule.version>
         <mule.devkit.version>3.3.1</mule.devkit.version>
         <junit.version>4.9</junit.version>
         <mockito.version>1.8.2</mockito.version>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.7</jdk.version>
         
         <activemq.version>5.6.0</activemq.version>
         <!-- NOTE: XBean version must be in sync with ActiveMQ version -->
@@ -213,7 +213,7 @@ mvn package -Ddevkit.studio.package.skip=false
 <!-- 
         <dependency>
           <groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-          <artifactId>soitoolkit-mule-3.3.0-dependencies</artifactId>
+          <artifactId>soitoolkit-mule-3.3.1-dependencies</artifactId>
           <version>${project.version}</version>
           <type>pom</type>
           <scope>provided</scope>      
