@@ -25,7 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,7 +45,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.soitoolkit.tools.generator.model.enums.EnumUtil;
 import org.soitoolkit.tools.generator.model.enums.MepEnum;
@@ -143,8 +141,8 @@ public class CreateServicePage extends WizardPage {
 		 * - jmeter loadtest
 		 * 
 		 * + instruktion
-		 * - lägg till i service conf + unit test conf
-		 * - lägg till i properties
+		 * - l√§gg till i service conf + unit test conf
+		 * - l√§gg till i properties
 		 */
 		try {
 			Composite container = new Composite(parent, SWT.NULL);
@@ -231,6 +229,10 @@ public class CreateServicePage extends WizardPage {
 				case MEP_ONE_WAY:
 					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "Servlet (Multipart POST)", 
 					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "SMTP"});
+					break;
+				case MEP_ONE_WAY_ROBUST:
+					inboundTransportCombo.setItems  (new String [] {"File"}); 
+					outboundTransportCombo.setItems (new String [] {"FTP"});
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
 					inboundTransportCombo.setItems  (new String [] {"JMS"});
@@ -454,7 +456,7 @@ public class CreateServicePage extends WizardPage {
 		}
 		
 		// Do not allow pub/sub mep right now...
-		if (mepIdx == 2) {
+		if (mepIdx == 3) {
 			updateStatus("Message exchange pattern Publish/Subscribe not yet supported");
 			return;
 		}
@@ -529,6 +531,9 @@ public class CreateServicePage extends WizardPage {
 		if (mep == MepEnum.MEP_ONE_WAY) {
 			t = getSelectedOneWayInboundTransport();
 			
+		} else if (mep == MepEnum.MEP_ONE_WAY_ROBUST) {
+			t = getSelectedOneWayRobustInboundTransport();
+
 		} else if (mep == MepEnum.MEP_REQUEST_RESPONSE) {
 			t = getSelectedRequestResponseInboundTransport();
 
@@ -540,7 +545,7 @@ public class CreateServicePage extends WizardPage {
 	}
 	
 	public TransportEnum getSelectedOneWayInboundTransport() {
-				
+		
 		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "Servlet (Multipart POST)", 
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
@@ -570,6 +575,18 @@ public class CreateServicePage extends WizardPage {
 			break;
 		case 8: 
 			t = TransportEnum.IMAP;
+			break;
+		}
+		return t;
+	}
+
+	public TransportEnum getSelectedOneWayRobustInboundTransport() {
+		
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"File"});
+		TransportEnum t = null;
+		switch (selectedInboundTransport) {
+		case 0: 
+			t = TransportEnum.FILE;
 			break;
 		}
 		return t;
@@ -615,6 +632,9 @@ public class CreateServicePage extends WizardPage {
 		if (mep == MepEnum.MEP_ONE_WAY) {
 			t = getSelectedOneWayOutboundTransport();
 			
+		} else if (mep == MepEnum.MEP_ONE_WAY_ROBUST) {
+			t = getSelectedOneWayRobustOutboundTransport();
+
 		} else if (mep == MepEnum.MEP_REQUEST_RESPONSE) {
 			t = getSelectedRequestResponseOutboundTransport();
 
@@ -650,6 +670,18 @@ public class CreateServicePage extends WizardPage {
 			break;
 		case 6:
 			t = TransportEnum.SMTP;
+			break;
+		}
+		return t;
+	}
+
+	private TransportEnum getSelectedOneWayRobustOutboundTransport() {
+
+		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"FTP"});
+		TransportEnum t = null;
+		switch (selectedOutboundTransport) {
+		case 0:
+			t = TransportEnum.FTP;
 			break;
 		}
 		return t;

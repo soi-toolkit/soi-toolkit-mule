@@ -208,6 +208,12 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
+		case 2: // One Way Robust
+			
+			// TODO: Håkan: Replace with your OnewayServiceRobustGenerator!!!
+			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
+			break;
+
 //		case 2: // Pub Sub
 //			
 
