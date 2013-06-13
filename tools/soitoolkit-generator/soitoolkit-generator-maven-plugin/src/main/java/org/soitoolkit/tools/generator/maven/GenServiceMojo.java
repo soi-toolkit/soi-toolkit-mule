@@ -31,6 +31,7 @@ import java.io.InputStream;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.soitoolkit.tools.generator.Generator;
+import org.soitoolkit.tools.generator.OnewayRobustServiceGenerator;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
 import org.soitoolkit.tools.generator.model.IModel;
@@ -89,6 +90,8 @@ public class GenServiceMojo extends AbstractMojo {
     private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP","RESTHTTP","JMS"};
     private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "SERVLET", "POP3", "IMAP"};
     private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "SMTP"};
+    private static String[] allowedOneWayRobustInboundTransport  = new String[] {"FILE"};
+    private static String[] allowedOneWayRobustOutboundTransport = new String[] {"FTP"};
     
     public void execute() throws MojoExecutionException {
     	
@@ -141,6 +144,11 @@ public class GenServiceMojo extends AbstractMojo {
 			g = new OnewayServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;
 
+		case MEP_ONE_WAY_ROBUST:
+			//#HD TODO: change generator class
+			g = new OnewayRobustServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
+			break;
+			
 		case MEP_PUBLISH_SUBSCRIBE:
 			throw new MojoExecutionException("Message Exchange Pattern [" + messageExchangePattern + "] not yet supported");
 
@@ -185,11 +193,39 @@ public class GenServiceMojo extends AbstractMojo {
 	}
 
 	private TransportEnum initInboundTransport(MepEnum mepEnum, String inboundTransport2) throws MojoExecutionException {
-		return getTransport(inboundTransport, "inbound", (mepEnum == MepEnum.MEP_ONE_WAY) ? allowedOneWayInboundTransport : allowedRequestReplyInboundTransport);
+		String[] allowedTransports;
+		switch (mepEnum) {
+		case MEP_ONE_WAY:
+			allowedTransports = allowedOneWayInboundTransport;
+			break;
+		case MEP_ONE_WAY_ROBUST:
+			allowedTransports = allowedOneWayRobustInboundTransport;
+			break;
+		case MEP_REQUEST_RESPONSE:
+			allowedTransports = allowedRequestReplyInboundTransport;
+			break;
+		default:
+			throw new IllegalArgumentException("MEP has no supported inbound transports: " + mepEnum);
+		}
+		return getTransport(inboundTransport, "inbound", allowedTransports);
 	}
 	
 	private TransportEnum initOutboundTransport(MepEnum mepEnum, String outboundTransport) throws MojoExecutionException {
-		return getTransport(outboundTransport, "outbound", (mepEnum == MepEnum.MEP_ONE_WAY) ? allowedOneWayOutboundTransport : allowedRequestReplyOutboundTransport);
+		String[] allowedTransports;
+		switch (mepEnum) {
+		case MEP_ONE_WAY:
+			allowedTransports = allowedOneWayOutboundTransport;
+			break;
+		case MEP_ONE_WAY_ROBUST:
+			allowedTransports = allowedOneWayRobustOutboundTransport;
+			break;
+		case MEP_REQUEST_RESPONSE:
+			allowedTransports = allowedRequestReplyOutboundTransport;
+			break;
+		default:
+			throw new IllegalArgumentException("MEP has no supported outbound transports: " + mepEnum);
+		}
+		return getTransport(outboundTransport, "outbound", allowedTransports);
 	}
 
 	private TransportEnum getTransport(String transport, String direction, String[] allowedTransports) throws MojoExecutionException {
