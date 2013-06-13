@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum MepEnum implements ILabeledEnum { 
-	MEP_REQUEST_RESPONSE("Request/Response"), MEP_ONE_WAY("One-Way"), MEP_ONE_WAY_ROBUST("One-Way Robust"), MEP_PUBLISH_SUBSCRIBE("Publish/Subscribe"); 
+	MEP_REQUEST_RESPONSE("Request/Response"), MEP_ONE_WAY("One-Way"), MEP_ONE_WAY_ROBUST("One-Way-Robust"), MEP_PUBLISH_SUBSCRIBE("Publish/Subscribe"); 
 	
 	public static MepEnum get(int ordinal) {
 		return values()[ordinal];
