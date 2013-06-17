@@ -36,27 +36,35 @@
 			<artifactId>mule-core-ee</artifactId>
 			<version>${mule.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-data-mapper</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-
-    <dependency>
-      <groupId>org.mule.tools.devkit</groupId>
-      <artifactId>mule-devkit-annotations</artifactId>
-      <version>${mule.version}</version>
-      <scope>provided</scope>
-    </dependency>
--->    
+    -->
     
-<!-- ############################# -->
-
+    <!--
+    DataMapper dependencies.
+    See Mule-EE support portal knowledgebase article #00000767 for setup.
+    See KB article #00000709 on how to populate the Maven-repo with Mule-EE dependencies for DataMapper.
+    -->
+    <!--
+    NOTE: separate maven-deploy:
+    sardine is a Mule-EE dependecy needed for test execution with DataMapper.
+    It isn't populated in the repo with the default mule-ee-script, use:
+    
+    cd mule-enterprise-standalone-3.4.0/lib/opt
+    export REPO_URL=http://MY_REPO_MANAGER_HOST/repo/content/repositories/thirdparty
+    export REPO_ID=thirdparty
+    mvn deploy:deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=sardine-248.jar -DgroupId=com.googlecode.sardine -DartifactId=sardine -Dversion=248 -Dpackaging=jar
+    
+    For local repo:
+    export REPO_URL=file:///Users/username/.m2/repository
+    -->
+    <dependency>
+      <groupId>com.googlecode.sardine</groupId>
+      <artifactId>sardine</artifactId>
+      <version>248</version>
+    </dependency>
     <dependency>
       <groupId>com.cloveretl</groupId>
       <artifactId>cloveretl-engine</artifactId>
-      <version>3.4.0</version>
+      <version>${mule.version}</version> <!-- version for Mule 3.4.0, Mule 3.3.x had CloverETL-version inconsistent with the Mule-version -->
       <exclusions>
         <exclusion>
           <groupId>com.ibm.icu</groupId>
@@ -125,63 +133,4 @@
     </dependency>
 	</dependencies>
 
-<!--
-
-HD - this CAN NOT be in this (dependency POM) - behaviour must be in the parent-child relation axis.
-
--->
-  <build>
-	  <plugins>
-	    
-  <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-dependency-plugin</artifactId>
-  <version>2.4</version>
-  <executions>
-  <execution>
-  <id>copy-clover-plugins</id>
-  <phase>validate</phase>
-  <goals>
-  <goal>copy</goal>
-  </goals>
-  <configuration>
-  <overWriteReleases>true</overWriteReleases>
-  <overWriteSnapshots>true</overWriteSnapshots>
-  <overWriteIfNewer>true</overWriteIfNewer>
-  <stripVersion>true</stripVersion>
-
-  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-  <artifactItems>
-  <artifactItem>
-  <groupId>com.cloveretl</groupId>
-  <artifactId>cloveretl-engine</artifactId>
-  <version>3.4.0</version> <!-- version for Mule 3.4.0 -->
-  <type>zip</type>
-  </artifactItem>
-  </artifactItems>
-  </configuration>
-  </execution>
-  </executions>
-  </plugin>
-  <plugin>
-  <artifactId>maven-antrun-plugin</artifactId>
-  <version>1.7</version>
-  <executions>
-  <execution>
-  <phase>compile</phase>
-  <configuration>
-  <tasks>
-  <!-- Using an ant task to deflate cloveretl-engine.zip -->
-  <unzip src="${project.build.testOutputDirectory}/cloveretl-engine.zip"
-  dest="${project.build.testOutputDirectory}" />
-  </tasks>
-  </configuration>
-  <goals>
-  <goal>run</goal>
-  </goals>
-  </execution>
-  </executions>
-  </plugin>	
-    </plugins>
-  </build>
 </project>
