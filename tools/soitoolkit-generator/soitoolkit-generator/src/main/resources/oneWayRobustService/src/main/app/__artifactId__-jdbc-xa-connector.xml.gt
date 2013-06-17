@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mule 
-${xmlNamespace.jdbcConnector}
-
-	<jdbc:connector name="soitoolkit-jdbc-xa-connector" pollingFrequency="${dollarSymbol}{SOITOOLKIT_JDBC_CON_POLLING_MS}" dataSource-ref="soitoolkit-jdbc-xa-datasource">
-	</jdbc:connector>
-
-</mule>
