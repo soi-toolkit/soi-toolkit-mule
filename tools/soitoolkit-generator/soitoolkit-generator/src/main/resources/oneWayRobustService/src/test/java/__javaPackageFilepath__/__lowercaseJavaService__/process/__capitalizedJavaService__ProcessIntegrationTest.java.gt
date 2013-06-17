@@ -1,0 +1,265 @@
+package ${javaPackage}.${lowercaseJavaService}.process;
+
+import static org.junit.Assert.*;
+
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.jms.BytesMessage;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+
+
+import org.junit.Test;
+import org.mule.api.MuleMessage;
+import org.mule.api.routing.CouldNotRouteOutboundMessageException;
+import org.mule.api.transformer.TransformerException;
+import org.mule.api.transformer.TransformerMessagingException;
+import org.mule.transport.email.MailProperties;
+import org.mule.transport.file.FileConnector;
+import org.mule.transport.ftp.FtpConnector;
+import org.mule.transport.sftp.SftpConnector;
+import org.mule.util.UUID;
+
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.Dispatcher;
+import org.soitoolkit.commons.mule.util.MiscUtil;
+import org.soitoolkit.commons.mule.util.MuleUtil;
+import org.soitoolkit.commons.mule.core.PropertyNames;
+import org.soitoolkit.commons.mule.ftp.FtpUtil;
+import org.soitoolkit.commons.mule.sftp.SftpUtil;
+import org.soitoolkit.commons.mule.file.FileUtil;
+import org.soitoolkit.commons.mule.mail.MailUtil;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTestCase {
+	
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ProcessIntegrationTest.class);
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+
+	private static final String ARCHIVE = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+
+	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
+	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
+	private static final String OUT_QUEUE        = rb.getString("${uppercaseService}_OUT_QUEUE");
+	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
+	private AbstractJmsTestUtil jmsUtil = null;
+	
+    /**
+     *
+     * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
+     *                   <deadLetterStrategy>
+     *                     <!--
+     *                      Use the prefix 'DLQ.' for the destination name, and make
+     *                      the DLQ a queue rather than a topic
+     *                     -->
+     *                     <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
+     *                   </deadLetterStrategy>
+     * 
+     */
+    public ${capitalizedJavaService}ProcessIntegrationTest() {
+      
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+
+	protected String getConfigResources() {
+        return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+		"${artifactId}-common.xml," +
+		"${service}-process-service.xml," +
+		"teststub-services/${service}-process-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+
+		doSetUpJms();
+
+		FileUtil.initFolder(new File(ARCHIVE));
+    }
+
+	private void doSetUpJms() {
+		// TODO: Fix lazy init of JMS connection et al so that we can create jmsutil in the declaration
+		// (The embedded ActiveMQ queue manager is not yet started by Mule when jmsutil is delcared...)
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+		// Clear queues used for the inbound endpoint
+		jmsUtil.clearQueues(IN_QUEUE, DEADLETTER_QUEUE);
+		
+		// Clear queues used for the outbound endpoint
+		jmsUtil.clearQueues(OUT_QUEUE);
+
+		// Clear queues used for error handling
+		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
+    }
+		
+    @Test
+    public void test${capitalizedJavaService}_ok() throws Exception {
+
+		Map<String, String> props = new HashMap<String, String>();
+    	final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+    	String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
+        String receivingService   = "${service}-process-teststub-service";
+		final  int timeout        = 5000;
+		// TODO: fix read as binary!
+		byte[] input          = MiscUtil.readFileAsString(inputFile).getBytes("ISO-8859-1");
+		byte[] expectedResult = MiscUtil.readFileAsString(expectedResultFile).getBytes("ISO-8859-1");
+		
+		// add originalFilename - originalFilename is expected to be set for this flow
+		String filename = "fname_" + UUID.getUUID() + ".bin";
+		props.put(FileConnector.PROPERTY_ORIGINAL_FILENAME, filename);
+		
+    // add correlation id inbound property - correlation id is expected to be set for this flow
+		String corrId = UUID.getUUID();
+		props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);
+
+		// Setup inbound endpoint for jms
+		String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
+
+		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
+		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
+
+    byte[] transformedMessage = (byte[]) reply.getPayload();
+
+    // Verify the result, i.e. the transformed message
+    // assert binary equality
+    // TODO: use xmlunit instead for XML-files!
+     assertArrayEquals(expectedResult, transformedMessage);
+     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+
+		// Verify inbound jms-queues
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
+
+		// Verify outbound jms-queues, i.e. that the teststub-producer has consumed it
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+
+		// Verify error-queue
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE).size());
+        
+        assertTrue("correlation id forwarded to outbound",
+        		corrId.equals(reply.getInboundProperty(PropertyNames.SOITOOLKIT_CORRELATION_ID)));
+        assertArchiveFiles(2, corrId);        
+    }
+
+    /**
+     * Verifies error handling with regards to:
+     * - transaction-handling 
+     * - DLQ-handling
+     * - retry-policy 
+     * - logging error information to error-queue
+     * 
+     * Relies on a redelivery policy defined for ActiveMQ like:
+     * (e.g. defined in the amq-embedded-connector used when running jUnit tests)
+     * 
+     * <spring:bean class="org.apache.activemq.RedeliveryPolicy">
+     *	 <spring:property name="maximumRedeliveries" value="3" />
+     *	 <spring:property name="initialRedeliveryDelay" value="500" />
+     * </spring:bean>
+     * 
+     * 
+     * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
+     * 
+     * <deadLetterStrategy>
+     * <!--
+     *      Use the prefix 'DLQ.' for the destination name, and make
+     *      the DLQ a queue rather than a topic
+     *      -->
+     *      <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
+     * </deadLetterStrategy>
+     *
+     * @throws JMSException
+     */
+    @Test
+    public void test${capitalizedJavaService}_transformationError() throws Exception {
+
+        Map<String, String> props = new HashMap<String, String>();
+        String corrId = UUID.getUUID();
+        props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);
+
+        String id    = "Cnnn";
+        String value = "Some value";
+        String expectedErrMsg  = "Unknown content: " + id + "=" + value;
+        
+        String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
+        // do not mess with encoding here!
+        byte[] message = (id + "=" + value).getBytes("ISO-8859-1");
+        
+        // Send a poisoned message to the in-endpoint and verify that the expected exception occurs in the ESB
+        Exception exception = dispatchAndWaitForException(inboundEndpoint, message, props, 2000);
+        assertTrue(exception instanceof TransformerMessagingException);
+        assertTrue(exception.getCause() instanceof TransformerException);
+        assertEquals(expectedErrMsg, exception.getCause().getMessage());
+
+        // Allow for some background processing to complete so that the message is put back to the in-queue for redelivery
+        try {
+        	Thread.sleep(750);
+        } catch (InterruptedException e) {}
+
+        // Verify that two error-log-message is sent (for the first time and for the first re-delivery) but not yet anything of the deadletter queue...
+        assertErrorLogMessages(2, expectedErrMsg);
+        assertEquals("Incorrect number of DLQ-messages", 0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
+
+        // Allow for some more background processing to complete so that the redelivery count is reached and the message is placed on the Dead Letter queue
+        try {
+        	Thread.sleep(1500);
+        } catch (InterruptedException e) {}
+
+        // Verify that the message now is gone from the in-queue
+        assertEquals("Sent message not removed", 0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
+
+        // Verify that the in-message now is found on the deadletter queue
+        List<Message> msgs = jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE);
+        assertEquals("Incorrect number of DLQ-messages", 1, msgs.size());
+        BytesMessage dlqBytesMsg = ((BytesMessage) msgs.get(0));
+        byte[] msgBuf = new byte[1024];
+        int msgBufLength = dlqBytesMsg.readBytes(msgBuf); 
+        byte[] dlqMsg = new byte[msgBufLength];
+        System.arraycopy(msgBuf, 0, dlqMsg, 0, msgBufLength);
+        assertArrayEquals("Message on DLQ is not identical with the message sent", dlqMsg, message);
+
+        // Verifying that we now have four identical log-messages on the error-log-queue
+        // One message for the initial attempt and three more for the redeliveries
+        assertErrorLogMessages(4, expectedErrMsg);
+
+        // Verify as well that nothing is placed on the out-queue
+        assertEquals("Unexpected message on out-queue", 0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+    }    
+
+    private void assertErrorLogMessages(int noOfExpectedErrorLogMsgs, String expectedErrMsg) throws JMSException {
+        List<Message> msgs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+        assertEquals("Incorrect number of error-messages", noOfExpectedErrorLogMsgs, msgs.size());
+        int i = 0;
+        for (Message errMessage : msgs) {
+            i++;
+            String errMsg = ((TextMessage)errMessage).getText();
+            assertTrue("Expected error message not found in error-log-message #" + i, errMsg.contains(expectedErrMsg));
+        }
+    }
+
+    void assertArchiveFiles(int expectedNoFiles, String expectedIdContainedInFilename) {
+        File dir = new File(ARCHIVE);
+        File[] files = dir.listFiles();
+        assertEquals("number of archive files", expectedNoFiles, files.length);
+        for (File file : files) {
+            log.debug("archive filename: {}", file.getName());
+            assertTrue("id in filename", file.getName().contains(expectedIdContainedInFilename));
+        }
+    }
+
+}

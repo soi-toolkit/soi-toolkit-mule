@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayTeststubService}
+
+  <flow name="${service}-process-teststub-service">
+    <jms:inbound-endpoint name="${service}-process-teststub-endpoint" connector-ref="${jmsDefaultConnector}" queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}"/>
+    
+    <component class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}TestReceiver"/>
+  </flow>
+</mule>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayService}
+	<!-- TODO: Add service specific definitions here -->
+
+	<flow name="${service}-service">
+                <jms:inbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="logMsgIn">
+                    <jms:transaction action="ALWAYS_BEGIN" />
+				</jms:inbound-endpoint>
+
+<% if (outboundTransport=="VM") { %>
+                <vm:outbound-endpoint
+                    connector-ref="soitoolkit-vm-connector" 
+                    path="${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
+                    transformer-refs="logMsgOut">
+<% if (serviceTransactional) { %>
+					<vm:transaction action="ALWAYS_JOIN" />
+<% } %> 
+				</vm:outbound-endpoint>
+
+<% } else if (outboundTransport=="JMS") { %>
+                <jms:outbound-endpoint 
+                    connector-ref="${jmsOutboundConnector}"
+                    queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
+                    transformer-refs="strToJms logMsgOut">
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_JOIN" />
+<% } else if (serviceTransactional) { %>
+					<jms:transaction action="ALWAYS_JOIN" />
+<% } %> 
+				</jms:outbound-endpoint>
+
+<% } else if (outboundTransport=="JDBC") { %>
+                <custom-transformer doc:name="transform-to-db" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ImportToDbTransformer"/>
+            	<jdbc:outbound-endpoint connector-ref="${jdbcOutboundConnector}" queryKey="${lowercaseJavaService}-import-query" transformer-refs="logMsgOut">
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_JOIN" />
+<% } else if (serviceTransactional) { %>
+					<jdbc:transaction action="ALWAYS_JOIN" />
+<% } %> 
+				</jdbc:outbound-endpoint>
+
+<% } else if (outboundTransport=="FILE") { %> 
+				<file:outbound-endpoint 
+				    connector-ref="soitoolkit-file-connector"
+					path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+					outputPattern="#[header:originalFilename]"
+<% } else { %> 
+					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+                    transformer-refs="logMsgOut"/>
+
+<% } else if (outboundTransport=="FTP") { %> 
+				<ftp:outbound-endpoint
+					name="${service}-outbound-endpoint"
+                    connector-ref="soitoolkit-ftp-connector"
+					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+					outputPattern="#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]"
+                    binary="true"
+                    passive="true"
+                    transformer-refs="logMsgOut" />                                        
+
+<% } else if (outboundTransport=="SFTP") { %> 
+				<vm:outbound-endpoint connector-ref="soitoolkit-vm-connector" path="${service}-service" />
+
+<% } else if (outboundTransport=="SMTP") { %> 
+				<smtp:outbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_SMTP_HOST}" 
+					port="${dollarSymbol}{${uppercaseService}_SMTP_PORT}"
+					from="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_FROM}"
+					to="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_TEST_TO}"
+					subject="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_SUBJECT}">
+					<transformer ref="logMsgOut"/>
+					<email:string-to-email-transformer/>
+				</smtp:outbound-endpoint>
+<% } %>
+			<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+
+	</flow>
+
+<% if (outboundTransport=="SFTP") { %> 
+	<flow name="${service}-receiver-service">
+				<vm:inbound-endpoint address="vm://${service}-service" />
+
+				<sftp:outbound-endpoint
+					name="${service}-outbound-endpoint"
+                    connector-ref="soitoolkit-sftp-connector"
+					address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+					outputPattern="#[header:INBOUND:originalFilename]"
+<% } else { %> 
+					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+					tempDir="receiving"
+					useTempFileTimestampSuffix="true"
+					duplicateHandling="addSeqNo"
+					transformer-refs="logMsgOut"/>
+    </flow>
+
+	<flow name="${service}-resend-from-archive-service">
+				<file:inbound-endpoint
+				    connector-ref="soitoolkit-file-connector"
+					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_ARCHIVE_RESEND_POLLING_MS}"
+				/>
+
+				<outbound-endpoint address="vm://${service}-service" />
+	</flow>		
+<% } %> 
+</mule>

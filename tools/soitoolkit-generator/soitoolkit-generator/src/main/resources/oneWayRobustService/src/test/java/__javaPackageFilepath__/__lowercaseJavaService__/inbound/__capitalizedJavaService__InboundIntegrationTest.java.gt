@@ -1,0 +1,322 @@
+package ${javaPackage}.${lowercaseJavaService}.inbound;
+
+import static org.junit.Assert.*;
+<% if (inboundTransport=="HTTP") { %>
+import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
+<% } else if (inboundTransport=="SERVLET") { %>
+import static org.soitoolkit.commons.mule.mime.MimeUtil.sendFileAsMultipartHttpPost;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.CONTEXT_PATH;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET_URI;
+<% } %> 
+
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+
+import javax.sql.DataSource;
+
+import org.junit.Test;
+import org.mule.api.MuleMessage;
+import org.mule.api.routing.CouldNotRouteOutboundMessageException;
+import org.mule.api.transformer.TransformerException;
+import org.mule.api.transformer.TransformerMessagingException;
+import org.mule.transport.email.MailProperties;
+import org.mule.transport.file.FileConnector;
+import org.mule.transport.ftp.FtpConnector;
+import org.mule.transport.sftp.SftpConnector;
+
+import org.soitoolkit.commons.mule.jdbc.JdbcScriptEngine;
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+<% if (inboundTransport=="SERVLET") { %>
+import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
+<% } else { %> 
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+<% } %> 
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.Dispatcher;
+import org.soitoolkit.commons.mule.util.MiscUtil;
+import org.soitoolkit.commons.mule.util.MuleUtil;
+import org.soitoolkit.commons.mule.core.PropertyNames;
+import org.soitoolkit.commons.mule.ftp.FtpUtil;
+import org.soitoolkit.commons.mule.sftp.SftpUtil;
+import org.soitoolkit.commons.mule.file.FileUtil;
+import org.soitoolkit.commons.mule.mail.MailUtil;
+import org.soitoolkit.commons.mule.jdbc.JdbcUtil;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+<% if (inboundTransport=="SERVLET") { %>
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
+<% } else { %> 
+public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTestCase {
+<% } %> 
+	
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}InboundIntegrationTest.class);
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+
+<% if (inboundTransport=="VM") { %>
+	private static final String IN_VM_QUEUE = rb.getString("${uppercaseService}_IN_VM_QUEUE");
+<% } %> 
+
+<% if (outboundTransport=="VM") { %>
+	private static final String OUT_VM_QUEUE = rb.getString("${uppercaseService}_OUT_VM_QUEUE");
+<% } %> 
+
+<% if (inboundTransport=="FILE" || inboundTransport=="FTP") { %>
+	private static final String IN_FOLDER = rb.getString("${uppercaseService}_INBOUND_FOLDER");
+<% } %> 
+<% if (outboundTransport=="FILE" || outboundTransport=="FTP") { %>
+	private static final String OUT_FOLDER = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
+<% } %> 
+<% if (inboundEndpointFilebased || outboundEndpointFilebased) { %>
+	private static final String ARCHIVE = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+<% } %> 
+<% if (inboundTransport=="JMS") { %>
+	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
+	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
+<% } %> 
+
+	private static final String OUT_QUEUE        = rb.getString("${uppercaseService}_IN_QUEUE");
+
+	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
+	private AbstractJmsTestUtil jmsUtil = null;
+
+<% if (inboundTransport=="JDBC") { %>
+    private static final String IN_TABLE         = "${uppercaseService}_EXPORT_TB";
+<% } %> 
+<% if (outboundTransport=="JDBC") { %>
+    private static final String OUT_TABLE        = "${uppercaseService}_IMPORT_TB";
+<% } %> 
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+    DataSource dataSource = null;
+    SimpleJdbcTemplate jdbcTemplate = null;
+<% } %> 
+<% if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
+	private static final String smtpHost = rb.getString("${uppercaseService}_SMTP_HOST");
+	private static final int    smtpPort = Integer.parseInt(rb.getString("${uppercaseService}_SMTP_PORT"));
+	private static final String from     = rb.getString("${uppercaseService}_INBOUND_EMAIL_TEST_FROM");
+	private static final String to       = rb.getString("${uppercaseService}_INBOUND_EMAIL_TO");
+	private static final String subject  = rb.getString("${uppercaseService}_INBOUND_EMAIL_SUBJECT");
+<% } %> 
+	
+    /**
+     *
+     * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
+     *                   <deadLetterStrategy>
+     *                     <!--
+     *                      Use the prefix 'DLQ.' for the destination name, and make
+     *                      the DLQ a queue rather than a topic
+     *                     -->
+     *                     <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
+     *                   </deadLetterStrategy>
+     * 
+     */
+    public ${capitalizedJavaService}InboundIntegrationTest() {
+      
+<% if (inboundTransport=="SERVLET") { %>
+    	// Initialize servlet engine in baseclass with proper values
+    	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
+<% } %> 
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+
+	protected String getConfigResources() {
+        return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% if (serviceXaTransactional) { %>
+        "soitoolkit-mule-jms-xa-connector-activemq-embedded.xml," + 
+<% } else { %>  
+<% } %>  
+<% if (inboundTransport=="JDBC") { %>
+  <% if (serviceXaTransactional) { %>
+        "soitoolkit-mule-jdbc-xa-datasource-hsql-embedded.xml," +
+        "${artifactId}-jdbc-xa-connector.xml," +
+  <% } %>  
+        "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
+		"${artifactId}-jdbc-connector.xml," +
+<% } %>  
+<% if (inboundTransport=="FTP") { %>
+		"soitoolkit-mule-ftp-connector-embedded.xml," + 
+<% } %>
+<% if (inboundTransport=="SFTP") { %>
+		"soitoolkit-mule-sftp-connector-embedded.xml," +
+<% } %>
+		"${artifactId}-common.xml," +
+		"${service}-inbound-service.xml," +
+		"teststub-services/${service}-inbound-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+
+		doSetUpJms();
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+		doSetUpDb();
+<% } %> 
+
+<% if (inboundTransport=="FILE") { %>
+		FileUtil.initFolder(new File(IN_FOLDER));
+<% } %> 
+
+<% if (inboundTransport=="FTP") { %>
+		// Clear ftp-directories used for inbound endpoint
+		// TODO: Also reset the archive
+        FtpUtil.initEndpointDirectory(muleContext, "${service}-inbound-endpoint");		
+<% } %> 
+
+<% if (inboundTransport=="SFTP") { %>
+		// Clear sftp-directories used for inbound endpoint
+		// TODO: Also reset the archive
+        SftpUtil.initEndpointDirectories(
+	    	muleContext,
+	    	new String[] {"${service}-service"},
+			new String[] {"${service}-inbound-endpoint"});		
+<% } %> 
+		
+    }
+
+	private void doSetUpJms() {
+		// TODO: Fix lazy init of JMS connection et al so that we can create jmsutil in the declaration
+		// (The embedded ActiveMQ queue manager is not yet started by Mule when jmsutil is delcared...)
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+<% if (inboundTransport=="JMS") { %>
+		// Clear queues used for the inbound endpoint
+		jmsUtil.clearQueues(IN_QUEUE, DEADLETTER_QUEUE);
+<% } %> 
+		
+
+		// Clear queues used for the outbound endpoint
+		jmsUtil.clearQueues(OUT_QUEUE);
+
+		// Clear queues used for error handling
+		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
+    }
+		
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+	private void doSetUpDb() throws FileNotFoundException {
+		dataSource = JdbcUtil.lookupDataSource(muleContext, "soitoolkit-jdbc-datasource");
+		jdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		JdbcScriptEngine se = new JdbcScriptEngine(dataSource);
+		
+		try {
+			se.execute("src/environment/setup/${artifactId}-db-drop-tables.sql");
+		} catch (Throwable ex) {
+			log.warn("Drop db script failed, maybe no db exists? " + ex.getMessage());
+		}
+		se.execute("src/environment/setup/${artifactId}-db-create-tables.sql");
+		se.execute("src/environment/setup/${artifactId}-db-insert-testdata.sql");
+    }
+<% } %> 
+
+    @Test
+    public void test${capitalizedJavaService}_ok() throws Exception {
+
+		Map<String, String> props = new HashMap<String, String>();
+        String receivingService   = "${service}-inbound-teststub-service";
+<% if (inboundTransport=="POP3" || inboundTransport=="IMAP" || outboundTransport=="SMTP") { %>
+		final  int timeout        = 30000; // Let's increase the timeout a bit since we have an email transport involved
+<% } else { %>
+		final  int timeout        = 5000;
+<% } %>
+
+		// Verify that the message is transfered binary, without changes
+		String inputStr = "Test with Swedish umlaut chars too see that we dont have accidental byte/char conversion."
+				+ " Small letters: aa=\\u00e5 ae=\\u00e4 oe=\\u00f6."
+				+ " Capital letters: AA=\\u00c5 AE=\\u00c4 OE=\\u00d6."
+				+ " Also add different line endings. LF: \\n. CR + LF: \\r\\n.";
+		byte[] input          = inputStr.getBytes("UTF-8");
+		byte[] expectedResult = input;
+
+<% if (inboundTransport=="VM") { %>
+		// Setup inbound endpoint for vm-transport
+		String inboundEndpoint = "vm://" + IN_VM_QUEUE + "?connector=soitoolkit-vm-connector";
+
+<% } else if (inboundTransport=="JMS") { %>
+		// Setup inbound endpoint for jms
+		String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
+
+<% } else if (inboundTransport=="FILE") { %>
+		// Setup inbound endpoint for file-transport
+        String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
+		String filename        = "testfile.txt";
+		props.put(FileConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="FTP") { %>
+		// Setup inbound endpoint for file-transport
+        String inboundEndpoint = "ftp://" + IN_FOLDER + "?connector=soitoolkit-ftp-connector";
+		String filename        = "testfile.txt";
+		props.put(FtpConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="SFTP") { %>
+		// Setup inbound endpoint for sftp
+        String inFolder        = rb.getString("${uppercaseService}_INBOUND_SFTP_FOLDER");
+        String inboundEndpoint = "sftp://" + inFolder + "?connector=soitoolkit-sftp-connector";
+		String filename        = "testfile.txt";
+		props.put(SftpConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %>
+		final String url       = getAddress("${uppercaseService}_INBOUND_URL");
+		Dispatcher dispatcher = new Dispatcher() {
+			public void doDispatch() {
+				sendFileAsMultipartHttpPost(url, new File(inputFile), "payload", false, timeout);
+			}
+		};
+
+<% } else if (inboundTransport=="JDBC") { %>
+		StringTokenizer st = new StringTokenizer(input, "=");
+		String inId        = st.nextToken();
+		String inValue     = st.nextToken();
+        String inboundEndpoint = "jdbc://INSERT INTO ${uppercaseService}_EXPORT_TB(ID, VALUE) VALUES ('" + inId + "', '" + inValue + "')?connector=soitoolkit-jdbc-connector";
+
+<% } else if (inboundTransport=="POP3" || inboundTransport=="IMAP") { %>
+		// Setup inbound endpoint for the smtp-transport
+		String inboundEndpoint = "smtp://" + smtpHost + ":" + smtpPort;
+		props.put(MailProperties.FROM_ADDRESS_PROPERTY, from);
+		props.put(MailProperties.TO_ADDRESSES_PROPERTY, to);
+		props.put(MailProperties.SUBJECT_PROPERTY, subject);
+<% } %>
+
+<% if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %>
+		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
+		MuleMessage reply = dispatchAndWaitForServiceComponent(dispatcher, receivingService, timeout);
+
+<% } else { %> 
+		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
+		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
+<% } %> 
+
+    byte[] transformedMessage = (byte[]) reply.getPayload();
+
+		// Verify the result, i.e. the transformed message - binary assert, file should not have changed here
+		assertArrayEquals(expectedResult, transformedMessage);
+		assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+		
+		// Verify outbound jms-queues, i.e. that the teststub-producer has consumed it
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+
+		// Verify error-queue
+        assertEquals(0, jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE).size());
+        
+        // Verify that correlation id has been set, correlation id is needed in subsequent flows
+        assertNotNull("correlation id is set", reply.getInboundProperty(PropertyNames.SOITOOLKIT_CORRELATION_ID));        
+    }
+
+}

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayService}
+	<!-- TODO: Add service specific definitions here -->
+
+<% if (serviceXaTransactional) { %>
+    <jbossts:transaction-manager/>
+<% } %> 
+
+	<flow name="${service}-inbound-service">
+<% if (inboundTransport=="VM") { %>
+                <vm:inbound-endpoint connector-ref="soitoolkit-vm-connector" path="${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
+<% if (serviceTransactional) { %>
+					<vm:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+				</vm:inbound-endpoint>
+
+<% } else if (inboundTransport=="JMS") { %>
+                <jms:inbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" transformer-refs="logMsgIn jmsToStr">
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_BEGIN" />
+<% } else if (serviceTransactional) { %>
+                    <jms:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+				</jms:inbound-endpoint>
+
+<% } else if (inboundTransport=="JDBC") { %> 
+            	<jdbc:inbound-endpoint connector-ref="${jdbcInboundConnector}" queryKey="${lowercaseJavaService}-export-query" transformer-refs="logMsgIn">
+<% if (serviceXaTransactional) { %>
+                    <xa-transaction action="ALWAYS_BEGIN" />
+<% } else if (serviceTransactional) { %>
+					<jdbc:transaction action="ALWAYS_BEGIN" />
+<% } %> 
+            	</jdbc:inbound-endpoint>
+                <custom-transformer doc:name="transform-from-db" class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}ExportFromDbTransformer"/>
+
+<% } else if (inboundTransport=="SERVLET" || inboundTransport=="HTTP") { %> 
+				<inbound-endpoint 
+                    connector-ref="soitoolkit-http-connector"
+				    address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+					exchange-pattern="request-response"
+					transformer-refs="createCorrId logMsgIn mimeToStr"
+					responseTransformer-refs="logRespOut">
+			    
+			        <response>
+				        <scripting:transformer>
+				            <scripting:script engine="groovy">
+				            	return "OK"
+				            </scripting:script>
+				        </scripting:transformer>
+			        </response>
+				</inbound-endpoint>
+
+<% } else if (inboundTransport=="FILE") { %> 
+				<file:inbound-endpoint
+				    connector-ref="soitoolkit-file-connector"
+					path="${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					moveToPattern="#[header:originalFilename]"
+					transformer-refs="createCorrId logMsgIn" doc:name="File">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</file:inbound-endpoint>
+
+<% } else if (inboundTransport=="FTP") { %> 
+				<ftp:inbound-endpoint 
+					name="${service}-inbound-endpoint"
+                    connector-ref="soitoolkit-ftp-connector"
+					address="ftp://${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+					binary="false"
+					passive="true"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</ftp:inbound-endpoint>			
+
+<% } else if (inboundTransport=="SFTP") { %> 
+				<sftp:inbound-endpoint
+					name="${service}-inbound-endpoint"
+					connector-ref="soitoolkit-sftp-connector"
+					address="sftp://${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_POLLING_MS}"
+					sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_SIZECHECK_MS}"
+					tempDir="sending"
+					useTempFileTimestampSuffix="true"
+					archiveDir="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					archiveTempReceivingDir="receiving"
+					archiveTempSendingDir="sending"
+					transformer-refs="objToStr logMsgIn">
+					<file:filename-wildcard-filter pattern="*.*"/>
+				</sftp:inbound-endpoint>			
+
+<% } else if (inboundTransport=="POP3") { %> 
+				<pop3:inbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_POP3_HOST}" 
+					port="${dollarSymbol}{${uppercaseService}_POP3_PORT}"
+					user="${dollarSymbol}{${uppercaseService}_POP3_USR}" 
+					password="${dollarSymbol}{${uppercaseService}_POP3_PWD}" 
+					transformer-refs="logMsgIn">
+					<email:email-to-string-transformer/>
+				</pop3:inbound-endpoint>		
+
+<% } else if (inboundTransport=="IMAP") { %> 
+				<imap:inbound-endpoint 
+					host="${dollarSymbol}{${uppercaseService}_IMAP_HOST}" 
+					port="${dollarSymbol}{${uppercaseService}_IMAP_PORT}"
+					user="${dollarSymbol}{${uppercaseService}_IMAP_USR}" 
+					password="${dollarSymbol}{${uppercaseService}_IMAP_PWD}" 
+					transformer-refs="logMsgIn">
+					<email:email-to-string-transformer/>
+				</imap:inbound-endpoint>		
+<% } %> 
+
+            <!-- propagate correlationId to outbound-->
+            <expression-component doc:name="Propagate correlation Id">
+                message.outboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID] =
+                    sessionVars[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]
+            </expression-component>
+            <!-- propagate originalFilename to outbound-->
+            <expression-component doc:name="Propagate filename">
+                message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
+                    message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
+            </expression-component>
+
+            <object-to-byte-array-transformer doc:name="InputStream to byte[]"/>
+
+                <jms:outbound-endpoint 
+                    connector-ref="${jmsOutboundConnector}"
+                    queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" 
+                    transformer-refs="logMsgOut" doc:name="JMS">
+				</jms:outbound-endpoint>
+
+			<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+
+	</flow>
+
+</mule>

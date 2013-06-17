@@ -57,6 +57,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * TODO: this class duplicates lots of code from: OnewayServiceGenerator
+ *  
+ */
 public class OnewayRobustServiceGenerator implements Generator {
 
 	private static final String NAMESPACE_CORE = "http://www.mulesoft.org/schema/mule/core";
@@ -70,7 +74,65 @@ public class OnewayRobustServiceGenerator implements Generator {
 		m = gu.getModel();
 	}
 		
-    public void startGenerator() {
+	public void startGenerator() {
+		gu.logInfo("Creates a OneWay-Robust-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
+		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
+		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
+		
+		// inbound service
+		gu.generateContentAndCreateFile("src/main/app/__service__-inbound-service.xml.gt");
+		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-inbound-service.mflow");
+		// inbound service - test support 
+		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-inbound-teststub-service.xml.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/inbound/__capitalizedJavaService__InboundIntegrationTest.java.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/inbound/__capitalizedJavaService__TestReceiver.java.gt");
+		
+		// process service
+		gu.generateContentAndCreateFile("src/main/app/__service__-process-service.xml.gt");
+		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-process-service.mflow");
+		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__Transformer.java.gt");
+		// process service - test support 
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
+		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");		
+		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-process-teststub-service.xml.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__TransformerTest.java.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__ProcessIntegrationTest.java.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__TestReceiver.java.gt");
+
+		// outbound service
+		gu.generateContentAndCreateFile("src/main/app/__service__-outbound-service.xml.gt");
+		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-outbound-service.mflow");
+		// outbound service - test support 
+		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-outbound-teststub-service.xml.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/outbound/__capitalizedJavaService__OutboundIntegrationTest.java.gt");
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/outbound/__capitalizedJavaService__TestReceiver.java.gt");
+		
+
+		// Update mule-deploy.properties files with the new service
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-inbound");
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-process");
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-outbound");
+
+		updatePropertyFiles(inboundTransport, outboundTransport);
+		// add properties for internal JMS queues
+		updatePropertyFiles(TransportEnum.JMS, TransportEnum.JMS);
+		
+		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
+		// Used by FILE-IN, FILE-OUT and SFTP-OUT
+		if (inboundTransport == FILE || outboundTransport == FILE || outboundTransport == SFTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
+		}
+
+		// Add ftp-connector to config file (separate connectors used for junit-tests and running mule server) if ftp-transport is used for the first time
+		if (inboundTransport == FTP || outboundTransport == FTP) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-ftp-connector-external.xml", "default");
+		}
+		
+	}
+	
+    public void startGenerator_oneWayService_20130613_ORIGINAL() {
 
     	gu.logInfo("Creates a OneWay-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
@@ -174,7 +236,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 	    }
 	    
     }
-	
+    	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 
 		PrintWriter cfg = null;
@@ -209,6 +271,17 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    }
 		    if (outboundTransport == JMS) {
 			    cfg.println(service + "_OUT_QUEUE=" + m.getJmsOutQueue());
+			    
+		    }
+		    // Robust properties for the process-stage (JMS to JMS)
+		    if (inboundTransport == JMS) {
+		    	// file archive props
+		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
+		    	cfg.println("# Note: the archive filename should include the correlationId used for event-logging");
+		    	cfg.println("#   to enable correlation between a log-event and a file in the archive.");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_PREFIX=#[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_ORIGINAL=${" + service + "_ARCHIVE_FILENAME_PREFIX}_original");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_PROCESSED=${" + service + "_ARCHIVE_FILENAME_PREFIX}_processed");		    	
 		    }
 		    		    
 		    // Http properties
@@ -489,4 +562,5 @@ public class OnewayRobustServiceGenerator implements Generator {
 	
 		gu.logInfo("Updated: " + file);
 	}
+
 }

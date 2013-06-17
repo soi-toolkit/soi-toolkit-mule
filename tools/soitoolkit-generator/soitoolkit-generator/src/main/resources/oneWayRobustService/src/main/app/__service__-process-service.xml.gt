@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayService}
+  <!-- TODO: Add service specific definitions here -->
+  
+  <flow name="${service}-process-service" doc:name="${service}-process-service">
+    <jms:inbound-endpoint connector-ref="${jmsInboundConnector}"
+        queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}"
+        transformer-refs="logMsgIn" doc:name="JMS in">
+      <jms:transaction action="ALWAYS_BEGIN"/>
+    </jms:inbound-endpoint>
+    
+    <expression-component doc:name="Propagate correlation Id to outbound">
+        message.outboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID] =
+            message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]
+    </expression-component>
+    <!-- propagate originalFilename to outbound-->
+    <expression-component doc:name="Propagate filename">
+        message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
+            message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
+    </expression-component>
+    
+    <!--
+    #HD
+    TODO: improvement for archived files:
+      Use originalFilename (if any) as part of archive-filename?
+      Or at least add the file extension from the originalFilename (if any) to the archive-filename.
+    -->
+    
+    <!--
+    Note: outputPattern should include the correlationId used for event-logging to enable correlation
+    between a log-event and a file in the archive.
+    For example:
+      #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_original
+    -->
+    <file:outbound-endpoint
+        path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+        outputPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_ORIGINAL}" doc:name="archive original file"/>
+
+<!-- #HD TODO: extract in/out encoding to props-file ??? -->
+    <!--
+    Note: declare encoding explicitly for in/out here (if String conversion is needed).
+    All other parts of the flow (where payload is not being transformed) should handle
+    payload in a binary format to avoid encoding issues.
+    -->
+    <byte-array-to-string-transformer encoding="ISO-8859-1" doc:name="Byte Array to String"/>
+    
+    <custom-transformer doc:name="transform-message"
+        class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}Transformer"/>
+        
+    <string-to-byte-array-transformer encoding="ISO-8859-1" doc:name="String to Byte Array"/>
+
+    <!--
+    Example outputPattern:
+      #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_processed
+    -->    
+    <file:outbound-endpoint
+        path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+        outputPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_PROCESSED}" doc:name="archive processed file"/>
+        
+    
+    <jms:outbound-endpoint connector-ref="${jmsOutboundConnector}"
+        queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}"
+        transformer-refs="logMsgOut" doc:name="JMS out">
+      <jms:transaction action="ALWAYS_JOIN"/>
+    </jms:outbound-endpoint>
+    
+
+    <custom-exception-strategy class="org.soitoolkit.commons.mule.error.ServiceExceptionStrategy"/>
+    
+  </flow>
+
+<!--
+#HD: TODO add re-send inbound file endpoint to re-send already processed files
+  design: file (in) to JMS-queue for outbound, add output to archive for re-sent files
+  and a suffix to the archive-file indicating that it was re-sent
+  REQUIREMENTS: save a file in the archive and generate corresponding metadata-event (log-event)
+LOOK AT THE SFTP transport for inspiration!
+  
+  
+	<flow name="${service}-resend-from-archive-service">
+				<file:inbound-endpoint
+				    connector-ref="soitoolkit-file-connector"
+					path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}/resend"
+					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_ARCHIVE_RESEND_POLLING_MS}"
+				/>
+
+				<outbound-endpoint address="vm://${service}-service" />
+	</flow>
+-->
+
+</mule>
