@@ -4,6 +4,13 @@
 ${xmlNamespace.onewayService}
   <!-- TODO: Add service specific definitions here -->
   
+<% if (transformerType=="EE_DATAMAPPER") { %>
+  <!-- Example DataMapper-config:  
+  <data-mapper:config name="mapping1_grf" transformationGraphPath="mapping1.grf"
+      doc:name="mapping1_grf"></data-mapper:config>
+  -->
+<% } %>
+  
   <flow name="${service}-process-service" doc:name="${service}-process-service">
     <jms:inbound-endpoint connector-ref="${jmsInboundConnector}"
         queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}"
@@ -32,28 +39,37 @@ ${xmlNamespace.onewayService}
     Note: outputPattern should include the correlationId used for event-logging to enable correlation
     between a log-event and a file in the archive.
     For example:
-      #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_original
+    #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_original
     -->
     <file:outbound-endpoint
         path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
         outputPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_ORIGINAL}" doc:name="archive original file"/>
+    
+    <!-- BEGIN TRANSFORMATION -->
 
-<!-- #HD TODO: extract in/out encoding to props-file ??? -->
+<% if (transformerType=="EE_DATAMAPPER") { %>
+    <!-- Example DataMapper-config:
+    <data-mapper:transform config-ref="mapping1_grf" doc:name="DataMapper"></data-mapper:transform>
+    -->
+    <logger doc:name="### DATAMAPPER PLACEHOLDER - DROP IN AND REPLACE ME! ###" message="DATAMAPPER PLACEHOLDER" level="DEBUG"/>
+<% } else { %>
     <!--
     Note: declare encoding explicitly for in/out here (if String conversion is needed).
     All other parts of the flow (where payload is not being transformed) should handle
     payload in a binary format to avoid encoding issues.
     -->
     <byte-array-to-string-transformer encoding="ISO-8859-1" doc:name="Byte Array to String"/>
-    
+
     <custom-transformer doc:name="transform-message"
         class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}Transformer"/>
         
     <string-to-byte-array-transformer encoding="ISO-8859-1" doc:name="String to Byte Array"/>
+<% } %>
+    <!-- END TRANSFORMATION -->
 
     <!--
     Example outputPattern:
-      #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_processed
+    #[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]_processed
     -->    
     <file:outbound-endpoint
         path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"

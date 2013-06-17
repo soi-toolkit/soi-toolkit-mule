@@ -227,7 +227,7 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 <% } %> 
 
     @Test
-    public void test${capitalizedJavaService}_ok() throws Exception {
+    public void test${capitalizedJavaService}_inbound_ok() throws Exception {
 
 		Map<String, String> props = new HashMap<String, String>();
         String receivingService   = "${service}-inbound-teststub-service";

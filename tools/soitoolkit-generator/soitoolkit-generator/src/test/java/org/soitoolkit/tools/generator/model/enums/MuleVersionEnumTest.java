@@ -16,16 +16,15 @@
  */
 package org.soitoolkit.tools.generator.model.enums;
 
-public enum TransformerEnum implements ILabeledEnum {
-	JAVA("Java"), SMOOKS("Smooks"), EE_DATAMAPPER("EE-DataMapper");
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-	public static TransformerEnum get(int ordinal) {
-		return values()[ordinal];
-	}
+import org.junit.Test;
 
-	private String label;
-	private TransformerEnum(String label) {
-		this.label = label;
+public class MuleVersionEnumTest {
+	@Test
+	public void testIsEEVersion() {
+		assertTrue(MuleVersionEnum.MULE_3_4_0_EE.isEEVersion());
+		assertFalse(MuleVersionEnum.MULE_3_4_0.isEEVersion());
 	}
-	public String getLabel() {return label;}
 }

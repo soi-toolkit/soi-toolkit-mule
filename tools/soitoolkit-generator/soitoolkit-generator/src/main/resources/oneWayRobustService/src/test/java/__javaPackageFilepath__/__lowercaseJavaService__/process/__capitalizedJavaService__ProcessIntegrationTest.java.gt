@@ -2,12 +2,18 @@ package ${javaPackage}.${lowercaseJavaService}.process;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import javax.jms.BytesMessage;
@@ -15,9 +21,12 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
-
+import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.Diff;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mule.api.MuleMessage;
+import org.mule.api.config.MuleProperties;
 import org.mule.api.routing.CouldNotRouteOutboundMessageException;
 import org.mule.api.transformer.TransformerException;
 import org.mule.api.transformer.TransformerMessagingException;
@@ -44,6 +53,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTestCase {
 	
@@ -76,7 +87,20 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
         // Set to false if tests interfere with each other when Mule is started only once.
         setDisposeContextPerClass(true);
     }
+    
+  	/**
+  	 * For Mule-EE DataMapper, refer to Mule-EE support portal knowledgebase
+  	 * article #00000767.
+  	 */
+  	@Override
+  	protected Properties getStartUpProperties() {
+  		Properties properties = new Properties(super.getStartUpProperties());
+  		properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, new File(
+  				"mappings").getAbsolutePath());
+  		return properties;
+  	}    
 
+  @Override
 	protected String getConfigResources() {
         return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
 		"${artifactId}-common.xml," +
@@ -109,17 +133,22 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
     }
 		
     @Test
-    public void test${capitalizedJavaService}_ok() throws Exception {
+    public void test${capitalizedJavaService}_process_ok() throws Exception {
 
 		Map<String, String> props = new HashMap<String, String>();
-    	final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
-    	String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
+<% if (transformerType=="EE_DATAMAPPER") { %>
+    final  String inputFile   = "src/test/resources/testfiles/${service}/input.xml";
+    String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.xml";
+<% } else { %>
+final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
+<% } %>
         String receivingService   = "${service}-process-teststub-service";
 		final  int timeout        = 5000;
-		// TODO: fix read as binary!
-		byte[] input          = MiscUtil.readFileAsString(inputFile).getBytes("ISO-8859-1");
-		byte[] expectedResult = MiscUtil.readFileAsString(expectedResultFile).getBytes("ISO-8859-1");
-		
+		// read as binary, do not mess with any String encoding here
+		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
+		byte [] expectedResult = IOUtils.toByteArray(new FileInputStream(expectedResultFile));
+				
 		// add originalFilename - originalFilename is expected to be set for this flow
 		String filename = "fname_" + UUID.getUUID() + ".bin";
 		props.put(FileConnector.PROPERTY_ORIGINAL_FILENAME, filename);
@@ -137,10 +166,14 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
     byte[] transformedMessage = (byte[]) reply.getPayload();
 
     // Verify the result, i.e. the transformed message
-    // assert binary equality
-    // TODO: use xmlunit instead for XML-files!
-     assertArrayEquals(expectedResult, transformedMessage);
-     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+<% if (transformerType=="EE_DATAMAPPER") { %>
+    // use XML-diff here to ignore non-significant whitespace
+    assertXmlSimilar(new FileInputStream(expectedResultFile), new ByteArrayInputStream(transformedMessage));
+<% } else { %>
+    // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
+    assertArrayEquals(expectedResult, transformedMessage);
+    assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+<% } %>
 
 		// Verify inbound jms-queues
         assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
@@ -186,11 +219,20 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
      * @throws JMSException
      */
     @Test
-    public void test${capitalizedJavaService}_transformationError() throws Exception {
+<% if (transformerType=="EE_DATAMAPPER") { %>    
+    @Ignore("Enable if transformation is done - we need to control poison message behaviour")
+<% } %>
+    public void test${capitalizedJavaService}_process_transformationError() throws Exception {
 
         Map<String, String> props = new HashMap<String, String>();
+        
+    		// add originalFilename - originalFilename is expected to be set for this flow
+    		String filename = "fname_" + UUID.getUUID() + ".bin";
+    		props.put(FileConnector.PROPERTY_ORIGINAL_FILENAME, filename);
+    		
+        // add correlation id inbound property - correlation id is expected to be set for this flow
         String corrId = UUID.getUUID();
-        props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);
+        props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);        
 
         String id    = "Cnnn";
         String value = "Some value";
@@ -261,5 +303,15 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
             assertTrue("id in filename", file.getName().contains(expectedIdContainedInFilename));
         }
     }
+
+  	// using XMLUnit framework (v1.1 part of MuleStudio v3.4 runtime)
+  	void assertXmlSimilar(InputStream expected, InputStream actual)
+  			throws SAXException, IOException {
+  		InputSource expectedSrc = new InputSource(expected);
+  		InputSource actualSrc = new InputSource(actual);
+  		// TODO: fine tune XMLUnit diff-options
+  		Diff xmlDiff = new Diff(expectedSrc, actualSrc);
+  		assertTrue(xmlDiff.toString(), xmlDiff.similar());
+  	}
 
 }

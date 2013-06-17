@@ -1,0 +1,39 @@
+package ${javaPackage}.${lowercaseJavaService}.process;
+
+/**
+ * Mule EE DataMapper support, mapping helper for all non-trivial mappings.
+ * <p>Usage: refer to this MappingHelper from your DataMapper MEL-script like:
+ * <pre>
+ * // Add this once to the top of the MEL-script (after the "do not touch"
+ * // section at the top of the script):
+ * import ${javaPackage}.${lowercaseJavaService}.process.MappingHelper;
+ * 
+ * // Then use the MappingHelper like: 
+ * output.ExampleOutBooleanFlag = MappingHelper.getExampleTranslationOfBooleanFlag(input.ExampleInBooleanFlag);  
+ * </pre>
+ * <p>
+ * Using a Java-class enables us to write standard JUnit-testcases for mapping
+ * methods. In contrast: writing MEL functions in mapping-script leaves us with
+ * code that is hard to test other than visually - which quickly becomes
+ * cumbersome where a high degree of input permutations exists.
+ */
+public class MappingHelper {
+
+	// Note: use static methods here to make methods simply available in
+	// MEL-script.
+
+	/**
+	 * Example transformation.
+	 *  
+	 * @param exampleInputValue
+	 * @return
+	 */
+	public static String getExampleTranslationOfBooleanFlag(String exampleInputValue) {
+		if ("YES".equals(exampleInputValue)) {
+			return "TRUE";	
+		}
+		else {
+			return "FALSE";
+		}		
+	}
+}

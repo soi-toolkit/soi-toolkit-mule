@@ -19,7 +19,8 @@ package org.soitoolkit.tools.generator.model.enums;
 public enum MuleVersionEnum implements ILabeledEnum { 
 	MULE_3_3_0("3.3.0", "current"),
 	MULE_3_3_1("3.3.1", "current"),
-	MULE_3_4_0("3.4.0", "current");
+	MULE_3_4_0("3.4.0", "current"),
+	MULE_3_4_0_EE("3.4.0", "current");
 
 	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_4_0;
 	
@@ -60,6 +61,8 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	// For generators to point out the right version number to use in the xsd namespaces
 	public String getXsdNsVersion() {return xsdNsVersion;}
 
+	public boolean isEEVersion() {return toString().endsWith("_EE");} 
+	
 	// For ver no with only numbers...
 	public String getVerNoNumbersOnly() {
 		StringBuffer sb = new StringBuffer();

@@ -2,21 +2,23 @@ package ${javaPackage}.${lowercaseJavaService}.process;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
+import java.io.FileInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.mule.api.transformer.TransformerException;
-import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
-import org.soitoolkit.commons.mule.util.MiscUtil;
 
 public class ${capitalizedJavaService}TransformerTest {
 
 	@Test
-	public void testTransformer() throws IOException, TransformerException {
+	public void testTransformer() throws Exception {
 
-		// Read input and expected result from testfiles 
-		String input          = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/input.txt");
-		String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/expected-result.txt");
+    // Read input and expected result from testfiles as binary to avoid encoding issues 
+    byte [] inputBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/fileToFtp/input.txt"));
+    byte [] expectedResultBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/fileToFtp/expected-result.txt"));
+
+    // Take explicit control of encoding 
+    String input = new String(inputBinary, "UTF-8");
+    String expectedResult = new String(expectedResultBinary, "UTF-8");
 		
 		// Create the transformer under test and let it perform the transformation
 		${capitalizedJavaService}Transformer transformer = new ${capitalizedJavaService}Transformer();

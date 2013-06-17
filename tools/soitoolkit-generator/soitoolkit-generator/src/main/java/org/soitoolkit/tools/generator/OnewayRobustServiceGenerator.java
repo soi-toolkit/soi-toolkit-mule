@@ -78,6 +78,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 		gu.logInfo("Creates a OneWay-Robust-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
 		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
+		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 		
 		// inbound service
 		gu.generateContentAndCreateFile("src/main/app/__service__-inbound-service.xml.gt");
@@ -90,12 +91,23 @@ public class OnewayRobustServiceGenerator implements Generator {
 		// process service
 		gu.generateContentAndCreateFile("src/main/app/__service__-process-service.xml.gt");
 		gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-process-service.mflow");
-		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__Transformer.java.gt");
+		if (transformerType == TransformerEnum.JAVA) {
+			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__Transformer.java.gt");
+			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__TransformerTest.java.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
+		}
+		else if (transformerType == TransformerEnum.EE_DATAMAPPER) {
+			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/process/MappingHelper.java.gt");
+			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/MappingHelperTest.java.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.xml.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.xml.gt");
+		}
+		else {
+			throw new IllegalArgumentException("Transformer type not supported for this kind of flow: " + transformerType);
+		}		
 		// process service - test support 
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");		
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-process-teststub-service.xml.gt");
-		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__TransformerTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__ProcessIntegrationTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/__capitalizedJavaService__TestReceiver.java.gt");
 

@@ -1,0 +1,17 @@
+package ${javaPackage}.${lowercaseJavaService}.process;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+/**
+ * Test for non-trivial mapping-methods.
+ */
+public class MappingHelperTest {
+
+	@Test
+	public void testGetExampleTranslationOfBooleanFlag() {
+		assertEquals("FALSE", MappingHelper.getExampleTranslationOfBooleanFlag("NO"));
+		assertEquals("TRUE", MappingHelper.getExampleTranslationOfBooleanFlag("YES"));
+	}
+}
