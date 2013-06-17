@@ -145,7 +145,6 @@ public class GenServiceMojo extends AbstractMojo {
 			break;
 
 		case MEP_ONE_WAY_ROBUST:
-			//#HD TODO: change generator class
 			g = new OnewayRobustServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;
 			
@@ -153,7 +152,7 @@ public class GenServiceMojo extends AbstractMojo {
 			throw new MojoExecutionException("Message Exchange Pattern [" + messageExchangePattern + "] not yet supported");
 
 		default:
-			break;
+			throw new MojoExecutionException("Message Exchange Pattern [" + messageExchangePattern + "] not supported");
 		}
 		g.startGenerator();
     }
@@ -205,7 +204,7 @@ public class GenServiceMojo extends AbstractMojo {
 			allowedTransports = allowedRequestReplyInboundTransport;
 			break;
 		default:
-			throw new IllegalArgumentException("MEP has no supported inbound transports: " + mepEnum);
+			throw new MojoExecutionException("MEP has no supported inbound transports: " + mepEnum);
 		}
 		return getTransport(inboundTransport, "inbound", allowedTransports);
 	}
@@ -223,7 +222,7 @@ public class GenServiceMojo extends AbstractMojo {
 			allowedTransports = allowedRequestReplyOutboundTransport;
 			break;
 		default:
-			throw new IllegalArgumentException("MEP has no supported outbound transports: " + mepEnum);
+			throw new MojoExecutionException("MEP has no supported outbound transports: " + mepEnum);
 		}
 		return getTransport(outboundTransport, "outbound", allowedTransports);
 	}
