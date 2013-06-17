@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum MavenEclipseGoalEnum implements ILabeledEnum { 
-	ECLIPSE_ECLIPSE("eclipse:eclipse"), ECLIPSE_M2ECLIPSE("eclipse:m2eclipse"); 
+	ECLIPSE_ECLIPSE("eclipse:eclipse"), ECLIPSE_M2ECLIPSE("eclipse:m2eclipse"), MULESTUDIO_MULESTUDIO("studio:studio"); 
 	
 	public static MavenEclipseGoalEnum get(int ordinal) {
 		return values()[ordinal];
