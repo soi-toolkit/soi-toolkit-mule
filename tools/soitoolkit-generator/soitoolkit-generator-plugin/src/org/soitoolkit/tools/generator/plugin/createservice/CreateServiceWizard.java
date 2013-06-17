@@ -59,6 +59,7 @@ import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
+import org.soitoolkit.tools.generator.OnewayRobustServiceGenerator;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
 import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
 
@@ -210,8 +211,7 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 
 		case 2: // One Way Robust
 			
-			// TODO: Håkan: Replace with your OnewayServiceRobustGenerator!!!
-			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
+			new OnewayRobustServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
 //		case 2: // Pub Sub
@@ -234,6 +234,14 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 //		});
 
 		monitor.worked(1);
+
+		// TODO issue #345: DataMapper support - we need to run the maven goal "studio:studio" here
+		// hardcoded for now
+		if (transformerType == TransformerEnum.EE_DATAMAPPER) {
+			System.err.println("issue #345: HARDCODED maven eclipse goal to studio:stduio for Mule-EE");
+			mavenEclipseGoalType = MavenEclipseGoalEnum.MULESTUDIO_MULESTUDIO.ordinal();
+		}
+				
 		String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
 		monitor.setTaskName("Execute command: " + buildCommand);

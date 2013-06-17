@@ -53,7 +53,7 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	}
 
 	// For display in the wizard
-	public String getLabel() {return "v" + label;}
+	public String getLabel() {return isEEVersion() ? "v" + label + "-EE": "v" + label;}
 
 	// For generators to point out the right pom-file...
 	public String getPomSuffix() {return label;}

@@ -324,6 +324,13 @@ public class CreateComponentWizard extends Wizard implements INewWizard {
 //			int noOfFilesAndFoldersCreated = SystemUtil.countFiles(path);
 			
 			monitor.worked(1);
+			// TODO issue #345: DataMapper support - we need to run the maven goal "studio:studio" here
+			// hardcoded for now
+			if (muleVersion.isEEVersion()) {
+				err.println("issue #345: HARDCODED maven eclipse goal to studio:stduio for Mule-EE");
+				mavenEclipseGoalType = MavenEclipseGoalEnum.MULESTUDIO_MULESTUDIO.ordinal();
+			}
+			
 			String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " install " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
 			monitor.setTaskName("Execute command: " + buildCommand);
