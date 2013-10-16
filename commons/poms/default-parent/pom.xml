@@ -76,7 +76,7 @@
     <maven-gpg-plugin.version>1.1</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
     <maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
-    <maven-mule-plugin.version>1.7</maven-mule-plugin.version>    
+    <maven-mule-plugin.version>1.9</maven-mule-plugin.version>    
     <!-- maven-release-plugin: version 2.0 is tagging at the wrong level in SVN
       (project level instead of trunk-level) due to bug:
       http://jira.codehaus.org/browse/MRELEASE-526 -->
