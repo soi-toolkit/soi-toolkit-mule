@@ -4,7 +4,7 @@
 ${xmlNamespace.onewayService}
 	<!-- TODO: Add service specific definitions here -->
 
-	<flow name="${service}-service">
+	<flow name="${service}-outbound-service">
                 <jms:inbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="logMsgIn">
                     <jms:transaction action="ALWAYS_BEGIN" />
 				</jms:inbound-endpoint>

@@ -13,8 +13,8 @@ public class ${capitalizedJavaService}TransformerTest {
 	public void testTransformer() throws Exception {
 
     // Read input and expected result from testfiles as binary to avoid encoding issues 
-    byte [] inputBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/fileToFtp/input.txt"));
-    byte [] expectedResultBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/fileToFtp/expected-result.txt"));
+    byte [] inputBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/input.txt"));
+    byte [] expectedResultBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/expected-result.txt"));
 
     // Take explicit control of encoding 
     String input = new String(inputBinary, "UTF-8");
