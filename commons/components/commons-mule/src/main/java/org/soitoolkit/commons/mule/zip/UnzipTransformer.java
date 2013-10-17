@@ -33,8 +33,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extracts the first file in a zip-file
- * Expects the zip-file as byte-array or an inputStream and returns the content of the first file matching the filter as an input stream
+ * Extracts the first file in a zip-file.
+ * <p>Expects the zip-file as byte-array or an inputStream and returns the content of the first file matching the filter as an input stream.
+ * <p>Configure in mule-config like:
+ * <pre>
+ * &lt;custom-transformer name="unzip" class="org.soitoolkit.commons.mule.zip.UnzipTransformer"&gt;
+ *   &lt;spring:property name="filenamePattern" value="*.xml"/&gt;
+ * &lt;/custom-transformer&gt; 
+ * </pre>
  * 
  * @author magnus larsson
  *
