@@ -59,7 +59,7 @@ ${xmlNamespace.onewayService}
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-					moveToPattern="#[header:originalFilename]"
+					moveToPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_PREFIX}_inbound_#[header:originalFilename]"
 					transformer-refs="createCorrId logMsgIn" doc:name="File">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</file:inbound-endpoint>

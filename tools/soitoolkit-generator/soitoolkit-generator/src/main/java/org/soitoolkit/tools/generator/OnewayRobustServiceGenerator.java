@@ -285,15 +285,16 @@ public class OnewayRobustServiceGenerator implements Generator {
 			    cfg.println(service + "_OUT_QUEUE=" + m.getJmsOutQueue());
 			    
 		    }
-		    // Robust properties for the process-stage (JMS to JMS)
+		    // Robust file archive properties
 		    if (inboundTransport == JMS) {
 		    	// file archive props
 		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
 		    	cfg.println("# Note: the archive filename should include the correlationId used for event-logging");
 		    	cfg.println("#   to enable correlation between a log-event and a file in the archive.");
 		    	cfg.println(service + "_ARCHIVE_FILENAME_PREFIX=#[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]");
-		    	cfg.println(service + "_ARCHIVE_FILENAME_ORIGINAL=${" + service + "_ARCHIVE_FILENAME_PREFIX}_original");
-		    	cfg.println(service + "_ARCHIVE_FILENAME_PROCESSED=${" + service + "_ARCHIVE_FILENAME_PREFIX}_processed");		    	
+		    	cfg.println(service + "_ARCHIVE_FILENAME_SUFFIX=#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]");		    	
+		    	cfg.println(service + "_ARCHIVE_FILENAME_INBOUNDL=${" + service + "_ARCHIVE_FILENAME_PREFIX}_inbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_OUTBOUND=${" + service + "_ARCHIVE_FILENAME_PREFIX}_outbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");		    	
 		    }
 		    		    
 		    // Http properties
@@ -346,17 +347,17 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    }
 
 		    // Properties common to all filebased transports
-		    if (m.isInboundEndpointFilebased() || m.isOutboundEndpointFilebased()) {
-		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
-		    }
-		    if (m.isOutboundEndpointFilebased()) {
-			    cfg.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
-			    
-		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
-				if (!m.isInboundEndpointFilebased()) {
-			    	cfg.println(service + "_OUTBOUND_FILE=outfile.txt");
-			    }
-		    }
+//		    if (m.isInboundEndpointFilebased() || m.isOutboundEndpointFilebased()) {
+//		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
+//		    }
+//		    if (m.isOutboundEndpointFilebased()) {
+//			    cfg.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
+//			    
+//		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
+//				if (!m.isInboundEndpointFilebased()) {
+//			    	cfg.println(service + "_OUTBOUND_FILE=outfile.txt");
+//			    }
+//		    }
 
 		    // Properties common to POP3, IMAP and SMTP (Inb POP3 and IMAP needs SMTP to send testmessages in junit-testcode)
 		    if (inboundTransport == POP3 || inboundTransport == IMAP || outboundTransport == SMTP) {
