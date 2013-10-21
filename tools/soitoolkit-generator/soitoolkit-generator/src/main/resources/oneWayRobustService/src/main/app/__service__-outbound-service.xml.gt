@@ -58,6 +58,7 @@ ${xmlNamespace.onewayService}
                     connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 					outputPattern="#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]"
+                    responseTimeout="10000"
                     binary="true"
                     passive="true"
                     transformer-refs="logMsgOut" />                                        
