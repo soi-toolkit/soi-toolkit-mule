@@ -4,6 +4,17 @@
 ${xmlNamespace.onewayService}
   <!-- TODO: Add service specific definitions here -->
   
+	<custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer"
+		name="logArchiveOut" doc:name="Log archive events">
+		<spring:property name="logType" value="archive-out"/>
+		<spring:property name="jaxbContext" ref="jaxbContext"/>
+		<spring:property name="extraInfo">
+			<spring:map>
+				<spring:entry key="archiveFilename" value="#[flowVars['archiveFilename']]"/>
+			</spring:map>
+		</spring:property>
+	</custom-transformer>
+  
 <% if (transformerType=="EE_DATAMAPPER") { %>
   <!-- Example DataMapper-config:  
   <data-mapper:config name="mapping1_grf" transformationGraphPath="mapping1.grf"
@@ -28,10 +39,12 @@ ${xmlNamespace.onewayService}
             message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
     </expression-component>
     
+    <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_INBOUND}" doc:name="Set archive file name"/>
     <file:outbound-endpoint
         path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-        outputPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_INBOUND}" doc:name="Archive inbound file"/>
-    
+        transformer-refs="logArchiveOut"
+        outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive inbound file"/>
+
     <!-- BEGIN TRANSFORMATION -->
 
 <% if (transformerType=="EE_DATAMAPPER") { %>
@@ -54,10 +67,11 @@ ${xmlNamespace.onewayService}
 <% } %>
     <!-- END TRANSFORMATION -->
 
+    <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUTBOUND}" doc:name="Set archive file name"/>
     <file:outbound-endpoint
         path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-        outputPattern="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUTBOUND}" doc:name="Archive outbound file"/>
-        
+        transformer-refs="logArchiveOut"
+        outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive outbound file"/>        
     
     <jms:outbound-endpoint connector-ref="${jmsOutboundConnector}"
         queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}"
