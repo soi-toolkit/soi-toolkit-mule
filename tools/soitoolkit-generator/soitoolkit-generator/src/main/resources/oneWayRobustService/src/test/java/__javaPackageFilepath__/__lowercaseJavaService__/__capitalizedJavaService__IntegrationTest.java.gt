@@ -1,0 +1,177 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.junit.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.Diff;
+import org.junit.Test;
+import org.mule.api.MuleMessage;
+import org.mule.api.config.MuleProperties;
+import org.mule.transport.file.FileConnector;
+import org.mule.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.file.FileUtil;
+import org.soitoolkit.commons.mule.ftp.FtpUtil;
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
+	
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+	
+  private static final String IN_FOLDER       = rb.getString("${uppercaseService}_INBOUND_FOLDER");
+  private static final String OUT_FOLDER      = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
+  private static final String ARCHIVE         = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+	private static final String IN_QUEUE        = rb.getString("${uppercaseService}_IN_QUEUE");
+	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
+	private static final String OUT_QUEUE        = rb.getString("${uppercaseService}_OUT_QUEUE");
+	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
+	private AbstractJmsTestUtil jmsUtil = null;
+	
+    /**
+     *
+     * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
+     *                   <deadLetterStrategy>
+     *                     <!--
+     *                      Use the prefix 'DLQ.' for the destination name, and make
+     *                      the DLQ a queue rather than a topic
+     *                     -->
+     *                     <individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true" />
+     *                   </deadLetterStrategy>
+     * 
+     */
+    public ${capitalizedJavaService}IntegrationTest() {
+      
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+    
+  	/**
+  	 * For Mule-EE DataMapper, refer to Mule-EE support portal knowledgebase
+  	 * article #00000767.
+  	 */
+  	@Override
+  	protected Properties getStartUpProperties() {
+  		Properties properties = new Properties(super.getStartUpProperties());
+  		properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, new File(
+  				"mappings").getAbsolutePath());
+  		return properties;
+  	}    
+
+  @Override
+	protected String getConfigResources() {
+	  return "soitoolkit-mule-jms-connector-activemq-embedded.xml,"
+	      + "soitoolkit-mule-ftp-connector-embedded.xml,"
+	      + "${artifactId}-common.xml,"
+	      + "${service}-inbound-service.xml,"
+	      + "${service}-process-service.xml,"
+	      + "${service}-outbound-service.xml,"
+	      + "teststub-services/${service}-outbound-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+		doSetUpJms();
+		FileUtil.initFolder(new File(IN_FOLDER));
+		FileUtil.initFolder(new File(ARCHIVE));
+		FtpUtil.initEndpointDirectory(muleContext, "${service}-outbound-endpoint");
+	}
+
+	private void doSetUpJms() {
+		// TODO: Fix lazy init of JMS connection et al so that we can create jmsutil in the declaration
+		// (The embedded ActiveMQ queue manager is not yet started by Mule when jmsutil is declared...)
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+		// Clear queues
+		jmsUtil.clearQueues(IN_QUEUE);
+		jmsUtil.clearQueues(OUT_QUEUE);
+		jmsUtil.clearQueues(DEADLETTER_QUEUE);
+		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
+	}
+		
+    @Test
+    public void test${capitalizedJavaService}_endToEnd_ok() throws Exception {
+
+		Map<String, String> props = new HashMap<String, String>();
+<% if (transformerType=="EE_DATAMAPPER") { %>
+    final  String inputFile   = "src/test/resources/testfiles/${service}/input.xml";
+    String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.xml";
+<% } else { %>
+final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
+<% } %>
+    String receivingService   = "${service}-outbound-teststub-service";
+		final  int timeout        = 7000;
+		// read as binary, do not mess with any String encoding here
+		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
+		byte [] expectedResult = IOUtils.toByteArray(new FileInputStream(expectedResultFile));
+				
+		// add originalFilename - originalFilename is expected to be set for this flow
+		String filename = "fname_" + UUID.getUUID() + ".bin";
+		props.put(FileConnector.PROPERTY_FILENAME, filename);
+		
+		// Setup inbound endpoint for file-transport
+		String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
+
+		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
+		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
+
+    byte[] transformedMessage = (byte[]) reply.getPayload();
+
+    // Verify the result, i.e. the transformed message
+<% if (transformerType=="EE_DATAMAPPER") { %>
+    // use XML-diff here to ignore non-significant whitespace
+    assertXmlSimilar(new FileInputStream(expectedResultFile), new ByteArrayInputStream(transformedMessage));
+<% } else { %>
+    // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
+    assertArrayEquals(expectedResult, transformedMessage);
+    assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+<% } %>
+
+    // Verify JMS-queues
+    assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
+    assertEquals(0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());
+    assertEquals(0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());
+    assertEquals(0, jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE).size());
+    
+    assertArchiveFiles(3, filename);        
+    }
+
+    void assertArchiveFiles(int expectedNoFiles, String expectedIdContainedInFilename) {
+        File dir = new File(ARCHIVE);
+        File[] files = dir.listFiles();
+        assertEquals("number of archive files", expectedNoFiles, files.length);
+        for (File file : files) {
+            log.debug("archive filename: {}", file.getName());
+            assertTrue("id in filename", file.getName().contains(expectedIdContainedInFilename));
+        }
+    }
+
+  	// using XMLUnit framework (v1.1 part of MuleStudio v3.4 runtime)
+  	void assertXmlSimilar(InputStream expected, InputStream actual)
+  			throws SAXException, IOException {
+  		InputSource expectedSrc = new InputSource(expected);
+  		InputSource actualSrc = new InputSource(actual);
+  		// TODO: fine tune XMLUnit diff-options
+  		Diff xmlDiff = new Diff(expectedSrc, actualSrc);
+  		assertTrue(xmlDiff.toString(), xmlDiff.similar());
+  	}
+
+}

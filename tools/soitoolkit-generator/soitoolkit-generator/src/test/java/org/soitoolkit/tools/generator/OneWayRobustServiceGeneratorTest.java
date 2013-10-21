@@ -245,7 +245,7 @@ public class OneWayRobustServiceGeneratorTest {
 
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-		int expectedNoOfFiles = 26;
+		int expectedNoOfFiles = 27;
 		
 		IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, muleVersion, inboundTransport, outboundTransport, transformerType);
 

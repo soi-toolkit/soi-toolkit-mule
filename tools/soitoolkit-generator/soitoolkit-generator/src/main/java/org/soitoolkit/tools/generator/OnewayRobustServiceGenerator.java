@@ -119,6 +119,8 @@ public class OnewayRobustServiceGenerator implements Generator {
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/outbound/__capitalizedJavaService__OutboundIntegrationTest.java.gt");
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/outbound/__capitalizedJavaService__TestReceiver.java.gt");
 		
+		// end-to-end - test support
+		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");		
 
 		// Update mule-deploy.properties files with the new service
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "-inbound");
