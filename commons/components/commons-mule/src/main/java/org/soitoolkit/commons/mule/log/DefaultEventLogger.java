@@ -30,6 +30,7 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import org.mule.api.transport.PropertyScope;
 import org.mule.config.DefaultMuleConfiguration;
 import org.mule.config.ExceptionHelper;
 import org.mule.module.xml.stax.ReversibleXMLStreamReader;
+import org.mule.transport.file.FileConnector;
 import org.mule.transport.jms.JmsConnector;
 import org.mule.transport.jms.JmsMessageUtils;
 import org.slf4j.Logger;
@@ -200,6 +202,8 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			Map<String, String> businessContextId, Map<String, String> extraInfo) {
 
 		if (messageLogger.isInfoEnabled()) {
+			extraInfo = addMetadataToExtraInfo(message, extraInfo);
+
 			LogEvent logEvent = createLogEntry(logLevel, message, logMessage,
 					integrationScenario, contractId, businessContextId,
 					extraInfo, message.getPayload(), null);
@@ -217,6 +221,8 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			MuleMessage message, String integrationScenario, String contractId,
 			Map<String, String> businessContextId, Map<String, String> extraInfo) {
 
+		extraInfo = addMetadataToExtraInfo(message, extraInfo);
+		
 		LogEvent logEvent = createLogEntry(logLevel, message, error.toString(),
 				integrationScenario, contractId, businessContextId, extraInfo,
 				message.getPayload(), error);
@@ -441,7 +447,33 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		// We are actually done :-)
 		return logEvent;
 	}
-
+	
+	protected Map<String, String> addMetadataToExtraInfo(MuleMessage message, Map<String, String> extraInfo) {
+		if (message != null) {
+			extraInfo = addExtraInfoKeyIfValueNotNull(FileConnector.PROPERTY_FILENAME,
+					message.getProperty(FileConnector.PROPERTY_FILENAME,
+					PropertyScope.OUTBOUND), extraInfo);
+			extraInfo = addExtraInfoKeyIfValueNotNull(FileConnector.PROPERTY_FILE_SIZE,
+					message.getProperty(FileConnector.PROPERTY_FILE_SIZE,
+					PropertyScope.INBOUND), extraInfo);
+		}
+		return extraInfo;
+	}
+	
+	protected Map<String, String> addExtraInfoKeyIfValueNotNull(String key, Object value,
+			Map<String, String> extraInfo) {
+		if (value != null) {
+			if (!(value instanceof String)) {
+				value = value.toString();
+			}
+			if (extraInfo == null) {
+				extraInfo = new HashMap<String, String>();
+			}
+			extraInfo.put(key, (String) value);
+		}
+		return extraInfo;
+	}
+	
 	/**
 	 * Old logErrorEvent() wrapped by the new
 	 */
