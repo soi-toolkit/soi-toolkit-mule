@@ -202,7 +202,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			Map<String, String> businessContextId, Map<String, String> extraInfo) {
 
 		if (messageLogger.isInfoEnabled()) {
-			extraInfo = addMetadataToExtraInfo(message, extraInfo);
+			//extraInfo = addMetadataToExtraInfo(message, extraInfo);
 
 			LogEvent logEvent = createLogEntry(logLevel, message, logMessage,
 					integrationScenario, contractId, businessContextId,
@@ -221,7 +221,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 			MuleMessage message, String integrationScenario, String contractId,
 			Map<String, String> businessContextId, Map<String, String> extraInfo) {
 
-		extraInfo = addMetadataToExtraInfo(message, extraInfo);
+		//extraInfo = addMetadataToExtraInfo(message, extraInfo);
 		
 		LogEvent logEvent = createLogEntry(logLevel, message, error.toString(),
 				integrationScenario, contractId, businessContextId, extraInfo,
@@ -448,6 +448,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		return logEvent;
 	}
 	
+/* See issue #347
 	protected Map<String, String> addMetadataToExtraInfo(MuleMessage message, Map<String, String> extraInfo) {
 		if (message != null) {
 			extraInfo = addExtraInfoKeyIfValueNotNull(FileConnector.PROPERTY_FILENAME,
@@ -473,6 +474,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		}
 		return extraInfo;
 	}
+*/
 	
 	/**
 	 * Old logErrorEvent() wrapped by the new
