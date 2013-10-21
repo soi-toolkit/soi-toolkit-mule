@@ -113,13 +113,11 @@ ${xmlNamespace.onewayService}
 				</imap:inbound-endpoint>		
 <% } %> 
 
-            <!-- propagate correlationId to outbound-->
-            <expression-component doc:name="Propagate correlation Id">
+            <expression-component doc:name="Propagate correlation Id to outbound">
                 message.outboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID] =
                     sessionVars[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]
             </expression-component>
-            <!-- propagate originalFilename to outbound-->
-            <expression-component doc:name="Propagate filename">
+            <expression-component doc:name="Propagate originalFilename to outbound">
                 message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
                     message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
             </expression-component>

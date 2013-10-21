@@ -293,7 +293,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    	cfg.println("#   to enable correlation between a log-event and a file in the archive.");
 		    	cfg.println(service + "_ARCHIVE_FILENAME_PREFIX=#[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]");
 		    	cfg.println(service + "_ARCHIVE_FILENAME_SUFFIX=#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]");		    	
-		    	cfg.println(service + "_ARCHIVE_FILENAME_INBOUNDL=${" + service + "_ARCHIVE_FILENAME_PREFIX}_inbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_INBOUND=${" + service + "_ARCHIVE_FILENAME_PREFIX}_inbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");
 		    	cfg.println(service + "_ARCHIVE_FILENAME_OUTBOUND=${" + service + "_ARCHIVE_FILENAME_PREFIX}_outbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");		    	
 		    }
 		    		    
