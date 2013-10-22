@@ -377,10 +377,4 @@
       
     </plugins>
   </build>
-
-  <scm>
-    <connection>scm:svn:http://svn.sonatype.org/spice/tags/soitoolkit-0.6.1-M4</connection>
-    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/soitoolkit-0.6.1-M4</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/soitoolkit-0.6.1-M4</url>
-  </scm>
 </project>
