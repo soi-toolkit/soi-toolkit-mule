@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<feature id="org.soitoolkit.generator.feature" label="soi-toolkit generator feature" version="0.6.1.SNAPSHOT_2013-06-17_2138">
+<feature id="org.soitoolkit.generator.feature" label="soi-toolkit generator feature" version="0.6.1.SNAPSHOT_2013-10-22_0158">
 
    <description url="http://soi-toolkit.org">
       This is a Eclipse plugin based version of soi-toolkit's source
