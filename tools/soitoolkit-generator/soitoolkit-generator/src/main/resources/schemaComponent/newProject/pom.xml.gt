@@ -67,6 +67,11 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
+				<configuration>
+					<!-- fork to avoid encoding issues, ref: soi-toolkit issue 360 -->
+					<fork>once</fork>
+					<additionalJvmArgs>-Dfile.encoding=UTF-8</additionalJvmArgs>
+				</configuration>
 				<executions>
 					<execution>
 						<id>ws.generate</id>
