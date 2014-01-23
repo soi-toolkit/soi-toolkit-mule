@@ -33,7 +33,7 @@
   <groupId>org.soitoolkit.commons.poms</groupId>
   <artifactId>soitoolkit-default-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.6.1-M4</version>
+  <version>0.6.1-M5-SNAPSHOT</version>
   <name>soitoolkit-default-parent</name>
   <description>The default parent pom for components that use soi-toolkit, e.g. integration and schema components</description>
   <url>http://soi-toolkit.org</url>
@@ -51,7 +51,7 @@
 			 to its own project-version and not soi-toolkits. 
 			 So we have to specify the soitoolkit-version twice! 
 		-->
-    <soitoolkit.version>0.6.1-M4-SNAPSHOT</soitoolkit.version>
+    <soitoolkit.version>0.6.1-M5-SNAPSHOT</soitoolkit.version>
     
     <compiler.target.version>1.6</compiler.target.version>
     <compiler.source.version>1.6</compiler.source.version>
