@@ -17,9 +17,14 @@ ${xmlNamespace.onewayService}
 
 <% if (serviceXaTransactional) { %>
     <jbossts:transaction-manager/>
-<% } %> 
+<% } %>
 
-	<flow name="${service}-inbound-service">
+<% if (inboundTransport=="FILE") { %>
+    <!-- don't use streaming for file inbound (removes file when read) -->
+    <file:connector name="${service}-robust-file-inbound-connector" streaming="false"/>
+<% } %>
+	<!-- use processingStrategy="synchronous" for reliability -->
+	<flow name="${service}-inbound-service" processingStrategy="synchronous">
 <% if (inboundTransport=="VM") { %>
                 <vm:inbound-endpoint connector-ref="soitoolkit-vm-connector" path="${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" transformer-refs="logMsgIn">
 <% if (serviceTransactional) { %>
@@ -65,7 +70,7 @@ ${xmlNamespace.onewayService}
 
 <% } else if (inboundTransport=="FILE") { %> 
 				<file:inbound-endpoint
-					connector-ref="soitoolkit-file-connector"
+					connector-ref="${service}-robust-file-inbound-connector"
 					path="${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
@@ -122,19 +127,15 @@ ${xmlNamespace.onewayService}
 				</imap:inbound-endpoint>		
 <% } %> 
 
-            <expression-component doc:name="Propagate correlation Id to outbound">
-                message.outboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID] =
-                    sessionVars[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]
-            </expression-component>
-            <expression-component doc:name="Propagate originalFilename to outbound">
-                message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
-                    message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
-            </expression-component>
-
-            <object-to-byte-array-transformer doc:name="InputStream to byte[]"/>
+            <set-property propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+                value="#[sessionVars[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]"
+                doc:name="Propagate correlation Id to outbound" />            
+            <copy-properties propertyName="#[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]"
+                doc:name="Propagate originalFilename to outbound" />
 
             <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_IN}" doc:name="Set archive file name"/>
             <file:outbound-endpoint
+                connector-ref="soitoolkit-file-connector"
                 path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER_IN}"
                 transformer-refs="logArchiveIn"
                 outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive inbound file"/>

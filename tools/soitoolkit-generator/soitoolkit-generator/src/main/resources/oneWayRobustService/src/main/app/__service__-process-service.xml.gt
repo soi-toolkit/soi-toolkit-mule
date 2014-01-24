@@ -29,17 +29,10 @@ ${xmlNamespace.onewayService}
       <jms:transaction action="ALWAYS_BEGIN"/>
     </jms:inbound-endpoint>
     
-    <expression-component doc:name="Propagate correlation Id to outbound">
-        message.outboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID] =
-            message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]
-    </expression-component>
-    <!-- propagate originalFilename to outbound-->
-    <expression-component doc:name="Propagate filename">
-        message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
-            message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
-    </expression-component>
-
-    <!-- BEGIN TRANSFORMATION -->
+    <copy-properties propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+        doc:name="Propagate correlation Id to outbound" />    
+    <copy-properties propertyName="#[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]"
+        doc:name="Propagate originalFilename to outbound" />
 
 <% if (transformerType=="EE_DATAMAPPER") { %>
     <!-- Example DataMapper-config:
@@ -56,10 +49,10 @@ ${xmlNamespace.onewayService}
     <custom-transformer doc:name="Transform message"
         class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}Transformer"/>
 <% } %>
-    <!-- END TRANSFORMATION -->
 
     <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUT}" doc:name="Set archive file name"/>
     <file:outbound-endpoint
+        connector-ref="soitoolkit-file-connector"
         path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER_OUT}"
         transformer-refs="logArchiveOut"
         outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive outbound file"/>        
