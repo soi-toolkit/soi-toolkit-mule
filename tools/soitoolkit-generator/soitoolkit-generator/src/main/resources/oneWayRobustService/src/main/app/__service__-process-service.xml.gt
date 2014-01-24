@@ -54,16 +54,13 @@ ${xmlNamespace.onewayService}
     <logger doc:name="### DATAMAPPER PLACEHOLDER - DROP IN AND REPLACE ME! ###" message="DATAMAPPER PLACEHOLDER" level="DEBUG"/>
 <% } else { %>
     <!--
-    Note: declare encoding explicitly for in/out here (if String conversion is needed).
-    All other parts of the flow (where payload is not being transformed) should handle
-    payload in a binary format to avoid encoding issues.
+    Note: Aim for the transformer to explicitly handle any character encoding
+    from/to binary (byte[]) format and let the rest of the flow handle binary
+    payload only to avoid encoding issues (like having automatic conversion from
+    String to default encoding).
     -->
-    <byte-array-to-string-transformer encoding="ISO-8859-1" doc:name="Byte Array to String"/>
-
     <custom-transformer doc:name="Transform message"
         class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}Transformer"/>
-        
-    <string-to-byte-array-transformer encoding="ISO-8859-1" doc:name="String to Byte Array"/>
 <% } %>
     <!-- END TRANSFORMATION -->
 

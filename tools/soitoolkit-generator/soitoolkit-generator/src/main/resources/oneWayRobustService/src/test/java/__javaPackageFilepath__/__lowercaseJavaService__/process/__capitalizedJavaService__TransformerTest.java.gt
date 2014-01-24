@@ -11,20 +11,19 @@ public class ${capitalizedJavaService}TransformerTest {
 
 	@Test
 	public void testTransformer() throws Exception {
-
-    // Read input and expected result from testfiles as binary to avoid encoding issues 
-    byte [] inputBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/input.txt"));
-    byte [] expectedResultBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/expected-result.txt"));
-
-    // Take explicit control of encoding 
-    String input = new String(inputBinary, "UTF-8");
-    String expectedResult = new String(expectedResultBinary, "UTF-8");
+	
+		// Read input and expected result from testfiles as binary to avoid encoding issues
+		byte [] inputBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/input.txt"));
+		byte [] expectedResultBinary = IOUtils.toByteArray(new FileInputStream("src/test/resources/testfiles/${service}/expected-result.txt"));
 		
 		// Create the transformer under test and let it perform the transformation
 		${capitalizedJavaService}Transformer transformer = new ${capitalizedJavaService}Transformer();
-		String result = (String)transformer.doTransform(input, "UTF-8");
-
+		byte[] resultBinary = (byte[]) transformer.doTransform(inputBinary, null);
+		
 		// Compare the result to the expected value
+		// Take explicit control of encoding
+		String expectedResult = new String(expectedResultBinary, "UTF-8");
+		String result = new String(resultBinary, "UTF-8");
 		assertEquals(expectedResult, result);
 	}
 

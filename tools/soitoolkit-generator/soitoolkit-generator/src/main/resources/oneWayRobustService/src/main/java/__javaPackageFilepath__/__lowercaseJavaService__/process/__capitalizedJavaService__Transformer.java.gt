@@ -1,5 +1,7 @@
 package ${javaPackage}.${lowercaseJavaService}.process;
 
+import java.nio.charset.Charset;
+
 import org.mule.api.transformer.TransformerException;
 import org.mule.config.i18n.MessageFactory;
 import org.mule.transformer.AbstractTransformer;
@@ -9,18 +11,25 @@ import org.slf4j.LoggerFactory;
 public class ${capitalizedJavaService}Transformer extends AbstractTransformer {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}Transformer.class);
+	private static final Charset ENCODING_CHARSET_INBOUND = Charset.forName("UTF-8");
+	private static final Charset ENCODING_CHARSET_OUTBOUND = Charset.forName("UTF-8");
 	
 	/**
 	 * Simplest possible transformer that ...
+	 * <p>Character encoding from/to byte[] is handled within this class to let
+	 * other parts of the Mule-flow handle binary payloads and avoid encoding issues.
+	 *
+	 * @param src expects a byte[]
+	 * @return a byte[]
 	 */
 	@Override
 	protected Object doTransform(Object src, String encoding) throws TransformerException {
 
-		Object outMsg = null;
+		String outMsg = null;
 		
 		// Simplest possible sample transformation, convert leading "A" to "1" and "B" to "2", throw an exception for all other input
-		if (src instanceof String) {
-			String inMsg = (String)src;
+		if (src instanceof byte[]) {
+			String inMsg = new String((byte[]) src, ENCODING_CHARSET_INBOUND);
 
 			if (inMsg.startsWith("A")) {
 				log.debug("A message of type A is transformed to a message of type 1");
@@ -35,9 +44,10 @@ public class ${capitalizedJavaService}Transformer extends AbstractTransformer {
 			}
 
 		} else {
-			throw new TransformerException(MessageFactory.createStaticMessage("Unknown source: " + src.getClass().getName()), this);
+			throw new TransformerException(MessageFactory.createStaticMessage("Unknown source type: " + src.getClass().getName()), this);
 		}
 		
-		return outMsg;
+		// return byte[]
+		return outMsg.getBytes(ENCODING_CHARSET_OUTBOUND);
 	}
 }
