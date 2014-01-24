@@ -90,6 +90,7 @@
     <maven-verifier-plugin.version>1.0</maven-verifier-plugin.version>
     <maven-war-plugin.version>2.1</maven-war-plugin.version>
     <properties-maven-plugin.version>1.0-alpha-2</properties-maven-plugin.version>
+    <studio-maven-plugin.version>3.4.2</studio-maven-plugin.version>
 	</properties>
 	
     <repositories>
@@ -122,7 +123,21 @@
             </snapshots>
         </repository>
     </repositories>
+
+	  <pluginRepositories>
+	     <pluginRepository>
+	         <!-- for org.mule.tools:studio-maven-plugin -->
+	         <id>mulesoft</id>
+	         <name>mulesoft release repository</name>
+	         <layout>default</layout>
+	         <url>https://repository.mulesoft.org/releases/</url>
+	         <snapshots>
+	            <enabled>false</enabled>
+	         </snapshots>
+	     </pluginRepository>
+	  </pluginRepositories>
   
+
   <dependencyManagement>
     <dependencies>
       <!-- ****************************************************** -->
@@ -252,6 +267,15 @@
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <version>${maven-war-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <!--
+            Plugin for generating Mule Studio project files from a pom.xml using:
+              mvn studio:studio (instead of mvn eclipse:eclipse)
+          -->
+          <groupId>org.mule.tools</groupId>
+          <artifactId>studio-maven-plugin</artifactId>
+          <version>${studio-maven-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
