@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Ignore;
@@ -61,7 +63,7 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}ProcessIntegrationTest.class);
 	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 
-	private static final String ARCHIVE = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+	private static final String ARCHIVE_OUT = rb.getString("${uppercaseService}_ARCHIVE_FOLDER_OUT");
 
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
 	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
@@ -114,7 +116,7 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
 
 		doSetUpJms();
 
-		FileUtil.initFolder(new File(ARCHIVE));
+		FileUtil.initFolder(new File(ARCHIVE_OUT));
     }
 
 	private void doSetUpJms() {
@@ -187,7 +189,7 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
         
         assertTrue("correlation id forwarded to outbound",
         		corrId.equals(reply.getInboundProperty(PropertyNames.SOITOOLKIT_CORRELATION_ID)));
-        assertArchiveFiles(2, corrId);        
+        assertArchiveFiles(ARCHIVE_OUT, 1);    
     }
 
     /**
@@ -294,14 +296,9 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
         }
     }
 
-    void assertArchiveFiles(int expectedNoFiles, String expectedIdContainedInFilename) {
-        File dir = new File(ARCHIVE);
-        File[] files = dir.listFiles();
-        assertEquals("number of archive files", expectedNoFiles, files.length);
-        for (File file : files) {
-            log.debug("archive filename: {}", file.getName());
-            assertTrue("id in filename", file.getName().contains(expectedIdContainedInFilename));
-        }
+    void assertArchiveFiles(String archiveDir, int expectedNoFiles) {
+    	Collection<File> files = FileUtils.listFiles(new File(archiveDir), null, true);
+        assertEquals("number of archive files", expectedNoFiles, files.size());
     }
 
   	// using XMLUnit framework (v1.1 part of MuleStudio v3.4 runtime)

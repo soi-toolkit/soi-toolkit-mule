@@ -38,12 +38,6 @@ ${xmlNamespace.onewayService}
         message.outboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME] =
             message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]
     </expression-component>
-    
-    <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_INBOUND}" doc:name="Set archive file name"/>
-    <file:outbound-endpoint
-        path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-        transformer-refs="logArchiveOut"
-        outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive inbound file"/>
 
     <!-- BEGIN TRANSFORMATION -->
 
@@ -64,9 +58,9 @@ ${xmlNamespace.onewayService}
 <% } %>
     <!-- END TRANSFORMATION -->
 
-    <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUTBOUND}" doc:name="Set archive file name"/>
+    <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUT}" doc:name="Set archive file name"/>
     <file:outbound-endpoint
-        path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
+        path="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER_OUT}"
         transformer-refs="logArchiveOut"
         outputPattern="#[flowVars['archiveFilename']]" doc:name="Archive outbound file"/>        
     

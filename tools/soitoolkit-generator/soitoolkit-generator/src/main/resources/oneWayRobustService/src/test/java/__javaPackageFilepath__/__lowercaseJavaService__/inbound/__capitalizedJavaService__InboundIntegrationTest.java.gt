@@ -16,6 +16,7 @@ import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import javax.jms.TextMessage;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.api.routing.CouldNotRouteOutboundMessageException;
@@ -84,7 +86,7 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 	private static final String OUT_FOLDER = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
 <% } %> 
 <% if (inboundEndpointFilebased || outboundEndpointFilebased) { %>
-	private static final String ARCHIVE = rb.getString("${uppercaseService}_ARCHIVE_FOLDER");
+	private static final String ARCHIVE_IN = rb.getString("${uppercaseService}_ARCHIVE_FOLDER_IN");
 <% } %> 
 <% if (inboundTransport=="JMS") { %>
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
@@ -170,6 +172,8 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 <% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
 		doSetUpDb();
 <% } %> 
+
+		FileUtil.initFolder(new File(ARCHIVE_IN));
 
 <% if (inboundTransport=="FILE") { %>
 		FileUtil.initFolder(new File(IN_FOLDER));
@@ -316,7 +320,14 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
         assertEquals(0, jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE).size());
         
         // Verify that correlation id has been set, correlation id is needed in subsequent flows
-        assertNotNull("correlation id is set", reply.getInboundProperty(PropertyNames.SOITOOLKIT_CORRELATION_ID));        
+        assertNotNull("correlation id is set", reply.getInboundProperty(PropertyNames.SOITOOLKIT_CORRELATION_ID));
+        
+        assertArchiveFiles(ARCHIVE_IN, 1);
+    }
+
+    void assertArchiveFiles(String archiveDir, int expectedNoFiles) {
+    	Collection<File> files = FileUtils.listFiles(new File(archiveDir), null, true);
+        assertEquals("number of archive files", expectedNoFiles, files.size());
     }
 
 }
