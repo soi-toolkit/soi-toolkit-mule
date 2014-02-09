@@ -290,13 +290,11 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    // Robust file archive properties
 		    if (inboundTransport == JMS) {
 		    	// file archive props
-		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
-		    	cfg.println("# Note: the archive filename should include the correlationId used for event-logging");
-		    	cfg.println("#   to enable correlation between a log-event and a file in the archive.");
-		    	cfg.println(service + "_ARCHIVE_FILENAME_PREFIX=#[function:datestamp:yyyyMMdd.HHmmss.SSSZ]_#[message.inboundProperties[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]]");
-		    	cfg.println(service + "_ARCHIVE_FILENAME_SUFFIX=#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]");		    	
-		    	cfg.println(service + "_ARCHIVE_FILENAME_INBOUND=${" + service + "_ARCHIVE_FILENAME_PREFIX}_inbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");
-		    	cfg.println(service + "_ARCHIVE_FILENAME_OUTBOUND=${" + service + "_ARCHIVE_FILENAME_PREFIX}_outbound_${" + service + "_ARCHIVE_FILENAME_SUFFIX}");		    	
+		    	cfg.println("# Archiving: default is to archive in-files and out-files in separate dirs");
+		    	cfg.println(service + "_ARCHIVE_FOLDER_IN=" + archiveFolder + "/" + serviceName + "/in");
+		    	cfg.println(service + "_ARCHIVE_FOLDER_OUT=" + archiveFolder + "/" + serviceName + "/out");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_IN=#[function:datestamp:yyyy-MM-dd]/#[function:datestamp:yyyyMMdd-HHmmss.SSS]_#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]");
+		    	cfg.println(service + "_ARCHIVE_FILENAME_OUT=#[function:datestamp:yyyy-MM-dd]/#[function:datestamp:yyyyMMdd-HHmmss.SSS]_#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]");		    	
 		    }
 		    		    
 		    // Http properties
