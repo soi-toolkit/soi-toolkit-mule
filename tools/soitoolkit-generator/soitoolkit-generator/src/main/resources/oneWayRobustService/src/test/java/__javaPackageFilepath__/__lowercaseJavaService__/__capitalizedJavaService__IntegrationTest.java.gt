@@ -161,7 +161,7 @@ final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
 String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
 <% } %>
     String receivingService   = "${service}-outbound-teststub-service";
-		final  int timeout        = 7000;
+		final  int timeout        = 10000;
 		// read as binary, do not mess with any String encoding here
 		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
 		byte [] expectedResult = IOUtils.toByteArray(new FileInputStream(expectedResultFile));

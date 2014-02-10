@@ -139,8 +139,8 @@ public class OnewayRobustServiceGenerator implements Generator {
 		}
 
 		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
-		// Used by FILE-IN, FILE-OUT and SFTP-OUT
-		if (inboundTransport == FILE || outboundTransport == FILE) {
+		// Always used for archiving to file.
+		{
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
 		}
@@ -152,112 +152,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 		}
 		
 	}
-	
-    public void startGenerator_oneWayService_20130613_ORIGINAL() {
 
-    	gu.logInfo("Creates a OneWay-service, inbound transport: " + m.getInboundTransport() + ", outbound transport: " + m.getOutboundTransport() + ", type of transformer: " + m.getTransformerType());
-		TransportEnum inboundTransport  = TransportEnum.valueOf(m.getInboundTransport());
-		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
-
-		// FIXME. MULE STUDIO.
-//    	gu.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
-    	gu.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
-    	gu.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-service.mflow");
-		gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__Transformer.java.gt");
-
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
-		gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
-		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
-		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TransformerTest.java.gt");
-		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
-		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
-		
-	    // Servlet test sender (performs a mime multipart http post)
-	    if (inboundTransport == SERVLET || inboundTransport == HTTP) {
-			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestSender.java.gt");
-	    }
-
-//		TODO: Wait with attachments... 	    
-//	    if (inboundTransport == POP3 || inboundTransport == IMAP) {
-//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__/input-attachment.pdf.gt");
-//			gu.copyContentAndCreateFile("src/test/resources/testfiles/__service__/input-attachment.png.gt");
-//	    }
-
-		updatePropertyFiles(inboundTransport, outboundTransport);
-		
-		// Update mule-deploy.properties files with the new service
-		// (Everything in the folder src/main/app is loaded by mule-deploy.properties) so skip updating *ConfigXmlFile.
-		// updateConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
-		// updateTeststubsAndServicesConfigXmlFileWithNewService(gu.getOutputFolder(), m.getArtifactId(), m.getService());
-		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService());
-
-
-		// Add vm-connector to common file (one and the same for junit-tests and running mule server) if vm-transport is used for the first time
-		// Used by VM-IN, VM-OUT and SFTP-OUT
-		if (inboundTransport == VM || outboundTransport == VM || outboundTransport == SFTP) {
-			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the VM-transport";
-    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
-		}
-
-		// Add http-connector to common file (one and the same for junit-tests and running mule server) if http-transport is used for the first time
-		if (inboundTransport == HTTP || outboundTransport == HTTP) {
-			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the HTTP-transport";
-    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-http-connector.xml");
-		}
-
-		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
-		// Used by FILE-IN, FILE-OUT and SFTP-OUT
-		if (inboundTransport == FILE || outboundTransport == FILE || outboundTransport == SFTP) {
-			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
-    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
-		}
-
-		// TODO: Do the same with JDBC and SFTP as for FTP so we can eliminate selection of transport in the Create Integration Component Wizard!
-
-		// Add ftp-connector to config file (separate connectors used for junit-tests and running mule server) if ftp-transport is used for the first time
-		if (inboundTransport == FTP || outboundTransport == FTP) {
-			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FTP-transport";
-    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-ftp-connector-external.xml", "default");
-		}
-
-		// Is this flow based on a XA-transaction?
-	    if (m.isServiceXaTransactional()) {
-	    	
-	    	// Add JMS-XA-Connector if any endpoint is based on the JMS-transport 
-	    	if (inboundTransport == JMS || outboundTransport == JMS) {
-				String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JMS under a XA transaction";
-	    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-jms-xa-connector-activemq-external.xml", "default");
-	    	}
-
-	    	// Add JDBC-XA-DataSource if any endpoint is based on the JDBC-transport 
-	    	if (inboundTransport == JDBC || outboundTransport == JDBC) {
-
-	    		// Create XA-connector for JDBC if it not already exists 
-    			String jdbcXaConnectorConfigFilename = m.getArtifactId() + "-jdbc-xa-connector.xml";
-	    	    if (!new File(gu.getOutputFolder() + "/src/main/app/" + jdbcXaConnectorConfigFilename).exists()) {
-	    	    	gu.generateContentAndCreateFile("src/main/app/__artifactId__-jdbc-xa-connector.xml.gt");
-	    			updateMuleDeployPropertyFileConfigFile(gu.getOutputFolder(), jdbcXaConnectorConfigFilename);
-	    		}
-
-	    	    String comment = "Added " + new Date() + " since flow " + m.getService() + " uses JDBC under a XA transaction";
-	    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-jdbc-xa-datasource-derby-external.xml", "default");
-	    	}
-	    }
-				
-		if (inboundTransport == JDBC) {
-	    	updateSqlDdlFilesAddExportTable();
-	    	updateJdbcConnectorFileWithExportSql();
-			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ExportFromDbTransformer.java.gt");
-	    }
-		
-	    if (outboundTransport == JDBC) {
-	    	updateSqlDdlFilesAddImportTable();
-	    	updateJdbcConnectorFileWithImportSql();
-			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ImportToDbTransformer.java.gt");
-	    }
-	    
-    }
-    	
 	private void updatePropertyFiles(TransportEnum inboundTransport, TransportEnum outboundTransport) {
 
 		PrintWriter cfg = null;
@@ -320,7 +215,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 				// Mule 3.4.0 bug workaround for MULE-7160: set a low value of fileAge compared to polling interval to reduce risk of hitting the bug
 			    //cfg.println(service + "_INBOUND_POLLING_MS=1000");
 			    //cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
-			    cfg.println(service + "_INBOUND_POLLING_MS=2000");
+			    cfg.println(service + "_INBOUND_POLLING_MS=2500");
 			    cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
 		    }
 		    if (outboundTransport == FILE) {
@@ -329,7 +224,7 @@ public class OnewayRobustServiceGenerator implements Generator {
 				// Mule 3.4.0 bug workaround for MULE-7160: set a low value of fileAge compared to polling interval to reduce risk of hitting the bug
 			    //cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
 			    //cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=500");
-			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1500");
+			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=2000");
 			    cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=100");				
 		    }
 

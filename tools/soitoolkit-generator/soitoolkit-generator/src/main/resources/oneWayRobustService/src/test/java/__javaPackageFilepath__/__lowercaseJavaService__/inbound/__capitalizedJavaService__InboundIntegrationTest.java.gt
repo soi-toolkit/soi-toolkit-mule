@@ -238,7 +238,7 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 <% if (inboundTransport=="POP3" || inboundTransport=="IMAP" || outboundTransport=="SMTP") { %>
 		final  int timeout        = 30000; // Let's increase the timeout a bit since we have an email transport involved
 <% } else { %>
-		final  int timeout        = 5000;
+		final  int timeout        = 10000;
 <% } %>
 
 		// Verify that the message is transfered binary, without changes
