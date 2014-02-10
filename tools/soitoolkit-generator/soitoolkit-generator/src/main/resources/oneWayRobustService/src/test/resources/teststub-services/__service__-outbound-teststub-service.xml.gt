@@ -20,10 +20,10 @@ ${xmlNamespace.onewayTeststubService}
 				    connector-ref="soitoolkit-file-connector"
 					path="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
 					fileAge="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FILE_AGE_MS}"
-					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
-					transformer-refs="objToStr">
+					pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</file:inbound-endpoint>
+				<object-to-byte-array-transformer/>
 
 <% } else if (outboundTransport=="FTP") { %> 
 				<ftp:inbound-endpoint 

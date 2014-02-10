@@ -19,6 +19,8 @@ import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.api.config.MuleProperties;
 import org.mule.transport.file.FileConnector;
+import org.mule.transport.ftp.FtpConnector;
+import org.mule.transport.sftp.SftpConnector;
 import org.mule.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,22 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
 	
+<% if (inboundEndpointFilebased) { %>
   private static final String IN_FOLDER       = rb.getString("${uppercaseService}_INBOUND_FOLDER");
+<% } %>	
+
+<% if (outboundEndpointFilebased) { %>
   private static final String OUT_FOLDER      = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
+<% } %>	
+
+<% if (inboundTransport=="VM") { %>
+	private static final String IN_VM_QUEUE = rb.getString("${uppercaseService}_IN_VM_QUEUE");
+<% } %> 
+
+<% if (outboundTransport=="VM") { %>
+	private static final String OUT_VM_QUEUE = rb.getString("${uppercaseService}_OUT_VM_QUEUE");
+<% } %>
+  
   private static final String ARCHIVE_IN         = rb.getString("${uppercaseService}_ARCHIVE_FOLDER_IN");
   private static final String ARCHIVE_OUT         = rb.getString("${uppercaseService}_ARCHIVE_FOLDER_OUT");
 	private static final String IN_QUEUE        = rb.getString("${uppercaseService}_IN_QUEUE");
@@ -80,7 +96,14 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
   @Override
 	protected String getConfigResources() {
 	  return "soitoolkit-mule-jms-connector-activemq-embedded.xml,"
+	      
+<% if (inboundTransport=="FTP" || outboundTransport=="FTP") { %>
 	      + "soitoolkit-mule-ftp-connector-embedded.xml,"
+<% } %>
+<% if (inboundTransport=="SFTP" || outboundTransport=="SFTP") { %>
+	      + "soitoolkit-mule-sftp-connector-embedded.xml,"
+<% } %>
+
 	      + "${artifactId}-common.xml,"
 	      + "${service}-inbound-service.xml,"
 	      + "${service}-process-service.xml,"
@@ -92,10 +115,26 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	protected void doSetUp() throws Exception {
 		super.doSetUp();
 		doSetUpJms();
-		FileUtil.initFolder(new File(IN_FOLDER));
+
 		FileUtil.initFolder(new File(ARCHIVE_IN));
 		FileUtil.initFolder(new File(ARCHIVE_OUT));
-		FtpUtil.initEndpointDirectory(muleContext, "${service}-outbound-endpoint");
+
+<% if (inboundTransport=="FILE") { %>
+		FileUtil.initFolder(new File(IN_FOLDER));
+<% } %>
+<% if (outboundTransport=="FILE") { %>
+		FileUtil.initFolder(new File(OUT_FOLDER));
+<% } %>
+<% if (inboundTransport=="FTP") { %>
+		// Clear ftp-directories used for inbound endpoint
+		// TODO: Also reset the archive
+		FtpUtil.initEndpointDirectory(muleContext, "${service}-inbound-endpoint");		
+<% } %> 
+<% if (outboundTransport=="FTP") { %>
+		// Clear ftp-directories used for outbound endpoint
+		// TODO: Also reset the archive
+		FtpUtil.initEndpointDirectory(muleContext, "${service}-outbound-endpoint");		
+<% } %>
 	}
 
 	private void doSetUpJms() {
@@ -126,13 +165,32 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
 		// read as binary, do not mess with any String encoding here
 		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
 		byte [] expectedResult = IOUtils.toByteArray(new FileInputStream(expectedResultFile));
-				
+
+<% if (inboundEndpointFilebased) { %>
 		// add originalFilename - originalFilename is expected to be set for this flow
 		String filename = "fname_" + UUID.getUUID() + ".bin";
-		props.put(FileConnector.PROPERTY_FILENAME, filename);
-		
+<% } %>
+
+<% if (inboundTransport=="FILE") { %>
 		// Setup inbound endpoint for file-transport
 		String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
+		props.put(FileConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="FTP") { %>
+		// Setup inbound endpoint for file-transport
+		String inboundEndpoint = "ftp://" + IN_FOLDER + "?connector=soitoolkit-ftp-connector";
+		props.put(FtpConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="SFTP") { %>
+		// Setup inbound endpoint for sftp
+		String inFolder        = rb.getString("${uppercaseService}_INBOUND_SFTP_FOLDER");
+		String inboundEndpoint = "sftp://" + inFolder + "?connector=soitoolkit-sftp-connector";
+		props.put(SftpConnector.PROPERTY_FILENAME, filename);
+
+<% } else if (inboundTransport=="VM") { %>
+		// Setup inbound endpoint for vm-transport
+		String inboundEndpoint = "vm://" + IN_VM_QUEUE + "?connector=soitoolkit-vm-connector";
+<% } %> 
 
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service
 		MuleMessage reply = dispatchAndWaitForServiceComponent(inboundEndpoint, input, props, receivingService, timeout);
@@ -146,7 +204,10 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
 <% } else { %>
     // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
     assertArrayEquals(expectedResult, transformedMessage);
+  <% if (inboundEndpointFilebased && outboundEndpointFilebased) { %>
     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+  <% } %>
+  
 <% } %>
 
     // Verify JMS-queues

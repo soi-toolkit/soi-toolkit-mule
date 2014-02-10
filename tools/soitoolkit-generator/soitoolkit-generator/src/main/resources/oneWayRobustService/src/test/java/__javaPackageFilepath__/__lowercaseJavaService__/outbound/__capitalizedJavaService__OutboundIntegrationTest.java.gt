@@ -199,14 +199,16 @@ public class ${capitalizedJavaService}OutboundIntegrationTest extends AbstractTe
 				+ " Also add different line endings. LF: \\n. CR + LF: \\r\\n.";
 		byte[] input          = inputStr.getBytes("UTF-8");
 		byte[] expectedResult = input;
-		
+
+<% if (inboundEndpointFilebased) { %>
 		// add originalFilename - originalFilename is expected to be set for this flow
 		String filename = "fname_" + UUID.getUUID() + ".bin";
 		props.put(FileConnector.PROPERTY_ORIGINAL_FILENAME, filename);
-		
+<% } %>
+
     // add correlation id inbound property - correlation id is expected to be set for this flow
 		String corrId = UUID.getUUID();
-		props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);		
+		props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);
 
 		// Setup inbound endpoint for jms
 		String inboundEndpoint = "jms://" + IN_QUEUE + "?connector=soitoolkit-jms-connector";
@@ -216,8 +218,9 @@ public class ${capitalizedJavaService}OutboundIntegrationTest extends AbstractTe
 
     byte[] transformedMessage = (byte[]) reply.getPayload();    
 		assertArrayEquals("message should be transfered binary and unchanged", expectedResult, transformedMessage);
+<% if (inboundEndpointFilebased && outboundEndpointFilebased) { %>
 		assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
-		
+<% } %>
 		// Verify inbound jms-queues
         assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
         assertEquals(0, jmsUtil.browseMessagesOnQueue(DEADLETTER_QUEUE).size());

@@ -101,7 +101,7 @@ public class OneWayRobustServiceGeneratorTest {
 		*/
 	}
 
-	@Test
+	//@Test
 	public void testOneWayRobustServicesInOneCommonIC_using_DataMapper() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
@@ -209,7 +209,7 @@ public class OneWayRobustServiceGeneratorTest {
 	}
 
 	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
-		TransportEnum[] inboundTransports  = {FILE};
+		TransportEnum[] inboundTransports  = {FILE, FTP, VM};
 		if (deploymentModel == WAR_DEPLOY) {
 			inboundTransports = appendTransport(inboundTransports, SERVLET);
 		}
@@ -217,7 +217,8 @@ public class OneWayRobustServiceGeneratorTest {
 	}
 
 	private TransportEnum[] getOutboundTransports() {
-		TransportEnum[] outboundTransports = {FTP};  
+		//TransportEnum[] outboundTransports = {FILE, FTP, SFTP, VM};
+		TransportEnum[] outboundTransports = {FILE, FTP, VM};
 		return outboundTransports;
 	}
 
@@ -228,6 +229,7 @@ public class OneWayRobustServiceGeneratorTest {
 		TRANSPORTS.add(JMS);
 		TRANSPORTS.add(FILE);
 		TRANSPORTS.add(FTP);
+		TRANSPORTS.add(SFTP);
 		if (deploymentModel == WAR_DEPLOY) {
 			TRANSPORTS.add(SERVLET);
 		}

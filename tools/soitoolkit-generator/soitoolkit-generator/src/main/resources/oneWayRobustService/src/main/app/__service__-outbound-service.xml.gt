@@ -14,9 +14,7 @@ ${xmlNamespace.onewayService}
                     connector-ref="soitoolkit-vm-connector" 
                     path="${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}" 
                     transformer-refs="logMsgOut">
-<% if (serviceTransactional) { %>
-					<vm:transaction action="ALWAYS_JOIN" />
-<% } %> 
+					<vm:transaction action="NONE" />
 				</vm:outbound-endpoint>
 
 <% } else if (outboundTransport=="JMS") { %>
@@ -46,22 +44,26 @@ ${xmlNamespace.onewayService}
 				    connector-ref="soitoolkit-file-connector"
 					path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-					outputPattern="#[header:originalFilename]"
+					outputPattern="#[message.inboundProperties['originalFilename']]"
 <% } else { %> 
 					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
                     transformer-refs="logMsgOut"/>
 
-<% } else if (outboundTransport=="FTP") { %> 
+<% } else if (outboundTransport=="FTP") { %>
 				<ftp:outbound-endpoint
 					name="${service}-outbound-endpoint"
-                    connector-ref="soitoolkit-ftp-connector"
+					connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
 					outputPattern="#[message.inboundProperties[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]]"
-                    responseTimeout="10000"
-                    binary="true"
-                    passive="true"
-                    transformer-refs="logMsgOut" />                                        
+<% } else { %> 
+					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+					responseTimeout="10000"
+					binary="true"
+					passive="true"
+					transformer-refs="logMsgOut" />
 
 <% } else if (outboundTransport=="SFTP") { %> 
 				<vm:outbound-endpoint connector-ref="soitoolkit-vm-connector" path="${service}-service" />

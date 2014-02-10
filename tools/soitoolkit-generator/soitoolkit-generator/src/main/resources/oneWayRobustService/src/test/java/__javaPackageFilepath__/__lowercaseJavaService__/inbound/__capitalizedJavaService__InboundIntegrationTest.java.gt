@@ -85,9 +85,9 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 <% if (outboundTransport=="FILE" || outboundTransport=="FTP") { %>
 	private static final String OUT_FOLDER = rb.getString("${uppercaseService}_OUTBOUND_FOLDER");
 <% } %> 
-<% if (inboundEndpointFilebased || outboundEndpointFilebased) { %>
+
 	private static final String ARCHIVE_IN = rb.getString("${uppercaseService}_ARCHIVE_FOLDER_IN");
-<% } %> 
+
 <% if (inboundTransport=="JMS") { %>
 	private static final String IN_QUEUE         = rb.getString("${uppercaseService}_IN_QUEUE");
 	private static final String DEADLETTER_QUEUE = rb.getString("${uppercaseService}_DL_QUEUE");
@@ -311,7 +311,9 @@ public class ${capitalizedJavaService}InboundIntegrationTest extends AbstractTes
 
 		// Verify the result, i.e. the transformed message - binary assert, file should not have changed here
 		assertArrayEquals(expectedResult, transformedMessage);
+<% if (inboundEndpointFilebased) { %>
 		assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+<% } %>
 		
 		// Verify outbound jms-queues, i.e. that the teststub-producer has consumed it
         assertEquals(0, jmsUtil.browseMessagesOnQueue(OUT_QUEUE).size());

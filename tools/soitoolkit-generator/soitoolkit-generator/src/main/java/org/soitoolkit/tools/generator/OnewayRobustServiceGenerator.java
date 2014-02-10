@@ -130,10 +130,17 @@ public class OnewayRobustServiceGenerator implements Generator {
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		// add properties for internal JMS queues
 		updatePropertyFiles(TransportEnum.JMS, TransportEnum.JMS);
-		
+
+		// Add vm-connector to common file (one and the same for junit-tests and running mule server) if vm-transport is used for the first time
+		// Used by VM-IN, VM-OUT and SFTP-OUT
+		if (inboundTransport == VM || outboundTransport == VM) {
+			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the VM-transport";
+    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
+		}
+
 		// Add file-connector to common file (one and the same for junit-tests and running mule server) if file-transport is used for the first time
 		// Used by FILE-IN, FILE-OUT and SFTP-OUT
-		if (inboundTransport == FILE || outboundTransport == FILE || outboundTransport == SFTP) {
+		if (inboundTransport == FILE || outboundTransport == FILE) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
     		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-file-connector.xml");
 		}
@@ -310,14 +317,20 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    // File properties
 		    if (inboundTransport == FILE) {
 				cfg.println(service + "_INBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/inbound");
-			    cfg.println(service + "_INBOUND_POLLING_MS=1000");
+				// Mule 3.4.0 bug workaround for MULE-7160: set a low value of fileAge compared to polling interval to reduce risk of hitting the bug
+			    //cfg.println(service + "_INBOUND_POLLING_MS=1000");
+			    //cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
+			    cfg.println(service + "_INBOUND_POLLING_MS=2000");
 			    cfg.println(service + "_INBOUND_FILE_AGE_MS=500");
 		    }
 		    if (outboundTransport == FILE) {
 				cfg.println(service + "_OUTBOUND_FOLDER=${" + service + "_TESTSTUB_INBOUND_FOLDER}");
 				cfg.println(service + "_TESTSTUB_INBOUND_FOLDER=" + fileRootFolder + "/" + serviceName + "/outbound");
-			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
-			    cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=500");
+				// Mule 3.4.0 bug workaround for MULE-7160: set a low value of fileAge compared to polling interval to reduce risk of hitting the bug
+			    //cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1000");
+			    //cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=500");
+			    cfg.println(service + "_TESTSTUB_INBOUND_POLLING_MS=1500");
+			    cfg.println(service + "_TESTSTUB_INBOUND_FILE_AGE_MS=100");				
 		    }
 
 		    // FTP properties
@@ -347,17 +360,13 @@ public class OnewayRobustServiceGenerator implements Generator {
 		    }
 
 		    // Properties common to all filebased transports
-//		    if (m.isInboundEndpointFilebased() || m.isOutboundEndpointFilebased()) {
-//		    	cfg.println(service + "_ARCHIVE_FOLDER=" + archiveFolder + "/" + serviceName);
-//		    }
-//		    if (m.isOutboundEndpointFilebased()) {
-//			    cfg.println(service + "_ARCHIVE_RESEND_POLLING_MS=1000");
-//			    
-//		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
-//				if (!m.isInboundEndpointFilebased()) {
-//			    	cfg.println(service + "_OUTBOUND_FILE=outfile.txt");
-//			    }
-//		    }
+		    if (m.isOutboundEndpointFilebased()) {
+			    
+		    	// If we don't have a file based inbound endpoint (e.g. transport) we have to specify the name of the out-file ourself...
+				if (!m.isInboundEndpointFilebased()) {
+			    	cfg.println(service + "_OUTBOUND_FILE=#[function:datestamp:yyyyMMdd-HHmmss.SSS]_outfile.txt");
+			    }
+		    }
 
 		    // Properties common to POP3, IMAP and SMTP (Inb POP3 and IMAP needs SMTP to send testmessages in junit-testcode)
 		    if (inboundTransport == POP3 || inboundTransport == IMAP || outboundTransport == SMTP) {

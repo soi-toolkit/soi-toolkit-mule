@@ -150,11 +150,13 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
 		// read as binary, do not mess with any String encoding here
 		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
 		byte [] expectedResult = IOUtils.toByteArray(new FileInputStream(expectedResultFile));
-				
+
+<% if (inboundEndpointFilebased) { %>
 		// add originalFilename - originalFilename is expected to be set for this flow
 		String filename = "fname_" + UUID.getUUID() + ".bin";
 		props.put(FileConnector.PROPERTY_ORIGINAL_FILENAME, filename);
-		
+<% } %>
+
     // add correlation id inbound property - correlation id is expected to be set for this flow
 		String corrId = UUID.getUUID();
 		props.put(PropertyNames.SOITOOLKIT_CORRELATION_ID, corrId);
@@ -174,7 +176,9 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
 <% } else { %>
     // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
     assertArrayEquals(expectedResult, transformedMessage);
+  <% if (inboundEndpointFilebased) { %>
     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+  <% } %>
 <% } %>
 
 		// Verify inbound jms-queues
