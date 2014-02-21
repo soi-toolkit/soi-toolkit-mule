@@ -76,11 +76,14 @@
       http://www.mulesoft.org/documentation/display/MULE3EXAMPLES/Bookstore+Example
   -->
   <jetty:connector name="jettyConnector">
-    <!--
-  	<jetty:tls-client path="clientKeyStore" storePassword="password"/>
-  	-->
   	<jetty:tls-key-store path="${HTTPS_TLS_KEYSTORE}" keyPassword="${HTTPS_TLS_KEY_PASSWORD}" storePassword="${HTTPS_TLS_KEYSTORE_PASSWORD}"/>
+  	<!--
+  	DO NOT CONFIGURE TRUSTSTORE HERE - OVERRIDES JAVA DEFAULT TRUSTSTORE (cacerts) AND BECOMES THE MULE-CONTAINER GLOBAL TRUSTSTORE!
+  	
+  	REF: soi-tk issue #365
+  	
   	<jetty:tls-server path="${HTTPS_TLS_TRUSTSTORE}" storePassword="${HTTPS_TLS_TRUSTSTORE_PASSWORD}"/>
+  	-->
   	<jetty:webapps directory="${app.home}/webapps" host="${HTTPS_HOST}" port="${HTTPS_PORT}"/>
   </jetty:connector>
   
