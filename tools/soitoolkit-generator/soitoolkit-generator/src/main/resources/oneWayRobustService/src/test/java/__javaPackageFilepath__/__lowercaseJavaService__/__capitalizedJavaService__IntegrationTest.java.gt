@@ -196,7 +196,12 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
     assertArrayEquals(expectedResult, transformedMessage);
   <% if (inboundEndpointFilebased && outboundEndpointFilebased) { %>
+    <% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+    // NOTE: pre Mule 3.4 uses outbound scope, change to inbound scope below for Mule 3.4 or higher
+    assertEquals("filename should be set", filename, reply.getOutboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+    <% } else { %>
     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+    <% } %>
   <% } %>
 
     // Verify JMS-queues

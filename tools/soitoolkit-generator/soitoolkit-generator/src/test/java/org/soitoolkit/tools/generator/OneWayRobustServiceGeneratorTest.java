@@ -23,13 +23,10 @@ import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.WAR
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.IMAP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JDBC;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.POP3;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
@@ -46,7 +43,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ModelFactory;
@@ -54,8 +50,8 @@ import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
-import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
+import org.soitoolkit.tools.generator.util.SystemUtil;
 
 public class OneWayRobustServiceGeneratorTest {
 
@@ -89,32 +85,11 @@ public class OneWayRobustServiceGeneratorTest {
 	public void testOneWayRobustServicesInOneCommonIC() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
-		//#HD TODO fix for all versions
-		doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator",
-				"onewayRobustSA-mule" + MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly(),
-				MuleVersionEnum.MULE_3_4_0, STANDALONE_DEPLOY);
-		
-		/*
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
-		*/
-	}
-
-	@Ignore("TODO: maybe remove support for DataMapper?")
-	@Test
-	public void testOneWayRobustServicesInOneCommonIC_using_DataMapper() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		//#HD TODO fix for all versions
-		doTestOneWayRobustServicesInOneCommonIC_using_DataMapper("org.soitoolkit.tool.generator",
-				"onewayRobustSA-datamapper-mule" + MuleVersionEnum.MULE_3_4_0_EE.getVerNoNumbersOnly(),
-				MuleVersionEnum.MULE_3_4_0_EE, STANDALONE_DEPLOY);
-		/*
-		for (int i = 0; i < muleVersions.length; i++) {
-			doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
-		}
-		*/
 	}
 	
 	/**
@@ -126,14 +101,11 @@ public class OneWayRobustServiceGeneratorTest {
 	public void testOneWayRobustServicesInOneCommonICWithOtherName() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
-		//#HD TODO fix for all versions
-		doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-mule" + MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly(), MuleVersionEnum.MULE_3_4_0, STANDALONE_DEPLOY);
-		
-		/*
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
-		*/
 	}
 
 	/**
@@ -145,14 +117,11 @@ public class OneWayRobustServiceGeneratorTest {
 	public void testOneWayRobustServicesOneICPerService() throws IOException {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
-		//#HD TODO fix for all versions
-		doTestOneWayRobustServicesOneICPerService("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly(), MuleVersionEnum.MULE_3_4_0, STANDALONE_DEPLOY);
-		
-		/*
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewayRobustSA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestOneWayRobustServicesOneICPerService("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
-		*/
 	}
 
 	private void doTestOneWayRobustServicesInOneCommonIC(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
@@ -164,21 +133,6 @@ public class OneWayRobustServiceGeneratorTest {
 		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
 			for (TransportEnum outboundTransport : getOutboundTransports()) {
 				createOneWayRobustService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
-			}
-		}
-
-		performMavenBuild(projectFolder);
-	}
-
-	private void doTestOneWayRobustServicesInOneCommonIC_using_DataMapper(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel) throws IOException {
-
-		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
-		
-		createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);	
-
-		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
-			for (TransportEnum outboundTransport : getOutboundTransports()) {
-				createOneWayRobustService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.EE_DATAMAPPER, projectFolder);
 			}
 		}
 

@@ -219,7 +219,12 @@ public class ${capitalizedJavaService}OutboundIntegrationTest extends AbstractTe
     byte[] transformedMessage = (byte[]) reply.getPayload();    
 		assertArrayEquals("message should be transfered binary and unchanged", expectedResult, transformedMessage);
 <% if (inboundEndpointFilebased && outboundEndpointFilebased) { %>
-		assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+    <% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+    // NOTE: pre Mule 3.4 uses outbound scope, change to inbound scope below for Mule 3.4 or higher
+    assertEquals("filename should be set", filename, reply.getOutboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+    <% } else { %>
+    assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
+    <% } %>
 <% } %>
 		// Verify inbound jms-queues
         assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
