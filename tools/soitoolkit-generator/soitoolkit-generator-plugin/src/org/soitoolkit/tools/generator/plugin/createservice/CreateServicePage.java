@@ -231,8 +231,8 @@ public class CreateServicePage extends WizardPage {
 					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "SMTP"});
 					break;
 				case MEP_ONE_WAY_ROBUST:
-					inboundTransportCombo.setItems  (new String [] {"File"}); 
-					outboundTransportCombo.setItems (new String [] {"FTP"});
+					inboundTransportCombo.setItems  (new String [] {"File", "FTP", "VM"});
+					outboundTransportCombo.setItems (new String [] {"File", "FTP", "VM"});
 					break;
 				case MEP_PUBLISH_SUBSCRIBE:
 					inboundTransportCombo.setItems  (new String [] {"JMS"});
@@ -582,11 +582,17 @@ public class CreateServicePage extends WizardPage {
 
 	public TransportEnum getSelectedOneWayRobustInboundTransport() {
 		
-		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"File"});
+		// Keep in synch with: inboundTransportCombo.setItems  (new String [] {"File", "FTP", "VM"});
 		TransportEnum t = null;
 		switch (selectedInboundTransport) {
 		case 0: 
 			t = TransportEnum.FILE;
+			break;
+		case 1: 
+			t = TransportEnum.FTP;
+			break;
+		case 2: 
+			t = TransportEnum.VM;
 			break;
 		}
 		return t;
@@ -677,11 +683,17 @@ public class CreateServicePage extends WizardPage {
 
 	private TransportEnum getSelectedOneWayRobustOutboundTransport() {
 
-		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"FTP"});
+		// Keep in synch with: outboundTransportCombo.setItems (new String [] {"File", "FTP", "VM"});
 		TransportEnum t = null;
 		switch (selectedOutboundTransport) {
 		case 0:
+			t = TransportEnum.FILE;
+			break;
+		case 1:
 			t = TransportEnum.FTP;
+			break;
+		case 2:
+			t = TransportEnum.VM;
 			break;
 		}
 		return t;
