@@ -237,10 +237,10 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 
 		// TODO issue #345: DataMapper support - we need to run the maven goal "studio:studio" here
 		// hardcoded for now
-		if (transformerType == TransformerEnum.EE_DATAMAPPER) {
-			System.err.println("issue #345: HARDCODED maven eclipse goal to studio:stduio for Mule-EE");
-			mavenEclipseGoalType = MavenEclipseGoalEnum.MULESTUDIO_MULESTUDIO.ordinal();
-		}
+		//if (transformerType == TransformerEnum.EE_DATAMAPPER) {
+			//System.err.println("issue #345: HARDCODED maven eclipse goal to studio:stduio for Mule-EE");
+			//mavenEclipseGoalType = MavenEclipseGoalEnum.MULESTUDIO_MULESTUDIO.ordinal();
+		//}
 				
 		String buildCommand = "mvn" + (SwtUtil.isWindows() ? ".bat" : "") + " " + MavenEclipseGoalEnum.get(mavenEclipseGoalType).getLabel();
 
