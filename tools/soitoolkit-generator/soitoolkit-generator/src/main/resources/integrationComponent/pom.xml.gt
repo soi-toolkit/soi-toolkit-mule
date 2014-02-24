@@ -230,71 +230,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		    </execution>
 		  </executions>
 		</plugin>
-		
-<% if (muleVersion.isEEVersion()) { %>
-<!--
-Begin: DataMapper config.
-
-Mule EE DataMapper config (added for Mule EE 3.4.0).
-
-Make CloverETL-available for test execution (as in EE knowledgebase (KB) article 00000767).
-
-Also reuires license setup, see KB 00000834.
-Also requires custom/fixed deploy of Mule-libs to maven-repo, see KB 00000709.
--->		
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <version>2.4</version>
-      <executions>
-        <execution>
-        <id>copy-clover-plugins</id>
-        <phase>validate</phase>
-        <goals>
-          <goal>copy</goal>
-        </goals>
-        <configuration>
-          <overWriteReleases>true</overWriteReleases>
-          <overWriteSnapshots>true</overWriteSnapshots>
-          <overWriteIfNewer>true</overWriteIfNewer>
-          <stripVersion>true</stripVersion>
-          <outputDirectory>${dollarSymbol}{project.build.testOutputDirectory}</outputDirectory>
-          <artifactItems>
-            <artifactItem>
-              <groupId>com.cloveretl</groupId>
-              <artifactId>cloveretl-engine</artifactId>
-              <version>${muleVersion.pomSuffix}</version> <!-- version for Mule 3.4.0, Mule 3.3.x had CloverETL-version inconsistent with the Mule-version -->
-              <type>zip</type>
-            </artifactItem>
-          </artifactItems>
-        </configuration>
-        </execution>
-      </executions>
-    </plugin>
-    <plugin>
-      <artifactId>maven-antrun-plugin</artifactId>
-      <version>1.7</version>
-      <executions>
-        <execution>
-          <phase>compile</phase>
-          <configuration>
-            <tasks>
-              <!-- Using an ant task to deflate cloveretl-engine.zip -->
-              <unzip src="${dollarSymbol}{project.build.testOutputDirectory}/cloveretl-engine.zip"
-              dest="${dollarSymbol}{project.build.testOutputDirectory}" />
-            </tasks>
-          </configuration>
-          <goals>
-            <goal>run</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>	
-<!--
-End: DataMapper config.
--->
-<% } %>
-		
+				
       </plugins>
 
     </build>
