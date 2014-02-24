@@ -90,8 +90,8 @@ public class GenServiceMojo extends AbstractMojo {
     private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP","RESTHTTP","JMS"};
     private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "SERVLET", "POP3", "IMAP"};
     private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "SMTP"};
-    private static String[] allowedOneWayRobustInboundTransport  = new String[] {"FILE"};
-    private static String[] allowedOneWayRobustOutboundTransport = new String[] {"FTP"};
+    private static String[] allowedOneWayRobustInboundTransport  = new String[] {"FILE", "FTP", "VM"};
+    private static String[] allowedOneWayRobustOutboundTransport = new String[] {"FILE", "FTP", "VM"};
     
     public void execute() throws MojoExecutionException {
     	
