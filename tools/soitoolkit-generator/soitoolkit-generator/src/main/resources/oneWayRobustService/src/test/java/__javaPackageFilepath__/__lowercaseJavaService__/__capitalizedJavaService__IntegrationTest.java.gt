@@ -153,14 +153,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
     public void test${capitalizedJavaService}_endToEnd_ok() throws Exception {
 
 		Map<String, String> props = new HashMap<String, String>();
-<% if (transformerType=="EE_DATAMAPPER") { %>
-    final  String inputFile   = "src/test/resources/testfiles/${service}/input.xml";
-    String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.xml";
-<% } else { %>
-final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
-String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
-<% } %>
-    String receivingService   = "${service}-outbound-teststub-service";
+		final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+		String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
+		String receivingService   = "${service}-outbound-teststub-service";
 		final  int timeout        = 10000;
 		// read as binary, do not mess with any String encoding here
 		byte [] input = IOUtils.toByteArray(new FileInputStream(inputFile));
@@ -198,17 +193,11 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
     byte[] transformedMessage = (byte[]) reply.getPayload();
 
     // Verify the result, i.e. the transformed message
-<% if (transformerType=="EE_DATAMAPPER") { %>
-    // use XML-diff here to ignore non-significant whitespace
-    assertXmlSimilar(new FileInputStream(expectedResultFile), new ByteArrayInputStream(transformedMessage));
-<% } else { %>
     // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
     assertArrayEquals(expectedResult, transformedMessage);
   <% if (inboundEndpointFilebased && outboundEndpointFilebased) { %>
     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
   <% } %>
-  
-<% } %>
 
     // Verify JMS-queues
     assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());

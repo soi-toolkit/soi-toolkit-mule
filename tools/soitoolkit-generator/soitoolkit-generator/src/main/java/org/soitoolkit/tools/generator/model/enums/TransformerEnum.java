@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.model.enums;
 
 public enum TransformerEnum implements ILabeledEnum {
-	JAVA("Java"), SMOOKS("Smooks"), EE_DATAMAPPER("EE-DataMapper");
+	JAVA("Java"), SMOOKS("Smooks");
 
 	public static TransformerEnum get(int ordinal) {
 		return values()[ordinal];

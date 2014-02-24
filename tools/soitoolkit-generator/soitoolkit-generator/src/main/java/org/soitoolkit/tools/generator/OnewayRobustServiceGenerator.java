@@ -97,12 +97,6 @@ public class OnewayRobustServiceGenerator implements Generator {
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
 			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
 		}
-		else if (transformerType == TransformerEnum.EE_DATAMAPPER) {
-			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/process/MappingHelper.java.gt");
-			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/process/MappingHelperTest.java.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.xml.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.xml.gt");
-		}
 		else {
 			throw new IllegalArgumentException("Transformer type not supported for this kind of flow: " + transformerType);
 		}		

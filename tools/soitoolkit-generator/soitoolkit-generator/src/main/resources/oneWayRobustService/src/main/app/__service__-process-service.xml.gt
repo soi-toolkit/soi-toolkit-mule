@@ -14,14 +14,7 @@ ${xmlNamespace.onewayService}
 			</spring:map>
 		</spring:property>
 	</custom-transformer>
-  
-<% if (transformerType=="EE_DATAMAPPER") { %>
-  <!-- Example DataMapper-config:  
-  <data-mapper:config name="mapping1_grf" transformationGraphPath="mapping1.grf"
-      doc:name="mapping1_grf"></data-mapper:config>
-  -->
-<% } %>
-  
+    
   <flow name="${service}-process-service" doc:name="${service}-process-service">
     <jms:inbound-endpoint connector-ref="${jmsInboundConnector}"
         queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}"
@@ -34,12 +27,6 @@ ${xmlNamespace.onewayService}
     <copy-properties propertyName="#[org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME]"
         doc:name="Propagate originalFilename to outbound" />
 
-<% if (transformerType=="EE_DATAMAPPER") { %>
-    <!-- Example DataMapper-config:
-    <data-mapper:transform config-ref="mapping1_grf" doc:name="DataMapper"></data-mapper:transform>
-    -->
-    <logger doc:name="### DATAMAPPER PLACEHOLDER - DROP IN AND REPLACE ME! ###" message="DATAMAPPER PLACEHOLDER" level="DEBUG"/>
-<% } else { %>
     <!--
     Note: Aim for the transformer to explicitly handle any character encoding
     from/to binary (byte[]) format and let the rest of the flow handle binary
@@ -48,7 +35,6 @@ ${xmlNamespace.onewayService}
     -->
     <custom-transformer doc:name="Transform message"
         class="${javaPackage}.${lowercaseJavaService}.process.${capitalizedJavaService}Transformer"/>
-<% } %>
 
     <set-variable variableName="archiveFilename" value="${dollarSymbol}{${uppercaseService}_ARCHIVE_FILENAME_OUT}" doc:name="Set archive file name"/>
     <file:outbound-endpoint

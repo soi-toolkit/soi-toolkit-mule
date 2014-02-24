@@ -138,13 +138,8 @@ public class ${capitalizedJavaService}ProcessIntegrationTest extends AbstractTes
     public void test${capitalizedJavaService}_process_ok() throws Exception {
 
 		Map<String, String> props = new HashMap<String, String>();
-<% if (transformerType=="EE_DATAMAPPER") { %>
-    final  String inputFile   = "src/test/resources/testfiles/${service}/input.xml";
-    String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.xml";
-<% } else { %>
-final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
-String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
-<% } %>
+		final  String inputFile   = "src/test/resources/testfiles/${service}/input.txt";
+		String expectedResultFile = "src/test/resources/testfiles/${service}/expected-result.txt";
         String receivingService   = "${service}-process-teststub-service";
 		final  int timeout        = 5000;
 		// read as binary, do not mess with any String encoding here
@@ -170,16 +165,11 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
     byte[] transformedMessage = (byte[]) reply.getPayload();
 
     // Verify the result, i.e. the transformed message
-<% if (transformerType=="EE_DATAMAPPER") { %>
-    // use XML-diff here to ignore non-significant whitespace
-    assertXmlSimilar(new FileInputStream(expectedResultFile), new ByteArrayInputStream(transformedMessage));
-<% } else { %>
     // assert binary equality, do not allow for whitespace diffs (we might be moving the data in binary mode)
     assertArrayEquals(expectedResult, transformedMessage);
   <% if (inboundEndpointFilebased) { %>
     assertEquals("filename should be set", filename, reply.getInboundProperty(FileConnector.PROPERTY_ORIGINAL_FILENAME));
   <% } %>
-<% } %>
 
 		// Verify inbound jms-queues
         assertEquals(0, jmsUtil.browseMessagesOnQueue(IN_QUEUE).size());
@@ -225,9 +215,6 @@ String expectedResultFile = "src/test/resources/testfiles/${service}/expected-re
      * @throws JMSException
      */
     @Test
-<% if (transformerType=="EE_DATAMAPPER") { %>    
-    @Ignore("Enable if transformation is done - we need to control poison message behaviour")
-<% } %>
     public void test${capitalizedJavaService}_process_transformationError() throws Exception {
 
         Map<String, String> props = new HashMap<String, String>();

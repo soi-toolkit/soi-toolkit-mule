@@ -179,9 +179,6 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txmlns:jbossts=\"http://www.mulesoft.org/schema/mule/jbossts\"\n");
-		if (transformerType == TransformerEnum.EE_DATAMAPPER) {
-			sb.append("\txmlns:data-mapper=\"http://www.mulesoft.org/schema/mule/ee/data-mapper\"\n");
-		}
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-current.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core      http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
@@ -197,9 +194,6 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms       http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/" + xsdNsMuleVersion + "/mule-scripting.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jbossts   http://www.mulesoft.org/schema/mule/jbossts/" + xsdNsMuleVersion + "/mule-jbossts.xsd\n");
-		if (transformerType == TransformerEnum.EE_DATAMAPPER) {
-			sb.append("\t\thttp://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/" + xsdNsMuleVersion + "/mule-data-mapper.xsd\n");
-		}
 		sb.append("\t\">");
 
 		return SourceFormatterUtil.formatSource(sb.toString());
