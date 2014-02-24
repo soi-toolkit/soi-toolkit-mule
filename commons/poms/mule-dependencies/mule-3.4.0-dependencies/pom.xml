@@ -66,6 +66,11 @@
 			<artifactId>xalan</artifactId>
 			<version>${xalan.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>serializer</artifactId>
+			<version>${xalan.version}</version>
+		</dependency>
 		
 		<!-- Mule ESB - core -->
 		<!-- Start with a explicit dependency to the dreadful jug.osgi dependency -->
