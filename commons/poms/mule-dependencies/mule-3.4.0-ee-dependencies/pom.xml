@@ -30,107 +30,155 @@
 	</properties>
 
 	<dependencies>
-	  <!--
 		<dependency>
 			<groupId>com.mulesoft.muleesb</groupId>
 			<artifactId>mule-core-ee</artifactId>
 			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-    -->
-    
-    <!--
-    DataMapper dependencies.
-    See Mule-EE support portal knowledgebase article #00000767 for setup.
-    See KB article #00000709 on how to populate the Maven-repo with Mule-EE dependencies for DataMapper.
-    -->
-    <!--
-    NOTE: separate maven-deploy:
-    sardine is a Mule-EE dependecy needed for test execution with DataMapper.
-    It isn't populated in the repo with the default mule-ee-script, use:
-    
-    cd mule-enterprise-standalone-3.4.0/lib/opt
-    export REPO_URL=http://MY_REPO_MANAGER_HOST/repo/content/repositories/thirdparty
-    export REPO_ID=thirdparty
-    mvn deploy:deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=sardine-248.jar -DgroupId=com.googlecode.sardine -DartifactId=sardine -Dversion=248 -Dpackaging=jar
-    
-    For local repo:
-    export REPO_URL=file:///Users/username/.m2/repository
-    -->
-    <dependency>
-      <groupId>com.googlecode.sardine</groupId>
-      <artifactId>sardine</artifactId>
-      <version>248</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cloveretl</groupId>
-      <artifactId>cloveretl-engine</artifactId>
-      <version>${mule.version}</version> <!-- version for Mule 3.4.0, Mule 3.3.x had CloverETL-version inconsistent with the Mule-version -->
-      <exclusions>
-        <exclusion>
-          <groupId>com.ibm.icu</groupId>
-          <artifactId>icu4j-normalizer_transliterator</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>de.schlichtherle</groupId>
-          <artifactId>truelicense</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.googlecode.sardine</groupId>
-          <artifactId>sardine</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.muleesb.modules</groupId>
-      <artifactId>mule-module-data-mapper</artifactId>
-      <version>${mule.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.mulesoft.licm</groupId>
-          <artifactId>licm</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>de.schlichtherle</groupId>
-          <artifactId>truelicense</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>de.schlichtherle</groupId>
-          <artifactId>truexml</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- truelicense: Mule 3.4.0 comes packaged with 1.29 but that can't be downloaded from a public repo -->
-    <dependency>
-      <groupId>de.schlichtherle.truelicense</groupId>
-      <artifactId>truelicense-core</artifactId>
-      <version>1.32</version>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.licm</groupId>
-      <artifactId>licm</artifactId>
-      <version>1.1.3</version>
-      <exclusions>
-        <exclusion>
-          <groupId>de.schlichtherle</groupId>
-          <artifactId>truelicense</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>de.schlichtherle</groupId>
-          <artifactId>truexml</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.mulesoft.muleesb.modules</groupId>
-      <artifactId>mule-module-boot-ee</artifactId>
-      <version>${mule.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.mulesoft.licm</groupId>
-          <artifactId>licm</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+		<!-- EE-modules -->
+		<dependency>
+			<groupId>com.mulesoft.muleesb.modules</groupId>
+			<artifactId>mule-module-boot-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.muleesb.modules</groupId>
+			<artifactId>mule-module-cache-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--
+		mule-module-cluster-ee
+		mule-module-data-mapper
+		-->
+		<dependency>
+			<groupId>com.mulesoft.muleesb.modules</groupId>
+			<artifactId>mule-module-multi-tx-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--
+		mule-module-patch-management-ee
+		mule-module-plugin-ee
+		mule-module-saml-ee
+		-->
+		<dependency>
+			<groupId>com.mulesoft.muleesb.modules</groupId>
+			<artifactId>mule-module-spring-config-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--
+		mule-module-throttling-ee
+		mule-module-tracking-ee
+		-->
+		<dependency>
+			<groupId>com.mulesoft.muleesb.modules</groupId>
+			<artifactId>mule-module-xa-tx-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>		
+
+		<!-- EE-transports -->
+		<dependency>
+			<groupId>com.mulesoft.muleesb.transports</groupId>
+			<artifactId>mule-transport-ftp-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.muleesb.transports</groupId>
+			<artifactId>mule-transport-jdbc-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.muleesb.transports</groupId>
+			<artifactId>mule-transport-jms-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.muleesb.transports</groupId>
+			<artifactId>mule-transport-wmq-ee</artifactId>
+			<version>${mule.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.mulesoft.licm</groupId>
+					<artifactId>licm</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- truelicense: Mule 3.4.0 comes packaged with 1.29 but that can't be downloaded from a public repo -->
+		<dependency>
+			<groupId>de.schlichtherle.truelicense</groupId>
+			<artifactId>truelicense-core</artifactId>
+			<version>1.32</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.licm</groupId>
+			<artifactId>licm</artifactId>
+			<version>1.1.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>de.schlichtherle</groupId>
+					<artifactId>truelicense</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>de.schlichtherle</groupId>
+					<artifactId>truexml</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 	</dependencies>
 
 </project>
