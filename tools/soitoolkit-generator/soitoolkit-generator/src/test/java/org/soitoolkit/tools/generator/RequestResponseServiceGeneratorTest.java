@@ -84,7 +84,9 @@ public class RequestResponseServiceGeneratorTest {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
 	}
 
@@ -98,8 +100,9 @@ public class RequestResponseServiceGeneratorTest {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
 		for (int i = 0; i < muleVersions.length; i++) {
-
-			doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
 	}
 
@@ -113,7 +116,9 @@ public class RequestResponseServiceGeneratorTest {
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
 		
 		for (int i = 0; i < muleVersions.length; i++) {
-			doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator",     "requestResponseSA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			if (!muleVersions[i].isEEVersion()) {
+				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator",     "requestResponseSA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+			}
 		}
 	}
 
