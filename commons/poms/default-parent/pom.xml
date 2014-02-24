@@ -33,7 +33,7 @@
   <groupId>org.soitoolkit.commons.poms</groupId>
   <artifactId>soitoolkit-default-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.6.1-M5-SNAPSHOT</version>
+  <version>0.6.1</version>
   <name>soitoolkit-default-parent</name>
   <description>The default parent pom for components that use soi-toolkit, e.g. integration and schema components</description>
   <url>http://soi-toolkit.org</url>
@@ -401,4 +401,10 @@
       
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:svn:http://svn.sonatype.org/spice/tags/soitoolkit-0.6.1</connection>
+    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/soitoolkit-0.6.1</developerConnection>
+    <url>http://svn.sonatype.org/spice/tags/soitoolkit-0.6.1</url>
+  </scm>
 </project>
