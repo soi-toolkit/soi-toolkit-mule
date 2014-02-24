@@ -151,7 +151,12 @@ ${xmlNamespace.onewayService}
 				    connector-ref="soitoolkit-file-connector"
 					path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-					outputPattern="#[header:originalFilename]"
+					<% // fix for issue 339: originalFilename changed from outbound-scope to inbound-scope in 3.4.0 %>
+					<% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+						outputPattern="#[header:originalFilename]"
+					<% } else { %>
+						outputPattern="#[header:INBOUND:originalFilename]"
+					<% } %>
 <% } else { %> 
 					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
@@ -163,7 +168,12 @@ ${xmlNamespace.onewayService}
                     connector-ref="soitoolkit-ftp-connector"
 					address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
 <% if (inboundEndpointFilebased) { %>
-					outputPattern="#[header:originalFilename]"
+					<% // fix for issue 339: originalFilename changed from outbound-scope to inbound-scope in 3.4.0 %>
+					<% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+						outputPattern="#[header:originalFilename]"
+					<% } else { %>
+						outputPattern="#[header:INBOUND:originalFilename]"
+					<% } %>
 <% } else { %> 
 					outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
 <% } %> 
