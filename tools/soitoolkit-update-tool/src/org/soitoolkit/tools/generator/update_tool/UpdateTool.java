@@ -48,7 +48,7 @@ public class UpdateTool {
 	 */
 	public static void main(String[] args) throws IOException {
 		String newVersion = "0.6.1"; // specified as "n.n.n"
-		boolean isSnapshot = true; // true or false
+		boolean isSnapshot = false; // true or false
 
 		UpdateTool ut = new UpdateTool();
 		ut.updateXmlTextNodeContent("../..", "commons/poms/default-parent/pom.xml",                            "ns", "http://maven.apache.org/POM/4.0.0", "/ns:project/ns:properties/ns:soitoolkit.version", ut.getNewVersion(newVersion, isSnapshot));		
