@@ -34,7 +34,9 @@
 	<modules>
 		<module>soitoolkit-generator</module>
 		<module>soitoolkit-generator-maven-plugin</module>
+    <!-- TODO: Can't get the eclipse-plugin to compile without copy the generator and commons-xml jar files to its lib-folder 
 		<module>soitoolkit-generator-eclipse-plugin</module>
+    -->
 	</modules>
 
 </project>

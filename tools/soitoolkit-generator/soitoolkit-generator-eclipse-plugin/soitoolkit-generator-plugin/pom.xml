@@ -13,5 +13,19 @@
   <groupId>org.soitoolkit.tools.generator.eclipse</groupId>
   <artifactId>soi_toolkit_generator_plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
+
+  <!-- TODO: Can't get this dependencies to affect the classpath that the tycho-compiler-plugin use resulting in compile errors -->
+  <dependencies>
+    <dependency>
+      <groupId>org.soitoolkit.tools.generator</groupId>
+      <artifactId>soitoolkit-generator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.soitoolkit.commons.components</groupId>
+      <artifactId>soitoolkit-commons-xml</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>  
   
 </project>
