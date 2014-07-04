@@ -34,6 +34,7 @@
 	<modules>
 		<module>soitoolkit-generator</module>
 		<module>soitoolkit-generator-maven-plugin</module>
+		<module>soitoolkit-generator-eclipse-plugin</module>
 	</modules>
 
 </project>
