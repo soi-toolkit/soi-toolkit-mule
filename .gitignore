@@ -1,8 +1,16 @@
+# Maven 
 target
+
+# Eclipse 
 bin
 .settings
+.project
+.classpath
 
-#.project
+# IntelliJ 
+*.iml
 
+# Other
 migration issues to Mule 3.1.txt
+*.no-git
 
