@@ -1,0 +1,7 @@
+# Mule Application Deployment Descriptor
+redeployment.enabled=true
+encoding=UTF-8
+
+config.resources=${teststubStandaloneProject}-config.xml
+
+domain=default

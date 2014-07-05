@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->		
+<wsdl:definitions name='GetRequestActivitiesInteraction' xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:tjsr='urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1' xmlns:tjsi='urn:riv:crm:requeststatus:GetRequestActivitiesInitiator:1' xmlns:tns='urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21' targetNamespace='urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21' xmlns:itr='urn:riv:itintegration:registry:1'>
+  <xs:annotation>
+    <xs:documentation>
+			 Tjänsteinteraktionens namn: GetRequestActivitiesInteraction
+			 Beskrivning: 
+			   Retrieves a list of all activities recorded for a request/order/referral
+			 Revisioner: 
+			 Tjänstedomän: crm:requeststatus
+			 Tjänsteinteraktionstyp: Fråga-Svar
+			 WS-profil: RIVTABP21
+			 Förvaltas av: Sveriges Kommuner och Landsting
+			 </xs:documentation>
+  </xs:annotation>
+  <wsdl:types>
+    <xs:schema targetNamespace='urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21'>
+      <xs:import schemaLocation='GetRequestActivitiesResponder_1.0.xsd' namespace='urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1' />
+      <xs:import schemaLocation='../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name='GetRequestActivitiesRequest'>
+    <wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
+      <wsdl:documentation>The HSA-id of the source system supporting the service consumer with data</wsdl:documentation>
+    </wsdl:part>
+    <wsdl:part name='parameters' element='tjsr:GetRequestActivities' />
+  </wsdl:message>
+  <wsdl:message name='GetRequestActivitiesResponse'>
+    <wsdl:part name='parameters' element='tjsr:GetRequestActivitiesResponse' />
+  </wsdl:message>
+  <wsdl:portType name='GetRequestActivitiesResponderInterface'>
+    <wsdl:operation name='GetRequestActivities'>
+      <wsdl:input message='tns:GetRequestActivitiesRequest' />
+      <wsdl:output message='tns:GetRequestActivitiesResponse' />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name='GetRequestActivitiesResponderBinding' type='tns:GetRequestActivitiesResponderInterface'>
+    <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+    <wsdl:operation name='GetRequestActivities'>
+      <soap:operation soapAction='urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1:GetRequestActivities' style='document' />
+      <wsdl:input>
+        <soap:header use='literal' message='tns:GetRequestActivitiesRequest' part='LogicalAddress' />
+        <soap:body use='literal' parts='parameters' />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use='literal' />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name='GetRequestActivitiesResponderService'>
+    <wsdl:port name='GetRequestActivitiesResponderPort' binding='tns:GetRequestActivitiesResponderBinding'>
+      <soap:address location='http://tempuri.org' />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

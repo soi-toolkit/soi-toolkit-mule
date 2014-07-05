@@ -1,0 +1,123 @@
+/* 
+ * Licensed to the soi-toolkit project under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.soitoolkit.tools.generator;
+
+import java.io.PrintStream;
+
+import org.soitoolkit.tools.generator.model.IModel;
+import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
+import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
+import org.soitoolkit.tools.generator.model.enums.TransportEnum;
+
+public class AggregatingServiceGenerator implements Generator {
+
+	GeneratorUtil guIc;
+	GeneratorUtil guIcTestStub;
+	GeneratorUtil guService;
+	
+	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, String serviceName, MuleVersionEnum muleVersion, String outputFolder) {
+		guIc         = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/ic", outputFolder, null);
+		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/icTestStub", outputFolder, "-teststub");
+		guService    = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/service", outputFolder, null);
+	}
+
+	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, String serviceName, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix) {
+		String groupId = "se.skltp.aggregatingservices." + domainId;
+		
+		outputFolder = outputFolder + "/" + "riv." + domainId + "/" + artifactId;
+		if (outputFolderSuffix != null || outputFolder.length() == 0) {
+			outputFolder += outputFolderSuffix;
+		}
+		outputFolder += "/trunk";
+		
+		return new GeneratorUtil(ps, groupId, artifactId, version, serviceName, muleVersion, TransportEnum.HTTP, TransportEnum.HTTP, TransformerEnum.JAVA, templateFolder, outputFolder);
+	}
+
+    public void startGenerator() {
+
+    	startProjectGenerator();
+    	startTeststubProjectGenerator();
+		startServiceGenerator();
+	}
+
+	private void startProjectGenerator() {
+		IModel m = guIc.getModel();
+		guIc.logInfo("\n\nCreates a AggregatingService-project: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
+
+    	guIc.generateContentAndCreateFile("pom.xml.gt");
+		guIc.generateContentAndCreateFile("mule-project.xml.gt");
+
+		guIc.generateFolder("src/main/java/__javaPackageFilepath__");
+		guIc.generateFolder("src/environment");
+		guIc.generateFolder("mappings");
+		guIc.generateFolder("flows");
+		guIc.generateFolder("api");
+    	guIc.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__artifactId__-common.mflow");
+
+		guIc.generateContentAndCreateFile("src/main/app/__artifactId__-common.xml.gt");
+		guIc.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
+
+		guIc.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
+		guIc.generateFolder("src/test/resources/testfiles");
+		guIc.generateFolder("src/test/resources/teststub-services");
+		
+		guIc.generateContentAndCreateFile("src/test/resources/log4j.dtd.gt");
+		guIc.generateContentAndCreateFile("src/test/resources/log4j.xml.gt");
+		
+		guIc.generateContentAndCreateFile("src/environment/log4j.dtd.gt");
+		guIc.generateContentAndCreateFile("src/environment/log4j.xml.gt");
+		
+		guIc.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
+	}
+
+	private void startTeststubProjectGenerator() {
+		IModel m = guIcTestStub.getModel();
+		guIc.logInfo("\n\nCreates a AggregatingService-teststub-project: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
+		guIcTestStub.generateContentAndCreateFile("pom.xml.gt");
+		guIcTestStub.generateContentAndCreateFile("mule-project.xml.gt");
+
+		guIcTestStub.generateContentAndCreateFile("src/main/app/__teststubStandaloneProject__-config.xml.gt");
+		guIcTestStub.generateContentAndCreateFile("src/main/app/mule-deploy.properties.gt");
+//		guIcTestStub.generateContentAndCreateFile("src/main/app/mule-app.properties.gt");
+
+		guIcTestStub.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaTeststubArtifactId__MuleServer.java.gt");
+		guIcTestStub.generateContentAndCreateFile("src/main/resources/log4j.dtd.gt");
+		guIcTestStub.generateContentAndCreateFile("src/main/resources/log4j.xml.gt");
+	}
+
+	private void startServiceGenerator() {
+		IModel m = guService.getModel();
+		guService.logInfo("\n\nCreates a AggregatingService-service: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
+
+		// FIXME. MULE STUDIO.
+//    	guService.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
+    	guService.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
+    	guService.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-service.mflow");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
+
+//		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
+//		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
+		guService.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformerTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformerTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
+	}
+
+	
+}

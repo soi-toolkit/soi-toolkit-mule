@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.common}
+
+  <!-- Load property files in three steps... -->
+  
+  <!-- 1. Support for decrypting encrypted properties.
+       The encryption password will be read from an environment variable
+       called "SOITOOLKIT_ENCRYPTION_PASSWORD" which, once
+       the application has been started, could be safely unset. -->
+  <spring:bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+    <spring:property name="algorithm" value="PBEWithMD5AndDES"/>
+    <spring:property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD"/>
+  </spring:bean>
+  
+  
+  <!-- 2. Support for decrypting encrypted properties -->
+  <spring:bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+    <spring:property name="config" ref="environmentVariablesConfiguration"/>
+  </spring:bean>
+  
+  
+  <!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+       that supports decrypting encrypted property values -->
+  <spring:bean id="propertyConfigurer" class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+    <spring:constructor-arg ref="configurationEncryptor"/>
+    <spring:property name="ignoreResourceNotFound" value="true"/>
+    <spring:property name="locations">
+      <spring:list>
+        <spring:value>classpath:${configPropertyFile}.properties</spring:value>
+        <spring:value>classpath:${configPropertyFile}-override.properties</spring:value>
+      </spring:list>
+    </spring:property>
+  </spring:bean>
+
+<!-- 
+    <management:jmx-default-config port="${dollarSymbol}{JMX_PORT}" registerMx4jAdapter="false" >
+        <management:credentials>
+            <spring:entry key="${dollarSymbol}{JMX_USER}" value="${dollarSymbol}{JMX_PWD}"/>
+        </management:credentials>
+    </management:jmx-default-config> 
+ -->
+
+<% if (sftp) { %>
+    <!-- Enable sftp-listener to publish sftp-events. Requires the SftpDummyEndpointMessageNotificationListenerImpl to work... -->
+    <spring:bean name="sftpTransportNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpTransportNotificationListenerImpl"/>
+<!-- Temporary removed due to http://code.google.com/p/soi-toolkit/issues/detail?id=181
+    <spring:bean name="endpointMessageNotificationLogger" class="org.soitoolkit.commons.mule.sftp.SftpDummyEndpointMessageNotificationListenerImpl"/>
+-->
+    <notifications>
+        <notification event="ENDPOINT-MESSAGE"/>
+        <notification event="CUSTOM"/>
+        <notification-listener ref="sftpTransportNotificationLogger"/>
+<!-- Temporary removed due to http://code.google.com/p/soi-toolkit/issues/detail?id=181
+        <notification-listener ref="endpointMessageNotificationLogger"/>
+-->
+    </notifications>
+<% } %>  
+
+	<!-- The default profile used by normal usage of mule-app, either deployed in mule or started using st-muleServer-helper-class. Not used by integration tests -->
+    <spring:beans profile="default">
+        <!-- Connectors et al that are specific for different environment specific config-files (local unit-test, integration-test or production environments) -->
+
+        <!-- TODO: Add import of environment specific configuration files here as required -->
+        
+        <!-- Import the JMS-provider used in production here, embedded JMS providers used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
+        <spring:import resource="classpath:soitoolkit-mule-jms-connector-activemq-external.xml"/>
+<% if (jdbc) { %>
+        <!-- Import the JDBC datasource used in production here, embedded JDBC datasources used for integration tests are loaded by the *IntegratIonTest.java classes directly -->  
+        <spring:import resource="classpath:soitoolkit-mule-jdbc-datasource.xml"/>
+<% } %>
+<% if (sftp) { %>
+        <!-- Import the SFTP-connector used in production here, embedded SFTP-connector used for integration tests are loaded by the *IntegratIonTest.java classes directly -->
+        <spring:import resource="classpath:soitoolkit-mule-sftp-connector-external.xml"/>
+<% } %>
+    </spring:beans>
+
+
+	<!-- Used by integration tests only -->
+    <spring:beans profile="soitoolkit-integrationtests">
+        <mule>
+            <!--  Allow integration tests to register dynamic listeners by specifying dynamic="true" -->
+            <notifications dynamic="true">
+                <notification event="ENDPOINT-MESSAGE"/>
+                <notification event="COMPONENT-MESSAGE"/>
+            </notifications>
+        </mule>
+    </spring:beans>
+
+
+	<!-- Used by st-muleServer-helper-class only -->
+    <spring:beans profile="soitoolkit-teststubs">
+        <!-- Load all teststub services -->
+        <spring:import resource="classpath:teststub-services/*-teststub-service.xml"/>
+    </spring:beans>
+
+    <!-- Common connectors and endpoints, i.e. that not needs to be changed for different config-files (local unit-test, integration-test or production environments) -->
+<% if (servlet) { %>
+	<servlet:connector name="servlet-connector" />
+<% } %>  
+
+<% if (false) { %>
+    <!-- We don't use these global endpoint for the moment but maybe we will again in the future so we keep the code fragments -->
+	<endpoint name="soitoolkit-info-log-endpoint" address="vm://soitoolkit-info-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+	<endpoint name="soitoolkit-error-log-endpoint" address="vm://soitoolkit-error-log">
+		<jms:transaction action="NONE" />
+	</endpoint>
+<% } %>  
+
+<% if (pop3) { %>
+	<pop3:connector name="pop3-connector" checkFrequency="${dollarSymbol}{POP3_CHECK_FREQUENCY_MS}"/>
+<% } %>  
+
+<% if (imap) { %>
+	<imap:connector name="imap-connector" deleteReadMessages="true" checkFrequency="${dollarSymbol}{IMAP_CHECK_FREQUENCY_MS}"/>
+<% } %>  
+
+    <rest-router:config />
+
+    <spring:beans>
+<% if (false) { %>
+        <!-- the SFTP-connector is now imported in the top-level config-file, but is kept here as an example -->
+        <spring:import resource="classpath:soitoolkit-mule-sftp-connector.xml"/>
+<% } %>  
+    </spring:beans>
+
+    <message-properties-transformer name="setJsonContentType" scope="outbound">
+        <add-message-property key="Content-Type" value="application/json;charset=UTF-8"/>
+    </message-properties-transformer>
+ 
+    <json:object-to-json-transformer name="jaxbToJson" />
+
+    <!-- The common single jaxb-context for this mule-app -->
+    <!-- Don't create additional jaxb-contexts to avoid problems with implicit jaxb transformations that can't resolve what jaxb-context to use! -->
+    <!-- Use ":" as a separator if jaxb-objects from more than one java package will be used by the jaxb-transformers  -->
+    <mulexml:jaxb-context name="jaxbContext" packageNames="org.soitoolkit.commons.logentry.schema.v1"/>
+	
+	<custom-transformer name="objToStr" class="org.soitoolkit.commons.mule.core.ObjectToStringTransformer"/>
+
+	<custom-transformer name="createCorrId"  class="org.soitoolkit.commons.mule.log.correlationid.CreateCorrelationIdTransformer" />
+	<custom-transformer name="saveCorrId"    class="org.soitoolkit.commons.mule.log.correlationid.SaveCorrelationIdTransformer" />
+	<custom-transformer name="restoreCorrId" class="org.soitoolkit.commons.mule.log.correlationid.RestoreCorrelationIdTransformer" />
+
+    <custom-transformer name="createSoapFaultIfException" class="org.soitoolkit.commons.mule.soap.CreateSoapFaultIfExceptionTransformer"/>
+
+	<custom-transformer name="mimeToStr" class="org.soitoolkit.commons.mule.mime.MimeToStringTransformer" />
+
+    <custom-transformer name="logMsgIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="msg-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
+    <custom-transformer name="logMsgOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="msg-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
+    <custom-transformer name="logReqIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="req-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
+    <custom-transformer name="logReqOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="req-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
+    <custom-transformer name="logRespIn" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="resp-in"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>
+
+    <custom-transformer name="logRespOut" class="org.soitoolkit.commons.mule.log.LogTransformer">
+		<spring:property name="logType"     value="resp-out"/>
+        <spring:property name="jaxbContext" ref="jaxbContext"/>
+    </custom-transformer>  
+
+    <!-- TODO: Add global definitions here -->
+
+</mule>

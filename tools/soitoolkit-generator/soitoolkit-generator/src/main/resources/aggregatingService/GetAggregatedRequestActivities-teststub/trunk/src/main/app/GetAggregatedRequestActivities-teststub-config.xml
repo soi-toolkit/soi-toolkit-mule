@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule 
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+		http://www.mulesoft.org/schema/mule/core    http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	">
+
+    <spring:beans>
+      <!-- Load all resources needed by the core artifact 
+      <spring:import resource="classpath:aggregating-services-common.xml"/>
+      <spring:import resource="classpath:GetAggregatedRequestActivities-common.xml"/>
+      -->
+
+	  <!-- Import required mule config files that are loaded from other jar-files on the classpath, e.g. agp-core.jar, since they can't be loaded from the mule-deploy.properties file -->
+	  <spring:import resource="classpath:aggregating-services-common.xml" />
+	
+	  <!-- Load property files in three steps, here we only specify the third step that is specific for each aggregating service, see agp/src/main/app/aggregating-services-common.xml for the other two steps... -->
+	  
+	  <!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+	       that supports decrypting encrypted property values -->
+	  <spring:bean class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer" id="propertyConfigurer">
+	    <spring:constructor-arg ref="configurationEncryptor"/>
+	    <spring:property name="ignoreResourceNotFound" value="true"/>
+	    <spring:property name="locations">
+	      <spring:list>
+	        <spring:value>classpath:GetAggregatedRequestActivities-config.properties</spring:value>
+	        <spring:value>classpath:GetAggregatedRequestActivities-config-override.properties</spring:value>
+	      </spring:list>
+	    </spring:property>
+	  </spring:bean>
+      
+      <!-- Load all teststub services -->
+      <spring:import resource="classpath:teststub-services/*-teststub-service.xml"/>
+            
+    </spring:beans>
+</mule>

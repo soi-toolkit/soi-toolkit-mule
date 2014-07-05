@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.soitoolkit.commons.poms</groupId>
+        <artifactId>soitoolkit-default-parent</artifactId>
+        <version>0.6.1</version>
+    </parent>
+    
+    <groupId>se.skltp.aggregatingservices.crm.requeststatus</groupId>
+    <artifactId>GetAggregatedRequestActivities-teststub</artifactId>
+    <version>1.0.1-M1-SNAPSHOT</version>
+    <packaging>mule</packaging>
+    <name>GetAggregatedRequestActivities-teststub</name>
+
+    <properties>
+        <skltp.agp.version>1.2.0</skltp.agp.version>
+        <GetAggregatedRequestActivities.version>1.0.1-M1-SNAPSHOT</GetAggregatedRequestActivities.version>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:https://skltpservices.googlecode.com/svn/AggregatingServices/riv.crm.requeststatus/GetAggregatedRequestActivities-teststub/trunk</connection>
+        <developerConnection>scm:svn:https://skltpservices.googlecode.com/svn/AggregatingServices/riv.crm.requeststatus/GetAggregatedRequestActivities-teststub/trunk</developerConnection>
+        <url>https://skltpservices.googlecode.com/svn/AggregatingServices/riv.crm.requeststatus/GetAggregatedRequestActivities-teststub/trunk</url>
+    </scm>
+  
+
+	<dependencies>
+	  <!-- dependencies to the integration component that contains the services to stub -->
+	    <dependency>
+	    	<groupId>se.skltp.aggregatingservices.crm.requeststatus</groupId>
+	    	<artifactId>GetAggregatedRequestActivities</artifactId>
+	    	<version>${GetAggregatedRequestActivities.version}</version>
+	    	<type>test-jar</type>
+	    </dependency>
+	    <dependency>
+	    	<groupId>se.skltp.aggregatingservices.crm.requeststatus</groupId>
+	    	<artifactId>GetAggregatedRequestActivities</artifactId>
+	    	<version>${GetAggregatedRequestActivities.version}</version>
+	    	<classifier>core</classifier>    	
+	    </dependency>
+      <dependency>
+        <groupId>se.skltp.agp</groupId>
+        <artifactId>agp-core</artifactId>
+        <version>${skltp.agp.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>se.skltp.agp</groupId>
+          <artifactId>agp-test-common</artifactId>
+          <version>${skltp.agp.version}</version>
+      </dependency>
+	</dependencies> 
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <!-- To get mule-config files from the Mule Studio defined resource-folder in the classpath... -->
+                <directory>${basedir}/src/main/app</directory>
+            </resource>
+        </resources>
+
+		<plugins>   
+            <plugin>
+                <!-- Add mule-nature to the eclipse-.project-file -->
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.mule.tooling.core.muleNature</projectnature>
+                    </additionalProjectnatures>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mule.tools</groupId>
+                <artifactId>maven-mule-plugin</artifactId>
+                <extensions>true</extensions>
+                <!-- Include mule-dependencies that doesn't come with Mule 3.x otherwise we can't install to a vanilla Mule 3.x installation -->
+                <configuration>
+                    <inclusions>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-rest</artifactId>
+                        </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>devkit</artifactId>
+                        </inclusion>
+                    </inclusions>
+                    <exclusions>
+
+                      <!-- xercesImpl is endorsed in MULE_HOME/lib/endorsed, see issue 274 -->
+                      <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                      </exclusion>
+
+                      <!-- log4j is already included in MULE_HOME/lib/boot, see issue 283 -->
+                      <exclusion>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+                      </exclusion>
+
+                      <!-- junit is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+                      </exclusion>
+
+                      <!-- servlet-api-2.5 is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>servlet-api-2.5</artifactId>
+                      </exclusion>
+
+                      <!-- jug is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>org.safehaus.jug</groupId>
+						<artifactId>jug.osgi</artifactId>
+                      </exclusion>
+                      <!-- activemq needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-core</artifactId>
+                      </exclusion>
+                      <exclusion>
+						<groupId>org.apache.xbean</groupId>
+						<artifactId>xbean-spring</artifactId>
+                      </exclusion>
+
+                      <!-- hornetq needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>org.hornetq</groupId>
+						<artifactId>hornetq-core-client</artifactId>
+                      </exclusion>
+                      <exclusion>
+				        <groupId>org.hornetq</groupId>
+				        <artifactId>hornetq-jms</artifactId>
+                      </exclusion>
+                      <exclusion>
+						<groupId>org.jboss.netty</groupId>
+						<artifactId>netty</artifactId>
+                      </exclusion>
+
+                      <!-- jtds (JDBC driver fpr Microsoft SQL Server) needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>net.sourceforge.jtds</groupId>
+						<artifactId>jtds</artifactId>
+                      </exclusion>
+
+                    </exclusions>
+                </configuration>
+            </plugin>
+		</plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>muleServer</id>
+            <!-- Start mule server with the command "mvn -PmuleServer" or "mvn -PmuleServer -Dexec.args="${artifaceId}-config.xml"" if you want to override the default config-file -->
+            <build>
+                <defaultGoal>test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass> se.skltp.aggregatingservices.riv.crm.requeststatus.RequestActivitiesMuleServer</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

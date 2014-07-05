@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="GetAggregatedRequestActivities" resourceRoot="" soapui-version="4.6.4" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="GetRequestActivitiesResponderBinding" type="wsdl" bindingName="{urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21}GetRequestActivitiesResponderBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8081/GetAggregatedRequestActivities/service/v1?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8081/GetAggregatedRequestActivities/service/v1?wsdl"><con:part><con:url>http://localhost:8081/GetAggregatedRequestActivities/service/v1?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GetRequestActivitiesInteraction" targetNamespace="urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21" xmlns:itr="urn:riv:itintegration:registry:1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tjsi="urn:riv:crm:requeststatus:GetRequestActivitiesInitiator:1" xmlns:tjsr="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1" xmlns:tns="urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xs:schema targetNamespace="urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21">
+      <xs:import namespace="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1" schemaLocation="http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=GetRequestActivitiesResponder_1.0.xsd"/>
+      <xs:import namespace="urn:riv:itintegration:registry:1" schemaLocation="http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=../../core_components/itintegration_registry_1.0.xsd"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetRequestActivitiesResponse">
+    <wsdl:part element="tjsr:GetRequestActivitiesResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetRequestActivitiesRequest">
+    <wsdl:part element="itr:LogicalAddress" name="LogicalAddress">
+      <wsdl:documentation>The HSA-id of the source system supporting the service consumer with data</wsdl:documentation>
+    </wsdl:part>
+    <wsdl:part element="tjsr:GetRequestActivities" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GetRequestActivitiesResponderInterface">
+    <wsdl:operation name="GetRequestActivities">
+      <wsdl:input message="tns:GetRequestActivitiesRequest"></wsdl:input>
+      <wsdl:output message="tns:GetRequestActivitiesResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GetRequestActivitiesResponderBinding" type="tns:GetRequestActivitiesResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetRequestActivities">
+      <soap:operation soapAction="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1:GetRequestActivities" style="document"/>
+      <wsdl:input>
+        <soap:header message="tns:GetRequestActivitiesRequest" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GetRequestActivitiesResponderService">
+    <wsdl:port binding="tns:GetRequestActivitiesResponderBinding" name="GetRequestActivitiesResponderPort">
+      <soap:address location="http://localhost:8081/GetAggregatedRequestActivities/service/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+  <xs:annotation>
+    <xs:documentation>Tjänsteinteraktionens namn: GetRequestActivitiesInteraction
+			 Beskrivning: 
+			   Retrieves a list of all activities recorded for a request/order/referral
+			 Revisioner: 
+			 Tjänstedomän: crm:requeststatus
+			 Tjänsteinteraktionstyp: Fråga-Svar
+			 WS-profil: RIVTABP21
+			 Förvaltas av: Sveriges Kommuner och Landsting</xs:documentation>
+  </xs:annotation>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=GetRequestActivitiesResponder_1.0.xsd</con:url><con:content><![CDATA[<!--Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.-->
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1" version="1.0" xmlns:core="urn:riv:crm:requeststatus:1" xmlns:tns="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="urn:riv:crm:requeststatus:1" schemaLocation="http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=../../core_components/crm_requeststatus_1.0.xsd"/>
+  <xs:element name="GetRequestActivities" type="tns:GetRequestActivitiesType"/>
+  <xs:element name="GetRequestActivitiesResponse" type="tns:GetRequestActivitiesResponseType"/>
+  <xs:complexType name="GetRequestActivitiesType">
+    <xs:sequence>
+      <xs:element name="subjectOfCareId" type="core:SubjectOfCareIdType"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="careUnitId" type="core:HsaIdType"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="typeOfRequest" type="core:RequestTypeCodeEnum"/>
+      <xs:element minOccurs="0" name="fromDate" type="core:TS"/>
+      <xs:element minOccurs="0" name="toDate" type="core:TS"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0" namespace="#other" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetRequestActivitiesResponseType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="requestActivity" type="core:RequestActivityType"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part><con:part><con:url>http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=../../core_components/crm_requeststatus_1.0.xsd</con:url><con:content><![CDATA[<!--Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.-->
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:riv:crm:requeststatus:1" version="1.0" xmlns:tns="urn:riv:crm:requeststatus:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="RequestActivityType">
+    <xs:sequence>
+      <xs:element name="subjectOfCareId" type="tns:SubjectOfCareIdType"/>
+      <xs:element minOccurs="0" name="senderRequestId" type="xs:string"/>
+      <xs:element minOccurs="0" name="receiverRequestId" type="xs:string"/>
+      <xs:element name="typeOfRequest" type="tns:RequestTypeCodeEnum"/>
+      <xs:element minOccurs="0" name="requestMedium" type="tns:SubmissionMediumCodeEnum"/>
+      <xs:element minOccurs="0" name="requestIssuedByPersonName" type="xs:string"/>
+      <xs:element minOccurs="0" name="requestIssuedByOrganizationalUnitId" type="tns:HsaIdType"/>
+      <xs:element minOccurs="0" name="requestIssuedByOrganizationalUnitDescription" type="xs:string"/>
+      <xs:element minOccurs="0" name="receivingPersonName" type="xs:string"/>
+      <xs:element minOccurs="0" name="receivingOrganizationalUnitId" type="tns:HsaIdType"/>
+      <xs:element minOccurs="0" name="receivingOrganizationalUnitDescription" type="xs:string"/>
+      <xs:element minOccurs="0" name="careUnit" type="tns:HsaIdType"/>
+      <xs:element name="logicalSystemId" type="xs:string"/>
+      <xs:element name="statusCode" type="tns:StatusCodeEnum"/>
+      <xs:element name="eventTime" type="tns:TS"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0" namespace=" #    other " processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="TS">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[1-9]{1}[0-9]{3}(0[1-9]{1}|1[0-2]{1})([0-2]{1}[0-9]{1}|3[0-1]{1})([0-1]{1}[0-9]{1}|2[0-3]{1})[0-5]{1}[0-9]{1}[0-5]{1}[0-9]{1}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DT">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[1-9]{1}[0-9]{3}(0[1-9]{1}|1[0-2]{1})([0-2]{1}[0-9]{1}|3[0-1]{1})"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SubjectOfCareIdType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^[0-9]{8}[0-9pPtTfF][0-9]{3}$"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HsaIdType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:simpleType name="RequestTypeCodeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="3"/>
+      <xs:enumeration value="4"/>
+      <xs:enumeration value="5"/>
+      <xs:enumeration value="6"/>
+      <xs:enumeration value="7"/>
+      <xs:enumeration value="8"/>
+      <xs:enumeration value="9"/>
+      <xs:enumeration value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SubmissionMediumCodeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="3"/>
+      <xs:enumeration value="4"/>
+      <xs:enumeration value="5"/>
+      <xs:enumeration value="6"/>
+      <xs:enumeration value="7"/>
+      <xs:enumeration value="8"/>
+      <xs:enumeration value="9"/>
+      <xs:enumeration value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="StatusCodeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="10"/>
+      <xs:enumeration value="20"/>
+      <xs:enumeration value="30"/>
+      <xs:enumeration value="40"/>
+      <xs:enumeration value="50"/>
+      <xs:enumeration value="60"/>
+      <xs:enumeration value="70"/>
+      <xs:enumeration value="80"/>
+      <xs:enumeration value="90"/>
+      <xs:enumeration value="100"/>
+      <xs:enumeration value="110"/>
+      <xs:enumeration value="120"/>
+      <xs:enumeration value="126"/>
+      <xs:enumeration value="130"/>
+      <xs:enumeration value="136"/>
+      <xs:enumeration value="140"/>
+      <xs:enumeration value="150"/>
+      <xs:enumeration value="160"/>
+      <xs:enumeration value="170"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ResultCodeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OK"/>
+      <xs:enumeration value="ERROR"/>
+      <xs:enumeration value="INFO"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part><con:part><con:url>http://localhost:8081/GetAggregatedRequestActivities/service/v1?xsd=../../core_components/itintegration_registry_1.0.xsd</con:url><con:content><![CDATA[<xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns="urn:riv:itintegration:registry:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:annotation>
+    <xs:documentation>Beskrivning: 	Grundl��ggande informationsobjekt f��r dom��nen itintegration:registry (adressering av tj��nster)
+			
+			Revisionshistorik: 2011-06-27 Mats Ekhammar, Callista Enterprise AB
+				Added ServiceContractType
+			
+			Datum:			2011-05-04
+			Beskrivning:	Initial version
+			F��rfattare:		marcus.krantz@callistaenterprise.se</xs:documentation>
+  </xs:annotation>
+  <xs:element name="LogicalAddress" type="LogicalAddressType"/>
+  <xs:element name="ServiceContract" type="ServiceContractType"/>
+  <xs:simpleType name="LogicalAddressType">
+    <xs:annotation>
+      <xs:documentation>Defines the type for logical address according to national reference architecture.
+				Superseeds wsa:To as type for logical address header in RIVTA 2.1.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:complexType name="ServiceContractType">
+    <xs:annotation>
+      <xs:documentation>Type which describes a service contract. Used in interaction GetSupportedServiceContracts.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+      <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8081/GetAggregatedRequestActivities/service/v1</con:endpoint></con:endpoints><con:operation isOneWay="false" action="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1:GetRequestActivities" name="GetRequestActivities" bindingOperationName="GetRequestActivities" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="194911172296 - Sven Sturesson"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="x-vp-sender-id" value="client"/>
+  &lt;con:entry key="x-rivta-original-serviceconsumer-hsaid" value="originalClient"/>
+&lt;/xml-fragment></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/GetAggregatedRequestActivities/service/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:GetRequestActivities>
+         <urn1:subjectOfCareId>194911172296</urn1:subjectOfCareId>
+         <!--Zero or more repetitions:-->
+         <!--<urn1:careUnitId>CareunitId</urn1:careUnitId>-->
+         <!--Zero or more repetitions:-->
+         <!--<urn1:typeOfRequest>2</urn1:typeOfRequest>-->
+         <!--Optional:-->
+         <urn1:fromDate></urn1:fromDate>
+         <!--Optional:-->
+         <urn1:toDate></urn1:toDate>
+         <!--You may enter ANY elements at this point-->
+      </urn1:GetRequestActivities>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1:GetRequestActivities"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
