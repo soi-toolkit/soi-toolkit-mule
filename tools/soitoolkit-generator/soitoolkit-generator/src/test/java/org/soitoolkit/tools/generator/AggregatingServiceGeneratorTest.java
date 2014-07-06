@@ -17,6 +17,8 @@
 package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
@@ -55,14 +57,25 @@ public class AggregatingServiceGeneratorTest {
 	public void tearDown() throws Exception {
 	}
 
-	/**
+    /**
 	 * 
 	 * @throws IOException
 	 */
 	@Test
-	public void testAggregatingServices() throws IOException {
+	public void testAggregatingServices1() throws IOException {
 
-		doTestAggregatingServices("clinicalprocess.activity.actions", "GetAggregatedGetActivity", MuleVersionEnum.MULE_3_3_0, STANDALONE_DEPLOY);
+		doTestAggregatingServices("riv.crm.requeststatus", "GetAggregatedRequestActivities", MuleVersionEnum.MULE_3_3_0, STANDALONE_DEPLOY);
+
+	}
+
+    /**
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testAggregatingServices2() throws IOException {
+
+		doTestAggregatingServices("riv.clinicalprocess.activity.actions", "GetAggregatedActivity", MuleVersionEnum.MULE_3_3_0, STANDALONE_DEPLOY);
 
 		/*
 		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
@@ -79,15 +92,16 @@ public class AggregatingServiceGeneratorTest {
 		String projectFolder = TEST_OUT_FOLDER + "/" + artifactId + "-TEST";
 		createAggregationService(domainId, artifactId, muleVersion, projectFolder);
 		//GetAggregatedGetActivity-TEST/riv.clinicalprocess.activity.actions/GetAggregatedGetActivity/trunk
-		performMavenBuild(projectFolder + "/" + "riv." + domainId + "/" + artifactId + "/trunk");
-		performMavenBuild(projectFolder + "/" + artifactId + "-teststub");
+		performMavenBuild(projectFolder + "/" + domainId + "/" + artifactId + "/trunk");
+		performMavenBuild(projectFolder + "/" + domainId + "/" + artifactId + "-teststub/trunk");	
 	}
 
 	private void createAggregationService(String domainId, String artifactId, MuleVersionEnum muleVersion, String projectFolder) throws IOException {
 
 		SystemUtil.delDirs(projectFolder);
 
-		int expectedNoOfFiles = 92;
+		int expectedNoOfFiles1 = 92; // For domain + subdomain
+		int expectedNoOfFiles2 = 95; // For domain + subdomain + subdomain
 		
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
@@ -95,7 +109,9 @@ public class AggregatingServiceGeneratorTest {
 				
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		
-		assertEquals("Missmatch in expected number of created files and folders." , expectedNoOfFiles, actualNoOfFiles);
+		assertTrue("Missmatch in expected number of created files and folders."
+				+ " Expected " + expectedNoOfFiles1 + " or " + expectedNoOfFiles2 + " but found " + actualNoOfFiles,
+				actualNoOfFiles == expectedNoOfFiles1 || actualNoOfFiles == expectedNoOfFiles2);
 	}
 
 	private void performMavenBuild(String projectFolder) throws IOException {
