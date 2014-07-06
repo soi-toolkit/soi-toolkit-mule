@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseJavaService};
+package ${javaPackage};
 
 import java.text.ParseException;
 import java.util.ArrayList;

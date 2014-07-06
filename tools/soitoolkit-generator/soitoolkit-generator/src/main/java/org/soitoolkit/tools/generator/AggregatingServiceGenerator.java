@@ -29,14 +29,15 @@ public class AggregatingServiceGenerator implements Generator {
 	GeneratorUtil guIcTestStub;
 	GeneratorUtil guService;
 	
-	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, String serviceName, MuleVersionEnum muleVersion, String outputFolder) {
-		guIc         = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/ic", outputFolder, null);
-		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/icTestStub", outputFolder, "-teststub");
-		guService    = createGeneratorUtil(ps, domainId, artifactId, version, serviceName, muleVersion, "/aggregatingService/service", outputFolder, null);
+	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder) {
+		guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, null);
+		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, "-teststub");
+		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, null);
 	}
 
-	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, String serviceName, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix) {
+	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix) {
 		String groupId = "se.skltp.aggregatingservices." + domainId;
+		String serviceName = artifactId;
 		
 		outputFolder = outputFolder + "/" + "riv." + domainId + "/" + artifactId;
 		if (outputFolderSuffix != null || outputFolder.length() == 0) {
@@ -110,20 +111,24 @@ public class AggregatingServiceGenerator implements Generator {
 		IModel m = guService.getModel();
 		guService.logInfo("\n\nCreates a AggregatingService-service: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
 
-		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/QueryObjectFactoryImpl.java.gt");
-		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/RequestListFactoryImpl.java.gt");
-		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/ResponseListFactoryImpl.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/QueryObjectFactoryImpl.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/RequestListFactoryImpl.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/ResponseListFactoryImpl.java.gt");
 		
-//		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
-//		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
-		guService.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/QueryObjectFactoryTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/RequestListFactoryTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/ResponseListFactoryTest.java.gt");
+		guService.copyContentAndCreateFile("src/test/certs/client-truststore.jks.gt");
+		guService.copyContentAndCreateFile("src/test/certs/client.jks.gt");
+    	guService.copyContentAndCreateFile("src/test/certs/truststore.jks.gt");
+    	guService.copyContentAndCreateFile("src/test/certs/server.jks.gt");
+    	guService.copyContentAndCreateFile("src/test/certs/readme.txt.gt");
 
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__IntegrationTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestConsumer.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestProducer.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestProducerDb.java.gt");
+		guService.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/QueryObjectFactoryTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/RequestListFactoryTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/ResponseListFactoryTest.java.gt");
+
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/integrationtest/__capitalizedJavaService__IntegrationTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/integrationtest/__capitalizedJavaService__TestConsumer.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/integrationtest/__capitalizedJavaService__TestProducer.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/integrationtest/__capitalizedJavaService__TestProducerDb.java.gt");
 	}
 }

@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseJavaService};
+package ${javaPackage};
 
 import java.util.HashMap;
 import java.util.Map;

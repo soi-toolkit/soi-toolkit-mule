@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseJavaService}.integrationtest;
+package ${javaPackage}.integrationtest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
@@ -42,7 +42,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateI
 	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	 
-    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("GetAggregatedRequestActivities-config");
+    private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${artifactId}-config");
 	private static final String SKLTP_HSA_ID = rb.getString("SKLTP_HSA_ID");
 
     private static final String LOGICAL_ADDRESS = "logical-address";
@@ -53,8 +53,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateI
 	protected String getConfigResources() {
 		return 
 			"soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
-	  		"GetAggregatedRequestActivities-common.xml," +
-//          Only load GetAggregatedRequestActivities-common.xml, it will import the other config files since mule-deploy.properties can't load config-files from jar-files on the classpath, e.g. agp-core.jar
+	  		"${artifactId}-common.xml," +
+//          Only load ${artifactId}-common.xml, it will import the other config files since mule-deploy.properties can't load config-files from jar-files on the classpath, e.g. agp-core.jar
 //			"aggregating-services-common.xml," + 
 //	        "aggregating-service.xml," +
 			"teststub-services/engagemangsindex-teststub-service.xml," + 

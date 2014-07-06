@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseJavaService}.integrationtest;
+package ${javaPackage}.integrationtest;
 
 import static se.skltp.agp.test.producer.TestProducerDb.TEST_RR_ID_ONE_HIT;
 

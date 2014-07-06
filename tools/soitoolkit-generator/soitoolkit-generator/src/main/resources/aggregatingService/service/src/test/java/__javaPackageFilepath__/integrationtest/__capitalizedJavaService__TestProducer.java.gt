@@ -1,4 +1,4 @@
-package ${javaPackage}.${lowercaseJavaService}.integrationtest;
+package ${javaPackage}.integrationtest;
 
 import javax.jws.WebService;
 

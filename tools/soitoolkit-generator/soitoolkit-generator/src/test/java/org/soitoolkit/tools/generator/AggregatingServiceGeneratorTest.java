@@ -87,13 +87,11 @@ public class AggregatingServiceGeneratorTest {
 
 		SystemUtil.delDirs(projectFolder);
 
-		int expectedNoOfFiles = 89;
+		int expectedNoOfFiles = 92;
 		
-		String service = artifactId;
-
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-		new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, service, muleVersion, projectFolder).startGenerator();
+		new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, muleVersion, projectFolder).startGenerator();
 				
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		

@@ -8,7 +8,7 @@ SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
 SOITOOLKIT_LOG_INFO_QUEUE=SOITOOLKIT.LOG.INFO
 SOITOOLKIT_LOG_ERROR_QUEUE=SOITOOLKIT.LOG.ERROR
 
-MULE_SERVER_ID=GetAggregatedRequestActivities
+MULE_SERVER_ID=${artifactId}
 
 # Default timeout for synchronous services
 SERVICE_TIMEOUT_MS=4000
@@ -44,7 +44,7 @@ JAXB_CONTEXT=org.soitoolkit.commons.logentry.schema.v1:se.skltp.agp.riv.itintegr
 SERVICE_INBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl
 SERVICE_INBOUND_NAME=GetRequestActivitiesResponderService
 SERVICE_INBOUND_NAMESPACE=urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21
-SERVICE_INBOUND_URL=http://localhost:8081/GetAggregatedRequestActivities/service/v1
+SERVICE_INBOUND_URL=http://localhost:8081/${artifactId}/service/v1
 
 # TODO: GEN
 SERVICE_OUTBOUND_PORT=GetRequestActivitiesResponderPort
@@ -53,7 +53,7 @@ SERVICE_OUTBOUND_CLIENT_CLASS=se.riv.crm.requeststatus.getrequestactivities.v1.r
 SERVICE_OUTBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl
 SERVICE_OUTBOUND_URL=${dollarSymbol}{TESTSTUB_SERVICE_INBOUND_URL}
 
-TESTSTUB_SERVICE_INBOUND_URL=http://localhost:8082/GetAggregatedRequestActivities/service/teststub/v1
+TESTSTUB_SERVICE_INBOUND_URL=http://localhost:8082/${artifactId}/service/teststub/v1
 
 # Properties for service "EI - find-content"
 # TODO: GEN
