@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities.integrationtest;
+package ${javaPackage}.${lowercaseJavaService}.integrationtest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +7,9 @@ import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActiv
 import se.riv.crm.requeststatus.v1.RequestActivityType;
 import se.skltp.agp.test.producer.TestProducerDb;
 
-public class RequestActivitiesTestProducerDb extends TestProducerDb {
+public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
 
-	private static final Logger log = LoggerFactory.getLogger(RequestActivitiesTestProducerDb.class);
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducerDb.class);
 
 	@Override
 	public Object createResponse(Object... responseItems) {

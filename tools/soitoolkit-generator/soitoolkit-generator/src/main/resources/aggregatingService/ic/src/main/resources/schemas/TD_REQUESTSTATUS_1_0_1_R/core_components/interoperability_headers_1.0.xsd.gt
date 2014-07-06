@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:interoperability:headers:1" targetNamespace="urn:riv:interoperability:headers:1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+
+	<xs:element name="Actor" type="tns:ActorType" />
+	
+	<xs:complexType name="ActorType">
+		<xs:sequence>
+			<xs:element name="actorId" type="tns:ActorIdType"/>
+			<xs:element name="actorType" type="tns:ActorTypeEnum"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ActorIdType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ActorTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="subject_of_care"/>
+			<xs:enumeration value="subject_of_care_agent"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+
+	<xs:element name="ProcessingStatus" type="tns:ProcessingStatusType" >
+		<xs:annotation>
+			<xs:documentation>
+				ProcessingStatus is used by aggregating services to report back to the consumer regarding the validity of the data returned.
+
+				The following status codes are used to describe the quality of the data returned for a specific logicalAddress:
+
+				1. DataFromSource
+				   No data was available in cache, up-to-date data retrieved from source system
+
+				2. DataFromCache
+				   Up-to-date data returned from cache, no call performed to source system
+
+				3. DataFromCacheSynchFailed
+				   Required synch with source system failed. Potentially out-of-date data returned from Cache
+
+				4. NoDataSynchFailed
+				   No data returned, no data in cache and call to source system failed
+				   
+				The following table describes the relationship between the status code element and the other elements in a processing-status-record:
+				
+				+--------------------------+---------------------+-------------------+--------------------------+-----------------------+----------------------------+
+				| Status Code              | isResponseFromCache | isResponseInSynch | lastSuccessfulSynch      | lastUnsuccessfulSynch | lastUnsuccessfulSynchError |
+				+--------------------------+---------------------+-------------------+--------------------------+-----------------------+----------------------------+
+				| DataFromSource           | False               | True              | Current timestamp        | Emtpy                 | Empty                      |
+				| DataFromCache            | True                | True              | Last time for succ. call | Empty                 | Empty                      |
+				| DataFromCacheSynchFailed | True                | False             | Last time for succ. call | Current timestamp     | Relevant error info        |
+				| NoDataSynchFailed        | False               | False             | Empty                    | Current timestamp     | Relevant error info        |
+				+--------------------------+---------------------+-------------------+--------------------------+-----------------------+----------------------------+
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:complexType name="ProcessingStatusType">
+		<xs:sequence>
+			<xs:element name="ProcessingStatusList" type="tns:ProcessingStatusRecordType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ProcessingStatusRecordType">
+		<xs:sequence>
+			
+			<xs:element name="logicalAddress" type="xs:string" >
+				<xs:annotation>
+					<xs:documentation>
+						Logical address for the source system of this status record.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="statusCode" type="tns:StatusCodeEnum" >
+				<xs:annotation>
+					<xs:documentation>
+						Status code for the data returned from this logical address as described above.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="isResponseFromCache" type="xs:boolean" >
+				<xs:annotation>
+					<xs:documentation>
+						Is true if the response from this logical address comes from the cache, either:
+						- directly without calling the source system
+						- after a failed call to the source system during this processing
+						
+						Is false if:
+						- the source system was called during the processing and returned up-to-date data. 
+						- no data could be returned, neither from the cache nor from the source system.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="isResponseInSynch" type="xs:boolean" >
+				<xs:annotation>
+					<xs:documentation>
+						Is true if the response is up-to-date, either:
+						- the data in the cache was already up-to-date
+						- the call to the source system during this processing was successful.
+
+						Is false if the response is not up-to-date, the call to the source system during this processing failed.
+						See element lastUnsuccessfulSynchError for error-information regarding the failed call.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="lastSuccessfulSynch" type="xs:string" >
+				<xs:annotation>
+					<xs:documentation>
+						Specifies the timestamp of the most recent successfull call to the source system from the aggregating service, if any.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="lastUnsuccessfulSynch" type="xs:string" minOccurs="0" >
+				<xs:annotation>
+					<xs:documentation>
+						Optional element that only is provided if the isResponseInSynch element is false.
+						
+						Specifies the timestamp of the most recent unsuccessfull call to the source system from the aggregating service.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="lastUnsuccessfulSynchError" type="tns:LastUnsuccessfulSynchErrorType" minOccurs="0" >
+				<xs:annotation>
+					<xs:documentation>
+						Optional element that only is provided if the isResponseInSynch element is false.
+						
+						Describes the error that occurred when calling the source system during this processing.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="LastUnsuccessfulSynchErrorType">
+		<xs:sequence>
+		
+			<xs:element name="causingAgent" type="tns:CausingAgentEnum" >
+				<xs:annotation>
+					<xs:documentation>
+						Identifies the failing component.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="code" type="xs:string" >
+				<xs:annotation>
+					<xs:documentation>
+						Describes the error with a code that is significant for the causingAgent.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="text" type="xs:string" >
+				<xs:annotation>
+					<xs:documentation>
+						Describes the error with a free form text message.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="StatusCodeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DataFromSource"/>
+			<xs:enumeration value="DataFromCache"/>
+			<xs:enumeration value="DataFromCacheSynchFailed"/>
+			<xs:enumeration value="NoDataSynchFailed"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CausingAgentEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="service_catalog"/>
+			<xs:enumeration value="virtualization_platform"/>
+			<xs:enumeration value="service_producer"/>
+			<xs:enumeration value="engagement_index"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

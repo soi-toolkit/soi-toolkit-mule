@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities.integrationtest;
+package ${javaPackage}.${lowercaseJavaService}.integrationtest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
@@ -29,7 +29,7 @@ import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
 import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesResponseType;
 import se.riv.crm.requeststatus.v1.RequestActivityType;
-import se.skltp.aggregatingservices.riv.crm.requeststatus.RequestActivitiesMuleServer;
+import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
 import se.skltp.agp.test.consumer.AbstractAggregateIntegrationTest;
@@ -37,10 +37,10 @@ import se.skltp.agp.test.consumer.ExpectedTestData;
 import se.skltp.agp.test.producer.EngagemangsindexTestProducerLogger;
 import se.skltp.agp.test.producer.TestProducerLogger;
 
-public class RequestActivitiesIntegrationTest extends AbstractAggregateIntegrationTest {
+public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateIntegrationTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = LoggerFactory.getLogger(RequestActivitiesIntegrationTest.class);
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
 	 
     private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("GetAggregatedRequestActivities-config");
 	private static final String SKLTP_HSA_ID = rb.getString("SKLTP_HSA_ID");
@@ -48,8 +48,8 @@ public class RequestActivitiesIntegrationTest extends AbstractAggregateIntegrati
     private static final String LOGICAL_ADDRESS = "logical-address";
 	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Read timed out";
 	private static final String EXPECTED_ERR_INVALID_ID_MSG = "Invalid Id: " + TEST_RR_ID_FAULT_INVALID_ID;
-	private static final String DEFAULT_SERVICE_ADDRESS = RequestActivitiesMuleServer.getAddress("SERVICE_INBOUND_URL");
-  
+	private static final String DEFAULT_SERVICE_ADDRESS = ${capitalizedJavaService}MuleServer.getAddress("SERVICE_INBOUND_URL");
+
 	protected String getConfigResources() {
 		return 
 			"soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
@@ -162,7 +162,7 @@ public class RequestActivitiesIntegrationTest extends AbstractAggregateIntegrati
 	private List<ProcessingStatusRecordType> doTest(String registeredResidentId, String senderId, String originalConsumerHsaId, int expectedProcessingStatusSize, ExpectedTestData... testData) {
 
 		// Setup and perform the call to the web service
-		RequestActivitiesTestConsumer consumer = new RequestActivitiesTestConsumer(DEFAULT_SERVICE_ADDRESS, senderId ,originalConsumerHsaId);
+		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS, senderId ,originalConsumerHsaId);
 		Holder<GetRequestActivitiesResponseType> responseHolder = new Holder<GetRequestActivitiesResponseType>();
 		Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
     	consumer.callService(LOGICAL_ADDRESS, registeredResidentId, processingStatusHolder, responseHolder);

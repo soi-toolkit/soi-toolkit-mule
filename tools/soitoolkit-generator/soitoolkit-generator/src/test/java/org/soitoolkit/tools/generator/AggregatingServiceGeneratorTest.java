@@ -87,7 +87,7 @@ public class AggregatingServiceGeneratorTest {
 
 		SystemUtil.delDirs(projectFolder);
 
-		int expectedNoOfFiles = 76;
+		int expectedNoOfFiles = 89;
 		
 		String service = artifactId;
 

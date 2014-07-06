@@ -1,32 +1,3 @@
-# TODO: Add security related properties here...
-
-<% if (jdbc) { %>
-# Properties for the default soitoolkit-jdbc-connector's that require username/password
-# See ${configPropertyFile}.properties for more jdbc-connector properties
-# TODO: Update to reflect your settings
-SOITOOLKIT_JDBC_USR=APP
-SOITOOLKIT_JDBC_PWD=pwd
-<% } %>  
-
-<% if (ftp) { %>
-# Properties for the ftp-transport
-# TODO: Update to reflect your settings
-SOITOOLKIT_FTP_USERNAME=${defaultFtpUsername}
-SOITOOLKIT_FTP_PASSWORD=${defaultFtpPassword}
-<% } %>  
-
-<% if (sftp) { %>
-# Properties for the default soitoolkit-sftp-connector
-# Values below valid for embedded sftp-server - do not change
-# TODO: Update to reflect your settings in an override-properties file
-SOITOOLKIT_SFTP_USERNAME=${defaultSftpUsername}
-SOITOOLKIT_SFTP_IDENTITYFILE=${defaultSftpIdentityFile}
-SOITOOLKIT_SFTP_IDENTITYFILE_PASSPHRASE=${defaultSftpIdentityPassphrase}
-<% } %>
-
-
-# TODO: Add connector and service properties here...
-
 # Standard properties for an external ActiveMQ broker, see soitoolkit-mule-jms-connector-activemq-external.xml.
 SOITOOLKIT_MULE_AMQ_BROKER_URL=failover:(tcp://localhost:61616)
 SOITOOLKIT_MULE_AMQ_MAX_REDELIVERIES=3
@@ -37,34 +8,61 @@ SOITOOLKIT_MULE_AMQ_NO_OF_CONSUMERS=2
 SOITOOLKIT_LOG_INFO_QUEUE=SOITOOLKIT.LOG.INFO
 SOITOOLKIT_LOG_ERROR_QUEUE=SOITOOLKIT.LOG.ERROR
 
+MULE_SERVER_ID=GetAggregatedRequestActivities
+
 # Default timeout for synchronous services
-SERVICE_TIMEOUT_MS=8000
+SERVICE_TIMEOUT_MS=4000
+AGGREGATE_TIMEOUT_MS=4500
+AGGREGATED_SERVICE_TIMEOUT_MS=5000
 
-<% if (imap) { %>
-# Default check frequency for reading e-mail using the imap-transport
-IMAP_CHECK_FREQUENCY_MS=3000
-<% } %>
+# Default thread pool configration
+AGP_DEFAULT_MAX_THREADS_ACTIVE=100
+AGP_DEFAULT_MAX_THREADS_IDLE=1
+AGP_DEFAULT_MAX_THREADS_TTL=10000
 
-<% if (pop3) { %>
-# Default check frequency for reading e-mail using the pop3-transport
-POP3_CHECK_FREQUENCY_MS=3000
-<% } %>
+# Cache properties
+CACHE_MAX_ENTRIES=1000 
+CACHE_TTL_MS=5000
+CACHE_EXPIRATION_INTERVAL_MS=1000
 
-<% if (jdbc) { %>
-# Properties for the generic soitoolkit-mule-jdbc-connector.xml.
-# TODO: Update to reflect your settings
-# For Derby:
-# (see soitoolkit-mule-jdbc-datasource.xml for how to setup other databases, e.g. MySQL, SQL Server or Oracle)
-# (see soitoolkit-mule-jdbc-xa-datasource-derby-external.xml for example of setup of XA DataSources)
-SOITOOLKIT_JDBC_DATABASE=${artifactId}Db
-SOITOOLKIT_JDBC_HOST=localhost
-SOITOOLKIT_JDBC_PORT=1527
-SOITOOLKIT_JDBC_DRIVER=org.apache.derby.jdbc.ClientDriver
-SOITOOLKIT_JDBC_URL=jdbc:derby://${dollarSymbol}{SOITOOLKIT_JDBC_HOST}:${dollarSymbol}{SOITOOLKIT_JDBC_PORT}/${dollarSymbol}{SOITOOLKIT_JDBC_DATABASE};create=true
+# POJO implementations of the agp-api
+QUERY_OBJECT_FACTORY_IMPL=${javaPackage}.QueryObjectFactoryImpl
+REQUEST_LIST_FACTORY_IMPL=${javaPackage}.RequestListFactoryImpl
+RESPONSE_LIST_FACTORY_IMPL=${javaPackage}.ResponseListFactoryImpl
 
-SOITOOLKIT_JDBC_CON_POLLING_MS=1000
-SOITOOLKIT_JDBC_CON_POOL_INIT_SIZE=1
-SOITOOLKIT_JDBC_CON_POOL_MAX_ACTIVE=10
-SOITOOLKIT_JDBC_CON_POOL_MAX_IDLE=10
-<% } %>  
+# TEST SERVICE PRODUCER
+SERVICE_PRODUCER_TESTDB_IMPL=${javaPackage}.integrationtest.${artifactId}TestProducerDb
+SERVICE_PRODUCER_TESTSTUB_IMPL=${javaPackage}.integrationtest.${artifactId}TestProducer
+ENGAGEMANGSINDEX_PRODUCER_TESTSTUB_IMPL=se.skltp.agp.test.producer.EngagemangsindexTestProducer
 
+# Common jaxb context used for example by loggers, spring bean name: "jaxbContext"
+# TODO: GEN
+JAXB_CONTEXT=org.soitoolkit.commons.logentry.schema.v1:se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1:se.riv.crm.requeststatus.getrequestactivitiesresponder.v1
+
+# Properties for the aggregating service
+# TODO: GEN
+SERVICE_INBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl
+SERVICE_INBOUND_NAME=GetRequestActivitiesResponderService
+SERVICE_INBOUND_NAMESPACE=urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21
+SERVICE_INBOUND_URL=http://localhost:8081/GetAggregatedRequestActivities/service/v1
+
+# TODO: GEN
+SERVICE_OUTBOUND_PORT=GetRequestActivitiesResponderPort
+SERVICE_OUTBOUND_OPERATION=GetRequestActivities
+SERVICE_OUTBOUND_CLIENT_CLASS=se.riv.crm.requeststatus.getrequestactivities.v1.rivtabp21.GetRequestActivitiesResponderService
+SERVICE_OUTBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl
+SERVICE_OUTBOUND_URL=${dollarSymbol}{TESTSTUB_SERVICE_INBOUND_URL}
+
+TESTSTUB_SERVICE_INBOUND_URL=http://localhost:8082/GetAggregatedRequestActivities/service/teststub/v1
+
+# Properties for service "EI - find-content"
+# TODO: GEN
+SKLTP_HSA_ID=FAKED HSA-ID-SKLTP
+ENGAGEMANGSINDEX_HSA_ID=FAKED HSA-ID-EI
+ENGAGEMANGSINDEX_OUTBOUND_URL=${dollarSymbol}{ENGAGEMANGSINDEX_TESTSTUB_INBOUND_URL}
+ENGAGEMANGSINDEX_TESTSTUB_INBOUND_URL=http://localhost:8082/engagemangsindex/service/engagemangsindex-teststub/v1
+EI_SERVICE_DOMAIN=riv:crm:requeststatus
+EI_CATEGORIZATION=see field typeOfRequest in the request
+
+# Property used together with x-vp-sender-id to identify which VP instance is used
+VP_INSTANCE_ID=DEFAULT_NOT_SET

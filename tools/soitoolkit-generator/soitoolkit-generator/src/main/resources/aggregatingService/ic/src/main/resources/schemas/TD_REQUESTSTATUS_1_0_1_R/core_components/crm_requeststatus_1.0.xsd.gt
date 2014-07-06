@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->		
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+xmlns:tns='urn:riv:crm:requeststatus:1'				
+targetNamespace='urn:riv:crm:requeststatus:1'		
+elementFormDefault='qualified'		
+attributeFormDefault='unqualified'		
+version='1.0'>
+
+<xs:complexType name="RequestActivityType">
+	<xs:sequence>
+		<xs:element name='subjectOfCareId' type='tns:SubjectOfCareIdType' />
+		<xs:element name='senderRequestId' type='xs:string'
+			minOccurs="0" />
+		<xs:element name='receiverRequestId' type='xs:string'
+			minOccurs="0" />
+		<xs:element name='typeOfRequest' type='tns:RequestTypeCodeEnum' />
+		<xs:element name='requestMedium' type='tns:SubmissionMediumCodeEnum'
+			minOccurs='0' />
+		<xs:element name='requestIssuedByPersonName' type='xs:string'
+			minOccurs='0' />
+		<xs:element name='requestIssuedByOrganizationalUnitId' type='tns:HsaIdType'
+			minOccurs='0' />
+		<xs:element name='requestIssuedByOrganizationalUnitDescription'
+			type='xs:string' minOccurs='0' />
+		<xs:element name='receivingPersonName' type='xs:string'
+			minOccurs='0' />
+		<xs:element name='receivingOrganizationalUnitId' type='tns:HsaIdType'
+			minOccurs='0' />
+		<xs:element name='receivingOrganizationalUnitDescription' type='xs:string'
+			minOccurs='0' />
+		<xs:element name='careUnit' type='tns:HsaIdType'
+				minOccurs='0' />
+		<xs:element name='logicalSystemId' type='xs:string' />
+		<xs:element name='statusCode' type='tns:StatusCodeEnum' />
+		<xs:element name='eventTime' type="tns:TS" />
+
+		<xs:any namespace=' #
+			other ' processContents='lax'
+			minOccurs='0' maxOccurs='unbounded' />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="TS">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="[1-9]{1}[0-9]{3}(0[1-9]{1}|1[0-2]{1})([0-2]{1}[0-9]{1}|3[0-1]{1})([0-1]{1}[0-9]{1}|2[0-3]{1})[0-5]{1}[0-9]{1}[0-5]{1}[0-9]{1}"/>
+	</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="DT">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="[1-9]{1}[0-9]{3}(0[1-9]{1}|1[0-2]{1})([0-2]{1}[0-9]{1}|3[0-1]{1})"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="SubjectOfCareIdType">
+	<xs:restriction base="xs:string">
+		<xs:pattern value="^[0-9]{8}[0-9pPtTfF][0-9]{3}\$"/>
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="HsaIdType">
+	<xs:restriction base="xs:string"/>
+</xs:simpleType>
+
+<xs:simpleType name='RequestTypeCodeEnum'>
+	<xs:restriction base='xs:string'>
+		<xs:enumeration value='1' />
+		<xs:enumeration value='2' />
+		<xs:enumeration value='3' />
+		<xs:enumeration value='4' />
+		<xs:enumeration value='5' />
+		<xs:enumeration value='6' />
+		<xs:enumeration value='7' />
+		<xs:enumeration value='8' />
+		<xs:enumeration value='9' />
+		<xs:enumeration value='10' />
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name='SubmissionMediumCodeEnum'>
+	<xs:restriction base='xs:string'>
+	<xs:enumeration value='1' />
+	<xs:enumeration value='2' />
+	<xs:enumeration value='3' />
+	<xs:enumeration value='4' />
+	<xs:enumeration value='5' />
+	<xs:enumeration value='6' />
+	<xs:enumeration value='7' />
+	<xs:enumeration value='8' />
+	<xs:enumeration value='9' />
+	<xs:enumeration value='10' />
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name='StatusCodeEnum'>
+	<xs:restriction base='xs:string'>
+	<xs:enumeration value='10' />
+	<xs:enumeration value='20' />
+	<xs:enumeration value='30' />
+	<xs:enumeration value='40' />
+	<xs:enumeration value='50' />
+	<xs:enumeration value='60' />
+	<xs:enumeration value='70' />
+	<xs:enumeration value='80' />
+	<xs:enumeration value='90' />
+	<xs:enumeration value='100' />
+	<xs:enumeration value='110' />
+	<xs:enumeration value='120' />
+	<xs:enumeration value='126' />
+	<xs:enumeration value='130' />
+	<xs:enumeration value='136' />
+	<xs:enumeration value='140' />
+	<xs:enumeration value='150' />
+	<xs:enumeration value='160' />
+	<xs:enumeration value='170' />
+	</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name='ResultCodeEnum'>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='OK' />
+			<xs:enumeration value='ERROR' />
+			<xs:enumeration value='INFO' />
+		</xs:restriction>
+</xs:simpleType>
+    
+</xs:schema>

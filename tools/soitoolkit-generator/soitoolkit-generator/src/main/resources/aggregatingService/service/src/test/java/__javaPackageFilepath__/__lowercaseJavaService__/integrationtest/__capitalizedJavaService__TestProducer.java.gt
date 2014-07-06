@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities.integrationtest;
+package ${javaPackage}.${lowercaseJavaService}.integrationtest;
 
 import javax.jws.WebService;
 
@@ -11,9 +11,9 @@ import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActiv
 import se.skltp.agp.test.producer.TestProducerDb;
 
 @WebService(serviceName = "GetRequestActivitiesResponderService", portName = "GetRequestActivitiesResponderPort", targetNamespace = "urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21", name = "GetRequestActivitiesInteraction")
-public class RequestActivitiesTestProducer implements GetRequestActivitiesResponderInterface {
+public class ${capitalizedJavaService}TestProducer implements GetRequestActivitiesResponderInterface {
 
-	private static final Logger log = LoggerFactory.getLogger(RequestActivitiesTestProducer.class);
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);
 
 	private TestProducerDb testDb;
 	public void setTestDb(TestProducerDb testDb) {

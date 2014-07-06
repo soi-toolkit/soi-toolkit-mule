@@ -74,14 +74,21 @@ public class AggregatingServiceGenerator implements Generator {
 		guIc.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__capitalizedJavaArtifactId__MuleServer.java.gt");
 		guIc.generateFolder("src/test/resources/testfiles");
 		guIc.generateFolder("src/test/resources/teststub-services");
-		
+
 		guIc.generateContentAndCreateFile("src/test/resources/log4j.dtd.gt");
 		guIc.generateContentAndCreateFile("src/test/resources/log4j.xml.gt");
-		
+
 		guIc.generateContentAndCreateFile("src/environment/log4j.dtd.gt");
 		guIc.generateContentAndCreateFile("src/environment/log4j.xml.gt");
-		
+
 		guIc.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
+
+		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/crm_requeststatus_1.0.xsd.gt");
+		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/interoperability_headers_1.0.xsd.gt");
+		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/itintegration_registry_1.0.xsd.gt");
+
+		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl.gt");
+		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesResponder_1.0.xsd.gt");
 	}
 
 	private void startTeststubProjectGenerator() {
@@ -103,21 +110,20 @@ public class AggregatingServiceGenerator implements Generator {
 		IModel m = guService.getModel();
 		guService.logInfo("\n\nCreates a AggregatingService-service: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
 
-		// FIXME. MULE STUDIO.
-//    	guService.generateContentAndCreateFile("src/main/resources/services/__service__-service.xml.gt");
-    	guService.generateContentAndCreateFile("src/main/app/__service__-service.xml.gt");
-    	guService.generateContentAndCreateFileUsingGroovyGenerator(getClass().getResource("GenerateMinimalMflow.groovy"), "flows/__service__-service.mflow");
-		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformer.java.gt");
-		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformer.java.gt");
-
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/QueryObjectFactoryImpl.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/RequestListFactoryImpl.java.gt");
+		guService.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/ResponseListFactoryImpl.java.gt");
+		
 //		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/input.txt.gt");
 //		guService.generateContentAndCreateFile("src/test/resources/testfiles/__service__/expected-result.txt.gt");
 		guService.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__RequestTransformerTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__ResponseTransformerTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__IntegrationTest.java.gt");
-		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestReceiver.java.gt");
-	}
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/QueryObjectFactoryTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/RequestListFactoryTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/ResponseListFactoryTest.java.gt");
 
-	
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__IntegrationTest.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestConsumer.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestProducer.java.gt");
+		guService.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/integrationtest/__capitalizedJavaService__TestProducerDb.java.gt");
+	}
 }

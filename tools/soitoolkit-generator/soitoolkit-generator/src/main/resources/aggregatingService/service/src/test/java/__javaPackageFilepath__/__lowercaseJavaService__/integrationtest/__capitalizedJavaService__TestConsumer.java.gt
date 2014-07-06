@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities.integrationtest;
+package ${javaPackage}.${lowercaseJavaService}.integrationtest;
 
 import static se.skltp.agp.test.producer.TestProducerDb.TEST_RR_ID_ONE_HIT;
 
@@ -10,20 +10,20 @@ import org.slf4j.LoggerFactory;
 import se.riv.crm.requeststatus.getrequestactivities.v1.rivtabp21.GetRequestActivitiesResponderInterface;
 import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesResponseType;
 import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesType;
-import se.skltp.aggregatingservices.riv.crm.requeststatus.RequestActivitiesMuleServer;
+import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.test.consumer.AbstractTestConsumer;
 import se.skltp.agp.test.consumer.SoapHeaderCxfInterceptor;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
 
-public class RequestActivitiesTestConsumer extends AbstractTestConsumer<GetRequestActivitiesResponderInterface> {
+public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<GetRequestActivitiesResponderInterface> {
 
-	private static final Logger log = LoggerFactory.getLogger(RequestActivitiesTestConsumer.class);
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestConsumer.class);
 
 	public static void main(String[] args) {
-		String serviceAddress = RequestActivitiesMuleServer.getAddress("SERVICE_INBOUND_URL");
+		String serviceAddress = ${capitalizedJavaService}MuleServer.getAddress("SERVICE_INBOUND_URL");
 		String personnummer = TEST_RR_ID_ONE_HIT;
 
-		RequestActivitiesTestConsumer consumer = new RequestActivitiesTestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID);
+		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID);
 		Holder<GetRequestActivitiesResponseType> responseHolder = new Holder<GetRequestActivitiesResponseType>();
 		Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
 
@@ -31,7 +31,7 @@ public class RequestActivitiesTestConsumer extends AbstractTestConsumer<GetReque
 		log.info("Returned #timeslots = " + responseHolder.value.getRequestActivity().size());
 	}
 
-	public RequestActivitiesTestConsumer(String serviceAddress, String senderId, String originalConsumerHsaId) {
+	public ${capitalizedJavaService}TestConsumer(String serviceAddress, String senderId, String originalConsumerHsaId) {
 	    
 		// Setup a web service proxy for communication using HTTPS with Mutual Authentication
 		super(GetRequestActivitiesResponderInterface.class, serviceAddress, senderId, originalConsumerHsaId);

@@ -1,9 +1,9 @@
 # Mule Application Deployment Descriptor
 redeployment.enabled=true
 encoding=UTF-8
-<% if (jdbc) { %>
-config.resources=${artifactId}-common.xml,${artifactId}-jdbc-connector.xml
-<% } else { %>  
+
+# Only load ${artifactId}-common.xml, it will import the other config files since mule-deploy.properties can't load config-files from jar-files on the classpath, e.g. agp-core.jar
+# config.resources=${artifactId}-common.xml,aggregating-services-common.xml,aggregating-service.xml,process-notification-service.xml
 config.resources=${artifactId}-common.xml
-<% } %>  
+
 domain=default

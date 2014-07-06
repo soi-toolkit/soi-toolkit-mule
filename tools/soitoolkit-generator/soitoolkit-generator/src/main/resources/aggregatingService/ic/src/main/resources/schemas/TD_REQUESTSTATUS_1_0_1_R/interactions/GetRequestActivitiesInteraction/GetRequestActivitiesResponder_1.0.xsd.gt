@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Sveriges Kommuner och Landsting licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->		
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:tns='urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1' xmlns:core='urn:riv:crm:requeststatus:1' targetNamespace='urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1' elementFormDefault='qualified' attributeFormDefault='unqualified' version='1.0'>
+  <xs:import schemaLocation='../../core_components/crm_requeststatus_1.0.xsd' namespace='urn:riv:crm:requeststatus:1' />
+
+	<xs:element name="GetRequestActivities" type='tns:GetRequestActivitiesType' />
+	<xs:element name='GetRequestActivitiesResponse' type='tns:GetRequestActivitiesResponseType' />
+
+	<xs:complexType name='GetRequestActivitiesType'>
+		<xs:sequence>
+			<xs:element name='subjectOfCareId'
+			type='core:SubjectOfCareIdType' />
+			<xs:element name='careUnitId'
+				type='core:HsaIdType' minOccurs='0' maxOccurs='unbounded' />
+			<xs:element name="typeOfRequest" type="core:RequestTypeCodeEnum" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name='fromDate' type='core:TS' minOccurs="0" />
+			<xs:element name='toDate' type='core:TS' minOccurs="0" />
+			<xs:any namespace='#other' processContents='lax'
+				minOccurs='0' maxOccurs='unbounded' />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name='GetRequestActivitiesResponseType'>
+		<xs:sequence>
+			<xs:element name='requestActivity' type='core:RequestActivityType'
+				minOccurs='0' maxOccurs='unbounded' />
+			<xs:any namespace='##other' processContents='lax'
+				minOccurs='0' maxOccurs='unbounded' />
+		</xs:sequence>
+	</xs:complexType>
+
+
+</xs:schema>

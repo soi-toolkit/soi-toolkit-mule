@@ -25,67 +25,82 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     <packaging>mule</packaging>
     <name>${parentPom}</name>
 
+    <properties>
+        <skltp.agp.version>1.2.0</skltp.agp.version>
+
+        <!-- Properties for generating code from XML Schemas (JAX-WS) -->
+        <schema.path>${dollarSymbol}{basedir}/src/main/resources/schemas</schema.path>
+        <cxf.version>2.5.1</cxf.version>
+    </properties>
+    
     <scm>
         <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
-        <connection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</connection>
-        <developerConnection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</developerConnection>
-        <url>https://my-subversion-server/svn/${integrationComponentProject}/trunk</url>
+        <connection>scm:svn:https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</connection>
+        <developerConnection>scm:svn:https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</developerConnection>
+        <url>https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</url>
     </scm>
     
-    <distributionManagement>
-        <!-- TODO: Sample <distributionManagement>-tag, update to reflect you own environment! -->
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshot Repository</name>
-            <url>http://my-maven-repo-server/repositories/snapshots</url>
-        </snapshotRepository>  
-        <repository>
-            <id>releases</id>
-            <name>Release Repository</name>
-            <url>http://my-maven-repo-server/repositories/releases</url>
-        </repository>
-    </distributionManagement>
-
 	<dependencies>	
-		<dependency>
-		  <groupId>org.soitoolkit.commons.components</groupId>
-			<artifactId>soitoolkit-commons-mule</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-		</dependency>
+        <dependency>
+		    <groupId>se.skltp.agp</groupId>
+		    <artifactId>agp-core</artifactId>
+		    <version>\${skltp.agp.version}</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.soitoolkit.commons.components</groupId>
+            <artifactId>soitoolkit-commons-mule</artifactId>
+            <version>\${soitoolkit.version}</version>
+        </dependency>
 
 		<dependency>
-			<groupId>org.soitoolkit.commons.poms</groupId>
-			<artifactId>soitoolkit-test-dependencies</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
+			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
+			<artifactId>soitoolkit-mule-3.3.1-dependencies</artifactId>
+			<version>\${soitoolkit.version}</version>
 			<type>pom</type>
+		</dependency>
+		
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>org.soitoolkit.commons.poms</groupId>
+            <artifactId>soitoolkit-test-dependencies</artifactId>
+            <version>\${soitoolkit.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>se.skltp.agp</groupId>
+            <artifactId>agp-test-common</artifactId>
+            <version>\${skltp.agp.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
+			<version>1.8.5</version>
 		</dependency>
-
 		<dependency>
-			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-dependencies</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-			<type>pom</type>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+			<version>1.8.5</version>
 		</dependency>
-
-<% if (muleVersion.isEEVersion()) { %> 
-		<dependency>
-			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-ee-dependencies</artifactId>
-			<version>${dollarSymbol}{soitoolkit.version}</version>
-			<type>pom</type>
-		</dependency>
-<% } %> 		
+	
 	</dependencies> 
 
     <build>
         <resources>
             <resource>
-                <directory>${dollarSymbol}{basedir}/src/main/resources</directory>
+                <directory>\${basedir}/src/main/resources</directory>
             </resource>
             <resource>
                 <!-- To get mule-config files from the Mule Studio defined resource-folder in the classpath... -->
-                <directory>${dollarSymbol}{basedir}/src/main/app</directory>
+                <directory>\${basedir}/src/main/app</directory>
             </resource>
         </resources>
 
@@ -216,7 +231,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 			    </goals>
 				<configuration>
 				<!--<outputDirectory>target/classes</outputDirectory> -->
-				<outputDirectory>${dollarSymbol}{project.build.outputDirectory}</outputDirectory>
+				<outputDirectory>\${project.build.outputDirectory}</outputDirectory>
 				<resources>
 				  <resource>
 				    <directory>src/environment</directory>
@@ -230,6 +245,45 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		    </execution>
 		  </executions>
 		</plugin>
+
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-codegen-plugin</artifactId>
+        <version>\${cxf.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <sourceRoot>\${basedir}/target/generated/src/main/java</sourceRoot>
+              <wsdlOptions>
+                <wsdloption>
+                  <wsdl>\${schema.path}/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl</wsdl>
+                  <extraargs>
+                    <extraarg>-p</extraarg>
+                    <extraarg>http://www.w3.org/2005/08/addressing=org.w3c.addressing.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1=se.riv.crm.requeststatus.getrequestactivitiesresponder.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivitiesInitiator:1=se.riv.crm.requeststatus.getrequestactivitiesinitiator.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21=se.riv.crm.requeststatus.getrequestactivities.v1.rivtabp21</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:itintegration:registry:1=se.riv.itintegration.registry.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:1=se.riv.crm.requeststatus.v1</extraarg>
+                    <extraarg>-p</extraarg>
+                    <extraarg>urn:riv:interoperability:headers:1=se.riv.interoperability.headers.v1</extraarg>
+                  </extraargs>
+                </wsdloption>
+              </wsdlOptions>
+            </configuration>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 				
       </plugins>
 

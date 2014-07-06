@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities;
+package ${javaPackage}.${lowercaseJavaService};
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package se.skltp.aggregatingservices.riv.crm.requeststatus.getrequestactivities;
+package ${javaPackage}.${lowercaseJavaService};
 
 import java.text.ParseException;
 import java.util.ArrayList;
