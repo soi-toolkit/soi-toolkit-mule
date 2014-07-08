@@ -10,7 +10,9 @@ import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActiv
 import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesType;
 import se.skltp.agp.test.producer.TestProducerDb;
 
+// TODO: CHANGE GENERATED CODE - START
 @WebService(serviceName = "GetRequestActivitiesResponderService", portName = "GetRequestActivitiesResponderPort", targetNamespace = "urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21", name = "GetRequestActivitiesInteraction")
+// TODO: CHANGE GENERATED CODE - START
 public class ${capitalizedJavaService}TestProducer implements GetRequestActivitiesResponderInterface {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);

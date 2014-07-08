@@ -175,8 +175,11 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateI
 		for (int i = 0; i < testData.length; i++) {
 			RequestActivityType responseElement = response.getRequestActivity().get(i);
 			assertEquals(registeredResidentId, responseElement.getSubjectOfCareId());		
+
+			// TODO: CHANGE GENERATED CODE - START
 			assertEquals(testData[i].getExpectedBusinessObjectId(), responseElement.getSenderRequestId());		
 			assertEquals(testData[i].getExpectedLogicalAddress(), responseElement.getCareUnit());		
+			// TODO: CHANGE GENERATED CODE - END
 		}
 
     	// Verify the size of the processing status and return it for further analysis
@@ -198,25 +201,4 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateI
 
 		return statusList.getProcessingStatusList();
 	}
-
-//	TODO: Mule EE dependency
-//    @Test
-    public void test_ok_caching() {
-    	String registeredResidentId   = TEST_RR_ID_ONE_HIT;
-    	long   expectedProcessingTime = getTestDb().getProcessingTime(TEST_LOGICAL_ADDRESS_1);
-    	String expectedBookingId      = TEST_BO_ID_ONE_HIT;
-		String expectedLogicalAddress = TEST_LOGICAL_ADDRESS_1;
-
-		long ts = System.currentTimeMillis();
-		List<ProcessingStatusRecordType> statusList = doTest(registeredResidentId, 1, new ExpectedTestData(expectedBookingId, expectedLogicalAddress));
-		ts = System.currentTimeMillis() - ts;
-		assertProcessingStatusDataFromSource(statusList.get(0), expectedLogicalAddress);
-		assertTrue("Expected a long processing time (i.e. a non cached response)", ts > expectedProcessingTime);
-
-		ts = System.currentTimeMillis();
-    	statusList = doTest(registeredResidentId, 1, new ExpectedTestData(expectedBookingId, expectedLogicalAddress));
-		ts = System.currentTimeMillis() - ts;
-		assertProcessingStatusDataFromCache(statusList.get(0), expectedLogicalAddress);
-		assertTrue("Expected a short processing time (i.e. a cached response)", ts < expectedProcessingTime);
-    }
 }

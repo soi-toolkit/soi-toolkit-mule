@@ -31,18 +31,11 @@ public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
 
 		RequestActivityType response = new RequestActivityType();
 
+		// TODO: CHANGE GENERATED CODE - START
 		response.setCareUnit(logicalAddress);
 		response.setSubjectOfCareId(registeredResidentId);
 		response.setSenderRequestId(businessObjectId);
-		response.setReceiverRequestId("ReceiverRequestId");
-		response.setTypeOfRequest("TypeOfRequest");
-		response.setRequestMedium("RequestMedium");
-		response.setRequestIssuedByPersonName("RequestIssuedByPersonName");
-		response.setRequestIssuedByOrganizationalUnitId("RequestIssuedByOrganizationalUnitId");
-		response.setRequestIssuedByOrganizationalUnitDescription("RequestIssuedByOrganizationalUnitDescription");
-		response.setReceivingPersonName("ReceivingPersonName");
-		response.setReceivingOrganizationalUnitId("ReceivingOrganizationalUnitId");
-		response.setReceivingOrganizationalUnitDescription("ReceivingOrganizationalUnitDescription");
+		// TODO: CHANGE GENERATED CODE - END
 		
 		return response;
 	}

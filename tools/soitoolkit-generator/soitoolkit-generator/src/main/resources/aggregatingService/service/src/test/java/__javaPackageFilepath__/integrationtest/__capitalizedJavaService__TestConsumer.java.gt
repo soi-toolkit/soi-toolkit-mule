@@ -42,7 +42,11 @@ public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<
 		log.debug("Calling GetRequestActivities-soap-service with Registered Resident Id = {}", registeredResidentId);
 		
 		GetRequestActivitiesType request = new GetRequestActivitiesType();
+
+		// TODO: CHANGE GENERATED CODE - START
 		request.setSubjectOfCareId(registeredResidentId);
+		// TODO: CHANGE GENERATED CODE - END
+
 
 		GetRequestActivitiesResponseType response = _service.getRequestActivities(logicalAddress, request);
 		responseHolder.value = response;
