@@ -24,7 +24,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     <name>${parentPom}</name>
 
     <properties>
-        <skltp.agp.version>1.2.0</skltp.agp.version>
+        <skltp.agp.version>1.2.1</skltp.agp.version>
 
         <!-- Properties for generating code from XML Schemas (JAX-WS) -->
         <schema.path>${dollarSymbol}{basedir}/src/main/resources/schemas</schema.path>
