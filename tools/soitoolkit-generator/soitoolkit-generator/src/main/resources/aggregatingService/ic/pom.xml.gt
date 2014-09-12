@@ -14,14 +14,12 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 	<modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>${superpomGroupId}</groupId>
-        <artifactId>${superpomArtifactId}</artifactId>
-        <version>${superpomVersion}</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>${parentPom}-parent</artifactId>
+        <version>${version}</version>
     </parent>
     
-    <groupId>${groupId}</groupId>
     <artifactId>${parentPom}</artifactId>
-    <version>${version}</version>
     <packaging>mule</packaging>
     <name>${parentPom}</name>
 
@@ -33,14 +31,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
         <cxf.version>2.5.1</cxf.version>
     </properties>
     
-    <scm>
-        <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
-        <connection>scm:svn:https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</connection>
-        <developerConnection>scm:svn:https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</developerConnection>
-        <url>https://skltpservices.googlecode.com/svn/${integrationComponentProject}/trunk</url>
-    </scm>
-    
-	<dependencies>	
+	<dependencies>
         <dependency>
 		    <groupId>se.skltp.agp</groupId>
 		    <artifactId>agp-core</artifactId>

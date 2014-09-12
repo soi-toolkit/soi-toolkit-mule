@@ -25,37 +25,48 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 
 public class AggregatingServiceGenerator implements Generator {
 
-	GeneratorUtil guIc;
+    GeneratorUtil guParent;
+    GeneratorUtil guIc;
 	GeneratorUtil guIcTestStub;
 	GeneratorUtil guService;
 	
 	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder) {
-		guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, null);
-		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, "-teststub");
-		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, null);
+        guParent     = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/parent", outputFolder, null);
+        guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, artifactId);
+		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, artifactId + "-teststub");
+		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, artifactId);
 	}
 
 	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix) {
 		String groupId = "se.skltp.aggregatingservices." + domainId;
 		String serviceName = artifactId;
 		
-		outputFolder = outputFolder + "/" + domainId + "/" + artifactId;
-		if (outputFolderSuffix != null || outputFolder.length() == 0) {
-			outputFolder += outputFolderSuffix;
+		outputFolder = outputFolder + "/" + domainId + "/" + artifactId + "/trunk";
+		if (outputFolderSuffix != null ) {
+			outputFolder += "/" + outputFolderSuffix;
 		}
-		outputFolder += "/trunk";
-		
-		return new GeneratorUtil(ps, groupId, artifactId, version, serviceName, muleVersion, TransportEnum.HTTP, TransportEnum.HTTP, TransformerEnum.JAVA, templateFolder, outputFolder);
+
+        GeneratorUtil gu = new GeneratorUtil(ps, groupId, artifactId, version, serviceName, muleVersion, TransportEnum.HTTP, TransportEnum.HTTP, TransformerEnum.JAVA, templateFolder, outputFolder);
+        IModel m = gu.getModel();
+        m.getExt().put("domainId", domainId);
+        return gu;
 	}
 
     public void startGenerator() {
-
+        startParentGenerator();
     	startProjectGenerator();
     	startTeststubProjectGenerator();
 		startServiceGenerator();
-	}
+    }
 
-	private void startProjectGenerator() {
+    private void startParentGenerator() {
+        IModel m = guParent.getModel();
+        guParent.logInfo("\n\nCreates a AggregatingService-parent-pom: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
+
+        guParent.generateContentAndCreateFile("pom.xml.gt");
+    }
+
+    private void startProjectGenerator() {
 		IModel m = guIc.getModel();
 		guIc.logInfo("\n\nCreates a AggregatingService-project: " + m.getGroupId() + " - " + m.getArtifactId() + "\n");
 

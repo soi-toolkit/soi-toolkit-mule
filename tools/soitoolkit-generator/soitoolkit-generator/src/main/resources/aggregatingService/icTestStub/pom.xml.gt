@@ -14,50 +14,27 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 	<modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>${superpomGroupId}</groupId>
-        <artifactId>${superpomArtifactId}</artifactId>
-        <version>${superpomVersion}</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>${parentPom}-parent</artifactId>
+        <version>${version}</version>
     </parent>
-    
-    <groupId>${groupId}</groupId>
-    <artifactId>${teststubStandaloneProject}</artifactId>
-    <version>${version}</version>
-    <packaging>mule</packaging>
-    <name>${teststubStandaloneProject}</name>
 
-    <scm>
-        <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
-        <connection>scm:svn:https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</connection>
-        <developerConnection>scm:svn:https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</developerConnection>
-        <url>https://my-subversion-server/svn/${teststubStandaloneProject}/trunk</url>
-    </scm>
-    
-    <distributionManagement>
-        <!-- TODO: Sample <distributionManagement>-tag, update to reflect you own environment! -->
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshot Repository</name>
-            <url>http://my-maven-repo-server/repositories/snapshots</url>
-        </snapshotRepository>  
-        <repository>
-            <id>releases</id>
-            <name>Release Repository</name>
-            <url>http://my-maven-repo-server/repositories/releases</url>
-        </repository>
-    </distributionManagement>
+    <artifactId>${parentPom}-teststub</artifactId>
+    <packaging>mule</packaging>
+    <name>${parentPom}-teststub</name>
 
 	<dependencies>
 	  <!-- dependencies to the integration component that contains the services to stub -->
     <dependency>
     	<groupId>${groupId}</groupId>
     	<artifactId>${artifactId}</artifactId>
-    	<version>${version}</version>
+    	<version>${dollarSymbol}{project.version}</version>
     	<type>test-jar</type>
     </dependency>
     <dependency>
     	<groupId>${groupId}</groupId>
     	<artifactId>${artifactId}</artifactId>
-    	<version>${version}</version>
+    	<version>${dollarSymbol}{project.version}</version>
     	<classifier>core</classifier>    	
     </dependency>
 	</dependencies> 
