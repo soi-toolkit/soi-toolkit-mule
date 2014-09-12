@@ -64,3 +64,11 @@ EI_CATEGORIZATION=see field typeOfRequest in the request
 
 # Property used together with x-vp-sender-id to identify which VP instance is used
 VP_INSTANCE_ID=DEFAULT_NOT_SET
+
+#PingForConfiguration
+PINGFORCONFIGURATION_INBOUND_ENDPOINT=http://localhost:8081/agp/${lowercaseArtifactId}/itintegration/monitoring/PingForConfiguration/1/rivtabp21
+ENGAGEMANGSINDEX_PINGFORCONFIGURATION_ENDPOINT=${dollarSymbol}{PINGFORCONFIGURATION_TESTSTUB_INBOUND_ENDPOINT}
+ENGAGEMANGSINDEX_PINGFORCONFIGURATION_SERVICE_TIMEOUT_MS=3000
+APPLICATION_NAME=${artifactId}
+
+PINGFORCONFIGURATION_TESTSTUB_INBOUND_ENDPOINT=http://localhost:8082/ei/teststub/itintegration/monitoring/PingForConfiguration/1/rivtabp21
