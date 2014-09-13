@@ -78,6 +78,13 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
      */
     private File outDir;
 
+    /**
+     * Generate Schema.
+     * @parameter expression="${genSchema}" default-value="true"
+     * @required
+     */
+    private boolean genSchema;
+
     public void execute() throws MojoExecutionException {
 
     	
@@ -90,25 +97,19 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
         getLog().info("(change an arg by suppling: -Darg=value):");
         getLog().info("");
         getLog().info("outDir=" + outDir.getPath());
-//        getLog().info("outDir=" + outDir.getAbsolutePath());
-//        try {
-//			getLog().info("outDir=" + outDir.getCanonicalPath());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
         getLog().info("artifactId=" + artifactId);
         getLog().info("domainId=" + domainId);
         getLog().info("version=" + version);
         getLog().info("muleVersion=" + muleVersion);
         getLog().info("groovyModel=" + groovyModel);
+        getLog().info("genSchema=" + genSchema);
         getLog().info("");
 
         initGroovyModel();
 
-        MuleVersionEnum     muleVersionEnum = initMuleVersion(muleVersion);
+        MuleVersionEnum muleVersionEnum = initMuleVersion(muleVersion);
 
-		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath());
+		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath(), genSchema);
 
 		g.startGenerator();
     }

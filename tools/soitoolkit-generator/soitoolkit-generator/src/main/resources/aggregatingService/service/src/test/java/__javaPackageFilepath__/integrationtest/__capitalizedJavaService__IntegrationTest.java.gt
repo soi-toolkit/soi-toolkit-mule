@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesResponseType;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
 import se.riv.crm.requeststatus.v1.RequestActivityType;
 import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
@@ -163,12 +163,12 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractAggregateI
 
 		// Setup and perform the call to the web service
 		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS, senderId ,originalConsumerHsaId);
-		Holder<GetRequestActivitiesResponseType> responseHolder = new Holder<GetRequestActivitiesResponseType>();
+		Holder<${ext.schemaArtifactId}ResponseType> responseHolder = new Holder<${ext.schemaArtifactId}ResponseType>();
 		Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
     	consumer.callService(LOGICAL_ADDRESS, registeredResidentId, processingStatusHolder, responseHolder);
 
     	// Verify the response size and content
-    	GetRequestActivitiesResponseType response = responseHolder.value;
+    	${ext.schemaArtifactId}ResponseType response = responseHolder.value;
     	int expextedResponseSize = testData.length;
 		assertEquals(expextedResponseSize, response.getRequestActivity().size());
 		

@@ -100,12 +100,14 @@ public class AggregatingServiceGeneratorTest {
 
 		SystemUtil.delDirs(projectFolder);
 
+        boolean genSchema = true;
+
 		int expectedNoOfFiles1 = 92; // For domain + subdomain
 		int expectedNoOfFiles2 = 95; // For domain + subdomain + subdomain
 		
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-		new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, muleVersion, projectFolder).startGenerator();
+        new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, muleVersion, projectFolder, genSchema).startGenerator();
 				
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		

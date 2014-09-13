@@ -25,10 +25,11 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 
     <properties>
         <skltp.agp.version>1.2.1</skltp.agp.version>
-
+<% if (ext.genSchema) { %>
         <!-- Properties for generating code from XML Schemas (JAX-WS) -->
         <schema.path>${dollarSymbol}{basedir}/src/main/resources/schemas</schema.path>
         <cxf.version>2.5.1</cxf.version>
+<% } %>
     </properties>
     
 	<dependencies>
@@ -37,6 +38,14 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		    <artifactId>agp-core</artifactId>
 		    <version>\${skltp.agp.version}</version>
         </dependency>
+
+<% if (!ext.genSchema) { %>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>${parentPom}-schemas</artifactId>
+        	<version>${dollarSymbol}{project.version}</version>
+        </dependency>
+<% } %>
 
         <dependency>
           <groupId>org.soitoolkit.commons.components</groupId>
@@ -237,6 +246,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		  </executions>
 		</plugin>
 
+<% if (ext.genSchema) { %>
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-codegen-plugin</artifactId>
@@ -249,16 +259,16 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
               <sourceRoot>\${basedir}/target/generated/src/main/java</sourceRoot>
               <wsdlOptions>
                 <wsdloption>
-                  <wsdl>\${schema.path}/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl</wsdl>
+                  <wsdl>\${schema.path}/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl</wsdl>
                   <extraargs>
                     <extraarg>-p</extraarg>
                     <extraarg>http://www.w3.org/2005/08/addressing=org.w3c.addressing.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivitiesResponder:1=se.riv.crm.requeststatus.getrequestactivitiesresponder.v1</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}Responder:1=${ext.schemaGroupId}responder.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivitiesInitiator:1=se.riv.crm.requeststatus.getrequestactivitiesinitiator.v1</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}Initiator:1=${ext.schemaGroupId}initiator.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:GetRequestActivities:1:rivtabp21=se.riv.crm.requeststatus.getrequestactivities.v1.rivtabp21</extraarg>
+                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}:1:rivtabp21=${ext.schemaGroupId}.v1.rivtabp21</extraarg>
                     <extraarg>-p</extraarg>
                     <extraarg>urn:riv:itintegration:registry:1=se.riv.itintegration.registry.v1</extraarg>
                     <extraarg>-p</extraarg>
@@ -275,7 +285,8 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
           </execution>
         </executions>
       </plugin>
-				
+<% } %>
+
       </plugins>
 
     </build>

@@ -7,15 +7,15 @@ import javax.xml.ws.Holder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.riv.crm.requeststatus.getrequestactivities.v1.rivtabp21.GetRequestActivitiesResponderInterface;
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesResponseType;
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesType;
+import ${ext.schemaGroupId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderInterface;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}Type;
 import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.test.consumer.AbstractTestConsumer;
 import se.skltp.agp.test.consumer.SoapHeaderCxfInterceptor;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;
 
-public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<GetRequestActivitiesResponderInterface> {
+public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<${ext.schemaArtifactId}ResponderInterface> {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestConsumer.class);
 
@@ -24,7 +24,7 @@ public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<
 		String personnummer = TEST_RR_ID_ONE_HIT;
 
 		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(serviceAddress, SAMPLE_SENDER_ID, SAMPLE_ORIGINAL_CONSUMER_HSAID);
-		Holder<GetRequestActivitiesResponseType> responseHolder = new Holder<GetRequestActivitiesResponseType>();
+		Holder<${ext.schemaArtifactId}ResponseType> responseHolder = new Holder<${ext.schemaArtifactId}ResponseType>();
 		Holder<ProcessingStatusType> processingStatusHolder = new Holder<ProcessingStatusType>();
 
 		consumer.callService("logical-adress", personnummer, processingStatusHolder, responseHolder);
@@ -34,21 +34,21 @@ public class ${capitalizedJavaService}TestConsumer extends AbstractTestConsumer<
 	public ${capitalizedJavaService}TestConsumer(String serviceAddress, String senderId, String originalConsumerHsaId) {
 	    
 		// Setup a web service proxy for communication using HTTPS with Mutual Authentication
-		super(GetRequestActivitiesResponderInterface.class, serviceAddress, senderId, originalConsumerHsaId);
+		super(${ext.schemaArtifactId}ResponderInterface.class, serviceAddress, senderId, originalConsumerHsaId);
 	}
 
-	public void callService(String logicalAddress, String registeredResidentId, Holder<ProcessingStatusType> processingStatusHolder, Holder<GetRequestActivitiesResponseType> responseHolder) {
+	public void callService(String logicalAddress, String registeredResidentId, Holder<ProcessingStatusType> processingStatusHolder, Holder<${ext.schemaArtifactId}ResponseType> responseHolder) {
 
-		log.debug("Calling GetRequestActivities-soap-service with Registered Resident Id = {}", registeredResidentId);
+		log.debug("Calling ${ext.schemaArtifactId}-soap-service with Registered Resident Id = {}", registeredResidentId);
 		
-		GetRequestActivitiesType request = new GetRequestActivitiesType();
+		${ext.schemaArtifactId}Type request = new ${ext.schemaArtifactId}Type();
 
 		// TODO: CHANGE GENERATED CODE - START
 		request.setSubjectOfCareId(registeredResidentId);
 		// TODO: CHANGE GENERATED CODE - END
 
 
-		GetRequestActivitiesResponseType response = _service.getRequestActivities(logicalAddress, request);
+		${ext.schemaArtifactId}ResponseType response = _service.${ext.schemaInitialLowercaseArtifactId}(logicalAddress, request);
 		responseHolder.value = response;
 		
 		processingStatusHolder.value = SoapHeaderCxfInterceptor.getLastFoundProcessingStatus();

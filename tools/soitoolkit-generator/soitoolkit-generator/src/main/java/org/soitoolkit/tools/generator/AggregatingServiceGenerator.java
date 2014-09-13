@@ -30,14 +30,14 @@ public class AggregatingServiceGenerator implements Generator {
 	GeneratorUtil guIcTestStub;
 	GeneratorUtil guService;
 	
-	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder) {
-        guParent     = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/parent", outputFolder, null);
-        guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, artifactId);
-		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, artifactId + "-teststub");
-		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, artifactId);
+	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder, boolean genSchema) {
+        guParent     = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/parent", outputFolder, null, genSchema);
+        guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, artifactId, genSchema);
+		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, artifactId + "-teststub", genSchema);
+		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, artifactId, genSchema);
 	}
 
-	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix) {
+	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix, boolean genSchema) {
 		String groupId = "se.skltp.aggregatingservices." + domainId;
 		String serviceName = artifactId;
 		
@@ -49,6 +49,10 @@ public class AggregatingServiceGenerator implements Generator {
         GeneratorUtil gu = new GeneratorUtil(ps, groupId, artifactId, version, serviceName, muleVersion, TransportEnum.HTTP, TransportEnum.HTTP, TransformerEnum.JAVA, templateFolder, outputFolder);
         IModel m = gu.getModel();
         m.getExt().put("domainId", domainId);
+        m.getExt().put("genSchema", genSchema);
+        m.getExt().put("schemaGroupId", "se.riv.crm.requeststatus.getrequestactivities");
+        m.getExt().put("schemaArtifactId", "GetRequestActivities");
+        m.getExt().put("schemaInitialLowercaseArtifactId", "getRequestActivities");
         return gu;
 	}
 

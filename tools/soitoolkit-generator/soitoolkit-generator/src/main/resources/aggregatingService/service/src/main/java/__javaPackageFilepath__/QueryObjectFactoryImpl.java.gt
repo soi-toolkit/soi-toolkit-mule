@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
 import org.w3c.dom.Node;
 
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesType;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}Type;
 import se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentType;
 import se.skltp.agp.service.api.QueryObject;
 import se.skltp.agp.service.api.QueryObjectFactory;
@@ -13,7 +13,7 @@ import se.skltp.agp.service.api.QueryObjectFactory;
 public class QueryObjectFactoryImpl implements QueryObjectFactory {
 
 	private static final Logger log = LoggerFactory.getLogger(QueryObjectFactoryImpl.class);
-	private static final JaxbUtil ju = new JaxbUtil(GetRequestActivitiesType.class);
+	private static final JaxbUtil ju = new JaxbUtil(${ext.schemaArtifactId}Type.class);
 
 	private String eiServiceDomain;
 	public void setEiServiceDomain(String eiServiceDomain) {
@@ -27,7 +27,7 @@ public class QueryObjectFactoryImpl implements QueryObjectFactory {
 	}
 
 	/**
-	 * Transformerar GetRequestActivities request till EI FindContent request enligt:
+	 * Transformerar ${ext.schemaArtifactId} request till EI FindContent request enligt:
 	 * 
 	 * 1. subjectOfCareId --> registeredResidentIdentification
 	 * 2. "riv:crm:requeststatus" --> serviceDomain
@@ -35,7 +35,7 @@ public class QueryObjectFactoryImpl implements QueryObjectFactory {
 	@Override
 	public QueryObject createQueryObject(Node node) {
 		
-		GetRequestActivitiesType request = (GetRequestActivitiesType)ju.unmarshal(node);
+		${ext.schemaArtifactId}Type request = (${ext.schemaArtifactId}Type)ju.unmarshal(node);
 		
 		if (log.isDebugEnabled()) log.debug("Transformed payload for pid: {}", request.getSubjectOfCareId());
 

@@ -3,7 +3,7 @@ package ${javaPackage}.integrationtest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesResponseType;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
 import se.riv.crm.requeststatus.v1.RequestActivityType;
 import se.skltp.agp.test.producer.TestProducerDb;
 
@@ -14,7 +14,7 @@ public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
 	@Override
 	public Object createResponse(Object... responseItems) {
 		log.debug("Creates a response with {} items", responseItems);
-		GetRequestActivitiesResponseType response = new GetRequestActivitiesResponseType();
+		${ext.schemaArtifactId}ResponseType response = new ${ext.schemaArtifactId}ResponseType();
 		for (int i = 0; i < responseItems.length; i++) {
 			response.getRequestActivity().add((RequestActivityType)responseItems[i]);
 		}

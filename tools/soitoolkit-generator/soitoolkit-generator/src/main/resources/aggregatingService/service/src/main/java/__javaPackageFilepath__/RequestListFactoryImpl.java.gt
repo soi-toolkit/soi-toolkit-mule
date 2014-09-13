@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.ThreadSafeSimpleDateFormat;
 
-import se.riv.crm.requeststatus.getrequestactivitiesresponder.v1.GetRequestActivitiesType;
+import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}Type;
 import se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1.FindContentResponseType;
 import se.skltp.agp.riv.itintegration.engagementindex.v1.EngagementType;
 import se.skltp.agp.service.api.QueryObject;
@@ -24,7 +24,7 @@ public class RequestListFactoryImpl implements RequestListFactory {
 	private static final ThreadSafeSimpleDateFormat df = new ThreadSafeSimpleDateFormat("YYYYMMDDhhmmss");
 
 	/**
-	 * Filtrera svarsposter från i EI (ei-engagement) baserat parametrar i GetRequestActivities requestet (req).
+	 * Filtrera svarsposter från i EI (ei-engagement) baserat parametrar i ${ext.schemaArtifactId} requestet (req).
 	 * Följande villkor måste vara sanna för att en svarspost från EI skall tas med i svaret:
 	 * 
 	 * 1. req.fromDate <= ei-engagement.mostRecentContent <= req.toDate
@@ -43,7 +43,7 @@ public class RequestListFactoryImpl implements RequestListFactory {
 	@Override
 	public List<Object[]> createRequestList(QueryObject qo, FindContentResponseType src) {
 
-		GetRequestActivitiesType originalRequest = (GetRequestActivitiesType)qo.getExtraArg();
+		${ext.schemaArtifactId}Type originalRequest = (${ext.schemaArtifactId}Type)qo.getExtraArg();
 		// TODO: CHANGE GENERATED CODE - START
 		Date reqFrom = parseTs(originalRequest.getFromDate());
 		Date reqTo   = parseTs(originalRequest.getToDate());
@@ -85,7 +85,7 @@ public class RequestListFactoryImpl implements RequestListFactory {
 			// TODO: CHANGE GENERATED CODE - START
  			List<String> careUnitList = entry.getValue();
 			
-			GetRequestActivitiesType request = new GetRequestActivitiesType();
+			${ext.schemaArtifactId}Type request = new ${ext.schemaArtifactId}Type();
 			request.setSubjectOfCareId(originalRequest.getSubjectOfCareId());
 			request.getCareUnitId().addAll(careUnitList);
 			request.setFromDate(originalRequest.getFromDate());
