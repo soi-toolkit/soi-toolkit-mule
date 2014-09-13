@@ -16,6 +16,9 @@
  */
 package org.soitoolkit.tools.generator;
 
+import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
+import static org.soitoolkit.tools.generator.model.impl.ModelUtil.initialLowerCase;
+
 import java.io.PrintStream;
 
 import org.soitoolkit.tools.generator.model.IModel;
@@ -51,12 +54,15 @@ public class AggregatingServiceGenerator implements Generator {
         m.getExt().put("domainId", domainId);
         m.getExt().put("genSchema", genSchema);
 
-        m.getExt().put("schemaTopFolder",  "TD_REQUESTSTATUS_1_0_1_R");
-        m.getExt().put("schemaDomainId",   "riv:crm:requeststatus");
-        m.getExt().put("schemaGroupId",    "se.riv.crm.requeststatus");
-        m.getExt().put("schemaArtifactId", "GetRequestActivities");
-        m.getExt().put("schemaLowercaseArtifactId",        "getrequestactivities");
-        m.getExt().put("schemaInitialLowercaseArtifactId", "getRequestActivities");
+        String schemaTopFolder = "TD_REQUESTSTATUS_1_0_1_R";
+        String schemaDomainId = "riv.crm.requeststatus";
+        String schemaArtifactId = "GetRequestActivities";
+        m.getExt().put("schemaTopFolder",                  schemaTopFolder);
+        m.getExt().put("schemaDomainId",                   schemaDomainId.replace('.', ':'));
+        m.getExt().put("schemaGroupId",                    "se." + schemaDomainId);
+        m.getExt().put("schemaArtifactId",                 schemaArtifactId);
+        m.getExt().put("schemaLowercaseArtifactId",        schemaArtifactId.toLowerCase());
+        m.getExt().put("schemaInitialLowercaseArtifactId", initialLowerCase(schemaArtifactId));
         return gu;
 	}
 
