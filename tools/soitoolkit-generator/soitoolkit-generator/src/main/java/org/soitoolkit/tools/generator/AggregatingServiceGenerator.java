@@ -50,10 +50,13 @@ public class AggregatingServiceGenerator implements Generator {
         IModel m = gu.getModel();
         m.getExt().put("domainId", domainId);
         m.getExt().put("genSchema", genSchema);
-        m.getExt().put("schemaGroupId", "se.riv.crm.requeststatus");
+
+        m.getExt().put("schemaTopFolder",  "TD_REQUESTSTATUS_1_0_1_R");
+        m.getExt().put("schemaDomainId",   "riv:crm:requeststatus");
+        m.getExt().put("schemaGroupId",    "se.riv.crm.requeststatus");
         m.getExt().put("schemaArtifactId", "GetRequestActivities");
+        m.getExt().put("schemaLowercaseArtifactId",        "getrequestactivities");
         m.getExt().put("schemaInitialLowercaseArtifactId", "getRequestActivities");
-        m.getExt().put("schemaLowercaseArtifactId", "getrequestactivities");
         return gu;
 	}
 

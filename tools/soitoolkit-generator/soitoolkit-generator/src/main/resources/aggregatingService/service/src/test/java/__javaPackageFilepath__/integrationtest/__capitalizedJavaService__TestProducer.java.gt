@@ -10,9 +10,7 @@ import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.s
 import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}Type;
 import se.skltp.agp.test.producer.TestProducerDb;
 
-// TODO: CHANGE GENERATED CODE - START
-@WebService(serviceName = "${ext.schemaArtifactId}ResponderService", portName = "${ext.schemaArtifactId}ResponderPort", targetNamespace = "urn:riv:crm:requeststatus:${ext.schemaArtifactId}:1:rivtabp21", name = "${ext.schemaArtifactId}Interaction")
-// TODO: CHANGE GENERATED CODE - START
+@WebService(serviceName = "${ext.schemaArtifactId}ResponderService", portName = "${ext.schemaArtifactId}ResponderPort", targetNamespace = "urn:${ext.schemaDomainId}:${ext.schemaArtifactId}:1:rivtabp21", name = "${ext.schemaArtifactId}Interaction")
 public class ${capitalizedJavaService}TestProducer implements ${ext.schemaArtifactId}ResponderInterface {
 
 	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}TestProducer.class);

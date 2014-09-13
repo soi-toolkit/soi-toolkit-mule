@@ -30,7 +30,7 @@ public class QueryObjectFactoryImpl implements QueryObjectFactory {
 	 * Transformerar ${ext.schemaArtifactId} request till EI FindContent request enligt:
 	 * 
 	 * 1. subjectOfCareId --> registeredResidentIdentification
-	 * 2. "riv:crm:requeststatus" --> serviceDomain
+	 * 2. "${ext.schemaDomainId}" --> serviceDomain
 	 */
 	@Override
 	public QueryObject createQueryObject(Node node) {

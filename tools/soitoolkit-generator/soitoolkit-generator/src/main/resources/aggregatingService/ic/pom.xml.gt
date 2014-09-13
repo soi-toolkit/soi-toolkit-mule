@@ -259,20 +259,20 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
               <sourceRoot>\${basedir}/target/generated/src/main/java</sourceRoot>
               <wsdlOptions>
                 <wsdloption>
-                  <wsdl>\${schema.path}/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl</wsdl>
+                  <wsdl>\${schema.path}/${ext.schemaTopFolder}/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl</wsdl>
                   <extraargs>
                     <extraarg>-p</extraarg>
                     <extraarg>http://www.w3.org/2005/08/addressing=org.w3c.addressing.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}Responder:1=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1</extraarg>
+                    <extraarg>urn:${ext.schemaDomainId}:${ext.schemaArtifactId}Responder:1=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}Initiator:1=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}initiator.v1</extraarg>
+                    <extraarg>urn:${ext.schemaDomainId}:${ext.schemaArtifactId}Initiator:1=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}initiator.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:${ext.schemaArtifactId}:1:rivtabp21=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}.v1.rivtabp21</extraarg>
+                    <extraarg>urn:${ext.schemaDomainId}:${ext.schemaArtifactId}:1:rivtabp21=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}.v1.rivtabp21</extraarg>
                     <extraarg>-p</extraarg>
                     <extraarg>urn:riv:itintegration:registry:1=se.riv.itintegration.registry.v1</extraarg>
                     <extraarg>-p</extraarg>
-                    <extraarg>urn:riv:crm:requeststatus:1=${ext.schemaGroupId}.v1</extraarg>
+                    <extraarg>urn:${ext.schemaDomainId}:1=${ext.schemaGroupId}.v1</extraarg>
                     <extraarg>-p</extraarg>
                     <extraarg>urn:riv:interoperability:headers:1=se.riv.interoperability.headers.v1</extraarg>
                   </extraargs>

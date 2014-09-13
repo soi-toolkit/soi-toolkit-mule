@@ -39,15 +39,15 @@ ENGAGEMANGSINDEX_PRODUCER_TESTSTUB_IMPL=se.skltp.agp.test.producer.Engagemangsin
 JAXB_CONTEXT=org.soitoolkit.commons.logentry.schema.v1:se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1:${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1
 
 # Properties for the aggregating service
-SERVICE_INBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
+SERVICE_INBOUND_WSDL=classpath:/schemas/${ext.schemaTopFolder}/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
 SERVICE_INBOUND_NAME=${ext.schemaArtifactId}ResponderService
-SERVICE_INBOUND_NAMESPACE=urn:riv:crm:requeststatus:${ext.schemaArtifactId}:1:rivtabp21
+SERVICE_INBOUND_NAMESPACE=urn:${ext.schemaDomainId}:${ext.schemaArtifactId}:1:rivtabp21
 SERVICE_INBOUND_URL=http://localhost:8081/${artifactId}/service/v1
 
 SERVICE_OUTBOUND_PORT=${ext.schemaArtifactId}ResponderPort
 SERVICE_OUTBOUND_OPERATION=${ext.schemaArtifactId}
 SERVICE_OUTBOUND_CLIENT_CLASS=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderService
-SERVICE_OUTBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
+SERVICE_OUTBOUND_WSDL=classpath:/schemas/${ext.schemaTopFolder}/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
 SERVICE_OUTBOUND_URL=${dollarSymbol}{TESTSTUB_SERVICE_INBOUND_URL}
 
 TESTSTUB_SERVICE_INBOUND_URL=http://localhost:8082/${artifactId}/service/teststub/v1
@@ -57,7 +57,7 @@ SKLTP_HSA_ID=FAKED HSA-ID-SKLTP
 ENGAGEMANGSINDEX_HSA_ID=FAKED HSA-ID-EI
 ENGAGEMANGSINDEX_OUTBOUND_URL=${dollarSymbol}{ENGAGEMANGSINDEX_TESTSTUB_INBOUND_URL}
 ENGAGEMANGSINDEX_TESTSTUB_INBOUND_URL=http://localhost:8082/engagemangsindex/service/engagemangsindex-teststub/v1
-EI_SERVICE_DOMAIN=riv:crm:requeststatus
+EI_SERVICE_DOMAIN=${ext.schemaDomainId}
 EI_CATEGORIZATION=see field typeOfRequest in the request
 
 # Property used together with x-vp-sender-id to identify which VP instance is used
