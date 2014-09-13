@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="">
-    <name>GetAggregatedRequestActivities</name>
-    <description>The default parent pom for components that use soi-toolkit, e.g. integration and schema components. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</description>
-</mule-project>
