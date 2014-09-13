@@ -3,8 +3,8 @@ package ${javaPackage}.integrationtest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
-import se.riv.crm.requeststatus.v1.RequestActivityType;
+import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}ResponseType;
+import ${ext.schemaGroupId}.v1.RequestActivityType;
 import se.skltp.agp.test.producer.TestProducerDb;
 
 public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {

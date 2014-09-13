@@ -7,9 +7,9 @@ import javax.xml.ws.Holder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ${ext.schemaGroupId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderInterface;
-import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
-import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}Type;
+import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderInterface;
+import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}ResponseType;
+import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}Type;
 import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.test.consumer.AbstractTestConsumer;
 import se.skltp.agp.test.consumer.SoapHeaderCxfInterceptor;

@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
 
-import ${ext.schemaGroupId}responder.v1.${ext.schemaArtifactId}ResponseType;
-import se.riv.crm.requeststatus.v1.RequestActivityType;
+import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}ResponseType;
+import ${ext.schemaGroupId}.v1.RequestActivityType;
 import ${javaPackage}.${capitalizedJavaService}MuleServer;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusRecordType;
 import se.skltp.agp.riv.interoperability.headers.v1.ProcessingStatusType;

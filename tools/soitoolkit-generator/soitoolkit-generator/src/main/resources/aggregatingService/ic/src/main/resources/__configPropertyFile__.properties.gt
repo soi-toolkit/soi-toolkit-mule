@@ -36,7 +36,7 @@ SERVICE_PRODUCER_TESTSTUB_IMPL=${javaPackage}.integrationtest.${artifactId}TestP
 ENGAGEMANGSINDEX_PRODUCER_TESTSTUB_IMPL=se.skltp.agp.test.producer.EngagemangsindexTestProducer
 
 # Common jaxb context used for example by loggers, spring bean name: "jaxbContext"
-JAXB_CONTEXT=org.soitoolkit.commons.logentry.schema.v1:se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1:${ext.schemaGroupId}responder.v1
+JAXB_CONTEXT=org.soitoolkit.commons.logentry.schema.v1:se.skltp.agp.riv.itintegration.engagementindex.findcontentresponder.v1:${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1
 
 # Properties for the aggregating service
 SERVICE_INBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
@@ -46,7 +46,7 @@ SERVICE_INBOUND_URL=http://localhost:8081/${artifactId}/service/v1
 
 SERVICE_OUTBOUND_PORT=${ext.schemaArtifactId}ResponderPort
 SERVICE_OUTBOUND_OPERATION=${ext.schemaArtifactId}
-SERVICE_OUTBOUND_CLIENT_CLASS=${ext.schemaGroupId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderService
+SERVICE_OUTBOUND_CLIENT_CLASS=${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}.v1.rivtabp21.${ext.schemaArtifactId}ResponderService
 SERVICE_OUTBOUND_WSDL=classpath:/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/${ext.schemaArtifactId}Interaction/${ext.schemaArtifactId}Interaction_1.0_RIVTABP21.wsdl
 SERVICE_OUTBOUND_URL=${dollarSymbol}{TESTSTUB_SERVICE_INBOUND_URL}
 
