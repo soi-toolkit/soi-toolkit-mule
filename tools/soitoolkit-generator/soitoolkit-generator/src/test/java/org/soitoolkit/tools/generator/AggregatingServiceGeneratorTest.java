@@ -107,7 +107,7 @@ public class AggregatingServiceGeneratorTest {
 		
 		int noOfFilesBefore = SystemUtil.countFiles(projectFolder);
 
-        new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, muleVersion, projectFolder, genSchema, null).startGenerator();
+        new AggregatingServiceGenerator(System.out, domainId, artifactId, VERSION, muleVersion, projectFolder, genSchema, null, null).startGenerator();
 				
 		int actualNoOfFiles = SystemUtil.countFiles(projectFolder) - noOfFilesBefore;
 		

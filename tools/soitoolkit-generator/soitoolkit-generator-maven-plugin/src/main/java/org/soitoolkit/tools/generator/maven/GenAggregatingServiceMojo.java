@@ -86,6 +86,13 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
     private boolean genSchema;
 
     /**
+     * If not generate default schema, whet is the artifactId for the Schema?, e.g. "GetRequestActivities".
+     * @parameter expression="${schemaArtifactId}"
+     * @optional
+     */
+    private String schemaArtifactId;
+
+    /**
      * If not generate default schema, then under what top-folder will the schema be found, e.g. "TD_REQUESTSTATUS_1_0_1_R".
      * @parameter expression="${schemaTopFolder}"
      * @optional
@@ -110,6 +117,7 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
         getLog().info("muleVersion=" + muleVersion);
         getLog().info("groovyModel=" + groovyModel);
         getLog().info("genSchema=" + genSchema);
+        getLog().info("schemaArtifactId=" + schemaArtifactId);
         getLog().info("schemaTopFolder=" + schemaTopFolder);
         getLog().info("");
 
@@ -117,7 +125,7 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
 
         MuleVersionEnum muleVersionEnum = initMuleVersion(muleVersion);
 
-		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath(), genSchema, schemaTopFolder);
+		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath(), genSchema, schemaArtifactId, schemaTopFolder);
 
 		g.startGenerator();
     }

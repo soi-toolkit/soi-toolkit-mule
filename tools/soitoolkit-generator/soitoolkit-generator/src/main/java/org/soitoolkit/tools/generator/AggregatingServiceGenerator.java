@@ -33,14 +33,14 @@ public class AggregatingServiceGenerator implements Generator {
 	GeneratorUtil guIcTestStub;
 	GeneratorUtil guService;
 	
-	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder, boolean genSchema, String schemaTopFolder) {
-        guParent     = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/parent", outputFolder, null, genSchema, schemaTopFolder);
-        guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, artifactId, genSchema, schemaTopFolder);
-		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, artifactId + "-teststub", genSchema, schemaTopFolder);
-		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, artifactId, genSchema, schemaTopFolder);
+	public AggregatingServiceGenerator(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String outputFolder, boolean genSchema, String schemaArtifactId, String schemaTopFolder) {
+        guParent     = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/parent", outputFolder, null, genSchema, schemaArtifactId, schemaTopFolder);
+        guIc         = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/ic", outputFolder, artifactId, genSchema, schemaArtifactId, schemaTopFolder);
+		guIcTestStub = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/icTestStub", outputFolder, artifactId + "-teststub", genSchema, schemaArtifactId, schemaTopFolder);
+		guService    = createGeneratorUtil(ps, domainId, artifactId, version, muleVersion, "/aggregatingService/service", outputFolder, artifactId, genSchema, schemaArtifactId, schemaTopFolder);
 	}
 
-	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix, boolean genSchema, String schemaTopFolder) {
+	public GeneratorUtil createGeneratorUtil(PrintStream ps, String domainId, String artifactId, String version, MuleVersionEnum muleVersion, String templateFolder, String outputFolder, String outputFolderSuffix, boolean genSchema, String schemaArtifactId, String schemaTopFolder) {
         String groupId = "se.skltp.aggregatingservices." + domainId;
         String serviceName = artifactId;
 
@@ -54,20 +54,17 @@ public class AggregatingServiceGenerator implements Generator {
         m.getExt().put("domainId", domainId);
         m.getExt().put("genSchema", genSchema);
 
-        String schemaDomainId = null;
-        String schemaArtifactId = null;
+        String schemaDomainId = domainId;
+        // If generating a sample schema then use the sample schema identities when setting up schema metadata in the model
         if (genSchema) {
             schemaTopFolder = "TD_REQUESTSTATUS_1_0_1_R";
             schemaDomainId = "riv.crm.requeststatus";
             schemaArtifactId = "GetRequestActivities";
-        } else {
-            schemaDomainId = domainId;
-            schemaArtifactId = artifactId;
         }
 
         m.getExt().put("schemaTopFolder",                  schemaTopFolder);
         m.getExt().put("schemaDomainId",                   schemaDomainId.replace('.', ':'));
-        m.getExt().put("schemaGroupId",                    "se." + schemaDomainId);
+        m.getExt().put("schemaGroupId",                    /* "se." + */ schemaDomainId);
         m.getExt().put("schemaArtifactId",                 schemaArtifactId);
         m.getExt().put("schemaLowercaseArtifactId",        schemaArtifactId.toLowerCase());
         m.getExt().put("schemaInitialLowercaseArtifactId", initialLowerCase(schemaArtifactId));
