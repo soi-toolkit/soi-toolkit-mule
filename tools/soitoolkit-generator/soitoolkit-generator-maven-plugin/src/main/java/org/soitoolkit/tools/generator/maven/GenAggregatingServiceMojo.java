@@ -53,14 +53,14 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
 	/**
      * Version.
      * @parameter expression="${version}" default-value="1.0.0-SNAPSHOT"
-     * @required
+     * @optional
      */
     private String version;
 
 	/**
      * Mule version.
      * @parameter expression="${muleVersion}" default-value="3.4.0"
-     * @required
+     * @optional
      */
     private String muleVersion;
 
@@ -74,16 +74,23 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
 	/**
      * Location of the output folder.
      * @parameter expression="${outDir}" default-value="."
-     * @required
+     * @optional
      */
     private File outDir;
 
     /**
      * Generate Schema.
      * @parameter expression="${genSchema}" default-value="true"
-     * @required
+     * @optional
      */
     private boolean genSchema;
+
+    /**
+     * If not generate default schema, then under what top-folder will the schema be found, e.g. "TD_REQUESTSTATUS_1_0_1_R".
+     * @parameter expression="${schemaTopFolder}"
+     * @optional
+     */
+    private String schemaTopFolder;
 
     public void execute() throws MojoExecutionException {
 
@@ -103,13 +110,14 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
         getLog().info("muleVersion=" + muleVersion);
         getLog().info("groovyModel=" + groovyModel);
         getLog().info("genSchema=" + genSchema);
+        getLog().info("schemaTopFolder=" + schemaTopFolder);
         getLog().info("");
 
         initGroovyModel();
 
         MuleVersionEnum muleVersionEnum = initMuleVersion(muleVersion);
 
-		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath(), genSchema);
+		Generator g = new AggregatingServiceGenerator(System.out, domainId, artifactId, version, muleVersionEnum, outDir.getPath(), genSchema, schemaTopFolder);
 
 		g.startGenerator();
     }
