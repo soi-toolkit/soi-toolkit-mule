@@ -117,12 +117,14 @@ public class AggregatingServiceGenerator implements Generator {
 
 		guIc.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
 
-		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/crm_requeststatus_1.0.xsd.gt");
-		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/interoperability_headers_1.0.xsd.gt");
-		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/itintegration_registry_1.0.xsd.gt");
+        if ((Boolean)m.getExt().get("genSchema")) {
+            guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/crm_requeststatus_1.0.xsd.gt");
+            guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/interoperability_headers_1.0.xsd.gt");
+            guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/core_components/itintegration_registry_1.0.xsd.gt");
 
-		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl.gt");
-		guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesResponder_1.0.xsd.gt");
+            guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesInteraction_1.0_RIVTABP21.wsdl.gt");
+            guIc.generateContentAndCreateFile("src/main/resources/schemas/TD_REQUESTSTATUS_1_0_1_R/interactions/GetRequestActivitiesInteraction/GetRequestActivitiesResponder_1.0.xsd.gt");
+        }
 	}
 
 	private void startTeststubProjectGenerator() {

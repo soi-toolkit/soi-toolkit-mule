@@ -34,5 +34,8 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
     <modules>
       <module>${artifactId}</module>
       <module>${artifactId}-teststub</module>
+<% if (!ext.genSchema) { %>
+      <module>${artifactId}-schemas</module>
+<% } %>
     </modules>
   </project>
