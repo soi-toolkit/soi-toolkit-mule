@@ -32,11 +32,15 @@ public class QueryObjectFactoryImpl implements QueryObjectFactory {
 	 * 1. subjectOfCareId --> registeredResidentIdentification
 	 * 2. "${ext.schemaDomainId}" --> serviceDomain
 	 */
-	@Override
 	public QueryObject createQueryObject(Node node) {
 		
 		${ext.schemaArtifactId}Type request = (${ext.schemaArtifactId}Type)ju.unmarshal(node);
 		
+<% if (!ext.genSchema) { %>
+        // TODO: CHANGE GENERATED SAMPLE CODE - START
+        if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+        /*
+<% } %>
 		if (log.isDebugEnabled()) log.debug("Transformed payload for pid: {}", request.getSubjectOfCareId());
 
 		FindContentType fc = new FindContentType();		
@@ -44,7 +48,11 @@ public class QueryObjectFactoryImpl implements QueryObjectFactory {
 		fc.setServiceDomain(eiServiceDomain);
 		
 		QueryObject qo = new QueryObject(fc, request);
-
 		return qo;
+<% if (!ext.genSchema) { %>
+        */
+		return null;
+        // TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 	}
 }

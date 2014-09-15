@@ -110,15 +110,15 @@ public class GenAggregatingServiceMojo extends AbstractMojo {
         getLog().info("ARGUMENTS:");
         getLog().info("(change an arg by suppling: -Darg=value):");
         getLog().info("");
-        getLog().info("outDir=" + outDir.getPath());
-        getLog().info("artifactId=" + artifactId);
-        getLog().info("domainId=" + domainId);
-        getLog().info("version=" + version);
-        getLog().info("muleVersion=" + muleVersion);
-        getLog().info("groovyModel=" + groovyModel);
-        getLog().info("genSchema=" + genSchema);
-        getLog().info("schemaArtifactId=" + schemaArtifactId);
-        getLog().info("schemaTopFolder=" + schemaTopFolder);
+        getLog().info("outDir=\"" + outDir.getPath());
+        getLog().info("artifactId=\"" + artifactId + "\"");
+        getLog().info("domainId=\"" + domainId + "\"");
+        getLog().info("version=\"" + version + "\"");
+        getLog().info("muleVersion=\"" + muleVersion + "\"");
+        getLog().info("groovyModel=\"" + groovyModel + "\"");
+        getLog().info("genSchema=\"" + genSchema + "\"");
+        getLog().info("schemaArtifactId=\"" + schemaArtifactId + "\"");
+        getLog().info("schemaTopFolder=\"" + schemaTopFolder + "\"");
         getLog().info("");
 
         initGroovyModel();

@@ -40,15 +40,26 @@ public class RequestListFactoryImpl implements RequestListFactory {
 	 * 4. fromDate = orginal-request.fromDate
 	 * 5. toDate = orginal-request.toDate
 	 */
-	@Override
 	public List<Object[]> createRequestList(QueryObject qo, FindContentResponseType src) {
 
 		${ext.schemaArtifactId}Type originalRequest = (${ext.schemaArtifactId}Type)qo.getExtraArg();
-		// TODO: CHANGE GENERATED CODE - START
-		Date reqFrom = parseTs(originalRequest.getFromDate());
-		Date reqTo   = parseTs(originalRequest.getToDate());
-		List<String> reqCareUnitList = originalRequest.getCareUnitId();
-		// TODO: CHANGE GENERATED CODE - END
+<% if (!ext.genSchema) { %>
+		// TODO: CHANGE GENERATED SAMPLE CODE - START
+        if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+<% } %>
+		Date reqFrom = null;
+		Date reqTo   = null;
+		List<String> reqCareUnitList = null;
+<% if (!ext.genSchema) { %>
+        /*
+<% } %>
+		reqFrom = parseTs(originalRequest.getFromDate());
+		reqTo   = parseTs(originalRequest.getToDate());
+		reqCareUnitList = originalRequest.getCareUnitId();
+<% if (!ext.genSchema) { %>
+        */
+		// TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 
 		FindContentResponseType eiResp = (FindContentResponseType)src;
 		List<EngagementType> inEngagements = eiResp.getEngagement();
@@ -60,11 +71,15 @@ public class RequestListFactoryImpl implements RequestListFactory {
 		for (EngagementType inEng : inEngagements) {
 
 			// Filter
-			// TODO: CHANGE GENERATED CODE - START
+<% if (!ext.genSchema) { %>
+			// TODO: CHANGE GENERATED SAMPLE CODE - START
+            if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+<% } %>
 			if (isBetween(reqFrom, reqTo, inEng.getMostRecentContent()) &&
 				isPartOf(reqCareUnitList, inEng.getLogicalAddress())) {
-			// TODO: CHANGE GENERATED CODE - END
-
+<% if (!ext.genSchema) { %>
+			// TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 				// Add pdlUnit to source system
 				log.debug("Add SS: {} for PDL unit: {}", inEng.getSourceSystem(), inEng.getLogicalAddress());
 				addPdlUnitToSourceSystem(sourceSystem_pdlUnitList_map, inEng.getSourceSystem(), inEng.getLogicalAddress());
@@ -79,19 +94,25 @@ public class RequestListFactoryImpl implements RequestListFactory {
 		for (Entry<String, List<String>> entry : sourceSystem_pdlUnitList_map.entrySet()) {
 
 			String sourceSystem = entry.getKey();
+            ${ext.schemaArtifactId}Type request = new ${ext.schemaArtifactId}Type();
 
+<% if (!ext.genSchema) { %>
+            // TODO: CHANGE GENERATED SAMPLE CODE - START
+            if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+            /*
+<% } %>
 			if (log.isInfoEnabled()) log.info("Calling source system using logical address {} for subject of care id {}", sourceSystem, originalRequest.getSubjectOfCareId());
 
-			// TODO: CHANGE GENERATED CODE - START
  			List<String> careUnitList = entry.getValue();
-			
-			${ext.schemaArtifactId}Type request = new ${ext.schemaArtifactId}Type();
+
 			request.setSubjectOfCareId(originalRequest.getSubjectOfCareId());
 			request.getCareUnitId().addAll(careUnitList);
 			request.setFromDate(originalRequest.getFromDate());
 			request.setToDate(originalRequest.getToDate());
-			// TODO: CHANGE GENERATED CODE - END
-			
+<% if (!ext.genSchema) { %>
+			*/
+			// TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 			Object[] reqArr = new Object[] {sourceSystem, request};
 			
 			reqList.add(reqArr);

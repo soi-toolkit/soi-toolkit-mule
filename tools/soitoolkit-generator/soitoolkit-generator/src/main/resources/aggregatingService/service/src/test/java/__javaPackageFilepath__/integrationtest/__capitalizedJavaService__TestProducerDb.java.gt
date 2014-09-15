@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ${ext.schemaGroupId}.${ext.schemaLowercaseArtifactId}responder.v1.${ext.schemaArtifactId}ResponseType;
+<% if (ext.genSchema) { %>
 import ${ext.schemaGroupId}.v1.RequestActivityType;
+<% } %>
 import se.skltp.agp.test.producer.TestProducerDb;
 
 public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
@@ -16,7 +18,16 @@ public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
 		log.debug("Creates a response with {} items", responseItems);
 		${ext.schemaArtifactId}ResponseType response = new ${ext.schemaArtifactId}ResponseType();
 		for (int i = 0; i < responseItems.length; i++) {
+<% if (!ext.genSchema) { %>
+            // TODO: CHANGE GENERATED SAMPLE CODE - START
+            if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+            /*
+<% } %>
 			response.getRequestActivity().add((RequestActivityType)responseItems[i]);
+<% if (!ext.genSchema) { %>
+            */
+            // TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 		}
 		return response;
 	}
@@ -29,14 +40,22 @@ public class ${capitalizedJavaService}TestProducerDb extends TestProducerDb {
 				new Object[] {logicalAddress, registeredResidentId, businessObjectId});
 		}
 
+<% if (!ext.genSchema) { %>
+        // TODO: CHANGE GENERATED SAMPLE CODE - START
+        if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+        /*
+<% } %>
 		RequestActivityType response = new RequestActivityType();
 
-		// TODO: CHANGE GENERATED CODE - START
 		response.setCareUnit(logicalAddress);
 		response.setSubjectOfCareId(registeredResidentId);
 		response.setSenderRequestId(businessObjectId);
-		// TODO: CHANGE GENERATED CODE - END
-		
+
 		return response;
+<% if (!ext.genSchema) { %>
+        */
+        return null;
+        // TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
 	}
 }

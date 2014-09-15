@@ -22,6 +22,11 @@ public class ResponseListFactoryImpl implements ResponseListFactory {
 	public String getXmlFromAggregatedResponse(QueryObject queryObject, List<Object> aggregatedResponseList) {
 		${ext.schemaArtifactId}ResponseType aggregatedResponse = new ${ext.schemaArtifactId}ResponseType();
 
+<% if (!ext.genSchema) { %>
+        // TODO: CHANGE GENERATED SAMPLE CODE - START
+        if (1==1) throw new UnsupportedOperationException("Not yet implemented");
+        /*
+<% } %>
 	    for (Object object : aggregatedResponseList) {
 	    	${ext.schemaArtifactId}ResponseType response = (${ext.schemaArtifactId}ResponseType)object;
 			aggregatedResponse.getRequestActivity().addAll(response.getRequestActivity());
@@ -31,7 +36,11 @@ public class ResponseListFactoryImpl implements ResponseListFactory {
     		String subjectOfCareId = queryObject.getFindContent().getRegisteredResidentIdentification();
         	log.info("Returning {} aggregated remisstatus for subject of care id {}", aggregatedResponse.getRequestActivity().size() ,subjectOfCareId);
         }
-        
+<% if (!ext.genSchema) { %>
+        */
+        // TODO: CHANGE GENERATED SAMPLE CODE - END
+<% } %>
+
         // Since the class ${ext.schemaArtifactId}ResponseType don't have an @XmlRootElement annotation
         // we need to use the ObjectFactory to add it.
         return jaxbUtil.marshal(OF.create${ext.schemaArtifactId}Response(aggregatedResponse));
