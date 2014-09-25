@@ -19,7 +19,8 @@ package org.soitoolkit.tools.generator.model.enums;
 public enum MuleVersionEnum implements ILabeledEnum { 
 	MULE_3_3_0("3.3.0", "current"),
 	MULE_3_3_1("3.3.1", "current"),
-	MULE_3_4_0("3.4.0", "current"),
+    MULE_3_4_0("3.4.0", "current"),
+    MULE_3_5_0("3.5.0", "current"),
 	MULE_3_4_0_EE("3.4.0", "current");
 
 	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_4_0;
