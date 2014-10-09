@@ -20,7 +20,7 @@
     </appender>
 
     <appender name="ROLLINGFILE_MONITORING" class="org.apache.log4j.RollingFileAppender">
-         <param name="file" value=""${dollarSymbol}{mule.home}/logs/mule-app-${artifactId}-monitoring.log" />
+         <param name="file" value="${dollarSymbol}{mule.home}/logs/mule-app-${artifactId}-monitoring.log" />
          <param name="MaxFileSize" value="1000KB" />
          <param name="MaxBackupIndex" value="3" />
          <layout class="org.apache.log4j.PatternLayout">
