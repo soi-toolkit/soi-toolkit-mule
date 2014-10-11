@@ -59,7 +59,12 @@ ${xmlNamespace.onewayService}
 					pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
-					moveToPattern="#[header:originalFilename]"
+					<% // fix for issue 339: originalFilename changed from outbound-scope to inbound-scope in 3.4.0 %>
+					<% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+ 					    moveToPattern="#[header:originalFilename]"
+					<% } else { %>
+					    moveToPattern="#[header:INBOUND:originalFilename]"
+					<% } %>
 					transformer-refs="objToStr logMsgIn">
 					<file:filename-wildcard-filter pattern="*.*"/>
 				</file:inbound-endpoint>
@@ -182,10 +187,20 @@ ${xmlNamespace.onewayService}
                     transformer-refs="logMsgOut" />                                        
 
 <% } else if (outboundTransport=="SFTP") { %> 
+<% if (inboundEndpointFilebased) { %>
+                    <set-property propertyName="originalFilename"
+					<% // fix for issue 339: originalFilename changed from outbound-scope to inbound-scope in 3.4.0 %>
+					<% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
+                        value="#[header:originalFilename]"
+					<% } else { %>
+                        value="#[header:INBOUND:originalFilename]"
+					<% } %>
+                        doc:name="Propagate originalFilename to outbound" />
+<% } %>
 				<vm:outbound-endpoint connector-ref="soitoolkit-vm-connector" path="${service}-service" />
 
 <% } else if (outboundTransport=="SMTP") { %> 
-				<smtp:outbound-endpoint 
+				<smtp:outbound-endpoint
 					host="${dollarSymbol}{${uppercaseService}_SMTP_HOST}" 
 					port="${dollarSymbol}{${uppercaseService}_SMTP_PORT}"
 					from="${dollarSymbol}{${uppercaseService}_OUTBOUND_EMAIL_FROM}"
