@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.reqRespTeststubService}
+
+	<!-- TODO: Add teststub-service specific definitions here -->
+
+<% if (outboundTransport=="SOAPHTTP") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector" 
+        component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+        type="jax-ws" />
+<% } else if (outboundTransport=="SOAPHTTPS") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+        address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-https-connector" 
+        component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+        type="jax-ws" />
+        
+<% } else if (outboundTransport=="RESTHTTP") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    type="jax-rs" />
+	    
+<% } else if (outboundTransport=="RESTHTTPS") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-https-connector"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    type="jax-rs" />
+	    
+<% } else if (outboundTransport=="HTTP") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-http-connector"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    />
+<% } else if (outboundTransport=="HTTPS") { %>
+	<simple-service 
+		name="${service}-teststub-service"
+	    address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}?connector=soitoolkit-https-connector"
+	    component-class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"
+	    />	    
+<% } else if (outboundTransport=="JMS") { %> 
+    <flow name="${service}-teststub-service">
+        <jms:inbound-endpoint 
+            name="${service}-teststub-endpoint" 
+            connector-ref="${jmsDefaultConnector}" 
+            queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" 
+            />
+
+		<!--
+		transformer-refs="jmsToStr"
+            responseTransformer-refs="strToJms"
+		-->
+		
+
+        <component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer"/>
+    </flow>
+<% } %> 
+</mule>

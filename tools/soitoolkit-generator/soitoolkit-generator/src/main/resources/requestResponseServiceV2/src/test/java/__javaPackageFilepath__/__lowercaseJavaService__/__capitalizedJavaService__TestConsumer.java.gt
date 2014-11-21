@@ -1,0 +1,74 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
+
+import java.net.URL;
+
+import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.CrudSampleInterface;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.Fault;
+
+public class ${capitalizedJavaService}TestConsumer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}TestConsumer.class);
+
+	private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${artifactId}-config");
+
+	private CrudSampleInterface _service = null;
+	    
+    public ${capitalizedJavaService}TestConsumer(String serviceAddress) {
+		JaxWsProxyFactoryBean proxyFactory = new JaxWsProxyFactoryBean();
+		proxyFactory.setServiceClass(CrudSampleInterface.class);
+		proxyFactory.setAddress(serviceAddress);
+		
+		//Used for HTTPS
+		SpringBusFactory bf = new SpringBusFactory();
+		URL cxfConfig = ${capitalizedJavaService}TestConsumer.class.getClassLoader().getResource("cxf-test-consumer-config.xml");
+		if (cxfConfig != null) {
+			proxyFactory.setBus(bf.createBus(cxfConfig));
+		}
+		
+		_service  = (CrudSampleInterface) proxyFactory.create(); 
+    }
+
+    public static void main(String[] args) throws Fault {
+        String serviceAddress = getAddress("${uppercaseService}_INBOUND_URL");
+        String id = "1";
+
+        ${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(serviceAddress);
+        GetSampleResponse response = consumer.callGetSample(id);
+        LOGGER.info("Returned value = " + response.getValue());
+    }
+    
+    public GetSampleResponse callGetSample(String id) throws Fault {
+        LOGGER.debug("Calling getSample-soap-service with id = {}", id);
+        GetSample request = new GetSample();
+        request.setId(id);
+        return _service.getSample(request);
+    }
+    
+    public CreateSampleResponse callCreateSample(String id) throws Fault {
+        LOGGER.debug("Calling createSample-soap-service with id = {}", id);
+        CreateSample request = new CreateSample();
+        request.setValue("Entity + " + id);
+        return _service.createSample(request);
+    }
+    
+    public DeleteSampleResponse callDeleteSample(String id) throws Fault {
+        LOGGER.debug("Calling deleteSample-soap-service with id = {}", id);
+        DeleteSample request = new DeleteSample();
+        request.setId(id);
+        return _service.deleteSample(request);
+    }
+}

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SystemUtil {
 	
@@ -145,5 +147,25 @@ public class SystemUtil {
 		
 		return ++count;
 	}
+	
+	public static List<File> listFiles(String path) throws IOException {
+		return listFiles(new File(path));
+	}
+
+	public static List<File> listFiles(File path) throws IOException {
+		List<File> files = new ArrayList<File>();
+
+		if (!path.exists()) return files;
+
+		if (path.isDirectory()) {
+			for (File child : path.listFiles()) {
+				files.addAll(listFiles(child));
+			}
+		}
+		files.add(path);
+		
+		return files;
+	}
+
 
 }

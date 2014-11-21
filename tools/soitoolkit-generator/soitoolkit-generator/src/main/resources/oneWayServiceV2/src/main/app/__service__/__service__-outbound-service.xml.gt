@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mule
+${xmlNamespace.onewayService}
+
+    <!-- TODO: Add service specific definitions here -->
+    
+    <flow name="${service}-outbound-service" processingStrategy="synchronous">
+        <jms:inbound-endpoint
+        	queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}"
+		<% if (outboundTransport=="VM" || outboundTransport=="JDBC") { %>
+			connector-ref="soitoolkit-jms-xa-connector">
+			<xa-transaction action="ALWAYS_BEGIN" timeout="60000"/>
+		<% } else { %>
+			connector-ref="soitoolkit-jms-connector">
+			<jms:transaction action="ALWAYS_BEGIN" />
+		<% } %>
+        </jms:inbound-endpoint>
+        
+        <set-session-variable
+			variableName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+			value="#[groovy:message.getInboundProperty(org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID)]" />
+		
+		<transformer ref="logMsgIn" doc:name="Log Message In"/>
+<% if (outboundTransport=="VM") { %>
+	    <vm:outbound-endpoint
+	        connector-ref="soitoolkit-vm-connector" 
+	        path="${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}">
+			<xa-transaction action="ALWAYS_JOIN" />
+		</vm:outbound-endpoint>
+<% } else if (outboundTransport=="FILE") { %> 
+		<file:outbound-endpoint 
+		    connector-ref="soitoolkit-file-connector"
+			path="${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+			outputPattern="#[message.inboundProperties['originalFilename']]"
+<% } else { %> 
+			outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+            />
+<% } else if (outboundTransport=="FTP") { %> 
+		<ftp:outbound-endpoint
+			name="${service}-outbound-endpoint"
+            connector-ref="soitoolkit-ftp-connector"
+			address="ftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_FOLDER}"
+<% if (inboundEndpointFilebased) { %>
+			outputPattern="#[message.inboundProperties['originalFilename']]"
+<% } else { %> 
+			outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+            binary="false"
+            passive="true" />                                        
+<% } else if (outboundTransport=="SFTP") { %> 
+		<sftp:outbound-endpoint
+			name="${service}-outbound-endpoint"
+            connector-ref="soitoolkit-sftp-connector"
+			address="sftp://${dollarSymbol}{${uppercaseService}_OUTBOUND_SFTP_FOLDER}"
+	<% if (inboundEndpointFilebased) { %>
+			outputPattern="#[message.inboundProperties['originalFilename']]"
+<% } else { %> 
+			outputPattern="${dollarSymbol}{${uppercaseService}_OUTBOUND_FILE}"
+<% } %> 
+			tempDir="receiving"
+			useTempFileTimestampSuffix="true"
+			duplicateHandling="addSeqNo"
+		/>
+<% } else if (outboundTransport=="HTTP") { %> 
+		<http:outbound-endpoint
+			address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+			exchange-pattern="one-way"
+			connector-ref="soitoolkit-http-connector">
+		</http:outbound-endpoint>
+<% } else if (outboundTransport=="HTTPS") { %> 
+		<https:outbound-endpoint
+			address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+			exchange-pattern="one-way"
+			connector-ref="soitoolkit-https-connector">
+		</https:outbound-endpoint>
+<% } else if (outboundTransport=="JDBC") { %>
+		<db:insert config-ref="soitoolkit-db-config" transactionalAction="ALWAYS_JOIN">
+			<db:parameterized-query>INSERT INTO ${uppercaseService}_IMPORT_TB (ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])</db:parameterized-query>
+        </db:insert>
+<% } %>
+		<transformer ref="logMsgOut" doc:name="Log Message Out"/>
+		
+		<exception-strategy
+            ref="soitoolkit-jms-connector-rollback-exception-strategy" />
+	</flow>
+</mule>

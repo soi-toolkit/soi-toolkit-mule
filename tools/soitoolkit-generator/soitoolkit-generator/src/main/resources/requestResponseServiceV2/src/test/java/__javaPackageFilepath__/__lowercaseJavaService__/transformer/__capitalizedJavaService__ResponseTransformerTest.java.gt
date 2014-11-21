@@ -1,0 +1,42 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import org.mule.api.transformer.TransformerException;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+/**
+ * The purpose of this unit test is to verify the 
+ * behavior of ${capitalizedJavaService}ResponseTransformer transformer.
+ */
+public class ${capitalizedJavaService}ResponseTransformerTest {
+
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}");
+    
+    ${capitalizedJavaService}ResponseTransformer transformer = null;
+
+    @Before
+    public void setUp() {
+    	transformer = new ${capitalizedJavaService}ResponseTransformer();
+    }
+    
+	/**
+	 * Happy day test. A successful transformation.
+	 * 
+	 * @throws TransformerException if fails to transform message.
+	 */
+    @Test
+    public void testTransformerOk() throws TransformerException {
+    	
+    	String inputPayload = "KALLE";
+    	String expectedPayload = inputPayload;
+
+        //String actualPayload = (String) transformer.pojoTransform("KALLE", "UTF-8");
+
+        //assertEquals(expectedPayload, actualPayload);
+    }
+}

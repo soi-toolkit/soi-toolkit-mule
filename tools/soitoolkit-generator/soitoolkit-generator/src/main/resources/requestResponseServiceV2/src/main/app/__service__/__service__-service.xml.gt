@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.reqRespService}
+<% if ((inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && 
+		(outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS")) { %>
+	<!-- 
+		Service: ${service}
+		Description: SOAP Proxy  
+	-->
+	<flow name="${service}-service" doc:name="${service}-service">
+        <% if (inboundTransport=="SOAPHTTPS") { %>
+        <https:inbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+		<% } else { %>
+		<http:inbound-endpoint
+        	connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+		<% } %>
+        <cxf:proxy-service 
+            service="crudSampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/crudSample/crudSampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1"
+            payload="envelope"
+            doc:name="CXF Proxy Service">
+        </cxf:proxy-service>
+
+        <transformer ref="createCorrId" doc:name="Create Correlation ID"/>
+
+        <transformer ref="logReqIn" doc:name="Log Request In" />    
+
+        <flow-ref name="${service}-set-http-headers" doc:name="Set HTTP Headers"/>
+        
+		<% if (transformerType=="JAVA") { %>
+        <custom-transformer doc:name="Request Transformer"
+        	class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+		<% } %> 
+        <cxf:proxy-client 
+        	payload="envelope" 
+        	enableMuleSoapHeaders="false"
+        	doc:name="CXF Proxy Client" />
+        
+		<transformer ref="logReqOut" doc:name="Log Request Out" />
+		<% if (outboundTransport=="SOAPHTTPS") { %>
+        <https:outbound-endpoint 
+			connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTPS">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+			connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTP">
+        </http:outbound-endpoint>	
+        <% } %>
+        <transformer ref="logRespIn" doc:name="Log Response In" />
+        <% if (transformerType=="JAVA") { %>
+		<custom-transformer doc:name="Response Transformer"
+			class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+		<% } %> 
+        <flow-ref name="${service}-set-http-headers" doc:name="Set HTTP Headers"/>
+        
+        <transformer ref="logRespOut" doc:name="Log Response Out" />
+        
+        <catch-exception-strategy>
+            <transformer ref="logError" />
+
+            <transformer ref="createSoapFaultIfException" />
+        </catch-exception-strategy>
+    </flow>
+
+    <sub-flow name="${service}-set-http-headers" doc:name="Set HTTP Headers">
+        <copy-properties propertyName="*" doc:name="Copy All HTTP Headers"/>
+        <remove-property propertyName="Content-Length" doc:name="Remove Content Length"/>
+        <remove-property propertyName="MULE_*" doc:name="Remove MULE_* Properties"/>
+        <remove-property propertyName="X_MULE*" doc:name="Remove X_MULE* Properties"/>
+    </sub-flow>
+	<!--
+	<custom-transformer 
+		name="${initialLowercaseJavaService}RequestTransformer"
+		doc:name="Request Transformer"
+		class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+	
+	<custom-transformer
+		doc:name="Response Transformer"
+		name="${initialLowercaseJavaService}ResponseTransformer"
+		class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+			
+	<pattern:web-service-proxy name="${service}-service">
+		<% if (inboundTransport=="SOAPHTTPS") { %>
+        <https:inbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            transformer-refs="createCorrId disableExceptionCheck logReqIn ${initialLowercaseJavaService}RequestTransformer">
+        </https:inbound-endpoint>
+		<% } else { %>
+		<http:inbound-endpoint
+        	connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            transformer-refs="createCorrId disableExceptionCheck logReqIn ${initialLowercaseJavaService}RequestTransformer">
+        </http:inbound-endpoint>
+		<% } %>
+		<% if (outboundTransport=="SOAPHTTPS") { %>
+        <https:outbound-endpoint 
+			connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            transformer-refs="logReqOut"
+            responseTransformer-refs="logRespIn ${initialLowercaseJavaService}ResponseTransformer logRespOut">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+			connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            transformer-refs="logReqOut"
+            responseTransformer-refs="logRespIn ${initialLowercaseJavaService}ResponseTransformer logRespOut">
+        </http:outbound-endpoint>	
+        <% } %>
+        <catch-exception-strategy>
+        	<transformer ref="logError" />
+
+            <transformer ref="createSoapFaultIfException" />
+        </catch-exception-strategy>
+    </pattern:web-service-proxy>
+    -->
+<% } else if ((inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && 
+		(outboundTransport=="JMS")) { %>
+	<!-- 
+		Service: ${service}
+		Description: SOAP to JMS  
+	-->
+	<flow name="${service}-service" doc:name="${service}-service">
+        <% if (inboundTransport=="SOAPHTTPS") { %>
+        <https:inbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+		<% } else { %>
+		<http:inbound-endpoint
+        	connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+		<% } %>
+        <cxf:proxy-service 
+            service="crudSampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/crudSample/crudSampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1"
+            payload="envelope"
+            doc:name="CXF Proxy Service">
+        </cxf:proxy-service>
+        
+        <mulexml:xml-to-dom-transformer returnClass="org.dom4j.Document" doc:name="(Reversible)XMLStreamReader to Document" />
+        
+        <mulexml:dom-to-xml-transformer doc:name="DOM to String"/>
+
+        <transformer ref="createCorrId" doc:name="Create Correlation ID"/>
+
+        <transformer ref="logReqIn" doc:name="Log Request In" />    
+
+        <transformer ref="extractSoapBody" />
+        
+        <mulexml:dom-to-xml-transformer />
+        
+        <mulexml:jaxb-xml-to-object-transformer doc:name="XML to JAXB Object" jaxbContext-ref="jaxbContext" />
+        <% if (transformerType=="JAVA") { %>
+        <custom-transformer doc:name="Request Transformer"
+        	class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+		<% } %> 
+        <mulexml:jaxb-object-to-xml-transformer doc:name="JAXB Object to XML" jaxbContext-ref="jaxbContext"/>
+        
+        <object-to-string-transformer doc:name="Object to String"/>
+        
+        <transformer ref="logReqOut" />
+        
+		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+			<jms:outbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" />
+			<jms:inbound-endpoint  connector-ref="${jmsOutboundConnector}" queue="${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />
+		</request-reply>
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+		<transformer ref="logRespIn" />
+		
+		<mulexml:jaxb-xml-to-object-transformer doc:name="XML to JAXB Object" jaxbContext-ref="jaxbContext" />
+		<% if (transformerType=="JAVA") { %>
+		<custom-transformer doc:name="Response Transformer"
+			class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+		<% } %> 
+		<mulexml:jaxb-object-to-xml-transformer doc:name=" JAXB to XML Object" jaxbContext-ref="jaxbContext" />
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+		<transformer ref="addSoapEnvelope" />
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+        <transformer ref="logRespOut" doc:name="Log Response Out" />
+        
+        <catch-exception-strategy>
+            <transformer ref="logError" />
+
+            <transformer ref="createSoapFaultIfException" />
+        </catch-exception-strategy>
+    </flow>
+<% } else if ((inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && 
+		(outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS")) { %>
+	<!-- 
+		Service: ${service}
+		Description: SOAP to REST  
+	-->
+	<flow name="${service}-service" doc:name="${service}-service">
+        <% if (inboundTransport=="SOAPHTTPS") { %>
+        <https:inbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+		<% } else { %>
+		<http:inbound-endpoint
+        	connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+		<% } %>
+        <cxf:proxy-service 
+            service="crudSampleService"
+            wsdlLocation="classpath:/schemas/org/soitoolkit/refapps/sd/crudSample/crudSampleService.wsdl" 
+            namespace="urn:org.soitoolkit.refapps.sd.crudsample.wsdl:v1"
+            payload="envelope"
+            doc:name="CXF Proxy Service">
+        </cxf:proxy-service>
+        
+		<mulexml:xml-to-dom-transformer returnClass="org.dom4j.Document" doc:name="(Reversible)XMLStreamReader to Document" />
+        
+        <mulexml:dom-to-xml-transformer doc:name="DOM to String"/>
+
+        <transformer ref="createCorrId" doc:name="Create Correlation ID"/>
+
+        <transformer ref="logReqIn" doc:name="Log Request In" />    
+
+        <transformer ref="extractSoapBody" />
+        
+        <mulexml:dom-to-xml-transformer />
+        
+        <mulexml:jaxb-xml-to-object-transformer doc:name="JAXB Object to XML" jaxbContext-ref="jaxbContext"/>
+        
+        <% if (transformerType=="JAVA") { %>
+        <custom-transformer doc:name="Request Transformer"
+        	class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+		<% } %> 
+		<choice>
+			<when evaluator="groovy" expression="payload instanceof org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample" >
+				<set-property propertyName="resourcePath" value="samples" />
+				<set-property propertyName="resourceId" value="#[groovy:payload.id]" />
+				<set-property propertyName="http.method" value="GET" />
+				<set-payload value="" />
+				
+				<flow-ref name="${service}-rest-service" />
+				
+				<object-to-string-transformer doc:name="Object to String"/>
+				
+				<json:json-to-object-transformer doc:name="" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse"/>
+			</when>
+			<when evaluator="groovy" expression="payload instanceof org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample" >
+				<set-property propertyName="resourcePath" value="samples" />
+				<set-property propertyName="resourceId" value="#[groovy:payload.id]" />
+				<set-property propertyName="http.method" value="DELETE" />
+				<set-payload value="" />
+				
+				<flow-ref name="${service}-rest-service" />
+				
+				<expression-transformer evaluator="groovy" expression="new org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse()" />
+			</when>
+			<when evaluator="groovy" expression="payload instanceof org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample" >
+				<set-property propertyName="resourcePath" value="samples" />
+				<set-property propertyName="resourceId" value="" />
+				<set-property propertyName="http.method" value="POST" />
+				
+				<json:object-to-json-transformer doc:name="Object to JSON" />
+				
+				<flow-ref name="${service}-rest-service" />
+				
+				<object-to-string-transformer doc:name="Object to String"/>
+				
+				<json:json-to-object-transformer doc:name="" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse"/>
+			</when>
+			<otherwise>
+				<expression-transformer evaluator="groovy" expression="throw new IllegalArgumentException('Unknown message. Class: ' + payload.getClass().getName())" />
+			</otherwise>
+		</choice>
+		<% if (transformerType=="JAVA") { %>
+		<custom-transformer doc:name="Response Transformer"
+			class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+		<% } %>
+				 
+		<mulexml:jaxb-object-to-xml-transformer doc:name=" JAXB to XML Object" jaxbContext-ref="jaxbContext" />
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+		<transformer ref="addSoapEnvelope" />
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+        <transformer ref="logRespOut" doc:name="Log Response Out" />
+        
+        <catch-exception-strategy>
+            <transformer ref="logError" />
+
+            <transformer ref="createSoapFaultIfException" />
+        </catch-exception-strategy>
+    </flow>
+    
+    <sub-flow name="${service}-rest-service">
+    	<transformer ref="logReqOut" doc:name="Log Request Out" />
+    	
+    	<set-variable variableName="#[org.mule.transport.http.HttpConnector.HTTP_DISABLE_STATUS_CODE_EXCEPTION_CHECK]" 
+    		value="true" doc:name="Disable Exception Check"/>
+		<% if (outboundTransport=="RESTHTTPS") { %>
+        <https:outbound-endpoint 
+			connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.outboundProperties['resourcePath']]/#[message.outboundProperties['resourceId']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+			connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.outboundProperties['resourcePath']]/#[message.outboundProperties['resourceId']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+        </http:outbound-endpoint>	
+        <% } %>
+        <object-to-string-transformer doc:name="Object to String"/>
+        
+        <transformer ref="logRespIn" doc:name="Log Response In" />
+        
+		<choice>
+        	<when evaluator="groovy" expression="message.getInboundProperty('http.status').toInteger() > 300">
+        		<json:json-to-object-transformer doc:name="" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo"/>
+        		
+        		<expression-transformer evaluator="groovy" expression="throw new RuntimeException(payload.message)" />
+        	</when>
+        	<otherwise>
+        		<logger level="DEBUG" message="REST call is successfully executed. HTTP Status: #[groovy:message.getInboundProperty('http.status', '')]" />
+        	</otherwise>
+        </choice>
+    </sub-flow>
+<% } else if ((inboundTransport=="HTTP" || inboundTransport=="HTTPS") && 
+		(outboundTransport=="HTTP" || outboundTransport=="HTTPS")) { %>
+	<custom-transformer 
+		name="${initialLowercaseJavaService}RequestTransformer"
+		doc:name="Request Transformer"
+		class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+	
+	<custom-transformer
+		doc:name="Response Transformer"
+		name="${initialLowercaseJavaService}ResponseTransformer"
+		class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+		
+	<pattern:http-proxy name="${service}-service">
+		<% if (inboundTransport=="HTTPS") { %>
+        <https:inbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="createCorrId disableExceptionCheck logReqIn ${initialLowercaseJavaService}RequestTransformer">
+        </https:inbound-endpoint>
+		<% } else { %>
+		<http:inbound-endpoint
+        	connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+            exchange-pattern="request-response"
+            transformer-refs="createCorrId disableExceptionCheck logReqIn ${initialLowercaseJavaService}RequestTransformer">
+        </http:inbound-endpoint>
+		<% } %>
+		<% if (outboundTransport=="HTTPS") { %>
+        <https:outbound-endpoint 
+			connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            transformer-refs="logReqOut"
+            responseTransformer-refs="logRespIn ${initialLowercaseJavaService}ResponseTransformer logRespOut">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+			connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            transformer-refs="logReqOut"
+            responseTransformer-refs="logRespIn ${initialLowercaseJavaService}ResponseTransformer logRespOut">
+        </http:outbound-endpoint>	
+        <% } %>
+        <catch-exception-strategy>
+        	<!-- TO BE REPLACED WITH NEW LOGGING -->
+            <transformer ref="logError" />        	
+    		
+    		<http:response-builder status="500">
+				<set-payload value="ERROR" />
+			</http:response-builder>
+			<!--
+            <set-property propertyName="Content-Type" value="text/plain" />
+            -->
+        </catch-exception-strategy>
+    </pattern:http-proxy>
+<% } else if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS")) { %>
+   	<apikit:proxy-config name="${service}-proxy-config" raml="${service}.raml" disableValidations="true"/>
+ 
+    <flow name="${service}-service" doc:name="REST Proxy - APIkit">
+        <% if (inboundTransport=="RESTHTTPS") { %>
+        <https:inbound-endpoint
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+        <% } else { %>
+        <http:inbound-endpoint
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+        <% } %>
+
+        <transformer ref="createCorrId" doc:name="Create Correlation ID"/>
+
+        <transformer ref="logReqIn" doc:name="Log Request In" />
+        
+        <apikit:proxy config-ref="${service}-proxy-config" doc:name="APIkit Proxy" />
+        
+        <set-variable variableName="#[org.mule.transport.http.HttpConnector.HTTP_DISABLE_STATUS_CODE_EXCEPTION_CHECK]" 
+    		value="true" doc:name="Disable Exception Check"/>
+        <% if (outboundTransport=="RESTHTTPS") { %>
+        <https:outbound-endpoint 
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.inboundProperties['http.relative.path']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTPS">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.inboundProperties['http.relative.path']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTP">
+        </http:outbound-endpoint>   
+        <% } %>
+        <transformer ref="logRespOut" />
+
+        <exception-strategy ref="soitoolkit-apikit-global-exception-mapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+
+	<flow name="${service}-service-api-console" doc:name="console">
+		<% if (inboundTransport=="RESTHTTPS") { %>
+	    <https:inbound-endpoint
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}/console" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+        <% } else { %>
+        <http:inbound-endpoint
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}/console" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+        <% } %>
+        <apikit:console config-ref="${service}-proxy-config" doc:name="APIkit Console"/>
+    </flow>
+    
+    <!--    
+    <flow name="${service}-service" doc:name="REST Proxy">
+    	<% if (outboundTransport=="RESTHTTPS") { %>
+        <https:inbound-endpoint
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTPS">
+        </https:inbound-endpoint>
+        <% } else { %>
+        <http:inbound-endpoint
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+            exchange-pattern="request-response"
+            doc:name="HTTP">
+        </http:inbound-endpoint>
+        <% } %>
+		<transformer ref="createCorrId" doc:name="Create Correlation ID"/>
+
+        <transformer ref="logReqIn" doc:name="Log Request In" />
+        
+    	<set-variable variableName="#[org.mule.transport.http.HttpConnector.HTTP_DISABLE_STATUS_CODE_EXCEPTION_CHECK]" 
+    		value="true" doc:name="Disable Exception Check"/>
+        
+        <flow-ref name="${service}-set-http-headers" doc:name="Set HTTP Headers"/>
+        <% if (outboundTransport=="RESTHTTPS") { %>
+        <https:outbound-endpoint 
+            connector-ref="soitoolkit-https-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.inboundProperties['http.relative.path']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTPS">
+        </https:outbound-endpoint>
+        <% } else { %>
+        <http:outbound-endpoint 
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}/#[message.inboundProperties['http.relative.path']]"
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            doc:name="HTTP">
+        </http:outbound-endpoint>  
+        <% } %>   
+        <flow-ref name="${service}-set-http-headers" doc:name="Set HTTP Headers"/>
+        
+		<choice>
+        	<when evaluator="groovy" expression="message.getInboundProperty('http.status').toInteger() &gt; 300 &amp;&amp; message.getInboundProperty('http.status').toInteger() &lt; 500 ">
+        		<expression-transformer evaluator="groovy" expression="throw new RuntimeException(payload)" />
+        	</when>
+        	<otherwise>
+        		<logger level="DEBUG" message="REST call is successfully executed. HTTP Status: #[groovy:message.getInboundProperty('http.status', '')]" />
+        	</otherwise>
+        </choice>
+        
+        <transformer ref="logRespOut" />
+        
+        <catch-exception-strategy>
+            <transformer ref="logError" />
+        </catch-exception-strategy>
+    </flow>
+ 
+    <sub-flow name="${service}-set-http-headers" doc:name="Copy Headers">
+        <copy-properties propertyName="*" doc:name="Copy All HTTP Headers"/>
+        <remove-property propertyName="Content-Length" doc:name="Remove Content Length"/>
+        <remove-property propertyName="MULE_*" doc:name="Remove MULE Properties"/>
+        <remove-property propertyName="X_MULE*" doc:name="Remove X_MULE Properties"/>
+    </sub-flow>
+    -->
+<% } else if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS" || outboundTransport=="JMS")) { %>
+	<apikit:config name="${service}-config" raml="${service}.raml" consoleEnabled="true"/>
+	
+	<flow name="${service}-service" doc:name="${service}-service" processingStrategy="synchronous">
+	<% if (inboundTransport == "RESTHTTP") { %>
+		<http:inbound-endpoint 
+			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+			connector-ref="soitoolkit-http-connector" 
+			doc:name="HTTP" />
+	<% } else if (inboundTransport == "RESTHTTPS") { %>
+		<https:inbound-endpoint 
+			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}"
+			connector-ref="soitoolkit-https-connector" 
+			doc:name="HTTP" />
+	<% } %>
+		<transformer ref="createCorrId" />
+		
+		<transformer ref="logReqIn" />
+        
+        <apikit:router config-ref="${service}-config" doc:name="APIkit Router"/>
+        
+        <exception-strategy ref="soitoolkit-apikit-global-exception-mapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    
+    <flow name="get:/samples/{sampleId}:${service}-config" doc:name="get:/samples/{sampleId}:${service}-config">
+	<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        <flow-ref name="${service}-soap-service" />
+	<% } else if (outboundTransport=="JMS") { %>
+		<flow-ref name="${service}-jms-service" />
+	<% } %>
+		<transformer ref="logRespOut" />
+    </flow>
+    
+    <flow name="get:/samples:${service}-config" doc:name="get:/samples/{sampleId}:${service}-config">
+	<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        <flow-ref name="${service}-soap-service" />
+	<% } else if (outboundTransport=="JMS") { %>
+		<flow-ref name="${service}-jms-service" />
+	<% } %>
+		<transformer ref="logRespOut" />
+    </flow>
+    
+    <!-- Specify MediaType explicit, use: post:/samples:application/json:${service}-config -->
+    <flow name="post:/samples:${service}-config" doc:name="get:/samples/{sampleId}:${service}-config">
+    	<json:json-to-object-transformer doc:name="JSON to CreateSample Object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample"/>
+	<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        <flow-ref name="${service}-soap-service" />
+	<% } else if (outboundTransport=="JMS") { %>
+		<flow-ref name="${service}-jms-service" />
+	<% } %>
+		<set-property propertyName="http.status" value="201"/>
+        
+        <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
+        
+        <transformer ref="logRespOut" />
+    </flow>
+    
+   <flow name="put:/samples/{sampleId}:${service}-config" doc:name="put:/samples/{sampleId}:${service}-config">
+    	<json:json-to-object-transformer doc:name="JSON to Update Object" returnClass="org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample"/>
+	<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        <flow-ref name="${service}-soap-service" />
+	<% } else if (outboundTransport=="JMS") { %>
+		<flow-ref name="${service}-jms-service" />
+	<% } %>
+        <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
+        
+        <transformer ref="logRespOut" />
+    </flow>
+    
+    <flow name="delete:/samples/{sampleId}:${service}-config" doc:name="delete:/samples/{sampleId}:${service}-config">
+	<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        <flow-ref name="${service}-soap-service" />
+	<% } else if (outboundTransport=="JMS") { %>
+		<flow-ref name="${service}-jms-service" />
+	<% } %>
+		<set-property propertyName="http.status" value="204"/>
+		
+		<transformer ref="logRespOut" />
+    </flow>
+<% } %>
+<% if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && outboundTransport=="JMS") { %>
+	<flow name="${service}-jms-service" processingStrategy="synchronous">
+		<custom-transformer doc:name="transform request" class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+
+        <mulexml:jaxb-object-to-xml-transformer doc:name="JAXB Object to XML" jaxbContext-ref="jaxbContext"/>
+
+        <object-to-string-transformer doc:name="Object to String"/>
+        
+        <transformer ref="logReqOut" />
+        
+		<request-reply timeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
+			<jms:outbound-endpoint connector-ref="${jmsInboundConnector}" queue="${dollarSymbol}{${uppercaseService}_REQUEST_QUEUE}" />
+			<jms:inbound-endpoint  connector-ref="${jmsOutboundConnector}" queue="${dollarSymbol}{${uppercaseService}_RESPONSE_QUEUE}" />
+		</request-reply>
+		
+		<object-to-string-transformer doc:name="Object to String"/>
+		
+		<transformer ref="logRespIn" />
+		
+		<mulexml:jaxb-xml-to-object-transformer doc:name="XML to JAXB Object" jaxbContext-ref="jaxbContext" />
+		
+		<custom-transformer doc:name="transform response" class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+	</flow>	
+<% } else if (!(inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS")) { %>
+    <sub-flow name="${service}-soap-service"> 
+
+        <custom-transformer doc:name="transform request" class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}RequestTransformer"/>
+
+        <mulexml:jaxb-object-to-xml-transformer doc:name="JAXB Object to XML" jaxbContext-ref="jaxbContext"/>
+
+        <object-to-string-transformer doc:name="Object to String"/>
+        
+        <set-variable variableName="#[org.mule.transport.http.HttpConnector.HTTP_DISABLE_STATUS_CODE_EXCEPTION_CHECK]" 
+    		value="true" doc:name="Disable Exception Check"/>
+    		
+    	<transformer ref="logReqOut" />
+	<% if (outboundTransport=="SOAPHTTP") { %>
+        <http:outbound-endpoint 
+            connector-ref="soitoolkit-http-connector"
+            address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
+            exchange-pattern="request-response"
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+            responseTransformer-refs="objToStr">
+            <cxf:proxy-client />
+        </http:outbound-endpoint>
+	<% } else if (outboundTransport=="SOAPHTTPS") { %>
+        <https:outbound-endpoint
+        	connector-ref="soitoolkit-https-connector"
+        	address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
+        	exchange-pattern="request-response"
+        	responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
+        	responseTransformer-refs="objToStr">
+        	<cxf:proxy-client />
+         </https:outbound-endpoint>
+	<% } %>
+         <transformer ref="logRespIn" />
+		
+         <choice>
+			<when expression="#[groovy:message.getInboundProperty('http.status').startsWith('2')]">
+				<mulexml:jaxb-xml-to-object-transformer doc:name="XML to JAXB Object" jaxbContext-ref="jaxbContext" />
+				<custom-transformer doc:name="transform response" class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}ResponseTransformer"/>
+			</when>
+			<otherwise>
+				<set-payload value="{ &quot;message&quot;: &quot;Internal Server Error&quot; }"/>
+			</otherwise>
+		</choice>
+    </sub-flow>
+<% } %>
+</mule>

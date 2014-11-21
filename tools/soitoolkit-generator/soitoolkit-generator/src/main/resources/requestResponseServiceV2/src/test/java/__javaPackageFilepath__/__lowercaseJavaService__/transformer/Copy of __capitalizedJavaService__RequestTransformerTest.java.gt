@@ -1,0 +1,97 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.mule.api.transformer.TransformerException;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
+
+public class ${capitalizedJavaService}RequestTransformerTest {
+
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}");
+    private static final String BASE_PATH = RB.getString("${uppercaseService}_BASE_PATH");
+	/*
+    @Test
+    public void testCreateTransformer_ok() throws Exception {
+
+        CreateSample input = new CreateSample();
+        input.setValue("A value");
+        
+        // Create the transformer under test and let it perform the transformation
+        ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
+        CreateSample result = (CreateSample)transformer.pojoTransform(null, input, null, null, "UTF-8");
+
+        // Compare the result to the expected value
+        assertEquals(input.getValue(), result.getValue());
+    }
+
+    @Test
+    public void testFindTransformer_ok() throws Exception {
+
+        String input = BASE_PATH + "/samples";
+        
+        // Create the transformer under test and let it perform the transformation
+        ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
+        FindSamples result = (FindSamples)transformer.pojoTransform(null, input, null, null, "UTF-8");
+
+        // Compare the result to the expected value
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testGetTransformer_ok() throws Exception {
+
+        String id = "12345";
+        
+        String input = BASE_PATH + "/samples/" + id;
+        
+        // Create the transformer under test and let it perform the transformation
+        ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
+        GetSample result = (GetSample)transformer.pojoTransform("GET", input, id, null, "UTF-8");
+
+        // Compare the result to the expected value
+        assertEquals(id, result.getId());
+    }
+    
+    @Test
+    public void testTransformer_invalidString() throws Exception {
+
+        String input = BASE_PATH + "/unknown";
+        
+        // Create the transformer under test and let it perform the transformation
+        ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
+        
+        try {
+            transformer.pojoTransform(null, input, null, null, "UTF-8");
+            fail("Expected TransformerException here!");
+            
+        // Assert expected error information
+        } catch (TransformerException ex) {
+            assertEquals("Unknown content: " + input, ex.getMessage());
+        }
+    }
+    
+    
+    @Test
+    public void testTransformer_invalidObject() throws Exception {
+
+        SampleEntity input = new SampleEntity();
+        
+        // Create the transformer under test and let it perform the transformation
+        ${capitalizedJavaService}RequestTransformer transformer = new ${capitalizedJavaService}RequestTransformer();
+        
+        try {
+            transformer.pojoTransform(null, input, null, null, "UTF-8");
+            fail("Expected TransformerException here!");
+            
+        // Assert expected error information
+        } catch (TransformerException ex) {
+            assertEquals("Unknown type: " + input.getClass().getName(), ex.getMessage());
+        }
+    }*/
+    
+}

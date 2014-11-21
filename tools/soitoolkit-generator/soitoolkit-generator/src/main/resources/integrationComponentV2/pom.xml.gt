@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
+[soi-toolkit.gen.version=${soitoolkitVersion}]
+[soi-toolkit.gen.type=services]
+[soi-toolkit.gen.createDate=${xmlTimestamp}]
+[soi-toolkit.gen.artifactId=${artifactId}]
+-->
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>${superpomGroupId}</groupId>
+        <artifactId>${superpomArtifactId}</artifactId>
+        <version>${superpomVersion}</version>
+    </parent>
+    
+    <groupId>${groupId}</groupId>
+    <artifactId>${parentPom}</artifactId>
+    <version>${version}</version>
+    <packaging>mule</packaging>
+    <name>${parentPom}</name>
+
+    <scm>
+        <!-- TODO: Sample <scm>-tag, update to reflect you own environment! -->
+        <connection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</connection>
+        <developerConnection>scm:svn:https://my-subversion-server/svn/${integrationComponentProject}/trunk</developerConnection>
+        <url>https://my-subversion-server/svn/${integrationComponentProject}/trunk</url>
+    </scm>
+    
+    <distributionManagement>
+        <!-- TODO: Sample <distributionManagement>-tag, update to reflect you own environment! -->
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot Repository</name>
+            <url>http://my-maven-repo-server/repositories/snapshots</url>
+        </snapshotRepository>  
+        <repository>
+            <id>releases</id>
+            <name>Release Repository</name>
+            <url>http://my-maven-repo-server/repositories/releases</url>
+        </repository>
+    </distributionManagement>
+
+	<dependencies>	
+		<dependency>
+		  <groupId>org.soitoolkit.commons.components</groupId>
+			<artifactId>soitoolkit-commons-mule</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.soitoolkit.commons.poms</groupId>
+			<artifactId>soitoolkit-test-dependencies</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
+			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-dependencies</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-apikit</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+
+<% if (muleVersion.isEEVersion()) { %> 
+		<dependency>
+			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
+			<artifactId>soitoolkit-mule-${muleVersion.pomSuffix}-ee-dependencies</artifactId>
+			<version>${dollarSymbol}{soitoolkit.version}</version>
+			<type>pom</type>
+		</dependency>
+<% } %> 		
+	</dependencies> 
+
+    <build>
+        <resources>
+            <resource>
+                <!-- To get mule-config files from the Mule Studio defined resource-folder in the classpath... -->
+                <directory>${dollarSymbol}{basedir}/src/main/app</directory>
+            </resource>
+            <resource>
+                <directory>${dollarSymbol}{basedir}/src/main/api</directory>
+            </resource>
+			<resource>
+                <directory>${dollarSymbol}{basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
+		<plugins>   
+            <plugin>
+                <!-- Add mule-nature to the eclipse-.project-file -->
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <additionalBuildcommands>
+                        <buildcommand>org.mule.tooling.core.muleBuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <additionalProjectnatures>
+                        <projectnature>org.mule.tooling.core.muleNature</projectnature>
+                    </additionalProjectnatures>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mule.tools</groupId>
+                <artifactId>maven-mule-plugin</artifactId>
+                <extensions>true</extensions>
+                <!-- Include mule-dependencies that doesn't come with Mule 3.x otherwise we can't install to a vanilla Mule 3.x installation -->
+                <configuration>
+                    <inclusions>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-rest-router</artifactId>
+                        </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>devkit</artifactId>
+                        </inclusion>
+                    </inclusions>
+                    <exclusions>
+
+                      <!-- xercesImpl is endorsed in MULE_HOME/lib/endorsed, see issue 274 -->
+                      <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                      </exclusion>
+
+                      <!-- log4j is already included in MULE_HOME/lib/boot, see issue 283 -->
+                      <exclusion>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+                      </exclusion>
+
+                      <!-- junit is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+                      </exclusion>
+
+                      <!-- servlet-api-2.5 is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>servlet-api-2.5</artifactId>
+                      </exclusion>
+
+                      <!-- jug is already included in MULE_HOME/lib/opt, see issue 283 -->
+                      <exclusion>
+						<groupId>org.safehaus.jug</groupId>
+						<artifactId>jug.osgi</artifactId>
+                      </exclusion>
+                      <!-- activemq needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-core</artifactId>
+                      </exclusion>
+                      <exclusion>
+						<groupId>org.apache.xbean</groupId>
+						<artifactId>xbean-spring</artifactId>
+                      </exclusion>
+
+                      <!-- hornetq needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>org.hornetq</groupId>
+						<artifactId>hornetq-core-client</artifactId>
+                      </exclusion>
+                      <exclusion>
+				        <groupId>org.hornetq</groupId>
+				        <artifactId>hornetq-jms</artifactId>
+                      </exclusion>
+                      <exclusion>
+						<groupId>org.jboss.netty</groupId>
+						<artifactId>netty</artifactId>
+                      </exclusion>
+
+                      <!-- jtds (JDBC driver fpr Microsoft SQL Server) needs to be added manually to MULE_HOME/lib/user if required, see issue 283 -->
+                      <exclusion>
+						<groupId>net.sourceforge.jtds</groupId>
+						<artifactId>jtds</artifactId>
+                      </exclusion>
+
+                    </exclusions>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                <!-- 
+                 if no classifier is declared, then a mvn install results in a file in
+                 the local repo: ic2-1.0.0-SNAPSHOT.mule
+                 which is a jar-file - only strangely named and with a bad extension
+                -->
+                <classifier>core</classifier>
+                <excludes>
+                  <exclude>log4j.xml</exclude>
+                </excludes>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+		    <plugin>
+			  <artifactId>maven-resources-plugin</artifactId>
+			  <executions>
+			    <execution>
+			    <id>copy-log4j-resource</id>
+			    <phase>prepare-package</phase>
+				<goals>
+			      <goal>copy-resources</goal>
+			    </goals>
+				<configuration>
+				<!--<outputDirectory>target/classes</outputDirectory> -->
+				<outputDirectory>${dollarSymbol}{project.build.outputDirectory}</outputDirectory>
+				<resources>
+				  <resource>
+				    <directory>src/environment</directory>
+					  <includes>
+					    <include>log4j.xml</include>
+					    <include>log4j.dtd</include>
+					  </includes>
+				  </resource>
+				</resources>
+			  </configuration>
+		    </execution>
+		  </executions>
+		</plugin>
+				
+      </plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>muleServer</id>
+            <!-- Start mule server with the command "mvn -PmuleServer" or "mvn -PmuleServer -Dexec.args="${dollarSymbol}{artifaceId}-config.xml"" if you want to override the default config-file -->
+            <build>
+                <defaultGoal>test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>${javaPackage}.${capitalizedJavaArtifactId}MuleServer</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

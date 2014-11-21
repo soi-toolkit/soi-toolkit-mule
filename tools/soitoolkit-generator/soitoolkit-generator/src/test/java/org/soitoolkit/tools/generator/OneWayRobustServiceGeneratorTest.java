@@ -43,6 +43,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ModelFactory;
@@ -53,6 +54,7 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
+@Ignore
 public class OneWayRobustServiceGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();

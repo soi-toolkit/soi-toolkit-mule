@@ -1,0 +1,24 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}TestSender {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}TestSender.class);
+
+	private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}");
+
+	private static final String SERVICE_ENDPOINT = RB.getString("${uppercaseService}_INBOUND_URL");
+
+	public static void main(String[] args) {
+    	
+    	String inputFile = "src/test/resources/testfiles/${service}/input.txt";
+		int timeout      = 5000;
+
+		LOGGER.info("Post message to: {}, {} chars", url, inputFile.length());
+    	//sendFileAsMultipartHttpPost(url, new File(inputFile), "payload", false, timeout);
+	}
+}

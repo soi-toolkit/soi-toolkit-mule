@@ -29,12 +29,14 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
+@Ignore
 public class IntegrationComponentGeneratorTest {
 
 	private static final MuleVersionEnum MULE_VERSION = MAIN_MULE_VERSION;

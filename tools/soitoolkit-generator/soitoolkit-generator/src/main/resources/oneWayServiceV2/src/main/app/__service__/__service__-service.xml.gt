@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule 
+${xmlNamespace.servicesOnlyConfig}
+    <spring:beans>
+      <!-- Load all resources needed by the core artifact -->
+      <spring:import resource="classpath:${service}/${service}-inbound-service.xml"/>
+      <spring:import resource="classpath:${service}/${service}-process-service.xml"/>
+<% if (outboundTransport!="JMS") { %>      
+      <spring:import resource="classpath:${service}/${service}-outbound-service.xml"/>
+<% } %>      
+    </spring:beans>
+
+</mule>

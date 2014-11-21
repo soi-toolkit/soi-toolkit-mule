@@ -1,0 +1,147 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
+/**
+ * The purpose of this transformer is to transform outgoing response.
+ */
+public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
+	/* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	return this.pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(Object payload, String outputEncoding) throws TransformerException {
+		return payload;
+	}
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+
+
+
+
+
+import org.mule.api.ExceptionPayload;
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.config.i18n.MessageFactory;
+import org.mule.transformer.AbstractMessageTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS" || outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
+<% } %>
+
+import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
+
+public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}ResponseTransformer.class);
+	
+	
+	
+	
+	
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+	private static final JaxbUtil JAXB_UTIL = new JaxbUtil(SampleResponse.class);
+<% } %>
+    /**
+     * Message aware transformer that ...
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+
+        // Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+        if (message.getExceptionPayload() != null) {
+            return createFault(message.getExceptionPayload());
+        }
+<% } %>
+        return pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+    /**
+     * Simple pojo transformer method that can be tested with plain unit testing...
+     */
+    public Object pojoTransform(Object response, String outputEncoding) throws TransformerException {
+        LOGGER.debug("Transforming payload: {}", response);
+<% if ((inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS")) { %>
+	return response;
+<% } else if ((inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") && (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS" || outboundTransport=="JMS")) { %>
+        if ((response instanceof CreateSampleResponse) ||
+            (response instanceof FindSamplesResponse) ||
+            (response instanceof GetSampleResponse) ||
+            (response instanceof UpdateSampleResponse) ||
+            (response instanceof DeleteSampleResponse)) {
+            
+            // No transformation is required
+            return response;
+
+        } else {
+            throw new TransformerException(MessageFactory.createStaticMessage("Unknown type: " + response.getClass().getName()), this);
+        }
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+		SampleResponse request = new SampleResponse();
+		request.setValue(response.toString());
+		String xml = jaxbUtil.marshal(request);
+		return xml;
+		
+<% } %>
+	}
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
+	private String createFault(String errorMessage) {
+		return 
+		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+		"<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" + 
+		"<faultcode>soap:Server</faultcode>" + 
+		"<faultstring>" + errorMessage + "</faultstring>" + 
+		"</soap:Fault>";
+	}
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+
+    // TODO: Move to soitoolkit-commons-mule?
+    private String createFault(ExceptionPayload ep) {
+        // Pick out the most specific exception info and return it
+        String errMsg;
+        if (ep.getRootException() != null) {
+            errMsg = ep.getRootException().getMessage();
+
+        } else if (ep.getException() != null) {
+            errMsg = ep.getException().getMessage();
+        
+        } else {
+            errMsg = ep.getMessage();
+        }
+
+        LOGGER.warn("Transformer caught an exception payload: {}", errMsg);
+        return createFault(errMsg);
+    }
+
+    private JaxbUtil ju = new JaxbUtil(FaultInfo.class);
+    private String createFault(String errorMessage) {
+        FaultInfo fi = new FaultInfo();
+        fi.setMessage(errorMessage);
+        return ju.marshal(fi);
+    }
+<% } %>
+}

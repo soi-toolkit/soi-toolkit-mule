@@ -1,0 +1,42 @@
+#%RAML 0.8
+title: SOI Toolkit Sample API
+version: v1
+/samples:
+  post:
+    description: Create sample
+    body:
+      application/json:
+    responses:
+      201:
+        description: |
+          The sample has been succesfully created
+        body:
+          application/json:
+  get:
+    description:
+      Get a collection of samples.
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+          application/xml:
+  /{sampleId}:
+    put:
+      body:
+        application/json:
+      responses:
+        200:
+    get:
+      description: Get sample by id.
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              example: '{"sample": { "id": "1234567890" }}'
+    delete:
+      description: Delete sample by id.
+      responses:
+        204:
+          description: Successfully removed

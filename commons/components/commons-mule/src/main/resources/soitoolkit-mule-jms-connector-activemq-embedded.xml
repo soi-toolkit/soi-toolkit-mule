@@ -49,18 +49,29 @@
 				<amq:transportConnector uri="vm://localhost" />
 			</amq:transportConnectors>
 		</amq:broker>
+		
+		<spring:bean name="soitoolkit-jms-redelivery-policy" class="org.apache.activemq.RedeliveryPolicy">
+            <spring:property name="maximumRedeliveries" value="3" />
+            <spring:property name="initialRedeliveryDelay" value="500" />	
+     	</spring:bean>	
+		
+		<spring:bean name="soitoolkit-jms-redelivery-transformation-policy" class="org.apache.activemq.RedeliveryPolicy">
+            <spring:property name="maximumRedeliveries" value="0" />
+     	</spring:bean>
+		
+		<spring:bean name="soitoolkit-jms-connection-factory"
+			class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
+			<spring:property name="brokerURL" value="vm://localhost" />
+			<spring:property name="redeliveryPolicy" ref="soitoolkit-jms-redelivery-policy"/>
+		</spring:bean>
+		
+		<spring:bean name="soitoolkit-jms-transformation-connection-factory"
+			class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
+				<spring:property name="brokerURL" value="vm://localhost" />
+				<spring:property name="redeliveryPolicy" ref="soitoolkit-jms-redelivery-transformation-policy">
+			</spring:property>
+		</spring:bean>
     </spring:beans>
-
-	<spring:bean name="soitoolkit-jms-connection-factory"
-		class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
-		<spring:property name="brokerURL" value="vm://localhost" />
-		<spring:property name="redeliveryPolicy">
-			<spring:bean class="org.apache.activemq.RedeliveryPolicy">
-				<spring:property name="maximumRedeliveries" value="3" />
-				<spring:property name="initialRedeliveryDelay" value="500" />			
-			</spring:bean>
-		</spring:property>
-	</spring:bean>
 
 	<jms:connector name="soitoolkit-jms-connector"
 		connectionFactory-ref="soitoolkit-jms-connection-factory"
@@ -69,9 +80,17 @@
 		numberOfConsumers="2"
 		specification="1.1"
 		maxRedelivery="-1">
-<!-- 
-		<custom-exception-strategy class="org.soitoolkit.commons.mule.error.ExceptionHandler"/>
- -->
+		<service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
+	</jms:connector>
+	
+	<jms:connector name="soitoolkit-jms-transformation-connector"
+		connectionFactory-ref="soitoolkit-jms-transformation-connection-factory"
+		disableTemporaryReplyToDestinations="true" 
+		persistentDelivery="true"
+		numberOfConsumers="2"
+		specification="1.1"
+		maxRedelivery="-1">
+ 		<service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
 	</jms:connector>
 		
 </mule>

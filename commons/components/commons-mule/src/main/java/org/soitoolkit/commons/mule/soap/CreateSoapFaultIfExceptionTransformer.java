@@ -20,9 +20,14 @@ import java.text.MessageFormat;
 
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleMessage;
+import org.mule.api.config.MuleProperties;
+import org.mule.api.endpoint.ImmutableEndpoint;
 import org.mule.api.transformer.TransformerException;
+import org.mule.api.transformer.TransformerMessagingException;
+import org.mule.api.transport.DispatchException;
 import org.mule.api.transport.PropertyScope;
 import org.mule.transformer.AbstractMessageTransformer;
+import org.mule.transport.http.HttpConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,19 +86,38 @@ public class CreateSoapFaultIfExceptionTransformer extends AbstractMessageTransf
         return message;
 	        
 	}
-
-    protected String createSoapFaultFromExceptionPayload(ExceptionPayload ep) {
+    
+    protected String createSoapFaultFromExceptionPayload(ExceptionPayload exceptionPayload) {
     	
-    	// Use the root exception if any otherwise the exception
-		logger.debug("Exception: "     + ep.getException()     + ", " + ep.getException().getClass().getName());
-		logger.debug("RootException: " + ep.getRootException() + ", " + ep.getRootException().getClass().getName());
-    	Throwable e = (ep.getRootException() != null) ? ep.getRootException() : ep.getException();
+    	/* Use the root exception if any, otherwise the actual exception. */
+        logger.debug("Exception: " + exceptionPayload.getException() + ", "
+            + exceptionPayload.getException().getClass().getName());
+        logger.debug("RootException: " + exceptionPayload.getRootException() + ", "
+            + exceptionPayload.getRootException().getClass().getName());
+        Throwable e =
+            (exceptionPayload.getRootException() != null) ? exceptionPayload.getRootException() : exceptionPayload
+                .getException();
 
-//		FIXME: Can't get soap fault over to the client!!!
-//		String errMsg   = ep.getCode() + ": " + ep.getMessage();
-        String errMsg   = e.getMessage();
-        String endpoint = getEndpoint().getEndpointURI().getAddress();
-        String detail   = e.getMessage();
+        String errMsg = e.getMessage();
+        String endpoint = null;
+
+        ImmutableEndpoint ie = getEndpoint();
+        if (ie != null) {
+            endpoint = getEndpoint().getEndpointURI().getAddress();
+        } else {
+            if (exceptionPayload.getException() instanceof DispatchException) {
+                DispatchException de = (DispatchException) exceptionPayload.getException();
+                endpoint =
+                    de.getEvent().getMessage()
+                        .getProperty(MuleProperties.MULE_ENDPOINT_PROPERTY, PropertyScope.OUTBOUND);
+            } else if (exceptionPayload.getException() instanceof TransformerMessagingException) {
+                TransformerMessagingException tme = (TransformerMessagingException) exceptionPayload.getException();
+                endpoint =
+                    tme.getEvent().getMessage()
+                        .getProperty(HttpConnector.HTTP_CONTEXT_URI_PROPERTY, PropertyScope.INBOUND);
+            }
+        }
+        String detail = e.getMessage();
         return createSoapFault(errMsg, endpoint, detail);
 	}
 

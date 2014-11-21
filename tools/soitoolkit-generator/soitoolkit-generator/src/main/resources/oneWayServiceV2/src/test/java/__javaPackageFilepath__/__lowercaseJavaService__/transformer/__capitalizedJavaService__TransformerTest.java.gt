@@ -1,0 +1,75 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.junit.Test;
+
+import org.mule.api.transformer.TransformerException;
+
+/**
+ * The purpose of this unit test is to verify the 
+ * behavior of ${capitalizedJavaService}Transformer transformer.
+ */
+public class ${capitalizedJavaService}TransformerTest {
+
+	private static final String TESTBASE = "src/test/resources/testfiles/${service}/transformer";
+	
+	${capitalizedJavaService}Transformer transformer = null;
+	
+	@Before
+	public void setUp() {
+		transformer = new ${capitalizedJavaService}Transformer();
+	}
+
+	/**
+	 * Happy day test. A successful transformation.
+	 * 
+	 * @throws IOException if fails to read file.
+	 * @throws TransformerException if fails to transform message.
+	 */
+	@Test
+	public void testOk() throws IOException, TransformerException {
+
+		byte[] input 			= FileUtils.readFileToByteArray(new File(TESTBASE + "/input-ok.txt"));
+		<% if (outboundTransport != "JDBC") { %>
+		byte[] expectedResult 	= FileUtils.readFileToByteArray(new File(TESTBASE + "/expected-result-ok.txt"));
+		<% } %>
+		Object actualResult = transformer.doTransform(input, "UTF-8");
+		
+		<% if (outboundTransport == "JDBC") { %>
+		assertTrue(actualResult instanceof Map);
+		assertEquals("1nnn", ((Map) actualResult).get("ID"));
+		assertEquals("Some value", ((Map) actualResult).get("VALUE"));
+		<% } else { %>
+		assertTrue(actualResult instanceof byte[]);
+		assertArrayEquals(expectedResult, (byte[]) actualResult);
+		<% } %>
+	}
+	
+	/**
+	 * Negative test. An unsuccessful transformation.
+	 * 
+	 * @throws IOException if fails to read file.
+	 */
+	@Test
+	public void testError() throws IOException, TransformerException {
+
+		byte[] input = FileUtils.readFileToByteArray(new File(TESTBASE + "/input-error.txt"));
+		
+		try {
+			transformer.doTransform(input, "UTF-8");
+			fail();
+		} catch(TransformerException e) {
+			assertEquals("Unknown content: Cnnn=Some value", e.getMessage());
+		}
+	}
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smooks-resource-list 
+  xmlns="http://www.milyn.org/xsd/smooks-1.1.xsd" 
+  xmlns:ftl="http://www.milyn.org/xsd/smooks/freemarker-1.1.xsd">
+  
+  <params>
+    <param name="stream.filter.type">SAX</param>
+    <param name="inputType">input.xml</param>
+    <param name="input.xml" type="input.type.actived">Workspace://${serviceProject}/src/test/resources/testfiles/${service}/request-input.xml</param>
+  </params>
+  
+  <ftl:freemarker applyOnElement="#document">
+    <ftl:template><![CDATA[
+<#ftl ns_prefixes={"ns":"urn:org.soitoolkit.refapps.sd.sample.schema:v1"}>
+<#list .vars["sample"] as sample>
+msg-0001-req,${dollarSymbol}{.vars["sample"]["ns:id"]}
+</#list>
+    ]]></ftl:template>
+    
+    <param name="includeFieldNames">false</param>
+    <param name="seperator">,</param>
+    <param name="quote"></param>
+    <param name="csvFields">msgType,id</param>
+    <param name="messageType">CSV</param>
+    <param name="templateDataProvider">input</param>
+  </ftl:freemarker>
+  
+  <resource-config selector="#document">
+    <resource>org.milyn.delivery.DomModelCreator</resource>
+  </resource-config>
+</smooks-resource-list>

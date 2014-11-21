@@ -1,0 +1,258 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.junit.Assert.*;
+<% if (inboundTransport=="SOAPSERVLET") { %>
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.CONTEXT_PATH;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.HTTP_PORT;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVER_ID;
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.MULE_SERVLET_URI;
+<% } %> 
+import static ${javaPackage}.${capitalizedJavaArtifactId}MuleServer.getAddress;
+
+import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_OK;
+import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
+import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_TIMEOUT;
+
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+import static org.soitoolkit.commons.xml.XPathUtil.normalizeXmlString;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.Response.Status;
+import javax.xml.stream.XMLStreamReader;
+
+import org.mule.api.MuleException;
+import org.mule.api.MuleMessage;
+import org.mule.module.client.MuleClient;
+import org.soitoolkit.commons.mule.util.BOMStripperInputStream;
+import org.soitoolkit.commons.mule.util.MiscUtil;
+import org.soitoolkit.commons.mule.util.XmlUtil;
+<% } %> 
+
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
+import org.soitoolkit.commons.mule.rest.RestClient;
+<% } %> 
+<% if (inboundTransport=="SOAPSERVLET") { %>
+import org.soitoolkit.commons.mule.test.AbstractTestCaseWithServletEngine;
+<% } else { %> 
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+<% } %> 
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.sample.schema.v1.FaultInfo;
+import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
+import org.soitoolkit.refapps.sd.sample.wsdl.v1.Fault;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+<% if (inboundTransport=="SOAPSERVLET") { %>
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCaseWithServletEngine {
+<% } else { %> 
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
+<% } %> 
+	
+	private static final Logger log = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
+	
+<% if (outboundTransport=="JMS") { %>
+	private static final RecursiveResourceBundle rb = new RecursiveResourceBundle("${configPropertyFile}");
+	private static final long   SERVICE_TIMOUT_MS = Long.parseLong(rb.getString("SERVICE_TIMEOUT_MS"));
+	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Response timed out (" + SERVICE_TIMOUT_MS + "ms) waiting for message response id ";
+<% } else { %> 
+	private static final String EXPECTED_ERR_TIMEOUT_MSG = "Read timed out";
+<% } %> 
+
+	private static final String DEFAULT_SERVICE_ADDRESS = getAddress("${uppercaseService}_INBOUND_URL");
+<% if (inboundTransport=="RESTHTTP") { %>
+    private static final String HTTP_CONNECTOR = "soitoolkit-http-connector";
+<% } else if (inboundTransport=="RESTHTTPS") { %>
+	private static final String HTTP_CONNECTOR = "soitoolkit-https-connector";
+<% } %> 
+<% if (outboundTransport=="JMS") { %>
+	private static final String REQUEST_QUEUE   = rb.getString("${uppercaseService}_REQUEST_QUEUE");
+	private static final String RESPONSE_QUEUE  = rb.getString("${uppercaseService}_RESPONSE_QUEUE");
+<% } %> 
+	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
+	private AbstractJmsTestUtil jmsUtil = null;
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+    private JaxbUtil jabxUtil = new JaxbUtil(FaultInfo.class);
+    private RestClient restClient;
+<% } %> 
+
+    public ${capitalizedJavaService}IntegrationTest() {
+    
+<% if (inboundTransport=="SOAPSERVLET") { %>
+    	// Initialize servlet engine in baseclass with proper values
+    	super(MULE_SERVER_ID, HTTP_PORT, CONTEXT_PATH, MULE_SERVLET_URI);
+<% } %> 
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+
+	protected String getConfigResources() {
+		return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+<% if (inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
+        "soitoolkit-mule-jdbc-datasource-hsql-embedded.xml," +
+		"${artifactId}-jdbc-connector.xml," +
+<% } %>  
+		"${artifactId}-common.xml," +
+        "${service}-service.xml," +
+		"teststub-services/${service}-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+
+		doSetUpJms();
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+       restClient = new RestClient(muleContext, HTTP_CONNECTOR);
+<% } %>  
+     }
+
+	private void doSetUpJms() {
+		// TODO: Fix lazy init of JMS connection et al so that we can create jmsutil in the declaration
+		// (The embedded ActiveMQ queue manager is not yet started by Mule when jmsutil is delcared...)
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+<% if (outboundTransport=="JMS") { %>
+		// Clear queues used for the outbound endpoint
+		jmsUtil.clearQueues(REQUEST_QUEUE);
+		jmsUtil.clearQueues(RESPONSE_QUEUE);
+<% } %> 
+		// Clear queues used for error handling
+		jmsUtil.clearQueues(ERROR_LOG_QUEUE);
+    }
+
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS" || inboundTransport=="SOAPSERVLET") { %>
+    @Test
+    public void test_ok() throws Fault {
+    	String id = TEST_ID_OK;
+    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
+		SampleResponse response = consumer.callService(id);
+		assertEquals("Value" + id,  response.getValue());
+	}
+
+    @Test
+	public void test_fault_invalidInput() throws Exception {
+		try {
+	    	String id = TEST_ID_FAULT_INVALID_ID;
+	    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
+			Object response = consumer.callService(id);
+	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
+	    } catch (SOAPFaultException e) {
+<% if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+            assertEquals("Internal Server Error, code: 500", e.getMessage());
+<% } else if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
+<% } else if (outboundTransport=="JMS") { %>
+	    	assertEquals("Invalid Id: " + TEST_ID_FAULT_INVALID_ID, e.getMessage());
+<% } %> 
+	    }
+	}
+
+    @Test
+	public void test_fault_timeout() throws Fault {
+        try {
+	    	String id = TEST_ID_FAULT_TIMEOUT;
+	    	${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(DEFAULT_SERVICE_ADDRESS);
+			Object response = consumer.callService(id);
+	        fail("expected fault, but got a response of type: " + ((response == null) ? "NULL" : response.getClass().getName()));
+        } catch (SOAPFaultException e) {
+            assertTrue("Unexpected error message: " + e.getMessage(), e.getMessage().startsWith(EXPECTED_ERR_TIMEOUT_MSG));
+        }
+
+		// Sleep for a short time period  to allow the JMS response message to be delivered, otherwise ActiveMQ data store seems to be corrupt afterwards...
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {}
+    }
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+    @Test
+    public void test_ok() throws MuleException {
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-input.xml");
+        String expectedResult = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/response-expected-result.xml");
+
+        // Call the http-service with proper input
+        MuleMessage response = restClient.doHttpPostRequest_XmlContent(DEFAULT_SERVICE_ADDRESS, input);
+
+        // Assert http-post ok
+        assertEquals(Integer.toString(Status.OK.getStatusCode()), response.getInboundProperty("http.status"));
+
+        // Assert response-payload
+        String actualResult = payloadToString(response.getPayload(), "utf-8");
+        assertEquals(normalizeXmlString(expectedResult), normalizeXmlString(actualResult));
+    }
+
+    @Test
+    public void test_fault_invalidInput() throws MuleException {
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-invalid-input.xml");
+
+        // Call the http-service with invalid input
+        MuleMessage response = restClient.doHttpPostRequest_XmlContent(DEFAULT_SERVICE_ADDRESS, input);
+
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+        // Assert http-post internal server error
+        assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+        // Assert expected FaultInfo-response and expected error message
+        String payload = MiscUtil.convertStreamToString((InputStream)response.getPayload());
+        FaultInfo fi = (FaultInfo)jabxUtil.unmarshal(payload);
+        assertEquals("Internal Server Error, code: 500", fi.getMessage());
+<% } else if (outboundTransport=="JMS") { %>
+        // Assert expected FaultInfo-response and expected error message
+        FaultInfo fi = (FaultInfo)jabxUtil.unmarshal(response.getPayload());
+        assertEquals("Invalid Id: -1", fi.getMessage());
+<% } %> 
+    }
+
+    @Test
+    public void test_fault_timeout() throws MuleException {
+
+        String input = MiscUtil.readFileAsString("src/test/resources/testfiles/${service}/request-fault-timeout-input.xml");
+
+        // Call the http-service with invalid input
+        MuleMessage response = restClient.doHttpPostRequest_XmlContent(DEFAULT_SERVICE_ADDRESS, input);
+
+        // Assert http-post internal server error
+        assertEquals(Integer.toString(Status.INTERNAL_SERVER_ERROR.getStatusCode()), response.getInboundProperty("http.status"));
+    }
+    
+    //
+    // FIXME: Methods below should be moved to a helper class in soitoolkit-commons-mule
+    //
+    
+    private String payloadToString(Object src, String encoding) {
+        if (src instanceof XMLStreamReader) {
+            if (this.logger.isDebugEnabled())this.logger.debug("XMLStreamReader detected, converting it to a String since Mule's ObjectToString - transformer can't make it");
+            return XmlUtil.convertXMLStreamReaderToString((XMLStreamReader) src, encoding);
+        }
+        
+        if (src instanceof InputStream) {
+            if (this.logger.isDebugEnabled())
+                this.logger.debug("InputStream detected, wrap with a BOMStripper since Mule doesn't seem to handle BOM chars......");
+            try {
+                src = new BOMStripperInputStream((InputStream) src);
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading input stream", e);
+            }
+            
+            return MiscUtil.convertStreamToString((InputStream) src);
+        }
+
+        return (String) src;
+    }
+<% } %>
+
+	
+
+}

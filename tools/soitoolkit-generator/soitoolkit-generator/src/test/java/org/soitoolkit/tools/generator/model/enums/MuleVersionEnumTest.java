@@ -16,6 +16,7 @@
  */
 package org.soitoolkit.tools.generator.model.enums;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,5 +27,11 @@ public class MuleVersionEnumTest {
 	public void testIsEEVersion() {
 		assertTrue(MuleVersionEnum.MULE_3_4_0_EE.isEEVersion());
 		assertFalse(MuleVersionEnum.MULE_3_4_0.isEEVersion());
+	}
+	
+	@Test
+	public void testVerNoNumbersOnly() {
+		assertEquals("340", MuleVersionEnum.MULE_3_4_0_EE.getVerNoNumbersOnly());
+		assertEquals("340", MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly());
 	}
 }

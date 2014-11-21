@@ -1,0 +1,72 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+import java.nio.charset.Charset;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
+
+import org.mule.api.transformer.TransformerException;
+import org.mule.config.i18n.MessageFactory;
+import org.mule.transformer.AbstractTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ${capitalizedJavaService}Transformer extends AbstractTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}Transformer.class);
+	private static final Charset ENCODING_CHARSET_INBOUND = Charset.forName("UTF-8");
+	private static final Charset ENCODING_CHARSET_OUTBOUND = Charset.forName("UTF-8");
+	
+	/**
+	 * Simplest possible transformer that ...
+	 * <p>Character encoding from/to byte[] is handled within this class to let
+	 * other parts of the Mule-flow handle binary payloads and avoid encoding issues.
+	 *
+	 * @param src expects a byte[]
+	 * @return a byte[]
+	 */
+	@Override
+	protected Object doTransform(Object src, String encoding) throws TransformerException {
+		
+		String outMsg = null;
+		String inMsg = null;
+		
+		if (src instanceof byte[]) {
+			inMsg = new String((byte[]) src, ENCODING_CHARSET_INBOUND);
+		} else if (src instanceof String) {
+			inMsg = (String) src;
+		} else if (src instanceof Map) {
+        	Map<String, String> map = (Map<String, String>)src;
+        	String id = map.get("ID");
+        	String value = map.get("VALUE");
+
+        	inMsg = id + "=" + value;
+        } else {
+			throw new TransformerException(MessageFactory.createStaticMessage("Unknown source type: " + src.getClass().getName()), this);
+		}
+		// Simplest possible sample transformation, convert leading "A" to "1" and "B" to "2", throw an exception for all other input
+		if (inMsg.startsWith("A")) {
+			LOGGER.debug("A message of type A is transformed to a message of type 1");
+			outMsg = "1" + inMsg.substring(1);
+		} else if (inMsg.startsWith("B")) {
+			LOGGER.debug("A message of type B is transformed to a message of type 2");
+			outMsg = "2" + inMsg.substring(1);
+		} else {
+			throw new TransformerException(MessageFactory.createStaticMessage("Unknown content: " + inMsg), this);
+		}
+		
+<% if (outboundTransport == "JDBC") { %>
+		StringTokenizer st = new StringTokenizer(outMsg, "=");
+		String id    = st.nextToken().trim();
+		String value = st.nextToken().trim();
+		Map<String, String> outMap = new HashMap<String,String>();
+        outMap.put("ID", id);
+        outMap.put("VALUE", value);
+        return outMap;
+<% } else { %>
+		return outMsg.getBytes(ENCODING_CHARSET_OUTBOUND);
+<% } %>
+	} 
+}

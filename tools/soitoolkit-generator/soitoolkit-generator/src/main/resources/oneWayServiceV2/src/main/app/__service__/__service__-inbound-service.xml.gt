@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mule 
+${xmlNamespace.onewayService}
+
+	<flow name="${service}-inbound-service" processingStrategy="synchronous">
+<% if (inboundTransport=="HTTP") { %>
+		<http:inbound-endpoint 
+			connector-ref="soitoolkit-http-connector"
+			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+			exchange-pattern="one-way" />
+<% } else if (inboundTransport=="HTTPS") { %>
+		<https:inbound-endpoint 
+			connector-ref="soitoolkit-https-connector"
+			address="${dollarSymbol}{${uppercaseService}_INBOUND_URL}" 
+			exchange-pattern="one-way" />
+<% } else if (inboundTransport=="VM") { %>
+		<vm:inbound-endpoint 
+			connector-ref="soitoolkit-vm-connector" 
+			path="${dollarSymbol}{${uppercaseService}_IN_VM_QUEUE}" >
+			<xa-transaction action="ALWAYS_BEGIN" timeout="60000"/>
+		</vm:inbound-endpoint>
+<% } else if (inboundTransport=="JMS") { %>
+        <jms:inbound-endpoint 
+        	connector-ref="soitoolkit-jms-connector" 
+        	queue="${dollarSymbol}{${uppercaseService}_IN_QUEUE}" 
+        	transformer-refs="jmsToStr">
+			<jms:transaction action="ALWAYS_BEGIN" />
+		</jms:inbound-endpoint>
+<% } else if (inboundTransport=="JDBC") { %>
+        <poll doc:name="Poll JDBC">
+        	<fixed-frequency-scheduler frequency="2" timeUnit="SECONDS"/>
+            <logger 
+            	level="DEBUG" 
+            	message="Poll JDBC" 
+            	category="${javaPackage}.${lowercaseJavaService}.flow"/>
+        </poll>
+<% } else if (inboundTransport=="FILE") { %> 
+        <file:inbound-endpoint
+            connector-ref="soitoolkit-file-connector"
+            path="${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+            pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+            fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
+            moveToDirectory="${dollarSymbol}{${uppercaseService}_INBOUND_ARCHIVE_FOLDER}"
+            moveToPattern="${dollarSymbol}{${uppercaseService}_INBOUND_ARCHIVE_FILENAME}">
+            <file:filename-wildcard-filter pattern="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_PATTERN}"/>
+        </file:inbound-endpoint>
+        
+        <object-to-byte-array-transformer doc:name="Object to Byte Array"/>
+<% } else if (inboundTransport=="FTP") { %> 
+        <ftp:inbound-endpoint 
+            name="${service}-inbound-endpoint"
+            connector-ref="soitoolkit-ftp-connector"
+            address="ftp://${dollarSymbol}{${uppercaseService}_INBOUND_FOLDER}"
+            pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_POLLING_MS}"
+            binary="false"
+            passive="true">
+            <file:filename-wildcard-filter pattern="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_PATTERN}"/>
+        </ftp:inbound-endpoint>
+<% } else if (inboundTransport=="SFTP") { %> 
+        <sftp:inbound-endpoint
+            name="${service}-inbound-endpoint"
+            connector-ref="soitoolkit-sftp-connector"
+            address="sftp://${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FOLDER}"
+            pollingFrequency="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_POLLING_MS}"
+            sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_SIZECHECK_MS}"
+            tempDir="sending"
+            useTempFileTimestampSuffix="true"
+            archiveDir="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_ARCHIVE_FOLDER}"
+            archiveTempReceivingDir="receiving"
+            archiveTempSendingDir="sending">
+            <!--
+            <file:filename-wildcard-filter pattern="${dollarSymbol}{${uppercaseService}_INBOUND_SFTP_FILE_PATTERN}"/>
+            -->
+        </sftp:inbound-endpoint>
+        
+        <object-to-byte-array-transformer doc:name="Object to Byte Array"/>
+<% } %>       
+        <transformer ref="createCorrId" doc:name="Create Correlation ID" />
+<% if (inboundTransport=="JDBC") { %>
+	<% if (muleVersion.isEEVersion()) { %>
+        <ee:xa-transactional action="ALWAYS_BEGIN" doc:name="XA Transaction">       
+    <% } else { %>
+    	<!-- NOTE: NOT XA, requires EE :(-->
+        <transactional action="ALWAYS_BEGIN" doc:name="Single Resource Transaction">
+    <% } %>
+            <db:select 
+            	config-ref="soitoolkit-db-config" 
+                maxRows="10"
+                transactionalAction="ALWAYS_JOIN">
+                <db:parameterized-query><![CDATA[SELECT * FROM ${uppercaseService}_EXPORT_TB]]></db:parameterized-query>
+            </db:select>
+            
+			<message-filter>
+				<expression-filter evaluator="groovy" expression="payload.size() &gt; 0" />
+			</message-filter>
+
+            <transformer ref="logMsgIn" doc:name="Log Message In"/>
+    
+            <collection-splitter />
+    
+            <db:delete 
+            	config-ref="soitoolkit-db-config" 
+                target="#[variable:deleteQryCnt]"
+                transactionalAction="ALWAYS_JOIN">
+                <db:parameterized-query>DELETE FROM ${uppercaseService}_EXPORT_TB WHERE ID=#[groovy:payload.id]</db:parameterized-query>
+            </db:delete>
+        
+            <% if (muleVersion.isEEVersion()) { %>
+            <jms:outbound-endpoint queue="${dollarSymbol}{${uppercaseService}_PROC_QUEUE}"
+                connector-ref="soitoolkit-jms-xa-connector">
+                <set-property
+	            	propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+	            	value="#[groovy:message.getSessionProperty(org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID)]"
+	            	doc:name="Propagate Correlation ID." />
+                <xa-transaction action="ALWAYS_JOIN" />
+            </jms:outbound-endpoint>
+            <% } else { %>
+            <jms:outbound-endpoint queue="${dollarSymbol}{${uppercaseService}_PROC_QUEUE}"
+                connector-ref="soitoolkit-jms-connector">
+                <set-property
+	            	propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+	            	value="#[groovy:message.getSessionProperty(org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID)]"
+	            	doc:name="Propagate Correlation ID." />
+                <jms:transaction action="NONE" />
+            </jms:outbound-endpoint>
+            <% } %>
+        <% if (muleVersion.isEEVersion()) { %>
+        </ee:xa-transactional>      
+        <% } else { %>
+        </transactional>
+        
+        <collection-aggregator />
+        
+        <transformer ref="logMsgOut" doc:name="Log Message Out"/>
+    <% } %>
+<% } else { %>
+		<transformer ref="logMsgIn" doc:name="Log Message In"/>
+
+        <jms:outbound-endpoint
+        	queue="${dollarSymbol}{${uppercaseService}_PROC_QUEUE}"
+        	<% if (inboundTransport=="VM" || inboundTransport=="JDBC") { %>
+			connector-ref="soitoolkit-jms-xa-connector">
+			<% } else { %>
+			connector-ref="soitoolkit-jms-connector">
+			<% } %>
+        	<set-property
+	            propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+	            value="#[groovy:message.getSessionProperty(org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID)]"
+	            doc:name="Propagate Correlation ID." />
+	    <% if (inboundTransport=="FILE") { %>
+	    	<% if (muleVersion.getPomSuffix().startsWith("3.4")) { %>
+			<set-property
+	            propertyName="originalFilename"
+	            value="#[groovy:message.getOutboundProperty(org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME)]"
+	            doc:name="Propagate Original Filename." />
+	        <% } else { %>
+	        <set-property
+	            propertyName="originalFilename"
+	            value="#[groovy:message.getInboundProperty(org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME)]"
+	            doc:name="Propagate Original Filename." />
+	        <% } %>
+     	<% } else if (inboundTransport=="FTP") { %>
+	    	<!-- FTP is using FileConnector Properties. -->
+			<set-property
+	            propertyName="originalFilename"
+	            value="#[groovy:message.getInboundProperty(org.mule.transport.file.FileConnector.PROPERTY_ORIGINAL_FILENAME)]"
+	            doc:name="Propagate Original Filename." />
+     	<% } else if (inboundTransport=="SFTP") { %>
+     		<% if (muleVersion.getPomSuffix().startsWith("3.4")) { %>
+			<set-property
+	            propertyName="originalFilename"
+	            value="#[groovy:message.getOutboundProperty(org.mule.transport.sftp.SftpConnector.PROPERTY_ORIGINAL_FILENAME)]"
+	            doc:name="Propagate Original Filename." />
+	        <% } else { %>
+	        <set-property
+	            propertyName="originalFilename"
+	            value="#[groovy:message.getInboundProperty(org.mule.transport.sftp.SftpConnector.PROPERTY_ORIGINAL_FILENAME)]"
+	            doc:name="Propagate Original Filename." />
+	        <% } %>
+     	<% } 
+     	   if (inboundTransport=="VM" || inboundTransport=="JDBC") { %>
+			<xa-transaction action="ALWAYS_JOIN" />
+		<% } else if (inboundTransport=="JMS") { %>
+			<jms:transaction action="ALWAYS_JOIN" />
+		<% } %>    
+        </jms:outbound-endpoint>
+
+		<transformer ref="logMsgOut" doc:name="Log Message Out"/>
+<% } %>
+    <% if (inboundTransport=="HTTP" || inboundTransport=="HTTPS") { %>
+        <http:response-builder status="200" />
+
+        <catch-exception-strategy>
+            <transformer ref="logError" doc:name="Log Error" />
+
+            <http:response-builder status="500" />
+        </catch-exception-strategy>
+    <% } else { %>
+    	<catch-exception-strategy>
+    	  <transformer ref="logError" doc:name="Log Error" />
+        </catch-exception-strategy>
+    <% } %>
+	</flow>
+</mule>

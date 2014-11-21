@@ -1,0 +1,186 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractMessageTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+/**
+ * The purpose of this transformer is to transform incoming request.
+ */
+public class ${capitalizedJavaService}RequestTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    
+	/* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	return this.pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(Object payload, String outputEncoding) throws TransformerException {
+		return payload;
+	}
+}
+<% } else if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS" || outboundTransport=="JMS")) { %>
+
+import static org.mule.transport.http.HttpConnector.HTTP_METHOD_PROPERTY;
+
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.config.i18n.MessageFactory;
+import org.mule.transformer.AbstractMessageTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
+
+/**
+ * The purpose of this transformer is to transform incoming request.
+ */
+public class ${capitalizedJavaService}RequestTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+  
+	private static final String BASE_PATH = RB.getString("${uppercaseService}_BASE_PATH");
+    
+   /* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	// Perform any message aware processing here, otherwise delegate as much as possible to pojoTransform() for easier unit testing
+
+        // Pick up the id-variable if set by the rest module, e.g. for a http get-request on a specific resource entity
+        String method = message.getInboundProperty(HTTP_METHOD_PROPERTY);
+        String id = message.getInvocationProperty("sampleId");
+        Object request = message.getPayload();
+        String query = null;
+        
+        // Extract the query-part (if any) from the request if the request is a string.
+        if (request instanceof String) {
+            String reqStr = (String)request;
+            int idx = reqStr.indexOf('?');
+            if (idx != -1)  {
+                request = reqStr.substring(0, idx);
+                query = reqStr.substring(idx + 1); // Skip the '?'
+            }
+        }
+        return this.pojoTransform(method, request, id, query, outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(String method, Object request, String id, String query, String outputEncoding) throws TransformerException {
+
+        if ((request instanceof CreateSample) ||
+            (request instanceof UpdateSample)) {
+            return request;
+            
+        } else if (request instanceof String) {
+
+            String path = (String)request;
+            
+            if (path.equals(BASE_PATH + "/samples")) {
+                /*
+                 * HTTP GET to /samples
+                 */
+                return new FindSamples();
+                
+            } else if (path.startsWith(BASE_PATH + "/samples/")) {
+                
+                if (method.equalsIgnoreCase("GET")) {
+                    /*
+                     * HTTP GET to /samples/{sampleId}
+                     */
+                    GetSample reqObj = new GetSample();
+                    reqObj.setId(id);
+                    return reqObj;
+                    
+                } else if (method.equalsIgnoreCase("DELETE")) {
+                    /*
+                     * HTTP DELETE to /samples/{sampleId}
+                     */
+                    DeleteSample reqObj = new DeleteSample();
+                    reqObj.setId(id);
+                    return reqObj;
+
+                } else {
+                    throw new TransformerException(MessageFactory.createStaticMessage("Unsupported http-method: " + method + " on request: " + request), this);
+                }
+                
+            } else {
+                throw new TransformerException(MessageFactory.createStaticMessage("Unknown content: " + request), this);
+            }
+            
+        } else {
+            throw new TransformerException(MessageFactory.createStaticMessage("Unknown type: " + request.getClass().getName()), this);
+        }
+	}
+}
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractMessageTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+/**
+ * The purpose of this transformer is to transform incoming request.
+ */
+public class ${capitalizedJavaService}RequestTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    
+	/* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	return this.pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(Object payload, String outputEncoding) throws TransformerException {
+		return payload;
+	}
+}
+<% } %>

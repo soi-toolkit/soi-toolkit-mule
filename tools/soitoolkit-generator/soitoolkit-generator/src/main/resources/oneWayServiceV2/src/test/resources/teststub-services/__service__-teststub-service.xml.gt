@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.onewayTeststubService}
+
+	<!-- TODO: Add teststub-service specific definitions here -->
+
+        <flow name="${service}-teststub-service">
+<% if (outboundTransport=="VM") { %>
+            <vm:inbound-endpoint connector-ref="soitoolkit-vm-connector" path="${dollarSymbol}{${uppercaseService}_OUT_VM_QUEUE}"/>
+<% } else if (outboundTransport=="JMS") { %>
+            <jms:inbound-endpoint name="${service}-teststub-endpoint" connector-ref="${jmsDefaultConnector}" queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" transformer-refs="jmsToStr"/>
+<% } else if (outboundTransport=="JDBC") { %>
+			<poll>
+				<fixed-frequency-scheduler frequency="1" timeUnit="SECONDS" startDelay="1"/>
+				<transactional action="ALWAYS_BEGIN">
+	 				<db:select 
+	 					config-ref="soitoolkit-db-config" 
+	 					maxRows="1" 
+	 					transactionalAction="ALWAYS_JOIN">
+						<db:parameterized-query><![CDATA[SELECT * FROM ${uppercaseService}_IMPORT_TB]]></db:parameterized-query>
+					</db:select>
+					
+					<message-filter>
+						<expression-filter evaluator="groovy" expression="payload.size() &gt; 0" />
+		    		</message-filter>
+					
+					<collection-splitter />
+		    
+		            <db:delete 
+		            	config-ref="soitoolkit-db-config" 
+		                target="#[variable:deleteQryCnt]">
+		                <db:parameterized-query>DELETE FROM ${uppercaseService}_IMPORT_TB WHERE ID=#[groovy:payload.id]</db:parameterized-query>
+		            </db:delete>
+		            
+		            <collection-aggregator />
+				</transactional>
+ 			</poll>
+			
+<% } else if (outboundTransport=="FILE") { %> 
+			<file:inbound-endpoint
+			    connector-ref="soitoolkit-file-connector"
+				path="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
+				fileAge="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FILE_AGE_MS}"
+				pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}">
+				<file:filename-wildcard-filter pattern="*.*"/>
+			</file:inbound-endpoint>
+			
+			<object-to-byte-array-transformer />
+<% } else if (outboundTransport=="FTP") { %> 
+			<ftp:inbound-endpoint 
+                connector-ref="soitoolkit-ftp-connector"
+				address="ftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_FOLDER}"
+				pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_POLLING_MS}"
+				binary="false"
+				passive="true">
+				<file:filename-wildcard-filter pattern="*.*"/>
+			</ftp:inbound-endpoint>
+<% } else if (outboundTransport=="SFTP") { %> 
+			<sftp:inbound-endpoint
+                connector-ref="soitoolkit-sftp-connector"
+				address="sftp://${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_FOLDER}"
+				pollingFrequency="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_POLLING_MS}"
+				sizeCheckWaitTime="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_SFTP_SIZECHECK_MS}"
+				tempDir="sending"
+				useTempFileTimestampSuffix="true">
+				<!--
+				<file:filename-wildcard-filter pattern="*.*"/>
+				-->
+			</sftp:inbound-endpoint>
+			
+			<object-to-byte-array-transformer />
+<% } else if (outboundTransport=="HTTP") { %> 
+			<http:inbound-endpoint 
+				connector-ref="soitoolkit-http-connector"
+				address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}" 
+				exchange-pattern="one-way">
+			</http:inbound-endpoint> 	
+<% } else if (outboundTransport=="HTTPS") { %> 
+			<https:inbound-endpoint 
+				connector-ref="soitoolkit-https-connector"
+				address="${dollarSymbol}{${uppercaseService}_TESTSTUB_INBOUND_URL}" 
+				exchange-pattern="one-way">
+			</https:inbound-endpoint>
+<% } %>
+<% if (outboundTransport=="HTTP" || outboundTransport=="HTTPS") { %>
+			
+			<!--
+			<object-to-string-transformer />
+			-->			
+			<component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
+
+			<http:response-builder status="200" />
+<% } else {%>		
+			<component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
+<% } %>			
+        </flow>
+        
+        
+        <% if (inboundTransport=="JDBC") { %>
+			<flow name="${service}-test-helper-service">
+				<vm:inbound-endpoint connector-ref="soitoolkit-vm-connector" path="${dollarSymbol}{${uppercaseService}_TESTSTUB_IN_VM_QUEUE}"/>
+				<db:insert config-ref="soitoolkit-db-config">
+					<db:parameterized-query>INSERT INTO ${uppercaseService}_EXPORT_TB (ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])</db:parameterized-query>
+        		</db:insert>
+			</flow>
+		<% } %>			
+        
+        
+</mule>

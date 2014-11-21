@@ -1,0 +1,95 @@
+package ${javaPackage}.${lowercaseJavaService}.transformer;
+
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.transformer.AbstractMessageTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo;
+
+/**
+ * The purpose of this transformer is to transform outgoing response.
+ */
+public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    
+	/* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	return this.pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(Object payload, String outputEncoding) throws TransformerException {
+		if (payload instanceof FaultInfo) {
+    		FaultInfo faultInfo = (FaultInfo) payload;
+    		
+    		throw new TransformerException(this, new RuntimeException(faultInfo.getMessage()));
+    	}
+		return payload;
+	}
+}
+<% } else if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
+import org.mule.api.transport.PropertyScope;
+import org.mule.transformer.AbstractMessageTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FaultInfo;
+/**
+ * The purpose of this transformer is to transform outgoing response.
+ */
+public class ${capitalizedJavaService}ResponseTransformer extends AbstractMessageTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}RequestTransformer.class);
+    private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}", "${configPropertyFile}-override");
+    
+	/* (non-Javadoc)
+     * @see org.mule.transformer.AbstractMessageTransformer#transformMessage(org.mule.api.MuleMessage, java.lang.String)
+     */
+    @Override
+    public Object transformMessage(MuleMessage message, String outputEncoding) throws TransformerException {
+    	if (message.getPayload() instanceof FaultInfo) {
+    		FaultInfo faultInfo = message.getPayload(FaultInfo.class);
+    		
+    		message.setPayload("{ \"message\": \"Internal Server Error\" }");
+    		message.setProperty("http.status", "500", PropertyScope.OUTBOUND);
+    	}
+    	return this.pojoTransform(message.getPayload(), outputEncoding);
+    }
+    
+	/**
+	 * Simple POJO transformer method that can be tested with plain unit testing.
+	 * 
+	 * @param payload message payload
+	 * @param outputEncoding output encoding
+	 * @return
+	 * @throws TransformerException if transformation error
+	 */
+	protected Object pojoTransform(Object payload, String outputEncoding) throws TransformerException {
+		return payload;
+	}
+}
+
+<% } %>

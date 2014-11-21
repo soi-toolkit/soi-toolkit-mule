@@ -1,0 +1,1027 @@
+package ${javaPackage}.${lowercaseJavaService};
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
+
+import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_INVALID_ID;
+import static ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.TEST_ID_FAULT_TIMEOUT;
+
+import java.io.InputStream;
+import java.util.List;
+
+import javax.jms.Message;
+import javax.jms.TextMessage;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+import org.mule.api.MuleMessage;
+import org.mule.api.transport.PropertyScope;
+import org.mule.transport.http.HttpConstants;
+import org.mule.transport.http.HttpConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.soitoolkit.commons.logentry.schema.v1.LogEvent;
+import org.soitoolkit.commons.logentry.schema.v1.LogLevelType;
+import org.soitoolkit.commons.mule.jaxb.JaxbUtil;
+import org.soitoolkit.commons.mule.rest.JsonMapper;
+import org.soitoolkit.commons.mule.rest.RestClient;
+import org.soitoolkit.commons.mule.test.AbstractJmsTestUtil;
+import org.soitoolkit.commons.mule.test.ActiveMqJmsTestUtil;
+import org.soitoolkit.commons.mule.test.junit4.AbstractTestCase;
+import org.soitoolkit.commons.mule.util.RecursiveResourceBundle;
+
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.CreateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.DeleteSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamples;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.FindSamplesResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.GetSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
+import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
+import org.soitoolkit.refapps.sd.crudsample.wsdl.v1.Fault;
+
+//import org.soitoolkit.refapps.sd.sample.schema.v1.SampleResponse;
+
+public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(${capitalizedJavaService}IntegrationTest.class);
+	
+	private static final RecursiveResourceBundle RB = new RecursiveResourceBundle("${configPropertyFile}");
+	
+	private static final String ERROR_LOG_QUEUE = "${jmsLogErrorQueue}";
+	private static final String INFO_LOG_QUEUE = "${jmsLogInfoQueue}";
+
+	private static final String SERVICE_ENDPOINT = RB.getString("${uppercaseService}_INBOUND_URL");
+	
+<% if (outboundTransport=="JMS") { %>
+	private static final String REQUEST_QUEUE   = RB.getString("${uppercaseService}_REQUEST_QUEUE");
+	private static final String RESPONSE_QUEUE  = RB.getString("${uppercaseService}_RESPONSE_QUEUE");
+<% } %> 	
+	
+	private static final JaxbUtil JAXB_UTIL = new JaxbUtil(LogEvent.class,CreateSample.class);
+	
+	private String TESTDATA_ENTITY1_ID = null;
+    private String TESTDATA_ENTITY2_ID = null;
+    private static final String TESTDATA_ENTITY1_VALUE = "Entity 2";
+    private static final String TESTDATA_ENTITY2_VALUE = "Entity 1";
+
+    private RestClient restClient;
+    private static final JsonMapper JSON_MAPPER = new JsonMapper();
+
+	private LogEvent xmlToLogEvent(String xml) {
+    	return (LogEvent)JAXB_UTIL.unmarshal(xml);
+    }
+    
+	private AbstractJmsTestUtil jmsUtil = null;
+
+    public ${capitalizedJavaService}IntegrationTest() {
+        // Only start up Mule once to make the tests run faster...
+        // Set to false if tests interfere with each other when Mule is started only once.
+        setDisposeContextPerClass(true);
+    }
+
+	protected String getConfigResources() {
+		return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
+		"${artifactId}-common.xml," +
+        "${service}/${service}-service.xml," +
+		"teststub-services/${service}-teststub-service.xml";
+    }
+
+    @Override
+	protected void doSetUp() throws Exception {
+		super.doSetUp();
+		
+<% if (inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") { %>
+		<% if (inboundTransport=="RESTHTTP") { %>
+		restClient = new RestClient(muleContext, "soitoolkit-http-connector");
+        <% } else if (inboundTransport=="RESTHTTPS") { %> 
+		restClient = new RestClient(muleContext, "soitoolkit-https-connector");
+		<% } %>
+<% } %>
+
+        // Prepare the test-producer of the service with two known sample entities
+        ${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestProducer.clear();
+        TESTDATA_ENTITY1_ID = createSampleEntity(TESTDATA_ENTITY1_VALUE);
+        TESTDATA_ENTITY2_ID = createSampleEntity(TESTDATA_ENTITY2_VALUE);
+
+		doSetUpJms();
+     }
+
+	private void doSetUpJms() {
+		if (jmsUtil == null) jmsUtil = new ActiveMqJmsTestUtil();
+		
+<% if (outboundTransport=="JMS") { %>
+		// Clear queues used for the outbound endpoint
+		jmsUtil.clearQueues(REQUEST_QUEUE);
+		jmsUtil.clearQueues(RESPONSE_QUEUE);
+<% } %>
+		jmsUtil.clearQueues(INFO_LOG_QUEUE,ERROR_LOG_QUEUE);
+    }
+    
+<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS" || outboundTransport=="JMS") { %>
+    private String createSampleEntity(String value) throws Exception {
+        CreateSample request = new CreateSample();
+        request.setValue(value);
+        return new ${capitalizedJavaService}TestProducer().createSample(request).getId();
+    }
+    
+    private FindSamplesResponse findSampleEntities() throws Exception {
+        return new ${capitalizedJavaService}TestProducer().findSamples(new FindSamples());
+    }
+<% } else if (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS") { %>
+
+    private String createSampleEntity(String value) throws Exception {
+        CreateSample request = new CreateSample();
+        request.setValue(value);
+        return ((CreateSampleResponse)new ${capitalizedJavaService}TestProducer().createSample(request).getEntity()).getId();
+    }
+    
+    private FindSamplesResponse findSampleEntities() throws Exception {
+        return (FindSamplesResponse) new ${capitalizedJavaService}TestProducer().findSamples().getEntity();
+    }
+<% } %>
+<% if (inboundTransport=="SOAPHTTP" || inboundTransport=="SOAPHTTPS") { %>        
+	/**
+     * Happy day test in order to verify a successful request.
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testGetSampleOk() throws Exception {
+
+        ${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(SERVICE_ENDPOINT);
+		String id = TESTDATA_ENTITY1_ID;
+		GetSampleResponse response = consumer.callGetSample(id);
+		assertNotNull(response);
+		assertNotNull(response.getValue());
+        
+		assertEquals(TESTDATA_ENTITY1_VALUE,  response.getValue());
+		
+		/*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+        /**
+     * Happy day test in order to verify a successful request.
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testDeleteSampleOk() throws Exception {
+
+        ${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(SERVICE_ENDPOINT);
+		String id = TESTDATA_ENTITY1_ID;
+		DeleteSampleResponse response = consumer.callDeleteSample(id);
+		assertNotNull(response);
+
+		/*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+    /**
+     * Happy day test in order to verify a successful request.
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testCreateSampleOk() throws Exception {
+
+        ${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(SERVICE_ENDPOINT);
+		String id = TESTDATA_ENTITY1_ID;
+		CreateSampleResponse response = consumer.callCreateSample(id);
+		assertNotNull(response);
+
+		/*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+
+	/**
+     * Negative test that verifies when producer sends HTTP 500.
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testGetSampleError() throws Exception {
+        ${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(SERVICE_ENDPOINT);
+
+        try {
+            consumer.callGetSample(TEST_ID_FAULT_INVALID_ID);
+            fail();
+        } catch (SOAPFaultException soapFaultException) {
+            assertEquals("Invalid ID: " + TEST_ID_FAULT_INVALID_ID, soapFaultException.getMessage());
+        }
+
+        Thread.sleep(500);
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		<% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+		assertEquals(4, actualInfoLogs.size());
+		<% } else { %>
+		assertEquals(3, actualInfoLogs.size());
+		<% } %>
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        <% if (outboundTransport=="SOAPHTTP" || outboundTransport=="SOAPHTTPS") { %>
+		LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+        <% } else { %>
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(1, actualErrorLogs.size());
+		
+		LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+		<% } %>
+    }
+    
+    /**
+     * Negative test that verifies service timeout.
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testGetSampleTimeout() throws Exception {
+		${capitalizedJavaService}TestConsumer consumer = new ${capitalizedJavaService}TestConsumer(SERVICE_ENDPOINT);
+
+        try {
+            consumer.callGetSample(TEST_ID_FAULT_TIMEOUT);
+            fail();
+        } catch (SOAPFaultException soapFaultException) {
+        <% if (outboundTransport == "JMS") { %>
+        	assertTrue(soapFaultException.getMessage().startsWith("Response timed out"));
+        <% } else { %>
+            assertEquals("Read timed out", soapFaultException.getMessage());
+        <% } %>
+       	}
+        Thread.sleep(500);
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+		LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(1, actualErrorLogs.size());
+        
+        LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+    }
+<% } else if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && !(outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS")) { %>
+    
+	/**
+     * Happy day test in order to verify a successful RESTful create-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testCreateSampleOk() throws Exception {
+
+        // Prepare request
+        CreateSample request = new CreateSample();
+        request.setValue("A value");
+        
+        String requestJson = JSON_MAPPER.marshal(request);
+        
+        MuleMessage response = restClient.doHttpPostRequest_JsonContent(SERVICE_ENDPOINT + "/samples", requestJson);
+        
+        assertEquals(Integer.toString(HttpConstants.SC_CREATED), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+   	/**
+     * Happy day test in order to verify a successful RESTful get-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testGetSampleOk() throws Exception {
+
+        // Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        // Verify actual result
+        GetSampleResponse responseObj = JSON_MAPPER.unmarshal((InputStream)response.getPayload(), GetSampleResponse.class);
+        assertEquals(TESTDATA_ENTITY1_VALUE, responseObj.getValue());
+        
+        /*
+		 * Verify Logs
+		 */
+        List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful put-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testUpdateSampleOk() throws Exception {
+
+        // Prepare request
+        UpdateSample request = new UpdateSample();
+        request.setId(TESTDATA_ENTITY1_ID);
+        request.setValue("Another value");
+        
+        String requestJson = JSON_MAPPER.marshal(request);
+        
+        // Perform REST call
+        MuleMessage response = restClient.doHttpPutRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID, requestJson);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful delete-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testDeleteSampleOk() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpDeleteRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_NO_CONTENT), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        //assertEquals(1, findSampleEntities().getSampleEntity().size());
+        
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful get-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testFindSampleOk() throws Exception {
+
+        // Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples");
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        // Verify actual result
+        FindSamplesResponse responseObj = JSON_MAPPER.unmarshal((InputStream)response.getPayload(), FindSamplesResponse.class);
+        assertEquals(2, responseObj.getSampleEntity().size());
+        for (SampleEntity entity : responseObj.getSampleEntity()) {
+
+            if (entity.getId().equals(TESTDATA_ENTITY1_ID)) {
+                assertEquals(TESTDATA_ENTITY1_VALUE, entity.getValue());
+
+            } else if (entity.getId().equals(TESTDATA_ENTITY2_ID)) {
+                assertEquals(TESTDATA_ENTITY2_VALUE, entity.getValue());
+            
+            } else {
+                fail("Unknown entity id: " + entity.getId());
+            }
+        }
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    } 
+    
+    /**
+     * Negative test in order to verify a unsuccessful RESTful get-request.
+     * 
+     * Expects: HTTP 404 - NOT FOUND
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testResourceNotFound() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/wrong-path/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_NOT_FOUND), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(1, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(1, actualErrorLogs.size());
+		
+		LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+    }
+    
+    /**
+     * Negative test in order to verify a unsuccessful RESTful get-request.
+     * 
+     * Expects: HTTP 500
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testError() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TEST_ID_FAULT_INVALID_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_INTERNAL_SERVER_ERROR), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        
+        //assertEquals("Invalid ID: " + TEST_ID_FAULT_INVALID_ID, IOUtils.toString((InputStream)response.getPayload()));
+        assertEquals("{ \"message\": \"Internal Server Error\" }", IOUtils.toString((InputStream)response.getPayload()));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(4, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("req-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent3 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(2)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent3.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent3.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-in", infoLogEvent3.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent4 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(3)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent4.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent4.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent4.getLogEntry().getMessageInfo().getMessage());
+		
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+		
+//		LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+//        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+//        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+    }
+    
+<% } else if ((inboundTransport=="RESTHTTP" || inboundTransport=="RESTHTTPS") && (outboundTransport=="RESTHTTP" || outboundTransport=="RESTHTTPS")) { %>
+    
+	/**
+     * Happy day test in order to verify a successful RESTful create-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testCreateSampleOk() throws Exception {
+
+        // Prepare request
+        CreateSample request = new CreateSample();
+        request.setValue("A value");
+        
+        String requestJson = JSON_MAPPER.marshal(request);
+        
+        MuleMessage response = restClient.doHttpPostRequest_JsonContent(SERVICE_ENDPOINT + "/samples", requestJson);
+        
+        assertEquals(Integer.toString(HttpConstants.SC_CREATED), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+   	/**
+     * Happy day test in order to verify a successful RESTful get-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testGetSampleOk() throws Exception {
+
+        // Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        // Verify actual result
+        GetSampleResponse responseObj = JSON_MAPPER.unmarshal((InputStream)response.getPayload(), GetSampleResponse.class);
+        assertEquals(TESTDATA_ENTITY1_VALUE, responseObj.getValue());
+        
+        /*
+		 * Verify Logs
+		 */
+ 		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful put-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testUpdateSampleOk() throws Exception {
+
+        // Prepare request
+        UpdateSample request = new UpdateSample();
+        request.setId(TESTDATA_ENTITY1_ID);
+        request.setValue("Another value");
+        
+        String requestJson = JSON_MAPPER.marshal(request);
+        
+        // Perform REST call
+        MuleMessage response = restClient.doHttpPutRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID, requestJson);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful delete-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testDeleteSampleOk() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpDeleteRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_NO_CONTENT), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        //assertEquals(1, findSampleEntities().getSampleEntity().size());
+        
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    }
+    
+	/**
+     * Happy day test in order to verify a successful RESTful get-request.
+     * 
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testFindSampleOk() throws Exception {
+
+        // Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples");
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_OK), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        // Verify actual result
+        FindSamplesResponse responseObj = JSON_MAPPER.unmarshal((InputStream)response.getPayload(), FindSamplesResponse.class);
+        assertEquals(2, responseObj.getSampleEntity().size());
+        for (SampleEntity entity : responseObj.getSampleEntity()) {
+
+            if (entity.getId().equals(TESTDATA_ENTITY1_ID)) {
+                assertEquals(TESTDATA_ENTITY1_VALUE, entity.getValue());
+
+            } else if (entity.getId().equals(TESTDATA_ENTITY2_ID)) {
+                assertEquals(TESTDATA_ENTITY2_VALUE, entity.getValue());
+            
+            } else {
+                fail("Unknown entity id: " + entity.getId());
+            }
+        }
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+        
+        List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+    } 
+    
+    /**
+     * Negative test in order to verify a unsuccessful RESTful get-request.
+     * 
+     * Expects: HTTP 404 - NOT FOUND
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testResourceNotFound() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/wrong-path/" + TESTDATA_ENTITY1_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_NOT_FOUND), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(1, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(1, actualErrorLogs.size());
+		
+		LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+    }
+    
+    /**
+     * Negative test in order to verify a unsuccessful RESTful get-request.
+     * 
+     * Expects: HTTP 500
+     *
+     * @throws Exception if error occurs.
+     */
+    @Test
+    public void testError() throws Exception {
+
+		// Perform REST call
+        MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TEST_ID_FAULT_INVALID_ID);
+        
+        // Verify HTTP-status
+        assertEquals(Integer.toString(HttpConstants.SC_INTERNAL_SERVER_ERROR), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
+        
+        //assertEquals("Invalid ID: " + TEST_ID_FAULT_INVALID_ID, IOUtils.toString((InputStream)response.getPayload()));
+        //assertEquals("{ \"message\": \"Internal Server Error\" }", IOUtils.toString((InputStream)response.getPayload()));
+        assertEquals("{\"faultId\":null,\"faultOriginatingSource\":null,\"code\":0,\"message\":\"Invalid ID: -1\",\"details\":[],\"any\":[]}", IOUtils.toString((InputStream)response.getPayload()));
+
+        /*
+		 * Verify Logs
+		 */
+		List<Message> actualInfoLogs = jmsUtil.browseMessagesOnQueue(INFO_LOG_QUEUE);
+		assertEquals(2, actualInfoLogs.size());
+		
+        LogEvent infoLogEvent1 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(0)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent1.getLogEntry().getMessageInfo().getLevel());
+        String actualBusinessCorrelationId = infoLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId();
+        assertNotNull(actualBusinessCorrelationId);
+        assertEquals("req-in", infoLogEvent1.getLogEntry().getMessageInfo().getMessage());
+        
+        LogEvent infoLogEvent2 = xmlToLogEvent(((TextMessage) actualInfoLogs.get(1)).getText());
+        assertEquals(LogLevelType.INFO, infoLogEvent2.getLogEntry().getMessageInfo().getLevel());
+        assertEquals(actualBusinessCorrelationId, infoLogEvent2.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+        assertEquals("resp-out", infoLogEvent2.getLogEntry().getMessageInfo().getMessage());
+		
+		List<Message> actualErrorLogs = jmsUtil.browseMessagesOnQueue(ERROR_LOG_QUEUE);
+		assertEquals(0, actualErrorLogs.size());
+		
+//		LogEvent errorLogEvent1 = xmlToLogEvent(((TextMessage) actualErrorLogs.get(0)).getText());
+//        assertEquals(LogLevelType.ERROR, errorLogEvent1.getLogEntry().getMessageInfo().getLevel());
+//        assertEquals(actualBusinessCorrelationId, errorLogEvent1.getLogEntry().getRuntimeInfo().getBusinessCorrelationId());
+    }
+    
+<% } %>
+}

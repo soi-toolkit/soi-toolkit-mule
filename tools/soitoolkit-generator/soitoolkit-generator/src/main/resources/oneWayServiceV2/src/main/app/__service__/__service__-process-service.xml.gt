@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mule 
+${xmlNamespace.onewayService}
+
+    <!-- TODO: Add service specific definitions here -->
+
+    <flow name="${service}-process-service" processingStrategy="synchronous" doc:name="${service}-process-service">
+        <jms:inbound-endpoint 
+        	queue="${dollarSymbol}{${uppercaseService}_PROC_QUEUE}"
+            connector-ref="soitoolkit-jms-transformation-connector">
+            <jms:transaction action="ALWAYS_BEGIN" />
+        </jms:inbound-endpoint>
+        
+        <set-session-variable
+            variableName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]"
+            value="#[groovy:message.getInboundProperty(org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID)]" />
+
+		<transformer ref="logMsgIn" doc:name="Log Message In"/>
+
+        <custom-transformer 
+        	doc:name="Transform message"
+			class="${javaPackage}.${lowercaseJavaService}.transformer.${capitalizedJavaService}Transformer"/>
+
+        <jms:outbound-endpoint
+        	queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
+            connector-ref="soitoolkit-jms-transformation-connector">
+
+			<copy-properties
+	            propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]" 
+	            doc:name="Propagate Correlation ID to Outbound" />
+			<% if (inboundEndpointFilebased) { %>
+			<copy-properties
+				propertyName="originalFilename"
+	            doc:name="Propagate originalFilename to Outbound" />     
+			<% } %>
+            <jms:transaction action="ALWAYS_JOIN" />
+        </jms:outbound-endpoint>
+        
+        <transformer ref="logMsgOut" doc:name="Log Message Out"/>
+
+        <exception-strategy
+            ref="soitoolkit-jms-transformation-connector-rollback-exception-strategy" />
+    </flow>
+</mule>

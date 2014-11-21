@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule 
+${xmlNamespace.dbCommon}
+
+	<db:generic-config name="soitoolkit-db-config"
+		dataSource-ref="soitoolkit-jdbc-xa-datasource" />
+ </mule>
