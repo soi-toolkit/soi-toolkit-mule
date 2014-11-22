@@ -241,9 +241,6 @@ public class OnewayServiceV2Generator implements Generator {
 			
 			if (inboundTransport == JDBC) {
 		    	updateSqlDdlFilesAddExportTable();
-		    	
-		    	// FIXME: Used for Integration Test, bridge to JDBC, as db-module is not a transport/connector.
-		    	updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
 		    }
 			
 			if (outboundTransport == JDBC) {
@@ -395,9 +392,6 @@ public class OnewayServiceV2Generator implements Generator {
 			    cfg.println(service + "_PROC_DL_QUEUE=DLQ." + service + ".PROC.QUEUE");
 			    cfg.println(service + "_OUT_QUEUE=" + service + ".OUT.QUEUE");
 			    cfg.println(service + "_OUT_DL_QUEUE=DLQ." + service + ".OUT.QUEUE");
-			    
-			    cfg.println(service + "_TESTSTUB_IN_VM_QUEUE=" + service + ".TESTSTUB.IN.VM.QUEUE");
-			    
 		    }
 		    
 		    // Properties common to all filebased transports

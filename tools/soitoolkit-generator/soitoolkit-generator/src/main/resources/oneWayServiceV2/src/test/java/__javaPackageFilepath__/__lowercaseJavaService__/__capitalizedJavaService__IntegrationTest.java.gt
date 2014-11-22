@@ -105,9 +105,6 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private DataSource dataSource = null;
     private SimpleJdbcTemplate jdbcTemplate = null;
 <% } %>
-<% if (inboundTransport=="JDBC") { %>
-	private static final String TESTSTUB_IN_VM_QUEUE = RB.getString("${uppercaseService}_TESTSTUB_IN_VM_QUEUE");
-<% } %>
 <% if (inboundTransport=="FILE") { %>
 	@BeforeClass
 	public static void setUpOnce() {
@@ -237,7 +234,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	 * @throws InterruptedException if thread is interrupted.
 	 */
     @Test
-    public void test${capitalizedJavaService}Ok() throws IOException, JMSException, InterruptedException {
+    public void test${capitalizedJavaService}Ok() throws MuleException, IOException, JMSException, InterruptedException {
 
 		<% if (inboundTransport=="FILE") { %>
 		final int timeout        	= 90000;
@@ -247,14 +244,9 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		Map<String, String> headers = new HashMap<String, String>();
         String receivingService   	= "${service}-teststub-service";
 
-<% if (inboundTransport=="JDBC") { %>		
-		Map<String,String> inputPayload = new HashMap<String,String>();
-		inputPayload.put("ID", "Annn");
-		inputPayload.put("VALUE", "Some value");
-<% } else { %>	
+<% if (inboundTransport!="JDBC") { %>		
 		byte[] inputPayload         = FileUtils.readFileToByteArray(new File(TESTBASE + "/input-ok.txt"));
 <% } %>	
-	
 <% if (inboundTransport=="FILE") { %>
 		// Setup inbound endpoint for file-transport.
         String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
@@ -285,11 +277,20 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		String inboundEndpoint = SERVICE_ENDPOINT + "?connector=soitoolkit-https-connector";
 <% } else if (inboundTransport=="JDBC") { %>
 		// Setup inbound endpoint for database-transport.
-		String inboundEndpoint = "vm://" + TESTSTUB_IN_VM_QUEUE + "?connector=soitoolkit-vm-connector";
+        Flow testStubFlow = (Flow) muleContext.getRegistry().lookupObject("${service}-inbound-service");
+        testStubFlow.stop();
+
+        jdbcTemplate.update("INSERT INTO ${uppercaseService}_EXPORT_TB (ID, VALUE) VALUES (?,?)", "Annn", "Some value");
+
+        testStubFlow.start();
 <% } %>
+<% if (inboundTransport=="JDBC") { %>
+        // Invoke the service and wait for the transformed message to arrive at the receiving teststub service.
+        MuleMessage actualReply = this.waitForServiceComponent(receivingService, timeout);
+<% } else { %>
 		// Invoke the service and wait for the transformed message to arrive at the receiving teststub service.
 		MuleMessage actualReply = dispatchAndWaitForServiceComponent(inboundEndpoint, inputPayload, headers, receivingService, timeout);
-		
+<% } %>
 <% if (outboundTransport=="JDBC") { %>
 		assertTrue(actualReply.getPayload() instanceof List);
 		List<Map> actualList = ( List<Map>) actualReply.getPayload();
@@ -422,7 +423,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	 * @throws InterruptedException if thread is interrupted.
 	 */
     @Test
-    public void test${capitalizedJavaService}TransformationError() throws IOException, JMSException, InterruptedException {
+    public void test${capitalizedJavaService}TransformationError() throws MuleException, IOException, JMSException, InterruptedException {
 		
 <% if (inboundTransport=="FILE") { %>
 		final int timeout        	= 90000;
@@ -430,16 +431,10 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		final int timeout        	= 10000;
 <% } %>
 		Map<String, String> headers = new HashMap<String, String>();
-		
-<% if (inboundTransport=="JDBC") { %>	
-		Map<String,String> inputPayload = new HashMap<String,String>();
-		inputPayload.put("ID", "Cnnn");
-		inputPayload.put("VALUE", "Some value");
-<% } else { %>
+<% if (inboundTransport!="JDBC") { %>	
 		byte[] inputPayload         = FileUtils.readFileToByteArray(new File(TESTBASE + "/input-error.txt"));
 		byte[] expectedDlqPayload 	= inputPayload;
-<% } %>		
-		
+<% } %>
 <% if (inboundTransport=="FILE") { %>
 		// Setup inbound endpoint for file-transport.
         String inboundEndpoint = "file://" + IN_FOLDER + "?connector=soitoolkit-file-connector";
@@ -469,12 +464,20 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		// Setup inbound endpoint for https-transport.
 		String inboundEndpoint = SERVICE_ENDPOINT + "?connector=soitoolkit-https-connector";
 <% } else if (inboundTransport=="JDBC") { %>
-		// Setup inbound endpoint for database-connector.
-		String inboundEndpoint = "vm://" + TESTSTUB_IN_VM_QUEUE + "?connector=soitoolkit-vm-connector";
-<% } %> 		
-		
-        // Verify TransformerException
-        Exception exception = dispatchAndWaitForException(inboundEndpoint, inputPayload, headers, timeout);
+		// Setup inbound endpoint for database-transport.
+        Flow testStubFlow = (Flow) muleContext.getRegistry().lookupObject("${service}-inbound-service");
+        testStubFlow.stop();
+
+        jdbcTemplate.update("INSERT INTO ${uppercaseService}_EXPORT_TB (ID, VALUE) VALUES (?,?)", "Cnnn", "Some value");
+
+        testStubFlow.start();
+<% } %>
+<% if (inboundTransport=="JDBC") { %>
+        Exception exception = this.waitForException(timeout);
+<% } else { %>
+		// Verify TransformerException
+        Exception exception = this.dispatchAndWaitForException(inboundEndpoint, inputPayload, headers, timeout);
+<% } %>
         assertTrue(exception instanceof TransformerMessagingException);
         assertTrue(exception.getCause() instanceof TransformerException);
 
@@ -489,8 +492,8 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		
 <% if (inboundTransport=="JDBC") { %>
 		assertTrue(actualDlqMsg instanceof MapMessage);
-		assertEquals(inputPayload.get("ID"), ((MapMessage) actualDlqMsg).getString("ID"));
-		assertEquals(inputPayload.get("VALUE"), ((MapMessage) actualDlqMsg).getString("VALUE"));
+		assertEquals("Cnnn", ((MapMessage) actualDlqMsg).getString("ID"));
+		assertEquals("Some value", ((MapMessage) actualDlqMsg).getString("VALUE"));
 <% } else { %>
 		assertTrue(actualDlqMsg instanceof BytesMessage);
 		

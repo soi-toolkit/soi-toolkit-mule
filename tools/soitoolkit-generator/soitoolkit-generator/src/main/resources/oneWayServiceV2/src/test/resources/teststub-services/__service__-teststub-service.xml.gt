@@ -95,16 +95,4 @@ ${xmlNamespace.onewayTeststubService}
 			<component class="${javaPackage}.${lowercaseJavaService}.${capitalizedJavaService}TestReceiver"/>
 <% } %>			
         </flow>
-        
-        
-        <% if (inboundTransport=="JDBC") { %>
-			<flow name="${service}-test-helper-service">
-				<vm:inbound-endpoint connector-ref="soitoolkit-vm-connector" path="${dollarSymbol}{${uppercaseService}_TESTSTUB_IN_VM_QUEUE}"/>
-				<db:insert config-ref="soitoolkit-db-config">
-					<db:parameterized-query>INSERT INTO ${uppercaseService}_EXPORT_TB (ID, VALUE) VALUES (#[map-payload:ID], #[map-payload:VALUE])</db:parameterized-query>
-        		</db:insert>
-			</flow>
-		<% } %>			
-        
-        
 </mule>
