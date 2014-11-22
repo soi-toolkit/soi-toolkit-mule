@@ -55,7 +55,7 @@
             <spring:property name="initialRedeliveryDelay" value="500" />	
      	</spring:bean>	
 		
-		<spring:bean name="soitoolkit-jms-redelivery-transformation-policy" class="org.apache.activemq.RedeliveryPolicy">
+		<spring:bean name="soitoolkit-jms-noredelivery-policy" class="org.apache.activemq.RedeliveryPolicy">
             <spring:property name="maximumRedeliveries" value="0" />
      	</spring:bean>
 		
@@ -65,10 +65,10 @@
 			<spring:property name="redeliveryPolicy" ref="soitoolkit-jms-redelivery-policy"/>
 		</spring:bean>
 		
-		<spring:bean name="soitoolkit-jms-transformation-connection-factory"
+		<spring:bean name="soitoolkit-jms-noredelivery-connection-factory"
 			class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="broker">
 				<spring:property name="brokerURL" value="vm://localhost" />
-				<spring:property name="redeliveryPolicy" ref="soitoolkit-jms-redelivery-transformation-policy">
+				<spring:property name="redeliveryPolicy" ref="soitoolkit-jms-noredelivery-policy">
 			</spring:property>
 		</spring:bean>
     </spring:beans>
@@ -83,8 +83,8 @@
 		<service-overrides sessionHandler="org.mule.session.NullSessionHandler" />
 	</jms:connector>
 	
-	<jms:connector name="soitoolkit-jms-transformation-connector"
-		connectionFactory-ref="soitoolkit-jms-transformation-connection-factory"
+	<jms:connector name="soitoolkit-jms-noredelivery-connector"
+		connectionFactory-ref="soitoolkit-jms-noredelivery-connection-factory"
 		disableTemporaryReplyToDestinations="true" 
 		persistentDelivery="true"
 		numberOfConsumers="2"

@@ -139,7 +139,11 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		"soitoolkit-mule-sftp-connector-embedded.xml," +
 <% } %>
 		"${artifactId}-common.xml," +
-		"${service}/${service}-service.xml," +
+		"${service}/${service}-inbound-service.xml," +
+		"${service}/${service}-process-service.xml," +
+<% if (outboundTransport!="JMS") { %>		
+		"${service}/${service}-outbound-service.xml," +
+<% } %>		
 		"teststub-services/${service}-teststub-service.xml";
     }
 
@@ -399,8 +403,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
      * (e.g. defined in the amq-embedded-connector used when running jUnit tests)
      * 
      * <spring:bean class="org.apache.activemq.RedeliveryPolicy">
-     *	 <spring:property name="maximumRedeliveries" value="3" />
-     *	 <spring:property name="initialRedeliveryDelay" value="500" />
+     *	 <spring:property name="maximumRedeliveries" value="0" />
      * </spring:bean>
      * 
      * 

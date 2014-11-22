@@ -60,10 +60,10 @@ ${xmlNamespace.onewayService}
 					fileAge="${dollarSymbol}{${uppercaseService}_INBOUND_FILE_AGE_MS}"
 					moveToDirectory="${dollarSymbol}{${uppercaseService}_ARCHIVE_FOLDER}"
 					<% // fix for issue 339: originalFilename changed from outbound-scope to inbound-scope in 3.4.0 %>
-					<% if (muleVersion.getPomSuffix().startsWith("3.3")) { %>
- 					    moveToPattern="#[header:originalFilename]"
+					<% if (muleVersion.getPomSuffix().startsWith("3.4")) { %>
+ 					    moveToPattern="#[header:outbound:originalFilename]"
 					<% } else { %>
-					    moveToPattern="#[header:INBOUND:originalFilename]"
+					    moveToPattern="#[header:inbound:originalFilename]"
 					<% } %>
 					transformer-refs="objToStr logMsgIn">
 					<file:filename-wildcard-filter pattern="*.*"/>

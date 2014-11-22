@@ -187,7 +187,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 		
 		List<File> filesBefore = SystemUtil.listFiles(projectFolder);
 
-		int expectedNoOfFiles = 23;
+		int expectedNoOfFiles = 22;
 		
 		//IModel model = ModelFactory.newModel(groupId, artifactId, VERSION, service, muleVersion, inboundTransport, outboundTransport, transformerType);
 

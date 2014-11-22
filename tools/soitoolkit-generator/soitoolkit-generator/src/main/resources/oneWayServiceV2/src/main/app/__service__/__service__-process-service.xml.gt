@@ -7,7 +7,7 @@ ${xmlNamespace.onewayService}
     <flow name="${service}-process-service" processingStrategy="synchronous" doc:name="${service}-process-service">
         <jms:inbound-endpoint 
         	queue="${dollarSymbol}{${uppercaseService}_PROC_QUEUE}"
-            connector-ref="soitoolkit-jms-transformation-connector">
+            connector-ref="soitoolkit-jms-noredelivery-connector">
             <jms:transaction action="ALWAYS_BEGIN" />
         </jms:inbound-endpoint>
         
@@ -23,7 +23,7 @@ ${xmlNamespace.onewayService}
 
         <jms:outbound-endpoint
         	queue="${dollarSymbol}{${uppercaseService}_OUT_QUEUE}" 
-            connector-ref="soitoolkit-jms-transformation-connector">
+            connector-ref="soitoolkit-jms-noredelivery-connector">
 
 			<copy-properties
 	            propertyName="#[org.soitoolkit.commons.mule.core.PropertyNames.SOITOOLKIT_CORRELATION_ID]" 

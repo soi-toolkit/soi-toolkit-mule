@@ -57,7 +57,7 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
-@Ignore
+//@Ignore
 public class OneWayServiceGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();

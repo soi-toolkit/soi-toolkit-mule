@@ -42,11 +42,13 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
 		sb.append("\txmlns:apikit=\"http://www.mulesoft.org/schema/mule/apikit\"\n");
+		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
 		sb.append("\txmlns:jbossts=\"http://www.mulesoft.org/schema/mule/jbossts\"\n");
 		sb.append("\txmlns:jdbc=\"http://www.mulesoft.org/schema/mule/jdbc\"\n");
 		sb.append("\txmlns:jms=\"http://www.mulesoft.org/schema/mule/jms\"\n");
 		sb.append("\txmlns:json=\"http://www.mulesoft.org/schema/mule/json\"\n");
 		sb.append("\txmlns:management=\"http://www.mulesoft.org/schema/mule/management\"\n");
+		sb.append("\txmlns:pop3=\"http://www.mulesoft.org/schema/mule/pop3\"\n");
 		sb.append("\txmlns:mulexml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
 		sb.append("\txmlns:rest-router=\"http://www.mulesoft.org/schema/mule/rest-router\"\n");
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
@@ -54,11 +56,13 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-current.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/apikit     http://www.mulesoft.org/schema/mule/apikit/" + xsdNsMuleVersion + "/mule-apikit.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap       http://www.mulesoft.org/schema/mule/imap/" + xsdNsMuleVersion + "/mule-imap.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jbossts    http://www.mulesoft.org/schema/mule/jbossts/" + xsdNsMuleVersion + "/mule-jbossts.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc       http://www.mulesoft.org/schema/mule/jdbc/" + xsdNsMuleVersion + "/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms        http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/" + xsdNsMuleVersion + "/mule-management.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pop3       http://www.mulesoft.org/schema/mule/pop3/" + xsdNsMuleVersion + "/mule-pop3.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/rest-router       http://www.mulesoft.org/schema/mule/rest-router/current/mule-rest-router.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml        http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd\n");

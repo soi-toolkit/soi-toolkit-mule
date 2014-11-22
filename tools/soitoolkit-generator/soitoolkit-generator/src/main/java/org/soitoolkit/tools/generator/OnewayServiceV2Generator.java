@@ -62,7 +62,7 @@ public class OnewayServiceV2Generator implements Generator {
 		TransportEnum outboundTransport = TransportEnum.valueOf(m.getOutboundTransport());
 		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 		
-		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-service.xml.gt");
+		//gu.generateContentAndCreateFile("src/main/app/__service__/__service__-service.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-inbound-service.xml.gt");
 		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-process-service.xml.gt");
 		if (outboundTransport != TransportEnum.JMS) {
@@ -93,7 +93,11 @@ public class OnewayServiceV2Generator implements Generator {
 		gu.generateContentAndCreateFile("src/test/resources/teststub-services/__service__-teststub-service.xml.gt");
 
 		// Update mule-deploy.properties
-		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService());
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-inbound");
+		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-process");
+		if (outboundTransport != TransportEnum.JMS) {
+			updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-outbound");
+		}
 
 		updatePropertyFiles(inboundTransport, outboundTransport);
 		
@@ -237,6 +241,9 @@ public class OnewayServiceV2Generator implements Generator {
 			
 			if (inboundTransport == JDBC) {
 		    	updateSqlDdlFilesAddExportTable();
+		    	
+		    	// FIXME: Used for Integration Test, bridge to JDBC, as db-module is not a transport/connector.
+		    	updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-vm-connector.xml");
 		    }
 			
 			if (outboundTransport == JDBC) {
