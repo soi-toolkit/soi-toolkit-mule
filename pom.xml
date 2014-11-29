@@ -40,9 +40,10 @@
     </licenses>
 
 	<scm>
-		<connection>scm:svn:https://soi-toolkit.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://soi-toolkit.googlecode.com/svn/trunk</developerConnection>
-		<url>https://soi-toolkit.googlecode.com/svn/trunk</url>
+        <url>http://github.com/soi-toolkit/soi-toolkit-mule</url>
+        <connection>scm:git:git://github.com/soi-toolkit/soi-toolkit-mule.git</connection>
+        <developerConnection>scm:git:git://github.com/soi-toolkit/soi-toolkit-mule.git</developerConnection>
+        <tag>HEAD</tag>
 	</scm>
 
 	<properties>
@@ -374,8 +375,11 @@
 
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <configuration>
+          <version>2.5.1</version>
+          <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
+          <pushChanges>false</pushChanges>
+          <localCheckout>true</localCheckout>
         </configuration>
       </plugin>
 
