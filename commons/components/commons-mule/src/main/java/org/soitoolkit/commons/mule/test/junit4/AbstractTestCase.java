@@ -16,15 +16,17 @@
  */
 package org.soitoolkit.commons.mule.test.junit4;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mule.context.notification.ComponentMessageNotification.COMPONENT_POST_INVOKE;
 import static org.mule.context.notification.ExceptionNotification.EXCEPTION_ACTION;
-import static org.junit.Assert.*;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.mule.api.MuleMessage;
+import org.mule.api.context.MuleContextBuilder;
 import org.mule.api.context.notification.ComponentMessageNotificationListener;
 import org.mule.api.context.notification.EndpointMessageNotificationListener;
 import org.mule.api.context.notification.ExceptionNotificationListener;
@@ -34,6 +36,7 @@ import org.mule.api.context.notification.ServerNotification;
 import org.mule.context.notification.ComponentMessageNotification;
 import org.mule.context.notification.EndpointMessageNotification;
 import org.mule.context.notification.ExceptionNotification;
+import org.mule.context.notification.ServerNotificationManager;
 import org.mule.module.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.soitoolkit.commons.mule.test.Dispatcher;
@@ -58,6 +61,19 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 		// Ensure that CXF use LOG4J for logging
 		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Log4jLogger");
 	}
+    
+    @Override
+    protected void configureMuleContext(MuleContextBuilder contextBuilder) {
+        ServerNotificationManager serverNotificationManager = new ServerNotificationManager();
+        serverNotificationManager.setNotificationDynamic(true);
+        serverNotificationManager.addInterfaceToType(ComponentMessageNotificationListener.class,
+            ComponentMessageNotification.class);
+        
+        serverNotificationManager.addInterfaceToType(EndpointMessageNotificationListener.class,
+        		EndpointMessageNotification.class);
+        
+        contextBuilder.setNotificationManager(serverNotificationManager);
+    }
 
 	/**
 	 * Sends the <code>payload</code> and <code>headers</code> to the <code>inboundEndpointAddress</code> and waits <code>timeout</code> ms for a <code>MuleMessage</code> to arrive on outboundEndpoint with the name <code>outboundEndpointName</code>. 

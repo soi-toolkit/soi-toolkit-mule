@@ -34,7 +34,11 @@ Soi-toolkit adjustments made for:
 	<name>${parentPom}</name>
 
 	<properties>
+	<% if (muleVersion.getPomSuffix().startsWith("3.4")) { %>
+		<mule.version>3.4.0</mule.version>
+	<% } else { %>
 		<mule.version>3.5.0</mule.version>
+	<% } %>
 	</properties>
 
 	<scm>
@@ -159,9 +163,9 @@ Soi-toolkit adjustments made for:
 		          <mainClass>org.mule.MuleServer</mainClass>
 		          <arguments>
 		            <argument>-config</argument>
-					<argument>src/main/app/mule-config.xml</argument>
+					<argument>src/test/resources/mule-standalone-with-teststubs-config.xml</argument>
 		          </arguments>
-		        <classpathScope>compile</classpathScope>
+		        <classpathScope>test</classpathScope>
 		        </configuration>
 		      </plugin>
 
@@ -381,6 +385,12 @@ Soi-toolkit adjustments made for:
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-jersey</artifactId>
+			<version>${dollarSymbol}{mule.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-management</artifactId>
 			<version>${dollarSymbol}{mule.version}</version>
 			<scope>provided</scope>
@@ -410,12 +420,14 @@ Soi-toolkit adjustments made for:
 			<version>${dollarSymbol}{mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<% if (!muleVersion.getPomSuffix().startsWith("3.4")) { %>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-db</artifactId>
 			<version>${dollarSymbol}{mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<% } %>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-jbossts</artifactId>

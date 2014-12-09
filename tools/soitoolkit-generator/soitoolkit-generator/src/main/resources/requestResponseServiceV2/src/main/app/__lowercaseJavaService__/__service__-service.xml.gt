@@ -684,19 +684,25 @@ ${xmlNamespace.reqRespService}
             connector-ref="soitoolkit-http-connector"
             address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}" 
             exchange-pattern="request-response"
-            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
-            responseTransformer-refs="objToStr">
+            responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
             <cxf:proxy-client />
         </http:outbound-endpoint>
+        
+		<mulexml:xml-to-dom-transformer returnClass="org.dom4j.Document" doc:name="XMLStreamReader to Document" />
+        
+        <mulexml:dom-to-xml-transformer doc:name="DOM to String"/>
 	<% } else if (outboundTransport=="SOAPHTTPS") { %>
         <https:outbound-endpoint
         	connector-ref="soitoolkit-https-connector"
         	address="${dollarSymbol}{${uppercaseService}_OUTBOUND_URL}"
         	exchange-pattern="request-response"
-        	responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}"
-        	responseTransformer-refs="objToStr">
+        	responseTimeout="${dollarSymbol}{SERVICE_TIMEOUT_MS}">
         	<cxf:proxy-client />
          </https:outbound-endpoint>
+         
+		 <mulexml:xml-to-dom-transformer returnClass="org.dom4j.Document" doc:name="XMLStreamReader to Document" />
+        
+         <mulexml:dom-to-xml-transformer doc:name="DOM to String"/>
 	<% } %>
          <transformer ref="logRespIn" />
 		

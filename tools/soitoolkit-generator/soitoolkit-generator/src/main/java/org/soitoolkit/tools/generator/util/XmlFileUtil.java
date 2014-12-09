@@ -56,8 +56,8 @@ public class XmlFileUtil {
 		String xmlFile = gu.getOutputFolder() + "/src/main/app/" + gu.getModel().getArtifactId() + "-common.xml";
 		return updateSpringImportInXmlFile(gu, xmlFile, comment, xmlFragment, springBeanProfile);
 	}
-
-	static boolean updateSpringImportInXmlFile(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment, String springBeanProfile) {
+	
+	public static boolean updateSpringImportInXmlFile(GeneratorUtil gu, String xmlFile, String comment, String xmlFragment, String springBeanProfile) {
 
 		InputStream content = null;
 		String xml = null;

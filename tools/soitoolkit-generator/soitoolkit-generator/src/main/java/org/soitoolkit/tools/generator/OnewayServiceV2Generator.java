@@ -28,6 +28,7 @@ import static org.soitoolkit.tools.generator.util.FileUtil.openFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.openPropertyFileForAppend;
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileWithNewService;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateSpringImportInXmlFile;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -63,22 +64,22 @@ public class OnewayServiceV2Generator implements Generator {
 		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 		
 		//gu.generateContentAndCreateFile("src/main/app/__service__/__service__-service.xml.gt");
-		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-inbound-service.xml.gt");
-		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-process-service.xml.gt");
+		gu.generateContentAndCreateFile("src/main/app/__lowercaseJavaService__/__service__-inbound-service.xml.gt");
+		gu.generateContentAndCreateFile("src/main/app/__lowercaseJavaService__/__service__-process-service.xml.gt");
 		if (outboundTransport != TransportEnum.JMS) {
-			gu.generateContentAndCreateFile("src/main/app/__service__/__service__-outbound-service.xml.gt");
+			gu.generateContentAndCreateFile("src/main/app/__lowercaseJavaService__/__service__-outbound-service.xml.gt");
 		}
 		
 		if (transformerType == TransformerEnum.JAVA) {
 			gu.generateContentAndCreateFile("src/main/java/__javaPackageFilepath__/__lowercaseJavaService__/transformer/__capitalizedJavaService__Transformer.java.gt");
 			gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/transformer/__capitalizedJavaService__TransformerTest.java.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/transformer/input-ok.txt.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/transformer/input-error.txt.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/transformer/expected-result-ok.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/transformer/input-ok.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/transformer/input-error.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/transformer/expected-result-ok.txt.gt");
 			
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/integrationtests/input-ok.txt.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/integrationtests/input-error.txt.gt");
-			gu.generateContentAndCreateFile("src/test/resources/testfiles/__service__/integrationtests/expected-result-ok.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/integrationtests/input-ok.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/integrationtests/input-error.txt.gt");
+			gu.generateContentAndCreateFile("src/test/resources/testfiles/__lowercaseJavaService__/integrationtests/expected-result-ok.txt.gt");
 		}
 		else {
 			throw new IllegalArgumentException("Transformer type not supported for this kind of flow: " + transformerType);
@@ -95,8 +96,17 @@ public class OnewayServiceV2Generator implements Generator {
 		// Update mule-deploy.properties
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-inbound");
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-process");
+		
 		if (outboundTransport != TransportEnum.JMS) {
 			updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getLowercaseJavaService() + "/" + m.getService() + "-outbound");
+		}
+		
+		// Update mule-standalone-with-teststub-config.xml
+		updateSpringImportInXmlFile(gu, gu.getOutputFolder() + "/src/test/resources/mule-standalone-with-teststubs-config.xml", "", m.getLowercaseJavaService() + "/" + m.getService() + "-inbound-service.xml", null);
+		updateSpringImportInXmlFile(gu, gu.getOutputFolder() + "/src/test/resources/mule-standalone-with-teststubs-config.xml", "", m.getLowercaseJavaService() + "/" + m.getService() + "-process-service.xml", null);
+		
+		if (outboundTransport != TransportEnum.JMS) {
+			updateSpringImportInXmlFile(gu, gu.getOutputFolder() + "/src/test/resources/mule-standalone-with-teststubs-config.xml", "", m.getLowercaseJavaService() + "/" + m.getService() + "-outbound-service.xml", null);
 		}
 
 		updatePropertyFiles(inboundTransport, outboundTransport);

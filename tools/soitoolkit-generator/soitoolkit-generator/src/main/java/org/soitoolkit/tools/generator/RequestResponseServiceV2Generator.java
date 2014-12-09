@@ -34,6 +34,7 @@ import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDep
 import static org.soitoolkit.tools.generator.util.PropertyFileUtil.updateMuleDeployPropertyFileConfigFile;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateCommonFileWithSpringImport;
 import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateJaxbContextInConfigFile;
+import static org.soitoolkit.tools.generator.util.XmlFileUtil.updateSpringImportInXmlFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,7 +77,7 @@ public class RequestResponseServiceV2Generator implements Generator {
 		
 		TransformerEnum transformerType = TransformerEnum.valueOf(m.getTransformerType());
 		
-		gu.generateContentAndCreateFile("src/main/app/__service__/__service__-service.xml.gt");
+		gu.generateContentAndCreateFile("src/main/app/__lowercaseJavaService__/__service__-service.xml.gt");
 		
 		if (inboundTransport == TransportEnum.RESTHTTP || inboundTransport == TransportEnum.RESTHTTPS) {
 			gu.generateContentAndCreateFile("src/main/api/__service__.raml.gt");
@@ -95,6 +96,8 @@ public class RequestResponseServiceV2Generator implements Generator {
 		gu.generateContentAndCreateFile("src/test/java/__javaPackageFilepath__/__lowercaseJavaService__/__capitalizedJavaService__TestProducer.java.gt");
 		
 		updateMuleDeployPropertyFileWithNewService(gu.getOutputFolder(), m.getService() + "/" + m.getService());
+		
+		updateSpringImportInXmlFile(gu, gu.getOutputFolder() + "/src/test/resources/mule-standalone-with-teststubs-config.xml", "", m.getLowercaseJavaService() + "/" + m.getService() + "-service.xml", null);
 		
 		updateNewPropertyFiles(inboundTransport, outboundTransport);
 		

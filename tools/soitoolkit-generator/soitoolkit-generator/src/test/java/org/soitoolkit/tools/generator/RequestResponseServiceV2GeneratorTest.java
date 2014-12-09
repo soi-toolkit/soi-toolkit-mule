@@ -149,7 +149,7 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	}
 	
 	private TransportEnum[] getInboundTransports(DeploymentModelEnum deploymentModel) {
-		TransportEnum[] inboundTransports  = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS};
+		TransportEnum[] inboundTransports = {SOAPHTTP, SOAPHTTPS, RESTHTTP, RESTHTTPS};
 		return inboundTransports;
 	}
 
@@ -160,9 +160,6 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
 		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED : 66;
-
-//		TRANSPORTS.add(JMS);
-//		TRANSPORTS.add(SOAPHTTP);
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
