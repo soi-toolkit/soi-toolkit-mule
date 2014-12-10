@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed to the soi-toolkit project under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The soi-toolkit project licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-current.xsd">
+			
+	<!-- Load property files in three steps... -->
+	
+	<!-- 1. Support for decrypting encrypted properties. 
+		The encryption password will be read from an environment variable called 
+		"SOITOOLKIT_ENCRYPTION_PASSWORD" which, once the application has been started, 
+		could be safely unset.
+	-->
+	<bean
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig"
+		id="environmentVariablesConfiguration">
+		<property name="algorithm" value="PBEWithMD5AndDES" />
+		<property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD" />
+	</bean>
+	
+	<!-- 2. Support for decrypting encrypted properties -->
+	<bean class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor"
+		id="configurationEncryptor">
+		<property name="config"
+			ref="environmentVariablesConfiguration" />
+	</bean>
+	
+	<!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer 
+		that supports decrypting encrypted property values.
+	-->
+	<bean
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer"
+		id="propertyConfigurer">
+		<constructor-arg ref="configurationEncryptor" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations" ref="propertyFileLocations" />
+	</bean>
+	
+	<!-- 4. Place holder for propertyFileLocations. -->
+	<util:list id="propertyFileLocations">
+		<!-- Sample values -->
+		<!--
+		<value>classpath:<ic>-config.properties</value>
+		<value>classpath:<ic>-config-override.properties</value>
+		-->
+	</util:list>
+</beans>		

@@ -51,7 +51,7 @@
 			 to its own project-version and not soi-toolkits. 
 			 So we have to specify the soitoolkit-version twice! 
 		-->
-    <soitoolkit.version>2.0.0-M2</soitoolkit.version>
+    <soitoolkit.version>2.0.0-M3-SNAPSHOT</soitoolkit.version>
     
     <compiler.target.version>1.6</compiler.target.version>
     <compiler.source.version>1.6</compiler.source.version>
@@ -108,9 +108,9 @@
             <url>http://repository.muleforge.org</url>
         </repository>
         <repository>
-            <id>mulesoft</id>
-            <name>MuleSoft Repository</name>
-            <url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
         </repository>
         
         <!-- for mule dependencies such as org.safehouse.jug-osgi -->
@@ -127,7 +127,7 @@
 	  <pluginRepositories>
 	     <pluginRepository>
 	         <!-- for org.mule.tools:studio-maven-plugin -->
-	         <id>mulesoft</id>
+	         <id>mulesoft-release</id>
 	         <name>mulesoft release repository</name>
 	         <layout>default</layout>
 	         <url>https://repository.mulesoft.org/releases/</url>

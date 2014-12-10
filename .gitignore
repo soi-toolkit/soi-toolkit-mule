@@ -13,4 +13,5 @@ bin
 # Other
 migration issues to Mule 3.1.txt
 *.no-git
+.DS_Store
 

@@ -41,6 +41,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns=\"http://www.mulesoft.org/schema/mule/core\"\n");
 		sb.append("\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append("\txmlns:spring=\"http://www.springframework.org/schema/beans\"\n");
+		sb.append("\txmlns:util=\"http://www.springframework.org/schema/util\"\n");
 		sb.append("\txmlns:apikit=\"http://www.mulesoft.org/schema/mule/apikit\"\n");
 		sb.append("\txmlns:imap=\"http://www.mulesoft.org/schema/mule/imap\"\n");
 		sb.append("\txmlns:jbossts=\"http://www.mulesoft.org/schema/mule/jbossts\"\n");
@@ -54,6 +55,7 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-current.xsd\n");
+		sb.append("\t\thttp://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-current.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/apikit     http://www.mulesoft.org/schema/mule/apikit/" + xsdNsMuleVersion + "/mule-apikit.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/core       http://www.mulesoft.org/schema/mule/core/" + xsdNsMuleVersion + "/mule.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap       http://www.mulesoft.org/schema/mule/imap/" + xsdNsMuleVersion + "/mule-imap.xsd\n");

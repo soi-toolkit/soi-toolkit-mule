@@ -166,13 +166,6 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
-//		TRANSPORTS.add(VM);
-//		TRANSPORTS.add(JMS);
-//		TRANSPORTS.add(JDBC);
-//		TRANSPORTS.add(FILE);
-//		TRANSPORTS.add(FTP);
-//		TRANSPORTS.add(SFTP);
-
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
 		new IntegrationComponentV2Generator(System.out, groupId, artifactId, VERSION, muleVersion, deploymentModel, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();

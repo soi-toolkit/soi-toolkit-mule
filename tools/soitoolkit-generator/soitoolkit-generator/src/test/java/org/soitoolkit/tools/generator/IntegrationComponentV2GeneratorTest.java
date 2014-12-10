@@ -39,7 +39,7 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 	private static final String PROJECT = "integration-component-v2";	
 	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
 	
-	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 34;
+	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 35;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

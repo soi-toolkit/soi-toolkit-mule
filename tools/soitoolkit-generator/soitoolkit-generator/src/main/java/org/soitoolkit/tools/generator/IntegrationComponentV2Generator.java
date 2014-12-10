@@ -52,6 +52,8 @@ public class IntegrationComponentV2Generator implements Generator {
 		gu.generateFolder("src/test/resources/testfiles");
 		gu.generateFolder("src/test/resources/teststub-services");
 		
+		gu.generateContentAndCreateFile("src/test/resources/mule-standalone-with-teststubs-config.xml.gt");
+		
 		gu.generateContentAndCreateFile("src/test/resources/log4j.dtd.gt");
 		gu.generateContentAndCreateFile("src/test/resources/log4j.xml.gt");
 		

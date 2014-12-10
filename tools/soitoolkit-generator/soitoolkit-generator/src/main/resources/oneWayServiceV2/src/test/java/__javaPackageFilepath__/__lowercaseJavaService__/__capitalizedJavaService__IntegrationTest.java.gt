@@ -116,7 +116,7 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
         // Set to false if tests interfere with each other when Mule is started only once.
 		setDisposeContextPerClass(true);
     }
-
+    
 	protected String getConfigResources() {
         return "soitoolkit-mule-jms-connector-activemq-embedded.xml," + 
 <% if (inboundTransport=="VM" || outboundTransport=="VM" || inboundTransport=="JDBC" || outboundTransport=="JDBC") { %>
