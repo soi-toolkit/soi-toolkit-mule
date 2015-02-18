@@ -16,7 +16,11 @@
  */
 package org.soitoolkit.tools.generator.model.enums;
 
-public enum MuleVersionEnum implements ILabeledEnum { 
+import java.util.ArrayList;
+import java.util.List;
+
+public enum MuleVersionEnum implements ILabeledEnum {
+    MULE_3_3_1_DEPRECATED("3.3.1", "current"),
     MULE_3_4_0("3.4.0", "current"),
     MULE_3_4_0_EE("3.4.0", "current"),
     MULE_3_5_0("3.5.0", "current");
@@ -26,6 +30,16 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	public static MuleVersionEnum get(int ordinal) {
 		return values()[ordinal];
 	}
+
+    public static List<MuleVersionEnum> getNonDeprecatedVersions() {
+        List<MuleVersionEnum> versions = new ArrayList<MuleVersionEnum>();
+        for (MuleVersionEnum v : values()) {
+            if (!v.isDeprecatedVersion()) {
+                versions.add(v);
+            }
+        }
+        return versions;
+    }
 
 	public static MuleVersionEnum getByLabel(String label) {
 	    for(MuleVersionEnum e : values()) {
@@ -60,9 +74,15 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	// For generators to point out the right version number to use in the xsd namespaces
 	public String getXsdNsVersion() {return xsdNsVersion;}
 
-	public boolean isEEVersion() {return toString().endsWith("_EE");} 
-	
-	// For ver no with only numbers...
+    public boolean isEEVersion() {
+        return toString().endsWith("_EE");
+    }
+
+    public boolean isDeprecatedVersion() {
+        return toString().endsWith("_DEPRECATED");
+    }
+
+    // For ver no with only numbers...
 	public String getVerNoNumbersOnly() {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < label.length(); i++) {

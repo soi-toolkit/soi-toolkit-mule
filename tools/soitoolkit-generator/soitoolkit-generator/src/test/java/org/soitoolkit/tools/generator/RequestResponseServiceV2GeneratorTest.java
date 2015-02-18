@@ -70,12 +70,12 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonIC() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+        for (MuleVersionEnum v: muleVersions) {
+            if (!v.isEEVersion()) {
 				// && !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -88,12 +88,12 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonICWithOtherName() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+        for (MuleVersionEnum v: muleVersions) {
+            if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -106,14 +106,14 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesOneICPerService() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+        for (MuleVersionEnum v: muleVersions) {
+            if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
 				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator", 
-						"requestResponseSA-mule" + muleVersions[i].getVerNoNumbersOnly(), 
-						muleVersions[i], 
+						"requestResponseSA-mule" + v.getVerNoNumbersOnly(),
+						v,
 						STANDALONE_DEPLOY);
 			}
 		}

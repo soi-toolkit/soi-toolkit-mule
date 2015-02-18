@@ -16,6 +16,8 @@
  */
 package org.soitoolkit.tools.generator.model.enums;
 
+import java.util.List;
+
 public class EnumUtil {
 
     /**
@@ -25,13 +27,21 @@ public class EnumUtil {
 		throw new UnsupportedOperationException("Not allowed to create an instance of this class");
 	}
 
-	static public String[] getLabels(ILabeledEnum[] meps) {
-		String[] labels = new String[meps.length];
-		for (int i = 0; i < labels.length; i++) {
-			labels[i] = meps[i].getLabel();
-		}
-		return labels;
-	}
+    static public String[] getLabels(ILabeledEnum[] emums) {
+        String[] labels = new String[emums.length];
+        for (int i = 0; i < labels.length; i++) {
+            labels[i] = emums[i].getLabel();
+        }
+        return labels;
+    }
 
-	
+    static public String[] getLabels(List<ILabeledEnum> enums) {
+        String[] labels = new String[enums.size()];
+        for (int i = 0; i < labels.length; i++) {
+            labels[i] = enums.get(i).getLabel();
+        }
+        return labels;
+    }
+
+
 }

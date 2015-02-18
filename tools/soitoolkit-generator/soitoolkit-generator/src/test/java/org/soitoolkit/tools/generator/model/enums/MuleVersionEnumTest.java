@@ -22,16 +22,35 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class MuleVersionEnumTest {
-	@Test
-	public void testIsEEVersion() {
-		assertTrue(MuleVersionEnum.MULE_3_4_0_EE.isEEVersion());
-		assertFalse(MuleVersionEnum.MULE_3_4_0.isEEVersion());
-	}
-	
-	@Test
+    @Test
+    public void testIsEEVersion() {
+        assertTrue(MuleVersionEnum.MULE_3_4_0_EE.isEEVersion());
+        assertFalse(MuleVersionEnum.MULE_3_4_0.isEEVersion());
+    }
+
+    @Test
+    public void testIsDeprecatedVersion() {
+        assertTrue(MuleVersionEnum.MULE_3_3_1_DEPRECATED.isDeprecatedVersion());
+        assertFalse(MuleVersionEnum.MULE_3_4_0.isDeprecatedVersion());
+    }
+
+    @Test
 	public void testVerNoNumbersOnly() {
 		assertEquals("340", MuleVersionEnum.MULE_3_4_0_EE.getVerNoNumbersOnly());
 		assertEquals("340", MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly());
 	}
+
+    @Test
+    public void testAllVersions() {
+        assertEquals("[MULE_3_3_1_DEPRECATED, MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0]", Arrays.asList(MuleVersionEnum.values()).toString());
+    }
+
+    @Test
+    public void testNonDeprecatedVersions() {
+        assertEquals("[MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0]", MuleVersionEnum.getNonDeprecatedVersions().toString());
+    }
+
 }

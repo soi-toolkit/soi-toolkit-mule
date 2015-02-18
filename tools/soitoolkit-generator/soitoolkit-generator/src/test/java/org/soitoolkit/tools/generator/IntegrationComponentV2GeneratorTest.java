@@ -22,6 +22,7 @@ import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MAIN_MU
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,13 +61,14 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 
 	@Test
 	public void testGenerateStandalone() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
 		SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
-				
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion() && !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)) {
+
+        for (MuleVersionEnum v: muleVersions) {
+			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
+                // FIXME: Why MULE_VERSION and not current version v???
 				new IntegrationComponentV2Generator(System.out, "org.soitoolkit.standalone", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 				assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED-2, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 		
@@ -78,7 +80,7 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 
 	@Test
 	public void testGenerateStandaloneWithDifferentNamespace() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 		
 		String grp = "org.soitoolkit.standalone.xxx";
 		String name = PROJECT + "-standalone-xxx";
@@ -86,8 +88,9 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion() && !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)) {
+        for (MuleVersionEnum v: muleVersions) {
+			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
+                // FIXME: Why MULE_VERSION and not current version v???
 				new IntegrationComponentV2Generator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
 				assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 

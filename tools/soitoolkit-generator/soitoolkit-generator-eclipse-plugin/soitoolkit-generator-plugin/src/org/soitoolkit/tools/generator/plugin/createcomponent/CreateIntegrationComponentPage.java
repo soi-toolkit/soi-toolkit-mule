@@ -165,7 +165,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		label.setText("Mule version:");
 
 		muleVersionCombo = new Combo (container, SWT.READ_ONLY);
-		muleVersionCombo.setItems (EnumUtil.getLabels(MuleVersionEnum.values()));
+		muleVersionCombo.setItems (EnumUtil.getLabels(MuleVersionEnum.getNonDeprecatedVersions()));
 
 		
 		/*

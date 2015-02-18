@@ -88,11 +88,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonIC() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+		for (MuleVersionEnum v: muleVersions) {
+			if (!v.isEEVersion()) {
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -104,11 +104,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonICWithOtherName() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+        for (MuleVersionEnum v: muleVersions) {
+            if (!v.isEEVersion()) {
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -120,11 +120,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesOneICPerService() throws IOException {
-		MuleVersionEnum[] muleVersions = MuleVersionEnum.values();
-		
-		for (int i = 0; i < muleVersions.length; i++) {
-			if (!muleVersions[i].isEEVersion()) {
-				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        muleVersions[i].getVerNoNumbersOnly(), muleVersions[i], STANDALONE_DEPLOY);
+        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
+
+        for (MuleVersionEnum v: muleVersions) {
+            if (!v.isEEVersion()) {
+				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
