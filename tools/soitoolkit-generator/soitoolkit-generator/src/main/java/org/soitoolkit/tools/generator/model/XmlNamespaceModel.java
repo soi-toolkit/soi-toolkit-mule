@@ -51,7 +51,6 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:management=\"http://www.mulesoft.org/schema/mule/management\"\n");
 		sb.append("\txmlns:pop3=\"http://www.mulesoft.org/schema/mule/pop3\"\n");
 		sb.append("\txmlns:mulexml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
-		sb.append("\txmlns:rest-router=\"http://www.mulesoft.org/schema/mule/rest-router\"\n");
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-current.xsd\n");
@@ -65,7 +64,6 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/json       http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/" + xsdNsMuleVersion + "/mule-management.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pop3       http://www.mulesoft.org/schema/mule/pop3/" + xsdNsMuleVersion + "/mule-pop3.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/rest-router       http://www.mulesoft.org/schema/mule/rest-router/current/mule-rest-router.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting  http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml        http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd\n");
 		sb.append("\t\">");
@@ -245,8 +243,8 @@ public class XmlNamespaceModel {
 		}
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/file    http://www.mulesoft.org/schema/mule/file/" + xsdNsMuleVersion + "/mule-file.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/ftp     http://www.mulesoft.org/schema/mule/ftp/" + xsdNsMuleVersion + "/mule-ftp.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/http       http://www.mulesoft.org/schema/mule/http/" + xsdNsMuleVersion + "/mule-http.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/https       http://www.mulesoft.org/schema/mule/https/" + xsdNsMuleVersion + "/mule-https.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/http    http://www.mulesoft.org/schema/mule/http/" + xsdNsMuleVersion + "/mule-http.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/https   http://www.mulesoft.org/schema/mule/https/" + xsdNsMuleVersion + "/mule-https.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/imap    http://www.mulesoft.org/schema/mule/imap/" + xsdNsMuleVersion + "/mule-imap.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc    http://www.mulesoft.org/schema/mule/jdbc/" + xsdNsMuleVersion + "/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms     http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
@@ -277,7 +275,6 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:mule-xml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
 		sb.append("\txmlns:mulexml=\"http://www.mulesoft.org/schema/mule/xml\"\n");
 		sb.append("\txmlns:pattern=\"http://www.mulesoft.org/schema/mule/pattern\"\n");
-		sb.append("\txmlns:rest-router=\"http://www.mulesoft.org/schema/mule/rest-router\"\n");
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
 		sb.append("\txmlns:vm=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
@@ -290,11 +287,10 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc         http://www.mulesoft.org/schema/mule/jdbc/" + xsdNsMuleVersion + "/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms          http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/json         http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pattern   	    http://www.mulesoft.org/schema/mule/pattern/" + xsdNsMuleVersion + "/mule-pattern.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/rest-router      http://www.mulesoft.org/schema/mule/rest-router/"+ xsdNsMuleVersion +"/mule-rest-router.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting        http://www.mulesoft.org/schema/mule/scripting/"+ xsdNsMuleVersion + "/mule-scripting.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml              http://www.mulesoft.org/schema/mule/xml/" + xsdNsMuleVersion + "/mule-xml.xsd\n");
-		sb.append("\t\thttp://www.mulesoft.org/schema/mule/vm               http://www.mulesoft.org/schema/mule/vm/" + xsdNsMuleVersion + "/mule-vm.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pattern      http://www.mulesoft.org/schema/mule/pattern/" + xsdNsMuleVersion + "/mule-pattern.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting    http://www.mulesoft.org/schema/mule/scripting/"+ xsdNsMuleVersion + "/mule-scripting.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/xml          http://www.mulesoft.org/schema/mule/xml/" + xsdNsMuleVersion + "/mule-xml.xsd\n");
+		sb.append("\t\thttp://www.mulesoft.org/schema/mule/vm           http://www.mulesoft.org/schema/mule/vm/" + xsdNsMuleVersion + "/mule-vm.xsd\n");
 		sb.append("\t\">");
 
 		return SourceFormatterUtil.formatSource(sb.toString());
