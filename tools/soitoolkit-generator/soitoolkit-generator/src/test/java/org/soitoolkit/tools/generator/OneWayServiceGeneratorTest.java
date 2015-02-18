@@ -57,8 +57,11 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
+/**
+ * @deprecated replaced by OneWayServiceV2GeneratorTest
+ */
 //@Ignore
-public class OneWayServiceGeneratorTest {
+public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
@@ -88,9 +91,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonIC() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-		for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+		for (MuleVersionEnum v: getMuleVersions()) {
 			if (!v.isEEVersion()) {
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -104,9 +109,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonICWithOtherName() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -120,9 +127,11 @@ public class OneWayServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesOneICPerService() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -265,21 +274,4 @@ public class OneWayServiceGeneratorTest {
 		
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
-
-	private void performMavenBuild(String projectFolder) throws IOException {
-
-		boolean testOk = false;
-		
-		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, projectFolder);
-			testOk = true;
-		} finally {
-			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, projectFolder);
-		}
-		
-		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, projectFolder);
-	}
-
 }

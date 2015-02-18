@@ -61,12 +61,11 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 
 	@Test
 	public void testGenerateStandalone() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-		SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
+        SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
 			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
                 // FIXME: Why MULE_VERSION and not current version v???
 				new IntegrationComponentV2Generator(System.out, "org.soitoolkit.standalone", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
@@ -80,15 +79,14 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 
 	@Test
 	public void testGenerateStandaloneWithDifferentNamespace() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
-		
+
 		String grp = "org.soitoolkit.standalone.xxx";
 		String name = PROJECT + "-standalone-xxx";
 		
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
 			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
                 // FIXME: Why MULE_VERSION and not current version v???
 				new IntegrationComponentV2Generator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();

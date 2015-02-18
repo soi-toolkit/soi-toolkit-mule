@@ -55,7 +55,7 @@ import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
 @Ignore
-public class OneWayRobustServiceGeneratorTest {
+public class OneWayRobustServiceGeneratorTest  extends AbstractGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
@@ -85,9 +85,8 @@ public class OneWayRobustServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayRobustServicesInOneCommonIC() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -101,9 +100,8 @@ public class OneWayRobustServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayRobustServicesInOneCommonICWithOtherName() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -117,9 +115,8 @@ public class OneWayRobustServiceGeneratorTest {
 	 */
 	@Test
 	public void testOneWayRobustServicesOneICPerService() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestOneWayRobustServicesOneICPerService("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -222,21 +219,4 @@ public class OneWayRobustServiceGeneratorTest {
 		
 		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
-
-	private void performMavenBuild(String projectFolder) throws IOException {
-
-		boolean testOk = false;
-		
-		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, projectFolder);
-			testOk = true;
-		} finally {
-			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, projectFolder);
-		}
-		
-		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, projectFolder);
-	}
-
 }

@@ -57,6 +57,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * @deprecated replaced by OnewayServiceV2Generator
+ */
 public class OnewayServiceGenerator implements Generator {
 
 	private static final String NAMESPACE_CORE = "http://www.mulesoft.org/schema/mule/core";

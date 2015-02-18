@@ -51,11 +51,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * @deprecated replaced by RequestResponseServiceV2Generator
+ */
 public class RequestResponseServiceGenerator implements Generator {
 
 	GeneratorUtil gu;
 	IModel m;
-	
+
 	public RequestResponseServiceGenerator(PrintStream ps, String groupId, String artifactId, String serviceName, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String outputFolder) {
 
 		String templateFolder = "/requestResponseService";

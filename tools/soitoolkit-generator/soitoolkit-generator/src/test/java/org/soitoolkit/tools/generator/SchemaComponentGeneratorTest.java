@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
-public class SchemaComponentGeneratorTest {
+public class SchemaComponentGeneratorTest extends AbstractGeneratorTest {
 
 	private static final String TEST_OUT_FOLDER = PreferencesUtil
 			.getDefaultRootFolder() + "/jUnitTests";

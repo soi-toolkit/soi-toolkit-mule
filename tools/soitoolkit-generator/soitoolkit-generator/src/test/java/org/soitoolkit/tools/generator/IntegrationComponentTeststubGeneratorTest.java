@@ -35,7 +35,7 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
-public class IntegrationComponentTeststubGeneratorTest {
+public class IntegrationComponentTeststubGeneratorTest  extends AbstractGeneratorTest {
 
 	private static final MuleVersionEnum MULE_VERSION = MAIN_MULE_VERSION;
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();

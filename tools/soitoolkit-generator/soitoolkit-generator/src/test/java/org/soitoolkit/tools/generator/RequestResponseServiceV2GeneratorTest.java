@@ -70,9 +70,8 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonIC() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				// && !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
 				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
@@ -88,9 +87,8 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonICWithOtherName() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
 				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
@@ -106,9 +104,8 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	 */
 	@Test
 	public void testRequestResponseServicesOneICPerService() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
 				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator", 

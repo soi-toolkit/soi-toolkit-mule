@@ -36,8 +36,11 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
+/**
+ * @deprecated replaced by IntegrationComponentV2GeneratorTest
+ */
 @Ignore
-public class IntegrationComponentGeneratorTest {
+public class IntegrationComponentGeneratorTest extends AbstractGeneratorTest {
 
 	private static final MuleVersionEnum MULE_VERSION = MAIN_MULE_VERSION;
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
@@ -65,7 +68,11 @@ public class IntegrationComponentGeneratorTest {
 
 	@Test
 	public void testGenerateOrderMgm_Standalone() throws IOException {
-		SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
+
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
 		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
 				
 		new IntegrationComponentGenerator(System.out, "org.soitoolkit.refapps.dealernetwork", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
@@ -87,6 +94,10 @@ public class IntegrationComponentGeneratorTest {
 
 	@Test
 	public void testGenerateShipping() throws IOException {
+
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/shipping");
 		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/shipping"));
 
@@ -98,7 +109,11 @@ public class IntegrationComponentGeneratorTest {
 
 	@Test
 	public void testGenerateVgrPicsara2melior() throws IOException {
-		String grp = "se.vgregion.pilot";
+
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        String grp = "se.vgregion.pilot";
 		String name = "picsara2melior-sas-003";
 		
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
@@ -112,7 +127,11 @@ public class IntegrationComponentGeneratorTest {
 
 	@Test
 	public void testGenerateVfSveFasktura() throws IOException {
-		String grp = "se.volvofinans.infobus.faktura";
+
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        String grp = "se.volvofinans.infobus.faktura";
 		String name = "faktura3";
 		
 		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);

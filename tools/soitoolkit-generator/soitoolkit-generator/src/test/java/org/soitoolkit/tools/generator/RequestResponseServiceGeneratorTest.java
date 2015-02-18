@@ -51,8 +51,11 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
+/**
+ * @deprecated replaced by RequestResponseServiceV2GeneratorTest
+ */
 @Ignore
-public class RequestResponseServiceGeneratorTest {
+public class RequestResponseServiceGeneratorTest extends AbstractGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
 	private static final String TEST_OUT_FOLDER = PreferencesUtil.getDefaultRootFolder() + "/jUnitTests";
@@ -83,9 +86,11 @@ public class RequestResponseServiceGeneratorTest {
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonIC() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -99,9 +104,11 @@ public class RequestResponseServiceGeneratorTest {
 	 */
 	@Test
 	public void testRequestResponseServicesInOneCommonICWithOtherName() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -115,9 +122,11 @@ public class RequestResponseServiceGeneratorTest {
 	 */
 	@Test
 	public void testRequestResponseServicesOneICPerService() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        // Bail out if the v1 generators are deprecated and soon to be removed...
+        if (DEPRECATE_V1_GENERATORS) return;
+
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator",     "requestResponseSA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
@@ -249,31 +258,4 @@ public class RequestResponseServiceGeneratorTest {
 
 		assertEquals("Missmatch in expected number of created files and folders." , expectedNoOfFiles, actualNoOfFiles);
 	}
-
-	private void performMavenBuild(String projectFolder) throws IOException {
-
-		boolean testOk = false;
-		
-		try {
-			SystemUtil.executeCommand(BUILD_COMMAND, projectFolder);
-			testOk = true;
-		} finally {
-			// Always try to create eclipsefiles and test reports 
-			SystemUtil.executeCommand(ECLIPSE_AND_TEST_REPORT_COMMAND, projectFolder);
-		}
-		
-		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		if (testOk) SystemUtil.executeCommand(CLEAN_COMMAND, projectFolder);
-	}
-
-	@SuppressWarnings("unused")
-	private void performMavenBuild_old(String groupId, String artifactId) throws IOException {
-		String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + artifactId;
-		
-		SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER);
-		
-		// If the build runs fine then also perform a clean-command to save GB's of diskspace...
-		SystemUtil.executeCommand(CLEAN_COMMAND, PROJECT_FOLDER);
-	}
-
 }

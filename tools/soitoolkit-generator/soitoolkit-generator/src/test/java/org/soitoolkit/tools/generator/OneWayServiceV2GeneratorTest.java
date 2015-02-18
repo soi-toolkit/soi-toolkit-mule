@@ -76,9 +76,8 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonIC() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewaySA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
@@ -94,9 +93,8 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesInOneCommonICWithOtherName() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
@@ -112,9 +110,8 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 	 */
 	@Test
 	public void testOneWayServicesOneICPerService() throws IOException {
-        List<MuleVersionEnum> muleVersions = MuleVersionEnum.getNonDeprecatedVersions();
 
-        for (MuleVersionEnum v: muleVersions) {
+        for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
 				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
