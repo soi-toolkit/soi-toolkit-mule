@@ -130,7 +130,6 @@
 			<version>${mule.version}</version>
 		</dependency>
 
-        <!-- NOTE: This is a muleforge module so watch out for dependencies here to old versions of Mule, need to be excluded as they are added in new versions!!! -->
         <dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-module-rest-router</artifactId>

@@ -279,7 +279,6 @@ public class XmlNamespaceModel {
 		sb.append("\txmlns:pattern=\"http://www.mulesoft.org/schema/mule/pattern\"\n");
 		sb.append("\txmlns:rest-router=\"http://www.mulesoft.org/schema/mule/rest-router\"\n");
 		sb.append("\txmlns:scripting=\"http://www.mulesoft.org/schema/mule/scripting\"\n");
-		sb.append("\txmlns:smooks=\"http://www.muleforge.org/smooks/schema/mule-module-smooks\"\n");
 		sb.append("\txmlns:vm=\"http://www.mulesoft.org/schema/mule/vm\"\n");
 		sb.append("\txsi:schemaLocation=\"\n");
 		sb.append("\t\thttp://www.springframework.org/schema/beans      http://www.springframework.org/schema/beans/spring-beans-current.xsd\n");
@@ -291,7 +290,6 @@ public class XmlNamespaceModel {
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jdbc         http://www.mulesoft.org/schema/mule/jdbc/" + xsdNsMuleVersion + "/mule-jdbc.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/jms          http://www.mulesoft.org/schema/mule/jms/" + xsdNsMuleVersion + "/mule-jms.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/json         http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd\n");
-		sb.append("\t\thttp://www.muleforge.org/smooks/schema/mule-module-smooks http://dist.muleforge.org/smooks/schema/mule-module-smooks/1.3/mule-module-smooks.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/pattern   	    http://www.mulesoft.org/schema/mule/pattern/" + xsdNsMuleVersion + "/mule-pattern.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/rest-router      http://www.mulesoft.org/schema/mule/rest-router/"+ xsdNsMuleVersion +"/mule-rest-router.xsd\n");
 		sb.append("\t\thttp://www.mulesoft.org/schema/mule/scripting        http://www.mulesoft.org/schema/mule/scripting/"+ xsdNsMuleVersion + "/mule-scripting.xsd\n");

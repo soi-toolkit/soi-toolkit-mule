@@ -101,12 +101,6 @@
             <layout>default</layout>
         </repository>
 
-        <!-- for mule-addons from the muleforge such as jersey and restlet transports -->
-        <repository>
-            <id>muleforge</id>
-            <name>MuleForge Repository</name>
-            <url>http://repository.muleforge.org</url>
-        </repository>
         <repository>
             <id>mulesoft-releases</id>
             <name>MuleSoft Releases Repository</name>
