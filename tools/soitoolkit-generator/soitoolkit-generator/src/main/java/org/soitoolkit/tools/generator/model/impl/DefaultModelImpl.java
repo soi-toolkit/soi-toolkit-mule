@@ -47,7 +47,7 @@ import org.soitoolkit.tools.generator.util.PreferencesUtil;
 
 public class DefaultModelImpl implements IModel {
 
-	private static final String SOITOOLKIT_VERSION = "2.0.0-M4-SNAPSHOT";
+	private static final String SOITOOLKIT_VERSION = "2.0.0-M4";
 
 	private static final String JMS_CONNECTOR     = "soitoolkit-jms-connector";
 	private static final String JMS_XA_CONNECTOR  = "soitoolkit-jms-xa-connector";
