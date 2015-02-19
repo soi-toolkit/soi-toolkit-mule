@@ -54,6 +54,9 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
+/**
+ * @deprecated replaced by OneWayServiceV2GeneratorTest
+ */
 @Ignore
 public class OneWayRobustServiceGeneratorTest  extends AbstractGeneratorTest {
 

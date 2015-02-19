@@ -25,16 +25,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
+/**
+ * @deprecated replaced by IntegrationComponentV2GeneratorTest
+ */
+@Ignore
 public class IntegrationComponentTeststubGeneratorTest  extends AbstractGeneratorTest {
 
 	private static final MuleVersionEnum MULE_VERSION = MAIN_MULE_VERSION;

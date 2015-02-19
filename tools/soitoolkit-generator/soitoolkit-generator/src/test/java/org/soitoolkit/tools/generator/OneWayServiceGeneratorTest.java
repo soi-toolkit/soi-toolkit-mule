@@ -60,7 +60,7 @@ import org.soitoolkit.tools.generator.util.SystemUtil;
 /**
  * @deprecated replaced by OneWayServiceV2GeneratorTest
  */
-//@Ignore
+@Ignore
 public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();

@@ -57,6 +57,7 @@ import org.w3c.dom.NodeList;
 /**
  * TODO: this class duplicates lots of code from: OnewayServiceGenerator
  *  
+ * @deprecated replaced by OnewayServiceV2Generator
  */
 public class OnewayRobustServiceGenerator implements Generator {
 

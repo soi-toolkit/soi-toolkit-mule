@@ -23,6 +23,9 @@ import org.soitoolkit.tools.generator.GeneratorUtil;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 
+/**
+ * @deprecated replaced by IntegrationComponentV2Generator
+ */
 public class IntegrationComponentTeststubGenerator implements Generator {
 
 	GeneratorUtil gu;
