@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:imap="http://www.mulesoft.org/schema/mule/imap" xmlns:pop3="http://www.mulesoft.org/schema/mule/pop3"
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-current.xsd
+		http://www.mulesoft.org/schema/mule/core      http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/vm        http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+		http://www.mulesoft.org/schema/mule/file      http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+		http://www.mulesoft.org/schema/mule/ftp       http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+		http://www.mulesoft.org/schema/mule/sftp      http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+		http://www.mulesoft.org/schema/mule/jdbc      http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
+		http://www.mulesoft.org/schema/mule/email     http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+		http://www.mulesoft.org/schema/mule/imap      http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd
+		http://www.mulesoft.org/schema/mule/pop3      http://www.mulesoft.org/schema/mule/pop3/current/mule-pop3.xsd
+		http://www.mulesoft.org/schema/mule/smtp      http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+		http://www.mulesoft.org/schema/mule/jms       http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+		http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+		http://www.mulesoft.org/schema/mule/jbossts   http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
+		http://www.mulesoft.org/schema/mule/xml       http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+	">
+	
+
+  <!-- NOTE: need the PropertyPlaceholderConfigurer declared for default values to work, like: 
+    spring:property name="doLogToJms" value="${TP_DO_LOG_TO_JMS:true}"
+    If the PropertyPlaceholderConfigurer is not declared, the string "${TP_DO_LOG_TO_JMS:true}" is injected.
+  -->
+	<spring:bean
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig"
+		id="environmentVariablesConfiguration">
+		<spring:property name="algorithm" value="PBEWithMD5AndDES" />
+		<spring:property name="passwordEnvName" value="SOITOOLKIT_ENCRYPTION_PASSWORD" />
+	</spring:bean><!-- 2. Support for decrypting encrypted properties -->
+	<spring:bean class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor"
+		id="configurationEncryptor">
+		<spring:property name="config"
+			ref="environmentVariablesConfiguration" />
+	</spring:bean><!-- 3. Replacement for org.springframework.beans.factory.config.PropertyPlaceholderConfigurer 
+		that supports decrypting encrypted property values -->
+	<spring:bean
+		class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer"
+		id="propertyConfigurer">
+		<spring:constructor-arg ref="configurationEncryptor" />
+		<spring:property name="ignoreResourceNotFound" value="true" />
+		<spring:property name="locations">
+			<spring:list>
+				<spring:value>classpath:non-existing-config.properties</spring:value>
+				<spring:value>classpath:non-existing-config-override.properties</spring:value>
+			</spring:list>
+		</spring:property>
+	</spring:bean>
+
+
+	<spring:beans>
+		<spring:import resource="classpath:soitoolkit-mule-vm-connector.xml" />
+	</spring:beans>
+
+	<spring:beans profile="soitoolkit-integrationtests">
+		<mule><!-- Allow integration tests to register dynamic listeners by specifying 
+				dynamic="true" -->
+			<notifications dynamic="true">
+				<notification event="ENDPOINT-MESSAGE" />
+				<notification event="COMPONENT-MESSAGE" />
+			</notifications>
+		</mule>
+	</spring:beans>
+
+	<mulexml:jaxb-context name="jaxbContext"
+		packageNames="org.soitoolkit.commons.logentry.schema.v1" />
+
+	<custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer"
+		name="logMsgIn">
+		<spring:property name="logType" value="msg-in" />
+		<spring:property name="jaxbContext" ref="jaxbContext" />
+	</custom-transformer>
+	<custom-transformer class="org.soitoolkit.commons.mule.log.LogTransformer"
+		name="logMsgOut">
+		<spring:property name="logType" value="msg-out" />
+		<spring:property name="jaxbContext" ref="jaxbContext" />
+	</custom-transformer>
+
+	<spring:beans>
+		<!--
+		Soi-toolkit custom logger.
+		Ref: https://code.google.com/p/soi-toolkit/wiki/UG_CustomizeLogging
+		-->
+		<spring:bean name="soitoolkit.eventLogger" class="org.soitoolkit.commons.mule.log.DefaultEventLogger">
+			<!--
+			<spring:property name="jaxbContext" ref="jaxbContext"/>
+			-->
+			<!-- Set default values to keep old/classic behaviour and backwards compatibility without forcing configuration
+			in property files for new configuration capabilities -->
+			<spring:property name="doLogToJms" value="${SOITOOLKIT_DO_LOG_TO_JMS:true}"/>
+			<spring:property name="jmsInfoEventQueue" value="${SOITOOLKIT_LOG_INFO_QUEUE:SOITOOLKIT.LOG.INFO}"/>
+			<spring:property name="jmsErrorEventQueue" value="${SOITOOLKIT_LOG_ERROR_QUEUE:SOITOOLKIT.LOG.ERROR}"/>
+		</spring:bean>
+	</spring:beans>
+
+
+	<flow name="test-logging-to-jms-flow">
+		<vm:inbound-endpoint connector-ref="soitoolkit-vm-connector"
+			path="${TEST_LOGGING_TO_JMS_IN_VM_QUEUE}" transformer-refs="logMsgIn" />
+
+		<vm:outbound-endpoint connector-ref="soitoolkit-vm-connector"
+			path="${TEST_LOGGING_TO_JMS_OUT_VM_QUEUE}" transformer-refs="logMsgOut" />
+	</flow>
+
+
+</mule>

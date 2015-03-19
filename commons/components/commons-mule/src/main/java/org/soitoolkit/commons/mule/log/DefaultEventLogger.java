@@ -124,6 +124,19 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	 */
 	private JaxbObjectToXmlTransformer jaxbToXml = null;
 	private JAXBContext jaxbContext = null;
+	/**
+	 * Flag to control if logging to JMS is on/off.
+	 */
+	private boolean doLogToJms = true;
+	/**
+	 * Name of JMS queue for logging info-events.
+	 */
+	private String jmsInfoEventQueue = "SOITOOLKIT.LOG.INFO";
+	/**
+	 * Name of JMS queue for logging error-events.
+	 */
+	private String jmsErrorEventQueue = "SOITOOLKIT.LOG.ERROR";
+	
 
 	static {
 		try {
@@ -171,6 +184,21 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 		this.jaxbContext  = jaxbContext;
 	}
 	
+	public void setDoLogToJms(boolean doLogToJms) {
+		log.debug("setting doLogToJms: {}", doLogToJms);
+		this.doLogToJms = doLogToJms;
+	}
+
+	public void setJmsInfoEventQueue(String jmsInfoEventQueue) {
+		log.debug("setting jmsInfoEventQueue: {}", jmsInfoEventQueue);
+		this.jmsInfoEventQueue = jmsInfoEventQueue;
+	}
+
+	public void setJmsErrorEventQueue(String jmsErrorEventQueue) {
+		log.debug("setting jmsErrorEventQueue: {}", jmsErrorEventQueue);
+		this.jmsErrorEventQueue = jmsErrorEventQueue;
+	}
+		
 	public void logErrorEvent(LogLevelType logLevel, Throwable error,
 			EventLogMessage elm) {
 
@@ -610,7 +638,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	 * Dispatch an info event for background processing outside the log-system (log4j).
 	 */
 	protected void dispatchInfoEvent(String msg) {
-		dispatchEvent("SOITOOLKIT.LOG.INFO", msg);
+		dispatchEvent(jmsInfoEventQueue, msg);
 //		dispatchEvent("vm://soitoolkit-info-log", msg);
 //		dispatchEvent("soitoolkit-info-log-endpoint", msg);
 	}
@@ -619,9 +647,21 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	 * Dispatch an error event for background processing outside the log-system (log4j).
 	 */
 	protected void dispatchErrorEvent(String msg) {
-		dispatchEvent("SOITOOLKIT.LOG.ERROR", msg);
+		dispatchEvent(jmsErrorEventQueue, msg);
 //		dispatchEvent("vm://soitoolkit-error-log", msg);
 //		dispatchEvent("soitoolkit-error-log-endpoint", msg);
+	}
+	
+	/**
+	 * Provided as a hook for sub-classes that might want to do more advanced
+	 * filtering of logs to JMS.
+	 * 
+	 * @param queue
+	 * @param msg
+	 * @return true if logging should be done to JMS, false otherwise
+	 */
+	protected boolean getDoLogToJms(String queue, String msg) {
+		return doLogToJms;
 	}
 
 
@@ -635,7 +675,13 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 	// Private methods for dispatchInfoEvent and dispatchErrorEvent
 	// ------------------------------------------------------------
 
-	private void dispatchEvent(String queue, String msg) {
+	protected void dispatchEvent(String queue, String msg) {
+		if (!getDoLogToJms(queue, msg)) {
+			log.debug("logging to JMS is OFF, queue: {}", queue);
+			return;
+		}
+		log.debug("logging to JMS is ON, queue: {}", queue);
+		
 		try {
 
 			Session s = null;
