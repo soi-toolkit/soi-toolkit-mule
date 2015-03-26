@@ -121,10 +121,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                     <inclusions>
                         <inclusion>
                             <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-rest-router</artifactId>
-                        </inclusion>
-                        <inclusion>
-                            <groupId>org.mule.modules</groupId>
                             <artifactId>devkit</artifactId>
                         </inclusion>
                     </inclusions>

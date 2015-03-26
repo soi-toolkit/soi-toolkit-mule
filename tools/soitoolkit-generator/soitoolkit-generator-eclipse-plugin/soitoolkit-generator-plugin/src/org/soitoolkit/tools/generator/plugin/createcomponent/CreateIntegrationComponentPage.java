@@ -17,7 +17,7 @@
 package org.soitoolkit.tools.generator.plugin.createcomponent;
 
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_3_0;
+import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MULE_3_5_0;
 import static org.soitoolkit.tools.generator.plugin.util.SwtUtil.addRadioButtons;
 
 import java.util.ArrayList;
@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.EnumUtil;
+import org.soitoolkit.tools.generator.model.enums.ILabeledEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
@@ -93,10 +94,11 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	}
 
 	private boolean mustBeDisplayed = false;
-	private MuleVersionEnum muleVersion = MULE_3_3_0;
+	private MuleVersionEnum muleVersion = MULE_3_5_0;
 	
 	private Combo muleVersionCombo;
 	private ValueHolder<Integer> deploymentModelType = new ValueHolder<Integer>(STANDALONE_DEPLOY.ordinal());
+	/*
 	private Button vmButton;
 	private Button jmsButton;
 	private Button jdbcButton;
@@ -107,6 +109,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 	private Button pop3Button;
 	private Button imapButton;
 	private Button smtpButton;
+	*/
 
 	private ISelection selection;
 
@@ -165,8 +168,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		label.setText("Mule version:");
 
 		muleVersionCombo = new Combo (container, SWT.READ_ONLY);
-		muleVersionCombo.setItems (EnumUtil.getLabels(MuleVersionEnum.getNonDeprecatedVersions()));
-
+		List<MuleVersionEnum> muleVersionEnumList = MuleVersionEnum.getNonDeprecatedVersions();
+		muleVersionCombo.setItems(EnumUtil.getLabels(muleVersionEnumList.toArray(new ILabeledEnum[] {})));
 		
 		/*
 		 * Mule Version-Combo-Listener
@@ -176,7 +179,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				System.err.println("### Set default selected MuleVersion");
 				Combo c = (Combo)e.widget;
-				muleVersion =  MuleVersionEnum.get(c.getSelectionIndex());
+				muleVersion =  MuleVersionEnum.getNonDeprecated(c.getSelectionIndex());
 				System.err.println("### Set default selected MuleVersion to: " + muleVersion);
 			}
 
@@ -184,7 +187,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				System.err.println("### Set selected MuleVersion");
 				Combo c = (Combo)e.widget;
-				muleVersion =  MuleVersionEnum.get(c.getSelectionIndex());
+				muleVersion =  MuleVersionEnum.getNonDeprecated(c.getSelectionIndex());
 				System.err.println("### Set selected MuleVersion to: " + muleVersion);
 
 				dialogChanged();
@@ -208,13 +211,14 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 		
 		// CheckBoxes for transports
-		label = new Label(container, SWT.NULL);
-		label.setText("Connectors:");
+		//label = new Label(container, SWT.NULL);
+		//label.setText("Connectors:");
 
-		int i = 0;
+		//int i = 0;
 		// Jms transport is mandatory for logging, should not be selectable
 //		vmButton = SwtUtil.createCheckboxButton(container, null, i++, "VM");
 //		vmButton.setSelection(true);
+		/*
 		jmsButton = SwtUtil.createCheckboxButton(container, null, i++, "JMS (required)");
 		jmsButton.setSelection(true);
 		jmsButton.setEnabled(false);
@@ -222,15 +226,17 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		jdbcButton.setSelection(true);
 		servletButton = SwtUtil.createCheckboxButton(container, null, i++, "Servlet");
 		servletButton.setSelection(true);
+		*/
 
 //		fileButton = SwtUtil.createCheckboxButton(container, null, i++, "File");
 //		fileButton.setSelection(true);
-
+		/*
 		ftpButton = SwtUtil.createCheckboxButton(container, null, i++, "FTP");
 		ftpButton.setSelection(true);
 		
 		sftpButton = SwtUtil.createCheckboxButton(container, null, i++, "SFTP");
 		sftpButton.setSelection(true);
+		*/
 
 //		pop3Button = SwtUtil.createCheckboxButton(container, null, i++, "POP3");
 //		pop3Button.setSelection(true);
@@ -268,7 +274,8 @@ public class CreateIntegrationComponentPage extends WizardPage {
 //				containerText.setText(container.getFullPath().toString());
 //			}
 //		}
-		muleVersionCombo.select(MULE_3_3_0.ordinal());
+		System.err.println("### Set default selected MuleVersion to index: " + muleVersionCombo.getItemCount());
+		muleVersionCombo.select(muleVersionCombo.getItemCount() - 1);
 	}
 
 	/**
@@ -295,6 +302,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 	private void dialogChanged() {
 
+		/*
 		if (servletButton != null) {
 			if (deploymentModelType.value == STANDALONE_DEPLOY.ordinal()) {
 				servletButton.setSelection(false);
@@ -305,7 +313,7 @@ public class CreateIntegrationComponentPage extends WizardPage {
 				servletButton.setEnabled(true);
 				servletButton.setText("Servlet");
 			}
-		}
+		}*/
 		
 		updateStatus(null);
 	}
@@ -331,8 +339,10 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		return DeploymentModelEnum.get(deploymentModelType.value);
 	}
 
+	
 	public List<TransportEnum> getTransports() {
 		List<TransportEnum> transports = new ArrayList<TransportEnum>();
+		/*
 		if (isVmTransportSelected())      transports.add(TransportEnum.VM);
 		if (isJmsTransportSelected())     transports.add(TransportEnum.JMS);
 		if (isJdbcTransportSelected())    transports.add(TransportEnum.JDBC);
@@ -343,11 +353,12 @@ public class CreateIntegrationComponentPage extends WizardPage {
 		if (isPop3TransportSelected())    transports.add(TransportEnum.POP3);
 		if (isImapTransportSelected())    transports.add(TransportEnum.IMAP);
 		if (isSmtpTransportSelected())    transports.add(TransportEnum.SMTP);
+		*/
 		return transports;
 	}
 
 	// ---------------
-	
+/*	
 	private boolean isVmTransportSelected() {
 		return vmButton != null && vmButton.getSelection();
 	}
@@ -386,5 +397,5 @@ public class CreateIntegrationComponentPage extends WizardPage {
 
 	private boolean isSmtpTransportSelected() {
 		return smtpButton != null && smtpButton.getSelection();
-	}	
+	}	*/
 }

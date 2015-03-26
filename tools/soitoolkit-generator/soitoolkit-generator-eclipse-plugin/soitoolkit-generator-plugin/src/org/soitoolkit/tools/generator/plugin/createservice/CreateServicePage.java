@@ -227,8 +227,8 @@ public class CreateServicePage extends WizardPage {
 					outboundTransportCombo.setItems (new String [] {"SOAP/HTTP", "SOAP/HTTPS", "REST/HTTP", "REST/HTTPS", "JMS"}); // "JDBC"});
 					break;
 				case MEP_ONE_WAY:
-					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP (Multipart POST)", "POP3", "IMAP"}); // "Servlet (Multipart POST)", 
-					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "SMTP"});
+					inboundTransportCombo.setItems  (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP", "HTTPS"}); // "Servlet (Multipart POST)", 
+					outboundTransportCombo.setItems (new String [] {"VM", "JMS", "JDBC", "File", "FTP", "SFTP", "HTTP", "HTTPS"});
 					break;
 				case MEP_ONE_WAY_ROBUST:
 					inboundTransportCombo.setItems  (new String [] {"File", "FTP", "VM"});
@@ -455,6 +455,11 @@ public class CreateServicePage extends WizardPage {
 			return;
 		}
 		
+		if (mepIdx == 2) {
+			updateStatus("Message exchange pattern One-Way-Robust is deprecated.");
+			return;
+		}
+		
 		// Do not allow pub/sub mep right now...
 		if (mepIdx == 3) {
 			updateStatus("Message exchange pattern Publish/Subscribe not yet supported");
@@ -571,10 +576,7 @@ public class CreateServicePage extends WizardPage {
 			t = TransportEnum.HTTP;
 			break;
 		case 7: 
-			t = TransportEnum.POP3;
-			break;
-		case 8: 
-			t = TransportEnum.IMAP;
+			t = TransportEnum.HTTPS;
 			break;
 		}
 		return t;
@@ -675,7 +677,10 @@ public class CreateServicePage extends WizardPage {
 			t = TransportEnum.SFTP;
 			break;
 		case 6:
-			t = TransportEnum.SMTP;
+			t = TransportEnum.HTTP;
+			break;
+		case 7:
+			t = TransportEnum.HTTPS;
 			break;
 		}
 		return t;

@@ -36,8 +36,6 @@
         <hornetq.version>2.2.5.Final</hornetq.version>
         <netty.version>3.2.3.Final</netty.version>
 
-        <mule-module-rest-router.version>1.2</mule-module-rest-router.version>
-
 		<!-- Used by servlet-api-2.5 -->
 		<jetty.version>6.1.11</jetty.version>
 	</properties>
@@ -117,11 +115,14 @@
 			<version>${mule.version}</version>
 		</dependency>
 
+		<!-- Needs to be included by IC, if required (deprecated). Should not be a
+		part of ST mule dependencies.
         <dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-module-rest-router</artifactId>
             <version>${mule-module-rest-router.version}</version>
         </dependency>
+		-->
 
 		<!-- Mule ESB Transports -->
 		<dependency>

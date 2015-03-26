@@ -59,9 +59,8 @@ import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
 import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.plugin.util.SwtUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
-import org.soitoolkit.tools.generator.OnewayRobustServiceGenerator;
-import org.soitoolkit.tools.generator.OnewayServiceGenerator;
-import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
+import org.soitoolkit.tools.generator.OnewayServiceV2Generator;
+import org.soitoolkit.tools.generator.RequestResponseServiceV2Generator;
 
 import soi_toolkit_generator_plugin.Activator;
 
@@ -201,17 +200,16 @@ public class CreateServiceWizard extends Wizard implements INewWizard {
 		switch (mep) {
 		case 0: // Req Resp
 			
-			new RequestResponseServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType , rootFolderName).startGenerator();
+			new RequestResponseServiceV2Generator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType , rootFolderName).startGenerator();
 			break;
 
 		case 1: // One Way
 			
-			new OnewayServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
+			new OnewayServiceV2Generator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
 		case 2: // One Way Robust
-			
-			new OnewayRobustServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
+			//new OnewayRobustServiceGenerator(ps, groupId, artifactId, serviceName, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransport, outboundTransport, transformerType, rootFolderName).startGenerator();
 			break;
 
 //		case 2: // Pub Sub

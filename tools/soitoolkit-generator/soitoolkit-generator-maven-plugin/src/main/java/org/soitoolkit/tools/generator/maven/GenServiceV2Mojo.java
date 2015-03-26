@@ -83,12 +83,10 @@ public class GenServiceV2Mojo extends AbstractMojo {
      */
     private File outDir;
 
-    private static String[] allowedRequestReplyInboundTransport  = new String[] {"SOAPHTTP","SOAPSERVLET", "RESTHTTP"};
-    private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP","RESTHTTP","JMS"};
-    private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "SERVLET", "POP3", "IMAP"};
-    private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "SMTP"};
-    private static String[] allowedOneWayRobustInboundTransport  = new String[] {"FILE", "FTP", "VM"};
-    private static String[] allowedOneWayRobustOutboundTransport = new String[] {"FILE", "FTP", "VM"};
+    private static String[] allowedRequestReplyInboundTransport  = new String[] {"SOAPHTTP", "SOAPHTTPS", "RESTHTTP", "RESTHTTPS"};
+    private static String[] allowedRequestReplyOutboundTransport = new String[] {"SOAPHTTP", "SOAPHTTPS", "RESTHTTP", "RESTHTTPS","JMS"};
+    private static String[] allowedOneWayInboundTransport        = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "HTTPS"};
+    private static String[] allowedOneWayOutboundTransport       = new String[] {"VM", "JMS", "JDBC", "FILE", "FTP", "SFTP", "HTTP", "HTTPS"};
     
     public void execute() throws MojoExecutionException {
     	
@@ -187,9 +185,6 @@ public class GenServiceV2Mojo extends AbstractMojo {
 		case MEP_ONE_WAY:
 			allowedTransports = allowedOneWayInboundTransport;
 			break;
-		case MEP_ONE_WAY_ROBUST:
-			allowedTransports = allowedOneWayRobustInboundTransport;
-			break;
 		case MEP_REQUEST_RESPONSE:
 			allowedTransports = allowedRequestReplyInboundTransport;
 			break;
@@ -204,9 +199,6 @@ public class GenServiceV2Mojo extends AbstractMojo {
 		switch (mepEnum) {
 		case MEP_ONE_WAY:
 			allowedTransports = allowedOneWayOutboundTransport;
-			break;
-		case MEP_ONE_WAY_ROBUST:
-			allowedTransports = allowedOneWayRobustOutboundTransport;
 			break;
 		case MEP_REQUEST_RESPONSE:
 			allowedTransports = allowedRequestReplyOutboundTransport;

@@ -36,13 +36,8 @@
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
 		<xbean.version>3.9</xbean.version>
 
-    <hornetq.version>2.2.5.Final</hornetq.version>
-    <netty.version>3.2.3.Final</netty.version>
-
-    <!--
-    https://github.com/mulesoft/mule-module-rest-router
-    -->
-    <mule-module-rest-router.version>1.2</mule-module-rest-router.version>
+    	<hornetq.version>2.2.5.Final</hornetq.version>
+    	<netty.version>3.2.3.Final</netty.version>
 
 		<!-- Used by servlet-api-2.5 -->
 		<jetty.version>6.1.11</jetty.version>
@@ -141,11 +136,14 @@
 			<version>${mule.version}</version>
 		</dependency>
 
+		<!-- Needs to be included by IC, if required (deprecated). Should not be a
+		part of ST mule dependencies.
         <dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-module-rest-router</artifactId>
             <version>${mule-module-rest-router.version}</version>
         </dependency>
+		-->
 
 		<!-- Mule ESB Transports -->
 		<dependency>

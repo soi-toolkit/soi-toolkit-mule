@@ -33,7 +33,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.soitoolkit.tools.generator.Generator;
 import org.soitoolkit.tools.generator.OnewayRobustServiceGenerator;
 import org.soitoolkit.tools.generator.OnewayServiceGenerator;
-import org.soitoolkit.tools.generator.RequestResponseServiceGenerator;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.enums.MepEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
@@ -137,9 +136,7 @@ public class GenServiceMojo extends AbstractMojo {
         Generator g = null;
         switch (mepEnum) {
 		case MEP_REQUEST_RESPONSE:
-			g = new RequestResponseServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
-			break;
-
+            throw new MojoExecutionException("Message Exchange Pattern [" + messageExchangePattern + "] is depricated. Use genServiceV2 instead of genService goal.");
 		case MEP_ONE_WAY:
 			g = new OnewayServiceGenerator(System.out, groupId, artifactId, service, MuleVersionEnum.MAIN_MULE_VERSION, inboundTransportEnum, outboundTransportEnum, TransformerEnum.JAVA, outDir.getPath());
 			break;

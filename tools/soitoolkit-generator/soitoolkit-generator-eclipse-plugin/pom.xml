@@ -3,14 +3,15 @@
 
 	<parent>
       <groupId>org.soitoolkit</groupId>
-		<artifactId>soitoolkit</artifactId>
-		<version>2.0.0-M4-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
+		  <artifactId>soitoolkit</artifactId>
+		  <version>2.0.0-M5-SNAPSHOT</version>
+      <relativePath>../../../pom.xml</relativePath>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.soitoolkit.tools.generator.eclipse</groupId>
   <artifactId>soitoolkit-generator-eclipse-plugin</artifactId>
+  
   <packaging>pom</packaging>
   
   <modules>

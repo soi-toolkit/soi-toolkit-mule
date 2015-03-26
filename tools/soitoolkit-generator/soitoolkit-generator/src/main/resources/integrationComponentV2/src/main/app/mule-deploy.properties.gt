@@ -1,9 +1,7 @@
 # Mule Application Deployment Descriptor
 redeployment.enabled=true
 encoding=UTF-8
-<% if (jdbc) { %>
-config.resources=${artifactId}-common.xml,${artifactId}-jdbc-connector.xml
-<% } else { %>  
+
 config.resources=${artifactId}-common.xml
-<% } %>  
+
 domain=default

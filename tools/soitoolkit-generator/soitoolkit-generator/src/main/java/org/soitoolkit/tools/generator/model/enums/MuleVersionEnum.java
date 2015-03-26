@@ -31,6 +31,10 @@ public enum MuleVersionEnum implements ILabeledEnum {
 		return values()[ordinal];
 	}
 
+    public static MuleVersionEnum getNonDeprecated(int index) {
+        return MuleVersionEnum.getNonDeprecatedVersions().get(index);
+    }
+    
     public static List<MuleVersionEnum> getNonDeprecatedVersions() {
         List<MuleVersionEnum> versions = new ArrayList<MuleVersionEnum>();
         for (MuleVersionEnum v : values()) {
