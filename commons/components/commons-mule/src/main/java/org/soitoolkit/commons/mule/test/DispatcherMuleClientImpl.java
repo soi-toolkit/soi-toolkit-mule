@@ -28,7 +28,7 @@ public class DispatcherMuleClientImpl implements Dispatcher {
 			muleClient = new MuleClient(muleContext);
 
 			// Perform the actual dispatch
-			muleClient.dispatch(inboundEndpointAddress, payload, headers);
+			muleClient.dispatch(inboundEndpointAddress, payload, (Map)headers);
 
 		} catch (MuleException e) {
 			throw new RuntimeException(e);

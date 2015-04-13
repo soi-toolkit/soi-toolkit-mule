@@ -180,7 +180,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			muleContext.getNotificationManager().addListener(listener);
 
 			// Perform the actual dispatch
-			muleClient.dispatch(inboundEndpointAddress, payload, headers);
+			muleClient.dispatch(inboundEndpointAddress, payload, (Map)headers);
 
 			// Wait for the delivery to occur...
 			if (logger.isDebugEnabled()) logger.debug("Waiting for message to be delivered to the endpoint...");
@@ -383,7 +383,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 			// Perform the actual dispatch if the inboundEndpointAddress is not null
 			if (inboundEndpointAddress != null) {
-				muleClient.dispatch(inboundEndpointAddress, payload, headers);
+				muleClient.dispatch(inboundEndpointAddress, payload, (Map)headers);
 			}
 
 			// Wait for the exception to occur...
@@ -475,7 +475,7 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 			muleContext.getNotificationManager().addListener(listener);
 
 			// Perform the actual dispatch
-			muleClient.dispatch(inboundEndpointAddress, payload, headers);
+			muleClient.dispatch(inboundEndpointAddress, payload, (Map)headers);
 
 			// Wait for the exception to occur...
 			if (logger.isDebugEnabled()) logger.debug("Waiting for an exception to occur...");

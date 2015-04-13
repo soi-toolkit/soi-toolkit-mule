@@ -194,7 +194,7 @@ public class RestClient {
 			url += "?connector=" + muleConnector;
 		}
 		try {
-			return muleClient.send(url, payload, properties);
+			return muleClient.send(url, payload, (Map)properties);
 		} catch (MuleException e) {
 			throw new RuntimeException(e);
 		}

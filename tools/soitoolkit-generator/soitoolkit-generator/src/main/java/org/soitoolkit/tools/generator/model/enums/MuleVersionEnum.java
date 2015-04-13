@@ -23,8 +23,9 @@ public enum MuleVersionEnum implements ILabeledEnum {
     MULE_3_3_1_DEPRECATED("3.3.1", "current"),
     MULE_3_4_0("3.4.0", "current"),
     MULE_3_4_0_EE("3.4.0", "current"),
-    MULE_3_5_0("3.5.0", "current");
-	
+	MULE_3_5_0("3.5.0", "current"),
+	MULE_3_6_1("3.6.1", "current");
+
 	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_5_0;
 	
 	public static MuleVersionEnum get(int ordinal) {

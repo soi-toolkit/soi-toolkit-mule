@@ -42,7 +42,8 @@
 		<module>poms/mule-dependencies/mule-ee-3.3.1-dependencies</module>
 		-->
         <module>poms/mule-dependencies/mule-3.4.0-dependencies</module>
-        <module>poms/mule-dependencies/mule-3.5.0-dependencies</module>
+		<module>poms/mule-dependencies/mule-3.5.0-dependencies</module>
+		<module>poms/mule-dependencies/mule-3.6.1-dependencies</module>
 		<module>poms/runtime-dependencies</module>
 		<module>poms/test-dependencies</module>
 		
