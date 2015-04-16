@@ -26,9 +26,30 @@ public abstract class AbstractGeneratorTest {
     protected static final boolean DEPRECATE_V1_GENERATORS = true;
 
     protected List<MuleVersionEnum> getMuleVersions() {
-//        return Arrays.asList(new MuleVersionEnum[] {MuleVersionEnum.MULE_3_4_0});
-        return MuleVersionEnum.getNonDeprecatedVersions();
+		MuleVersionEnum muleVersionFromSystemProperties = getMuleVersionFromSystemProperties();
+		return (muleVersionFromSystemProperties == null) ?  MuleVersionEnum.getNonDeprecatedVersions() : Arrays.asList(new MuleVersionEnum[] {muleVersionFromSystemProperties});
     }
+
+	private MuleVersionEnum getMuleVersionFromSystemProperties() {
+		
+		MuleVersionEnum muleVersion = null;
+    	String muleVersionProperty = System.getProperty("mule.version");
+		
+		if (muleVersionProperty != null) {
+    		muleVersion = MuleVersionEnum.getByLabel(muleVersionProperty);
+    		if (muleVersion == null) {
+    			List<String> allowedMuleVersions = new ArrayList<String>();
+    			for (MuleVersionEnum allowedMuleVersion : MuleVersionEnum.values()) {
+    				if (!allowedMuleVersion.isDeprecatedVersion() && !allowedMuleVersion.isEEVersion()) {
+    					allowedMuleVersions.add(allowedMuleVersion.getLabel());
+    				}
+    			}
+    			throw new RuntimeException("### Unknown system property 'mule.vesion' = '" + muleVersionProperty + "', allowed values are: " + allowedMuleVersions);
+    		}
+    		System.out.println("### Will run tests on Mule version: " + muleVersion.getLabel());
+    	}
+		return muleVersion;
+	}
 
     protected void performMavenBuild(String projectFolder) throws IOException {
 

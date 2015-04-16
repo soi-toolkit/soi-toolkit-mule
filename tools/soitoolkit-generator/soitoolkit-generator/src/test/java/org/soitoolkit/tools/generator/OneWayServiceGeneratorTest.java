@@ -33,9 +33,6 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SMTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
-import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
-import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
-import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +43,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.soitoolkit.tools.generator.model.IModel;
 import org.soitoolkit.tools.generator.model.ModelFactory;
@@ -57,10 +53,6 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 import org.soitoolkit.tools.generator.util.PreferencesUtil;
 import org.soitoolkit.tools.generator.util.SystemUtil;
 
-/**
- * @deprecated replaced by OneWayServiceV2GeneratorTest
- */
-@Ignore
 public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 
 	private static final List<TransportEnum> TRANSPORTS = new ArrayList<TransportEnum>();
@@ -92,12 +84,9 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 	@Test
 	public void testOneWayServicesInOneCommonIC() throws IOException {
 
-        // Bail out if the v1 generators are deprecated and soon to be removed...
-        if (DEPRECATE_V1_GENERATORS) return;
-
 		for (MuleVersionEnum v: getMuleVersions()) {
 			if (!v.isEEVersion()) {
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator",       "onewaySA-v1-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -110,12 +99,9 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 	@Test
 	public void testOneWayServicesInOneCommonICWithOtherName() throws IOException {
 
-        // Bail out if the v1 generators are deprecated and soon to be removed...
-        if (DEPRECATE_V1_GENERATORS) return;
-
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-v1-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -128,12 +114,9 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 	@Test
 	public void testOneWayServicesOneICPerService() throws IOException {
 
-        // Bail out if the v1 generators are deprecated and soon to be removed...
-        if (DEPRECATE_V1_GENERATORS) return;
-
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-v1-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}

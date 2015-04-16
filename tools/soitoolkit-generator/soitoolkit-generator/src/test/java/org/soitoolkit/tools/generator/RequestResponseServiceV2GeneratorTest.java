@@ -74,7 +74,7 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				// && !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator",       "requestResponseSA-mule" +         v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator", "requestResponseSA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -91,7 +91,7 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestRequestResponseServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Request-Response-SA-Tests-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -108,10 +108,7 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& !muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator", 
-						"requestResponseSA-mule" + v.getVerNoNumbersOnly(),
-						v,
-						STANDALONE_DEPLOY);
+				doTestRequestResponseServicesOneICPerService("org.soitoolkit.tool.generator", "requestResponseSA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}

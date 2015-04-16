@@ -30,9 +30,6 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
 import static org.soitoolkit.tools.generator.util.MiscUtil.appendTransport;
-import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
-import static org.soitoolkit.tools.generator.util.SystemUtil.CLEAN_COMMAND;
-import static org.soitoolkit.tools.generator.util.SystemUtil.ECLIPSE_AND_TEST_REPORT_COMMAND;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +88,7 @@ public class OneWayRobustServiceGeneratorTest  extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewayRobustSA-v1-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -106,7 +103,7 @@ public class OneWayRobustServiceGeneratorTest  extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayRobustServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Robust-Tests-SA-v1-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -121,7 +118,7 @@ public class OneWayRobustServiceGeneratorTest  extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				doTestOneWayRobustServicesOneICPerService("org.soitoolkit.tool.generator", "onewayRobustSA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayRobustServicesOneICPerService("org.soitoolkit.tool.generator", "onewayRobustSA-v1-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
