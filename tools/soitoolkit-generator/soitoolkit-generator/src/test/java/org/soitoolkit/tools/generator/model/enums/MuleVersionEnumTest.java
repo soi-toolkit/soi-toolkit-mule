@@ -45,12 +45,12 @@ public class MuleVersionEnumTest {
 
     @Test
     public void testAllVersions() {
-        assertEquals("[MULE_3_3_1_DEPRECATED, MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0]", Arrays.asList(MuleVersionEnum.values()).toString());
+        assertEquals("[MULE_3_3_1_DEPRECATED, MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0, MULE_3_6_1]", Arrays.asList(MuleVersionEnum.values()).toString());
     }
 
     @Test
     public void testNonDeprecatedVersions() {
-        assertEquals("[MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0]", MuleVersionEnum.getNonDeprecatedVersions().toString());
+        assertEquals("[MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0, MULE_3_6_1]", MuleVersionEnum.getNonDeprecatedVersions().toString());
     }
 
 }
