@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum MuleVersionEnum implements ILabeledEnum {
-    MULE_3_3_1_DEPRECATED("3.3.1", "current"),
-    MULE_3_4_0("3.4.0", "current"),
-    MULE_3_4_0_EE("3.4.0", "current"),
-	MULE_3_5_0("3.5.0", "current"),
-	MULE_3_6_1("3.6.1", "current");
+    MULE_3_3_1_DEPRECATED (3,3,1, "current"),
+    MULE_3_4_0            (3,4,0, "current"),
+    MULE_3_4_0_EE         (3,4,0, "current"),
+	MULE_3_5_0            (3,5,0, "current"),
+	MULE_3_6_1            (3,6,1, "current");
 
 	public static final MuleVersionEnum MAIN_MULE_VERSION = MULE_3_5_0;
 	
@@ -63,13 +63,68 @@ public enum MuleVersionEnum implements ILabeledEnum {
 	    return allowedLabelValues;
 	}
 	
+	private int major;
+	private int minor;
+	private int revision;
 	private String label;
 	private String xsdNsVersion;
-	private MuleVersionEnum(String label, String xsdNsVersion) {
-		this.label = label;
+	
+	private MuleVersionEnum(int major, int minor, int revision, String xsdNsVersion) {
+		this.major    = major;
+		this.minor    = minor;
+		this.revision = revision;
+		this.label    = major + "." + minor + "." + revision;
 		this.xsdNsVersion = xsdNsVersion;
 	}
 
+	public int getMajor() {
+		return major;
+	}
+
+	public int getMinor() {
+		return minor;
+	}
+
+	public int getRevision() {
+		return revision;
+	}
+
+	/**
+	 * Compares two mule versions with each other
+	 * 
+	 * @param other the other mule version
+	 * @return 1 if this version is newer (higher), 0 if they are the same, -1 if the other version is newer (higher)
+	 */
+	public int compare(String otherMuleVersion) {
+		return compare(MuleVersionEnum.getByLabel(otherMuleVersion));
+	}
+
+	/**
+	 * Compares two mule versions with each other
+	 * 
+	 * @param other the other mule version
+	 * @return 1 if this version is newer (higher), 0 if they are the same, -1 if the other version is newer (higher)
+	 */
+	public int compare(MuleVersionEnum other) {
+
+		// return 0 if same version
+		if (this.label.equals(other.label)) {
+			return 0;
+		}
+
+		// return 1 if this version is newer (higher)
+		if ((major > other.getMajor()) ||
+		    (major == other.getMajor() && minor > other.getMinor()) ||
+		    (major == other.getMajor() && minor == other.getMinor() && revision > other.getRevision())) {
+		
+			return 1;
+
+		} else {
+			return -1;
+		}
+			
+	}
+	
 	// For display in the wizard
 	public String getLabel() {return isEEVersion() ? "v" + label + "-EE": "v" + label;}
 

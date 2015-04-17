@@ -19,6 +19,7 @@ package org.soitoolkit.tools.generator.model.enums;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.*;
 
 import org.junit.Test;
 
@@ -27,20 +28,20 @@ import java.util.Arrays;
 public class MuleVersionEnumTest {
     @Test
     public void testIsEEVersion() {
-        assertTrue(MuleVersionEnum.MULE_3_4_0_EE.isEEVersion());
-        assertFalse(MuleVersionEnum.MULE_3_4_0.isEEVersion());
+        assertTrue(MULE_3_4_0_EE.isEEVersion());
+        assertFalse(MULE_3_4_0.isEEVersion());
     }
 
     @Test
     public void testIsDeprecatedVersion() {
-        assertTrue(MuleVersionEnum.MULE_3_3_1_DEPRECATED.isDeprecatedVersion());
-        assertFalse(MuleVersionEnum.MULE_3_4_0.isDeprecatedVersion());
+        assertTrue(MULE_3_3_1_DEPRECATED.isDeprecatedVersion());
+        assertFalse(MULE_3_4_0.isDeprecatedVersion());
     }
 
     @Test
 	public void testVerNoNumbersOnly() {
-		assertEquals("340", MuleVersionEnum.MULE_3_4_0_EE.getVerNoNumbersOnly());
-		assertEquals("340", MuleVersionEnum.MULE_3_4_0.getVerNoNumbersOnly());
+		assertEquals("340", MULE_3_4_0_EE.getVerNoNumbersOnly());
+		assertEquals("340", MULE_3_4_0.getVerNoNumbersOnly());
 	}
 
     @Test
@@ -53,4 +54,27 @@ public class MuleVersionEnumTest {
         assertEquals("[MULE_3_4_0, MULE_3_4_0_EE, MULE_3_5_0, MULE_3_6_1]", MuleVersionEnum.getNonDeprecatedVersions().toString());
     }
 
+    @Test
+    public void TestCompareVersions() {
+    	// 3.4.0 > 3.3.1
+        assertEquals(1, MULE_3_4_0.compare(MULE_3_3_1_DEPRECATED));
+        
+        // 3.4.0 EE == 3.4.0 CE
+        assertEquals(0, MULE_3_4_0_EE.compare(MULE_3_4_0));
+        
+        // 3.3.1 < 3.5.0
+        assertEquals(-1, MULE_3_3_1_DEPRECATED.compare(MULE_3_5_0));        
+    }
+
+    @Test
+    public void TestCompareVersionsByString() {
+    	// 3.4.0 > 3.3.1
+        assertEquals(1, MULE_3_4_0.compare("3.3.1"));
+        
+        // 3.4.0 EE == 3.4.0 CE
+        assertEquals(0, MULE_3_4_0_EE.compare("3.4.0"));
+        
+        // 3.3.1 < 3.5.0
+        assertEquals(-1, MULE_3_3_1_DEPRECATED.compare("3.5.0"));        
+    }
 }

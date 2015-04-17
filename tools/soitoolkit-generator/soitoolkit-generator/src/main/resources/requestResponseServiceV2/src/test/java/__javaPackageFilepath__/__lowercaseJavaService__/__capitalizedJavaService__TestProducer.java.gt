@@ -309,8 +309,9 @@ public class ${capitalizedJavaService}TestProducer {
      */
     private void forceTimeout() {
         try {
-            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen...");
-            Thread.sleep(SERVICE_TIMOUT_MS + 1000);
+        	long sleepTime = 2 * SERVICE_TIMOUT_MS;
+            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen, will sleep for " + sleepTime + " ms...");
+            Thread.sleep(sleepTime);
         } catch (InterruptedException e) {}
     }
 }
@@ -349,8 +350,6 @@ import org.soitoolkit.refapps.sd.crudsample.schema.v1.SampleEntity;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSample;
 import org.soitoolkit.refapps.sd.crudsample.schema.v1.UpdateSampleResponse;
 
-import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
-
 @Path("/samples")
 public class ${capitalizedJavaService}TestProducer {
 
@@ -368,9 +367,7 @@ public class ${capitalizedJavaService}TestProducer {
 	private static int lastId = 0;
 	
 	private Response toResponse(Object response, Status status, MediaType mediaType) {
-	  ResponseBuilder builder=new ResponseBuilderImpl();
-	  builder.entity(response);
-	  builder.status(status);
+	  ResponseBuilder builder = Response.status(status).entity(response);
 	  if (mediaType != null) {
 		  builder.type(mediaType);
 	  }
@@ -534,8 +531,9 @@ public class ${capitalizedJavaService}TestProducer {
      */
     private void forceTimeout() {
         try {
-            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen...");
-            Thread.sleep(SERVICE_TIMOUT_MS + 1000);
+        	long sleepTime = 2 * SERVICE_TIMOUT_MS;
+            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen, will sleep for " + sleepTime + " ms...");
+            Thread.sleep(sleepTime);
         } catch (InterruptedException e) {}
     }
 }

@@ -995,12 +995,17 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 		// Perform REST call
         MuleMessage response = restClient.doHttpGetRequest_JsonContent(SERVICE_ENDPOINT + "/samples/" + TEST_ID_FAULT_INVALID_ID);
         
-        // Verify HTTP-status
+        // Verify HTTP-status, 500
         assertEquals(Integer.toString(HttpConstants.SC_INTERNAL_SERVER_ERROR), response.getInboundProperty(HttpConnector.HTTP_STATUS_PROPERTY));
         
-        //assertEquals("Invalid ID: " + TEST_ID_FAULT_INVALID_ID, IOUtils.toString((InputStream)response.getPayload()));
-        //assertEquals("{ \"message\": \"Internal Server Error\" }", IOUtils.toString((InputStream)response.getPayload()));
+        // Verify expected error message, "Invalid ID: -1"
+	    <% if (muleVersion.compare("3.6.1") == -1) { %>
+	    // Compare to error message returned by Mule versions before 3.6.0
         assertEquals("{\"faultId\":null,\"faultOriginatingSource\":null,\"code\":0,\"message\":\"Invalid ID: -1\",\"details\":[],\"any\":[]}", IOUtils.toString((InputStream)response.getPayload()));
+	    <% } else { %>
+	    // Compare to error message returned by Mule version 3.6.0 or newer
+        assertEquals("{\"code\":0,\"message\":\"Invalid ID: -1\",\"details\":null,\"any\":null}", IOUtils.toString((InputStream)response.getPayload()));
+	    <% } %>
 
         /*
 		 * Verify Logs
