@@ -25,7 +25,6 @@ import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.HTTPS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JDBC;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
-import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SERVLET;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.SFTP;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.VM;
 import static org.soitoolkit.tools.generator.model.impl.ModelUtil.capitalize;
@@ -39,8 +38,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.soitoolkit.tools.generator.model.IModel;
-import org.soitoolkit.tools.generator.model.ModelFactory;
 import org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum;
 import org.soitoolkit.tools.generator.model.enums.MuleVersionEnum;
 import org.soitoolkit.tools.generator.model.enums.TransformerEnum;
@@ -80,7 +77,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewaySA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewaySA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -97,7 +94,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
-				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}
@@ -114,7 +111,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
 				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
-				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
+				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-v2-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
 	}

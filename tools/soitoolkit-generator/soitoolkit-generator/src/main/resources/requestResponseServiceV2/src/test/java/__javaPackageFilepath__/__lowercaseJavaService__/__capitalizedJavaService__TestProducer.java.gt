@@ -168,8 +168,9 @@ public class ${capitalizedJavaService}TestProducer implements CrudSampleInterfac
      */
     private void forceTimeout() {
         try {
-            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen...");
-            Thread.sleep(SERVICE_TIMOUT_MS + 1000);
+        	long sleepTime = 2 * SERVICE_TIMOUT_MS;
+            LOGGER.info("${capitalizedJavaService}TestProducer force a timeout to happen, will sleep for " + sleepTime + " ms...");
+            Thread.sleep(sleepTime);
         } catch (InterruptedException e) {}
     }
 }

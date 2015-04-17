@@ -355,7 +355,11 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
             fail();
         } catch (SOAPFaultException soapFaultException) {
         <% if (outboundTransport == "JMS") { %>
-        	assertTrue(soapFaultException.getMessage().startsWith("Response timed out"));
+			String actualMessage = soapFaultException.getMessage();
+        	String expectedStart = "Response timed out";
+			String errorMessage  = "Expected start: [" + expectedStart + "], actual message: [" + actualMessage + "]";
+			assertTrue(errorMessage, actualMessage.startsWith(expectedStart));
+
         <% } else { %>
             assertEquals("Read timed out", soapFaultException.getMessage());
         <% } %>
