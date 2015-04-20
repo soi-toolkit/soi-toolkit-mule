@@ -71,7 +71,7 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-apikit</artifactId>
-			<version>1.5.0</version>
+			<version>1.6.1</version>
 		</dependency>
 
 <% if (muleVersion.isEEVersion()) { %> 
