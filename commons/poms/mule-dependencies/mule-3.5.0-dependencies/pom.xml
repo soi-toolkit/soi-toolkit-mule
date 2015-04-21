@@ -30,6 +30,7 @@
 		<xalan.version>2.7.1</xalan.version>
 						
 		<mule.version>3.5.0</mule.version>
+    <mule.apikit.version>1.5.0</mule.apikit.version>
         <!-- NOT USED ANYMORE???
 		<mule.common.version>0.11.0</mule.common.version>
 		-->
@@ -214,6 +215,12 @@
 			<version>${mule.version}</version>
 		</dependency>
 		
+		<!-- Mule API Kit -->
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-apikit</artifactId>
+			<version>${mule.apikit.version}</version>
+		</dependency>
 
 		<!-- Dependencies for the servlet transport -->
 		<dependency>

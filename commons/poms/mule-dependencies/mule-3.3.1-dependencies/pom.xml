@@ -28,6 +28,7 @@
 	<properties>
 		<xercesImpl.version>2.9.1</xercesImpl.version>
 		<mule.version>3.3.1</mule.version>
+    <mule.apikit.version>1.5.0</mule.apikit.version>
 
 		<activemq.version>5.6.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
@@ -184,6 +185,13 @@
 			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-sftp</artifactId>
 			<version>${mule.version}</version>
+		</dependency>
+
+		<!-- Mule API Kit -->
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-apikit</artifactId>
+			<version>${mule.apikit.version}</version>
 		</dependency>
 
 		<!-- Dependencies for the servlet transport -->

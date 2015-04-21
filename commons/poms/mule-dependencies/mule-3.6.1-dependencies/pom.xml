@@ -30,6 +30,7 @@
 		<xalan.version>2.7.2</xalan.version>
 						
 		<mule.version>3.6.1</mule.version>
+    <mule.apikit.version>1.6.1</mule.apikit.version>
 
 		<activemq.version>5.6.0</activemq.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
@@ -73,6 +74,13 @@
 			<artifactId>jug.osgi</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-apikit</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
 <!--
 		<dependency>
 			<groupId>org.mule.common</groupId>
@@ -211,6 +219,12 @@
 			<version>${mule.version}</version>
 		</dependency>
 		
+		<!-- Mule API Kit -->
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-apikit</artifactId>
+			<version>${mule.apikit.version}</version>
+		</dependency>
 
 		<!-- Dependencies for the servlet transport -->
 		<dependency>

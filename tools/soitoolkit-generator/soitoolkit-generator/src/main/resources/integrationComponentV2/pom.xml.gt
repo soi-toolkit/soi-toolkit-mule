@@ -68,12 +68,6 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 			<type>pom</type>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-apikit</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-
 <% if (muleVersion.isEEVersion()) { %> 
 		<dependency>
 			<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
