@@ -95,6 +95,7 @@
 	
     <repositories>
         <!-- for jersey-server -->
+        <!-- TODO: can we remove this repo? Ref: https://java.net/projects/maven2-repository/pages/MigrationAndCleanupRelatedDocumentation -->
         <repository>
             <id>maven2-repository.dev.java.net</id>
             <url>http://download.java.net/maven/2/</url>
@@ -102,27 +103,23 @@
         </repository>
 
         <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>http://repository.mulesoft.org/releases/</url>
+          <id>mulesoft-public</id>
+          <name>Mulesoft dependencies repository</name>
+          <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
         </repository>
-        
-        <!-- for mule dependencies such as org.safehouse.jug-osgi -->
+
         <repository>
-            <id>mule</id>
-            <name>Mule Dependencies</name>
-            <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>mulesoft-releases</id>
+            <name>Mulesoft releases repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
         </repository>
     </repositories>
 
 	  <pluginRepositories>
 	     <pluginRepository>
 	         <!-- for org.mule.tools:studio-maven-plugin -->
-	         <id>mulesoft-release</id>
-	         <name>mulesoft release repository</name>
+	         <id>mulesoft-releases</id>
+	         <name>Mulesoft releases repository</name>
 	         <layout>default</layout>
 	         <url>https://repository.mulesoft.org/releases/</url>
 	         <snapshots>
