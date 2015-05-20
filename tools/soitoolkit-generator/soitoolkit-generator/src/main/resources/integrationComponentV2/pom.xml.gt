@@ -214,14 +214,14 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
 			      <goal>copy-resources</goal>
 			    </goals>
 				<configuration>
-				<!--<outputDirectory>target/classes</outputDirectory> -->
+				<overwrite>true</overwrite>
 				<outputDirectory>${dollarSymbol}{project.build.outputDirectory}</outputDirectory>
 				<resources>
 				  <resource>
 				    <directory>src/environment</directory>
 					  <includes>
 					    <include>log4j.xml</include>
-					    <include>log4j.dtd</include>
+              <include>log4j2.xml</include>
 					  </includes>
 				  </resource>
 				</resources>

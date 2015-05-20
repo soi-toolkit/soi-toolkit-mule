@@ -31,9 +31,11 @@ import org.soitoolkit.tools.generator.model.enums.TransportEnum;
 public class IntegrationComponentV2Generator implements Generator {
 
 	GeneratorUtil gu;
+	MuleVersionEnum muleVersion;
 	
 	public IntegrationComponentV2Generator(PrintStream ps, String groupId, String artifactId, String version, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, List<TransportEnum> transports, String outputFolder) {
 		gu = new GeneratorUtil(ps, groupId, artifactId, version, null, muleVersion, deploymentModel, transports, "/integrationComponentV2", outputFolder + "/__integrationComponentProject__");
+		this.muleVersion = muleVersion;
 	}
     public void startGenerator() {
 
@@ -54,11 +56,17 @@ public class IntegrationComponentV2Generator implements Generator {
 		
 		gu.generateContentAndCreateFile("src/test/resources/mule-standalone-with-teststubs-config.xml.gt");
 		
-		gu.generateContentAndCreateFile("src/test/resources/log4j.dtd.gt");
-		gu.generateContentAndCreateFile("src/test/resources/log4j.xml.gt");
-		
-		gu.generateContentAndCreateFile("src/environment/log4j.dtd.gt");
-		gu.generateContentAndCreateFile("src/environment/log4j.xml.gt");
+		// Mule 3.6 changed from log4j-1.2 to log4j-2 which uses different config files 
+		if (muleVersion.getMajor() >= 3 && muleVersion.getMinor() >= 6) {
+			gu.generateContentAndCreateFile("src/main/resources/log4j2.xml.gt");
+			gu.generateContentAndCreateFile("src/environment/log4j2.xml.gt");
+		}
+		else {
+			gu.generateContentAndCreateFile("src/main/resources/log4j.dtd.gt");
+			gu.generateContentAndCreateFile("src/main/resources/log4j.xml.gt");
+			gu.generateContentAndCreateFile("src/environment/log4j.dtd.gt");
+			gu.generateContentAndCreateFile("src/environment/log4j.xml.gt");
+		}
 		
 		gu.generateContentAndCreateFile("src/main/resources/__configPropertyFile__.properties.gt");
     }
