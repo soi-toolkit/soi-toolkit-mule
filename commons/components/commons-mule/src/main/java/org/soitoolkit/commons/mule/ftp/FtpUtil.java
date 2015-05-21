@@ -19,6 +19,8 @@ package org.soitoolkit.commons.mule.ftp;
 import static org.soitoolkit.commons.mule.util.MuleUtil.getImmutableEndpoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -80,36 +82,87 @@ public class FtpUtil {
 			}
 		}
 	}
-	
-	/**
-	 * Deletes a directory with all its files and sub-directories.
-	 * 
-	 * @param ftpClient
-	 * @param path
-	 * @throws IOException
-	 */
-	static public void recursiveDeleteDirectory(FTPClient ftpClient, String path) throws IOException {
 
-		logger.info("Delete directory: {}", path);
-		
-		FTPFile[] ftpFiles = ftpClient.listFiles(path);
-		logger.debug("Number of files that will be deleted: {}", ftpFiles.length);
-		
-		for (FTPFile ftpFile : ftpFiles){
-			String filename = path + "/" + ftpFile.getName();
-			if (ftpFile.getType() == FTPFile.FILE_TYPE) {
-				boolean deleted = ftpClient.deleteFile(filename);
-				logger.debug("Deleted {}? {}", filename, deleted);
-			} else {
-				recursiveDeleteDirectory(ftpClient, filename);
-			}
-		}
+    /**
+     * List files in a directory. Do not return sub-directories, just plain files
+     *
+     * @param muleContext
+     * @param endpointName
+     * @return a list of the names of the files in the directory
+     * @throws IOException
+     */
+    static public List<String> listFilesInDirectory(MuleContext muleContext, String endpointName) {
 
-		boolean dirDeleted = ftpClient.deleteFile(path);
-		logger.debug("Directory {} deleted: {}", path, dirDeleted);
-	}
+        logger.info("List endpoint: {}", endpointName);
 
-	/**
+        FTPClient ftpClient = null;
+        List<String> fileNames = new ArrayList<String>();
+
+        try {
+            ftpClient = getFtpClient(muleContext, endpointName);
+
+            EndpointURI endpointURI = getImmutableEndpoint(muleContext, endpointName).getEndpointURI();
+            String path = endpointURI.getPath();
+
+            logger.info("List directory: {}", path);
+
+            FTPFile[] ftpFiles = ftpClient.listFiles(path);
+            logger.debug("Number of files and sub-folders found: {}", ftpFiles.length);
+
+            for (FTPFile ftpFile : ftpFiles){
+                if (ftpFile.getType() == FTPFile.FILE_TYPE) {
+                    String filename = path + "/" + ftpFile.getName();
+                    fileNames.add(filename);
+                    logger.debug("Added file {}", filename);
+                }
+            }
+
+            logger.debug("Found {} files in {}", fileNames.size(), path);
+
+        } catch (Exception e) {
+            if (logger.isErrorEnabled()) logger.error("Failed to list files in endpoint " + endpointName, e);
+            throw new RuntimeException(e);
+
+        } finally {
+            if (ftpClient != null) {
+                try {
+                    ftpClient.disconnect();
+                } catch (IOException e) {}
+            }
+        }
+
+        return fileNames;
+    }
+
+    /**
+     * Deletes a directory with all its files and sub-directories.
+     *
+     * @param ftpClient
+     * @param path
+     * @throws IOException
+     */
+    static public void recursiveDeleteDirectory(FTPClient ftpClient, String path) throws IOException {
+
+        logger.info("Delete directory: {}", path);
+
+        FTPFile[] ftpFiles = ftpClient.listFiles(path);
+        logger.debug("Number of files that will be deleted: {}", ftpFiles.length);
+
+        for (FTPFile ftpFile : ftpFiles){
+            String filename = path + "/" + ftpFile.getName();
+            if (ftpFile.getType() == FTPFile.FILE_TYPE) {
+                boolean deleted = ftpClient.deleteFile(filename);
+                logger.debug("Deleted {}? {}", filename, deleted);
+            } else {
+                recursiveDeleteDirectory(ftpClient, filename);
+            }
+        }
+
+        boolean dirDeleted = ftpClient.deleteFile(path);
+        logger.debug("Directory {} deleted: {}", path, dirDeleted);
+    }
+
+    /**
 	 * Create a directory and all missing parent-directories.
 	 * 
 	 * @param ftpClient

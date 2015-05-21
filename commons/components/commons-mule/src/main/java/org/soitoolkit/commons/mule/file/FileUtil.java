@@ -18,6 +18,9 @@ package org.soitoolkit.commons.mule.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +52,32 @@ public class FileUtil {
     	if (!ok) throw new IOException("Failed to recreate folder: " + parent);
 	}
 
-	
+
+    /**
+     *
+     * @param parent
+     * @throws IOException
+     */
+    public static List<File> listFilesInFolder(File parent) throws IOException {
+
+        logger.debug("List files in folder " + parent.getCanonicalPath());
+
+        List<File> files = new ArrayList<File>();
+
+        // Bail out if the file/folder does not exist
+        if(!parent.exists()) return files;
+
+        // Bail out if the parent is no directory
+        if (!parent.isDirectory()) return files;
+
+        // Ok, let's list the files in the directory
+        files = Arrays.asList(parent.listFiles());
+
+        logger.debug("Found {} files in {}", files.size(), parent.getCanonicalPath());
+
+        return files;
+    }
+
     public static void recursiveDelete(File parent) throws IOException {
 
     	logger.debug("Recursive delete folder " + parent.getCanonicalPath());
