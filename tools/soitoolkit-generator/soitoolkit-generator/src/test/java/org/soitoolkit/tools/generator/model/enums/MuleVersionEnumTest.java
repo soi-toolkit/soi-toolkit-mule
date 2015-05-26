@@ -77,4 +77,10 @@ public class MuleVersionEnumTest {
         // 3.3.1 < 3.5.0
         assertEquals(-1, MULE_3_3_1_DEPRECATED.compare("3.5.0"));        
     }
+    
+    public void testIsVersionEqualOrGreater() {
+    	assertFalse(MULE_3_4_0.isVersionEqualOrGreater(MULE_3_5_0));
+    	assertTrue(MULE_3_5_0.isVersionEqualOrGreater(MULE_3_5_0));
+    	assertTrue(MULE_3_6_1.isVersionEqualOrGreater(MULE_3_5_0));
+    }
 }

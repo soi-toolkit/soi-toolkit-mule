@@ -141,6 +141,14 @@ public enum MuleVersionEnum implements ILabeledEnum {
     public boolean isDeprecatedVersion() {
         return toString().endsWith("_DEPRECATED");
     }
+    
+    /** 
+     * @param version
+     * @return true if current version equal or greater than supplied version
+     */
+    public boolean isVersionEqualOrGreater(MuleVersionEnum version) {
+    	return this.ordinal() >= version.ordinal();
+    }
 
     // For ver no with only numbers...
 	public String getVerNoNumbersOnly() {

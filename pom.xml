@@ -59,8 +59,8 @@
     <!-- dependency versions - please keep list alphabetically ordered -->
     <!-- ************************************************************* -->
     <log4j.version>1.2.16</log4j.version>
-	<mockito.version>1.8.5</mockito.version>
-    <slf4j.version>1.6.1</slf4j.version>
+    <mockito.version>1.8.5</mockito.version>
+    <slf4j.version>1.7.7</slf4j.version>
 
     
     <!-- ********************************************************* -->
@@ -71,6 +71,7 @@
     <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
     <maven-clean-plugin.version>2.4.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+    <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>2.5</maven-deploy-plugin.version>
     <maven-eclipse-plugin.version>2.9</maven-eclipse-plugin.version>
     <maven-enforcer-plugin.version>1.1.1</maven-enforcer-plugin.version>
@@ -141,6 +142,7 @@
       <!-- ****************************************************** -->
       <!-- dependencies - please keep list alphabetically ordered -->
       <!-- *****************^************************************ -->
+      <!-- log4j: replaced with log4j2 from mule 3.6.0 -->
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
@@ -158,6 +160,8 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <!-- slf4j: version varies with mule version - but kept here to ensure
+      classpath consistency over different slf4j dependencies -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -173,8 +177,6 @@
          <artifactId>jcl-over-slf4j</artifactId>
          <version>${slf4j.version}</version>
       </dependency>
-      <!-- TODO: add slf4j's JCL-bridge (jcl-over-slf4j.jar) when
-        JCL has been excluded from classpath - is currently in -->
     </dependencies>
   </dependencyManagement>
   

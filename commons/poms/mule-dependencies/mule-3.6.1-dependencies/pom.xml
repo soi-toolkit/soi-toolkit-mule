@@ -10,235 +10,98 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.soitoolkit</groupId>
 		<artifactId>soitoolkit</artifactId>
-	  <version>2.0.0-M5-SNAPSHOT</version>
-	  <relativePath>../../../../pom.xml</relativePath>
+		<version>2.0.0-M5-SNAPSHOT</version>
+		<relativePath>../../../../pom.xml</relativePath>
 	</parent>
-
 	<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
 	<artifactId>soitoolkit-mule-3.6.1-dependencies</artifactId>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
-
 	<properties>
-		<xercesImpl.version>2.9.1</xercesImpl.version>
-		<xalan.version>2.7.2</xalan.version>
-						
 		<mule.version>3.6.1</mule.version>
-    <mule.apikit.version>1.6.1</mule.apikit.version>
-
+		<mule.apikit.version>1.6.1</mule.apikit.version>
 		<activemq.version>5.6.0</activemq.version>
+		<commons-dbcp.version>1.4</commons-dbcp.version>
+		<jasypt.version>1.8</jasypt.version>
+		<jaxb.version>2.1.9</jaxb.version>
+		<jtds.version>1.2.4</jtds.version>
+		<lmax.disruptor.version>3.3.0</lmax.disruptor.version>
+		<log4j2.version>2.1</log4j2.version>
+		<slf4j.version>1.7.7</slf4j.version>
 		<!-- NOTE: XBean version must be in sync with ActiveMQ version -->
 		<xbean.version>3.9</xbean.version>
-
-    	<hornetq.version>2.2.5.Final</hornetq.version>
-    	<netty.version>3.2.3.Final</netty.version>
-
-		<!-- Used by servlet-api-2.5 -->
-		<jetty.version>6.1.11</jetty.version>
 	</properties>
-
+	<!-- setup/debug of dependencies: dump all dependencies for inspection into
+		dir target/dependency -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
-	  <dependency>
-	    <groupId>org.jasypt</groupId>
-	    <artifactId>jasypt</artifactId>
-	    <version>1.8</version>
-	  </dependency>
-
-    <!-- libs in $MULE_HOME/lib/endorsed -->
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>${xercesImpl.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
-			<version>${xalan.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>serializer</artifactId>
-			<version>${xalan.version}</version>
-		</dependency>
-		
-		<!-- Mule ESB - core -->
-		<!-- Start with a explicit dependency to the dreadful jug.osgi dependency -->
-		<dependency>
-			<groupId>org.safehaus.jug</groupId>
-			<artifactId>jug.osgi</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-apikit</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-
-<!--
-		<dependency>
-			<groupId>org.mule.common</groupId>
-			<artifactId>mule-common</artifactId>
-			<version>${mule.common.version}</version>
-		</dependency>
--->
-		<dependency>
-			<groupId>org.mule</groupId>
-			<artifactId>mule-core</artifactId>
-			<version>${mule.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.safehaus.jug</groupId>
-					<artifactId>jug</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-spring-config</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-jbossts</artifactId>
-            <version>${mule.version}</version>
-        </dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-scripting</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-xml</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-client</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-launcher</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.tests</groupId>
-			<artifactId>mule-tests-functional</artifactId>
-			<version>${mule.version}</version>
-			<!-- Needs to be in the compile scope since commons-mule contains a base 
-				class, AbstractTestCase, that depends on this module -->
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-json</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-
-		<!-- Needs to be included by IC, if required (deprecated). Should not be a
-		part of ST mule dependencies.
-        <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-rest-router</artifactId>
-            <version>${mule-module-rest-router.version}</version>
-        </dependency>
-		-->
-		
-		<!-- Mule ESB Transports -->
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-vm</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-file</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-ftp</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-http</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-servlet</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-cxf</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-jersey</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-jms</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-email</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-jdbc</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-quartz</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-sftp</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-module-db</artifactId>
-			<version>${mule.version}</version>
-		</dependency>
-		
-		<!-- Mule API Kit -->
+		<!-- BEGIN: Extra dependencies (not found in Mule CE distribution) -->
+		<!--	mule api kit -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-apikit</artifactId>
 			<version>${mule.apikit.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<!-- make sure apikit doesn't contribute with the wrong version of mule-dependencies -->
+				<exclusion>
+					<groupId>org.mule</groupId>
+					<artifactId>mule-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.transports</groupId>
+					<artifactId>mule-transport-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-json</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-spring-config</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
-		<!-- Dependencies for the servlet transport -->
+		<!--	jasypt: support for encrypted properties -->
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>servlet-api-2.5</artifactId>
-			<version>${jetty.version}</version>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<version>${jasypt.version}</version>
 		</dependency>
-
-		<!-- Dependencies for the JMS transport -->
+		<!--	activemq: JMS-driver and JMS-test support -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>${activemq.version}</version>
 			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.fusesource.fuse-extra</groupId>
 					<artifactId>fusemq-leveldb</artifactId>
@@ -246,44 +109,141 @@
 				<exclusion>
 					<groupId>org.fusesource.mqtt-client</groupId>
 					<artifactId>mqtt-client</artifactId>
-				</exclusion>				
+				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- Required to be able to configure a embedded AMQ-broker in spring-config-files -->
+		<!--	activemq: xbean required to be able to configure a embedded AMQ-broker
+		in spring-config-files -->
 		<dependency>
 			<groupId>org.apache.xbean</groupId>
 			<artifactId>xbean-spring</artifactId>
 			<version>${xbean.version}</version>
 		</dependency>
-
-	    <!-- HornetQ Client -->
-	    <dependency>
-	        <groupId>org.hornetq</groupId>
-	        <artifactId>hornetq-core-client</artifactId>
-	        <version>${hornetq.version}</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.hornetq</groupId>
-	        <artifactId>hornetq-jms</artifactId>
-	        <version>${hornetq.version}</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.jboss.netty</groupId>
-	        <artifactId>netty</artifactId>
-	        <version>${netty.version}</version>
-	    </dependency>
-	            
-		<!-- JDBC production dependencies -->
+		<!--	JDBC production dependencies -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
+			<version>${commons-dbcp.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-pool</groupId>
+					<artifactId>commons-pool</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
-			<version>1.2.4</version>
+			<version>${jtds.version}</version>
 		</dependency>
-
+		<!-- END: Extra dependencies (not found in Mule CE distribution) -->
+		<!-- BEGIN: Mule CE distribution dependencies -->
+		<!-- mule logging dependencies -->
+		<!--	exclude commons logging -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--	slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!--	log4j2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jcl</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jul</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<!--	log4j2: disruptor required for asynch-loggers -->
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>${lmax.disruptor.version}</version>
+		</dependency>
+		<!-- mule dependencies -->
+		<dependency>
+			<groupId>org.mule.distributions</groupId>
+			<artifactId>mule-standalone</artifactId>
+			<version>${mule.version}</version>
+			<type>pom</type>
+			<exclusions>
+				<!-- exclude mule libs for standalone mule container-->
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-boot</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-launcher</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-reboot</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mule.modules</groupId>
+					<artifactId>mule-module-reboot</artifactId>
+				</exclusion>
+				<!-- exclude test dependencies from org.mule.tests:mule-tests-functional -->
+				<exclusion>
+					<groupId>org.apache.ftpserver</groupId>
+					<artifactId>ftpserver-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.ftpserver</groupId>
+					<artifactId>ftplet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.sshd</groupId>
+					<artifactId>sshd-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- control dependency versions by declaring explicit dependencies -->
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
+		<!-- END: Mule CE distribution dependencies -->
 	</dependencies>
 </project>

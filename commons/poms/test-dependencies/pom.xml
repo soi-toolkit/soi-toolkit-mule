@@ -81,6 +81,12 @@
 			<groupId>org.mockftpserver</groupId>
 			<artifactId>MockFtpServer</artifactId>
 			<version>2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
     <!-- SFTP test dependencies. -->

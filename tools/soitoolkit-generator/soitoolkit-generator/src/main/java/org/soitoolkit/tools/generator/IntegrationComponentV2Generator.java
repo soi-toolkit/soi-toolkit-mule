@@ -57,7 +57,7 @@ public class IntegrationComponentV2Generator implements Generator {
 		gu.generateContentAndCreateFile("src/test/resources/mule-standalone-with-teststubs-config.xml.gt");
 		
 		// Mule 3.6 changed from log4j-1.2 to log4j-2 which uses different config files 
-		if (muleVersion.getMajor() >= 3 && muleVersion.getMinor() >= 6) {
+		if (muleVersion.isVersionEqualOrGreater(MuleVersionEnum.MULE_3_6_1)) {
 			gu.generateContentAndCreateFile("src/main/resources/log4j2.xml.gt");
 			gu.generateContentAndCreateFile("src/environment/log4j2.xml.gt");
 		}
