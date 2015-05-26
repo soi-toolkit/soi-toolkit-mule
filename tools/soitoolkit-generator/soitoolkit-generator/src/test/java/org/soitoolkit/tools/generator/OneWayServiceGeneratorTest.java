@@ -202,6 +202,10 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
 		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED + 5 : 71;
+		if (muleVersion.isVersionEqualOrGreater(MuleVersionEnum.MULE_3_6_1)) {
+			// Mule 3.6.0 and higher use log4j2 instead of log4j, no log4j.dtd files generated
+			noOfExpectedFiles -= 2;
+		}
 		
 		TRANSPORTS.add(VM);
 		TRANSPORTS.add(JMS);
@@ -219,7 +223,7 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
 		new IntegrationComponentGenerator(System.out, groupId, artifactId, VERSION, muleVersion, deploymentModel, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders", noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
+		assertEquals("Mismatch in expected number of created files and folders for version: " + muleVersion, noOfExpectedFiles, SystemUtil.countFiles(projectFolder));
 	}
 
 	private void createOneWayService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String projectFolder) throws IOException {
@@ -255,6 +259,6 @@ public class OneWayServiceGeneratorTest extends AbstractGeneratorTest {
 		
 		new OnewayServiceGenerator(System.out, groupId, artifactId, service, muleVersion, inboundTransport, outboundTransport, transformerType, projectFolder).startGenerator();
 		
-		assertEquals("Missmatch in expected number of created files and folders", expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
+		assertEquals("Mismatch in expected number of created files and folders for version: " + muleVersion, expectedNoOfFiles, SystemUtil.countFiles(projectFolder) - noOfFilesBefore);
 	}
 }

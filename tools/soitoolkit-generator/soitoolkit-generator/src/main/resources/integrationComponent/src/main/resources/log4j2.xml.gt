@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status="TRACE" to debug logging config, default: WARN -->
+<Configuration status="WARN">
+	<Properties>
+		<Property name="log.dir">${dollarSymbol}{sys:mule.home}/logs</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p [%t] %-30c - %m%n"/>
+		</Console>
+
+		<!-- Backwards compatibility for rolling file appender: Use filePattern
+			and rollover-strategy to mimic the behaviour of the log4j-1.2
+			RollingFileAppender. Should not break scripts used for archiving. -->
+		<RollingRandomAccessFile name="RollingRandomAccessFile"
+				fileName="${dollarSymbol}{log.dir}/mule-app-${artifactId}.log"
+				filePattern="${dollarSymbol}{log.dir}/mule-app-${artifactId}.log.%i">
+			<PatternLayout>
+				<Pattern>%d %-5p [%t] %-30c - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<!-- KB, MB -->
+				<SizeBasedTriggeringPolicy size="10 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="min" max="5"/>
+		</RollingRandomAccessFile>
+	</Appenders>
+
+	<!-- Log levels: {OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL}
+		See: https://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/Level.html -->
+
+	<Loggers>
+		<AsyncLogger name="org.mockftpserver" level="ERROR"/>
+		<AsyncLogger name="org.apache.sshd" level="ERROR"/>
+		<AsyncLogger name="org.apache.activemq.transport.failover.FailoverTransport" level="DEBUG"/>
+		<AsyncLogger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" level="TRACE"/>
+		<AsyncLogger name="org.springframework.core.io.support.PropertiesLoaderSupport" level="INFO"/>
+		<AsyncLogger name="org.springframework.beans.factory.xml.XmlBeanDefinitionReader" level="INFO"/>
+		<AsyncLogger name="org.mule.model.seda" level="INFO"/>
+		<AsyncLogger name="org.mule.MuleServer" level="INFO"/>
+		<AsyncLogger name="org.mule.DefaultMuleContext" level="INFO"/>
+		<!-- Message logging using the old Mule <logger/> - element -->
+		<AsyncLogger name="org.mule.api.processor.LoggerMessageProcessor" level="INFO"/>
+		<!-- Message logging using the old Mule <log-component/> - element -->
+		<AsyncLogger name="org.mule.component.simple.LogComponent" level="INFO"/>
+		<AsyncLogger name="org.soitoolkit.commons" level="INFO"/>
+		<AsyncLogger name="${javaPackage}" level="INFO"/>
+		<!-- Message logging using soi-toolkit LogTransformer class -->
+		<AsyncLogger name="org.soitoolkit.commons.mule.messageLogger" level="INFO"/>
+
+		<AsyncRoot level="WARN">
+			<AppenderRef ref="Console"/>
+			<!--
+			<AppenderRef ref="RollingRandomAccessFile"/>
+			-->
+		</AsyncRoot>
+	</Loggers>
+</Configuration>

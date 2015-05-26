@@ -18,11 +18,7 @@ package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
-import static org.soitoolkit.tools.generator.model.enums.MuleVersionEnum.MAIN_MULE_VERSION;
 import static org.soitoolkit.tools.generator.util.SystemUtil.BUILD_COMMAND;
-
-import java.io.IOException;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,12 +31,15 @@ import org.soitoolkit.tools.generator.util.SystemUtil;
 
 public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 
-	private static final MuleVersionEnum MULE_VERSION = MAIN_MULE_VERSION;
-
-	private static final String PROJECT = "integration-component-v2";	
-	private static final String PROJECT_FOLDER = TEST_OUT_FOLDER + "/" + PROJECT;
-	
-	public  static final int EXPECTED_NO_OF_IC_FILES_CREATED = 35;
+	public static int getExpectedNoOfIcFilesCreated(MuleVersionEnum muleVersionEnum) {
+		if (muleVersionEnum.isVersionEqualOrGreater(MuleVersionEnum.MULE_3_6_1)) {
+			// Mule 3.6.0 and higher use log4j2 instead of log4j, no log4j.dtd files generated
+			return 33;
+		}
+		else {
+			return 35;
+		}
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -58,42 +57,28 @@ public class IntegrationComponentV2GeneratorTest extends AbstractGeneratorTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
 	@Test
-	public void testGenerateStandalone() throws IOException {
-
-        SystemUtil.delDirs(PROJECT_FOLDER + "-standalone");
-		assertEquals(0, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
-
-        for (MuleVersionEnum v: getMuleVersions()) {
-			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
-                // FIXME: Why MULE_VERSION and not current version v???
-				new IntegrationComponentV2Generator(System.out, "org.soitoolkit.standalone", PROJECT + "-standalone", "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-				assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED-2, SystemUtil.countFiles(PROJECT_FOLDER + "-standalone"));
-		
-				SystemUtil.executeCommand(BUILD_COMMAND, PROJECT_FOLDER + "-standalone");
-			}
-		}
+	public void testGenerateStandalone() throws Exception {
+		runIcGeneratorAndVerify("org.soitoolkit.standalone.aaa", "integration-component-v2-aaa");
 	}
-
-
+	
 	@Test
-	public void testGenerateStandaloneWithDifferentNamespace() throws IOException {
-
-		String grp = "org.soitoolkit.standalone.xxx";
-		String name = PROJECT + "-standalone-xxx";
-		
-		SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + name);
-		assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
-
+	public void testGenerateStandaloneWithDifferentNamespace() throws Exception {
+		runIcGeneratorAndVerify("org.soitoolkit.standalone.bbb", "integration-component-v2-bbb");
+	}
+	
+	private void runIcGeneratorAndVerify(String groupId, String baseArtifactId) throws Exception {
         for (MuleVersionEnum v: getMuleVersions()) {
-			if (!v.isEEVersion() && !v.equals(MuleVersionEnum.MULE_3_4_0)) {
-                // FIXME: Why MULE_VERSION and not current version v???
-				new IntegrationComponentV2Generator(System.out, grp, name, "1.0-SNAPSHOT", MULE_VERSION, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-				assertEquals("Missmatch in expected number of created files and folders", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + name));
+			if (!v.isEEVersion()) {
+				String artifactId = "integration-component-v2" + v;
+				SystemUtil.delDirs(TEST_OUT_FOLDER + "/" + artifactId);
+				assertEquals(0, SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + artifactId));
+				new IntegrationComponentV2Generator(System.out, groupId, artifactId, "1.0-SNAPSHOT", v, STANDALONE_DEPLOY, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
+				assertEquals("Mismatch in expected number of created files and folders for mule version: " + v, getExpectedNoOfIcFilesCreated(v), SystemUtil.countFiles(TEST_OUT_FOLDER + "/" + artifactId));
 
-				SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + name);
+				SystemUtil.executeCommand(BUILD_COMMAND, TEST_OUT_FOLDER + "/" + artifactId);
 			}
-		}
+		}		
 	}
 }

@@ -17,7 +17,6 @@
 package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.IntegrationComponentV2GeneratorTest.EXPECTED_NO_OF_IC_FILES_CREATED;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.JMS;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.RESTHTTP;
@@ -153,7 +152,7 @@ public class RequestResponseServiceV2GeneratorTest extends AbstractGeneratorTest
 	}
 	private void createEmptyIntegrationComponent(String groupId, String artifactId, MuleVersionEnum muleVersion, DeploymentModelEnum deploymentModel, String projectFolder) throws IOException {
 		
-		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? EXPECTED_NO_OF_IC_FILES_CREATED : 66;
+		int noOfExpectedFiles = (deploymentModel == STANDALONE_DEPLOY) ? IntegrationComponentV2GeneratorTest.getExpectedNoOfIcFilesCreated(muleVersion) : 66;
 
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));

@@ -17,7 +17,6 @@
 package org.soitoolkit.tools.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.soitoolkit.tools.generator.IntegrationComponentV2GeneratorTest.EXPECTED_NO_OF_IC_FILES_CREATED;
 import static org.soitoolkit.tools.generator.model.enums.DeploymentModelEnum.STANDALONE_DEPLOY;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FILE;
 import static org.soitoolkit.tools.generator.model.enums.TransportEnum.FTP;
@@ -163,7 +162,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 		SystemUtil.delDirs(projectFolder);
 		assertEquals(0, SystemUtil.countFiles(projectFolder));
 		new IntegrationComponentV2Generator(System.out, groupId, artifactId, VERSION, muleVersion, deploymentModel, TRANSPORTS, TEST_OUT_FOLDER).startGenerator();
-		assertEquals("Missmatch in expected number of created files and folders.", EXPECTED_NO_OF_IC_FILES_CREATED, SystemUtil.countFiles(projectFolder));
+		assertEquals("Missmatch in expected number of created files and folders.", IntegrationComponentV2GeneratorTest.getExpectedNoOfIcFilesCreated(muleVersion), SystemUtil.countFiles(projectFolder));
 	}
 
 	private void createOneWayService(String groupId, String artifactId, MuleVersionEnum muleVersion, TransportEnum inboundTransport, TransportEnum outboundTransport, TransformerEnum transformerType, String projectFolder) throws IOException {

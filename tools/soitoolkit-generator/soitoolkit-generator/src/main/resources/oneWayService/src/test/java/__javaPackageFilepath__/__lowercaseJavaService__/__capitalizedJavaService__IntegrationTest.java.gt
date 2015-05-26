@@ -28,6 +28,7 @@ import javax.jms.TextMessage;
 import javax.sql.DataSource;
 
 import org.junit.Test;
+import org.junit.BeforeClass;
 import org.mule.api.MuleMessage;
 import org.mule.api.routing.CouldNotRouteOutboundMessageException;
 import org.mule.api.transformer.TransformerException;
@@ -113,6 +114,13 @@ public class ${capitalizedJavaService}IntegrationTest extends AbstractTestCase {
 	private static final String subject  = rb.getString("${uppercaseService}_INBOUND_EMAIL_SUBJECT");
 <% } %> 
 	
+<% if (inboundTransport=="FILE") { %>
+	@BeforeClass
+	public static void setUpOnce() {
+		System.setProperty("mule.test.timeoutSecs", "120");
+	}
+<% } %>
+
     /**
      *
      * DLQ tests expects the following setup in activemq.xml (in the <policyEntry> - element):
