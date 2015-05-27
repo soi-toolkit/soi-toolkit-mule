@@ -117,13 +117,26 @@ DON'T CHANGE THE CONTENT OF THIS COMMENT UNLESS YOU REALLY KNOW WHAT YOU ARE DOI
                             <groupId>org.mule.modules</groupId>
                             <artifactId>devkit</artifactId>
                         </inclusion>
+                        <inclusion>
+                            <groupId>org.mule.modules</groupId>
+                            <artifactId>mule-module-apikit</artifactId>
+                        </inclusion>
+
                     </inclusions>
                     <exclusions>
 
-                      <!-- xercesImpl is endorsed in MULE_HOME/lib/endorsed, see issue 274 -->
+                      <!-- libs endorsed in MULE_HOME/lib/endorsed, see issue 274 -->
                       <exclusion>
                         <groupId>xerces</groupId>
                         <artifactId>xercesImpl</artifactId>
+                      </exclusion>
+                      <exclusion>
+                        <groupId>xalan</groupId>
+                        <artifactId>xalan</artifactId>
+                      </exclusion>
+                      <exclusion>
+                        <groupId>xalan</groupId>
+                        <artifactId>serializer</artifactId>
                       </exclusion>
 
                       <!-- log4j is already included in MULE_HOME/lib/boot, see issue 283 -->
