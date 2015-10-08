@@ -18,12 +18,12 @@
 		<relativePath>../../../../pom.xml</relativePath>
 	</parent>
 	<groupId>org.soitoolkit.commons.poms.mule-dependencies</groupId>
-	<artifactId>soitoolkit-mule-3.6.1-dependencies</artifactId>
+	<artifactId>soitoolkit-mule-3.7.0-dependencies</artifactId>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<properties>
-		<mule.version>3.6.1</mule.version>
-		<mule.apikit.version>1.6.1</mule.apikit.version>
+		<mule.version>3.7.0</mule.version>
+		<mule.apikit.version>1.7.2</mule.apikit.version>
 		<activemq.version>5.6.0</activemq.version>
 		<commons-dbcp.version>1.4</commons-dbcp.version>
 		<jasypt.version>1.8</jasypt.version>
@@ -201,6 +201,7 @@
 			<type>pom</type>
 			<exclusions>
 				<!-- exclude mule libs for standalone mule container-->
+				<!--
 				<exclusion>
 					<groupId>org.mule.modules</groupId>
 					<artifactId>mule-module-boot</artifactId>
@@ -213,11 +214,12 @@
 					<groupId>org.mule.modules</groupId>
 					<artifactId>mule-module-reboot</artifactId>
 				</exclusion>
+				-->
+				<!-- exclude libs not found in Mule distribution -->
 				<exclusion>
-					<groupId>org.mule.modules</groupId>
-					<artifactId>mule-module-reboot</artifactId>
+					<groupId>xalan</groupId>
+					<artifactId>serializer</artifactId>
 				</exclusion>
-				<!-- exclude test dependencies from org.mule.tests:mule-tests-functional -->
 				<exclusion>
 					<groupId>org.apache.ftpserver</groupId>
 					<artifactId>ftpserver-core</artifactId>
@@ -232,7 +234,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- control dependency versions by declaring explicit dependencies -->
+		<!--
+		control dependency versions by declaring explicit dependencies
+		-->
+
+		<!-- jffi: Mule-3.7.0 brings in a SNAPSHOT version of the native-lib, which might cause problems -->
+		<dependency>
+			<groupId>com.github.jnr</groupId>
+			<artifactId>jffi</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jnr</groupId>
+			<artifactId>jffi</artifactId>
+			<version>1.2.9</version>
+			<classifier>native</classifier>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
@@ -243,6 +261,42 @@
 			<artifactId>jaxb-xjc</artifactId>
 			<version>${jaxb.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.3</version>
+		</dependency>
+
 		<!-- END: Mule CE distribution dependencies -->
 	</dependencies>
 </project>

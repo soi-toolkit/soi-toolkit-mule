@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>5</version>
+        <version>9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -52,8 +52,8 @@
 		<soitoolkit.buildinfo.artifact>${project.artifactId}</soitoolkit.buildinfo.artifact>
 		<soitoolkit.buildinfo.version>${project.version}</soitoolkit.buildinfo.version>
     
-    <compiler.target.version>1.6</compiler.target.version>
-    <compiler.source.version>1.6</compiler.source.version>
+    <compiler.target.version>1.7</compiler.target.version>
+    <compiler.source.version>1.7</compiler.source.version>
 
     <!-- ************************************************************* -->
     <!-- dependency versions - please keep list alphabetically ordered -->
@@ -102,14 +102,6 @@
 	</modules>
 
 	<repositories>
-		<!-- for jersey-server -->
-    <!-- TODO: can we remove this repo? Ref: https://java.net/projects/maven2-repository/pages/MigrationAndCleanupRelatedDocumentation -->
-		<repository>
-			<id>maven2-repository.dev.java.net</id>
-			<url>http://download.java.net/maven/2/</url>
-			<layout>default</layout>
-		</repository>
-
     <repository>
       <id>mulesoft-public</id>
       <name>Mulesoft dependencies repository</name>
@@ -141,7 +133,7 @@
     <dependencies>
       <!-- ****************************************************** -->
       <!-- dependencies - please keep list alphabetically ordered -->
-      <!-- *****************^************************************ -->
+      <!-- ****************************************************** -->
       <!-- log4j: replaced with log4j2 from mule 3.6.0 -->
       <dependency>
         <groupId>log4j</groupId>
@@ -208,6 +200,10 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>

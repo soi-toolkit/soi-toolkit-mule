@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>5</version>
+        <version>9</version>
     </parent>
 
   <!--
@@ -53,8 +53,8 @@
 		-->
     <soitoolkit.version>2.0.0-M6-SNAPSHOT</soitoolkit.version>
     
-    <compiler.target.version>1.6</compiler.target.version>
-    <compiler.source.version>1.6</compiler.source.version>
+    <compiler.target.version>1.7</compiler.target.version>
+    <compiler.source.version>1.7</compiler.source.version>
     
     <!-- ************************************************************* -->
     <!-- dependency versions - please keep list alphabetically ordered -->
@@ -95,14 +95,6 @@
 	</properties>
 	
     <repositories>
-        <!-- for jersey-server -->
-        <!-- TODO: can we remove this repo? Ref: https://java.net/projects/maven2-repository/pages/MigrationAndCleanupRelatedDocumentation -->
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-        </repository>
-
         <repository>
           <id>mulesoft-public</id>
           <name>Mulesoft dependencies repository</name>
@@ -189,6 +181,10 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
