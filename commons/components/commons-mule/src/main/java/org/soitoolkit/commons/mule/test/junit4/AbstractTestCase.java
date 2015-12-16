@@ -51,6 +51,9 @@ import org.soitoolkit.commons.mule.util.ValueHolder;
  *
  */
 public abstract class AbstractTestCase extends FunctionalTestCase {
+	private static final String SOITOOLKIT_TEST_OVERRIDE_DISPOSE_CONTEXT_PER_CLASS_PROPERTY_NAME = "soitoolkit.test.override.dispose_context_per_class";
+	private static final String SOITOOLKIT_TEST_SLEEP_MS_BEFORE_TEST_PROPERTY_NAME = "soitoolkit.test.sleep.ms.before_test";
+	private Boolean soitoolkitTestOverrideDisposeContextPerClass = null;
     
     public AbstractTestCase() {
 		super();
@@ -60,7 +63,47 @@ public abstract class AbstractTestCase extends FunctionalTestCase {
 
 		// Ensure that CXF use LOG4J for logging
 		System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Slf4jLogger");
+		
+		// Override subclass settings to debug test suite problems
+		String overrideDisposeContext = System.getProperty(SOITOOLKIT_TEST_OVERRIDE_DISPOSE_CONTEXT_PER_CLASS_PROPERTY_NAME);
+		logger.info("read system property: " + SOITOOLKIT_TEST_OVERRIDE_DISPOSE_CONTEXT_PER_CLASS_PROPERTY_NAME + " = " + overrideDisposeContext);
+		if (overrideDisposeContext != null) {
+			soitoolkitTestOverrideDisposeContextPerClass = Boolean.parseBoolean(overrideDisposeContext);
+		}
+		
+		// Sleep before creating context, to debug test suite problems
+		String sleepBeforeTest = System.getProperty(SOITOOLKIT_TEST_SLEEP_MS_BEFORE_TEST_PROPERTY_NAME);
+		logger.info("read system property: " + SOITOOLKIT_TEST_SLEEP_MS_BEFORE_TEST_PROPERTY_NAME + " = " + sleepBeforeTest);
+		if (sleepBeforeTest != null) {
+			long t = Long.parseLong(sleepBeforeTest);
+			try {
+				logger.info("sleep before test for (ms): " + t);
+				Thread.sleep(t);
+			}
+			catch (InterruptedException e) {
+				throw new RuntimeException("Sleep interrupted", e);
+			}			
+		}
+		
 	}
+    
+    /**
+     * Override behavior in subclasses using a system property for testing if
+     * there are any tests interfering with each other.
+     * Default is false, means use a new Mule context for each test method.
+     * True means use the same Mule context for all test methods in a class.
+     * A testsuite will run faster using true, but tests might interfere.  
+     */
+    @Override
+    protected void setDisposeContextPerClass(boolean val) {
+    	if (soitoolkitTestOverrideDisposeContextPerClass != null) {
+    		if (logger.isInfoEnabled()) {
+    			logger.info("setDisposeContextPerClass: overriding subclass settings, setting: " + soitoolkitTestOverrideDisposeContextPerClass + " (subclass had set: " + val + ")");	
+    		}
+    		val = soitoolkitTestOverrideDisposeContextPerClass;
+    	}
+    	super.setDisposeContextPerClass(val);
+    }
     
     @Override
     protected void configureMuleContext(MuleContextBuilder contextBuilder) {
