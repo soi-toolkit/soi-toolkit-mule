@@ -75,7 +75,7 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_4_0)
+				//&& v.equals(MuleVersionEnum.MULE_3_7_0)
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator", "onewaySA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
@@ -92,7 +92,6 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
 				doTestOneWayServicesInOneCommonIC("org.soitoolkit.tool.generator-tests", "Oneway-Tests-SA-v2-mule" + v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
@@ -109,7 +108,6 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 
         for (MuleVersionEnum v: getMuleVersions()) {
             if (!v.isEEVersion()) {
-				//&& muleVersions[i].equals(MuleVersionEnum.MULE_3_5_0)
 				doTestOneWayServicesOneICPerService("org.soitoolkit.tool.generator",     "onewaySA-v2-mule" +        v.getVerNoNumbersOnly(), v, STANDALONE_DEPLOY);
 			}
 		}
@@ -123,7 +121,11 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 
 		for (TransportEnum inboundTransport : getInboundTransports(deploymentModel)) {
 			for (TransportEnum outboundTransport : getOutboundTransports()) {
-				if (!(muleVersion.equals(MuleVersionEnum.MULE_3_4_0) && (inboundTransport == JDBC || outboundTransport == JDBC)))
+				// issue #401: SFTP tests does not work with Mule-3.7.0
+				if (!(muleVersion.equals(MuleVersionEnum.MULE_3_4_0) && (inboundTransport == JDBC || outboundTransport == JDBC))
+					&&
+					!(muleVersion.equals(MuleVersionEnum.MULE_3_7_0) && (inboundTransport == SFTP || outboundTransport == SFTP))
+					)
 					createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
 			}
 		}
@@ -140,7 +142,11 @@ public class OneWayServiceV2GeneratorTest extends AbstractGeneratorTest {
 				String projectFolder = TEST_OUT_FOLDER + "/" + artifactId;
 
 				createEmptyIntegrationComponent(groupId, artifactId, muleVersion, deploymentModel, projectFolder);
-				if (!(muleVersion.equals(MuleVersionEnum.MULE_3_4_0) && (inboundTransport == JDBC || outboundTransport == JDBC)))
+				// issue #401: SFTP tests does not work with Mule-3.7.0
+				if (!(muleVersion.equals(MuleVersionEnum.MULE_3_4_0) && (inboundTransport == JDBC || outboundTransport == JDBC))
+					&&
+					!(muleVersion.equals(MuleVersionEnum.MULE_3_7_0) && (inboundTransport == SFTP || outboundTransport == SFTP))
+					)
 					createOneWayService(groupId, artifactId, muleVersion, inboundTransport, outboundTransport, TransformerEnum.JAVA, projectFolder);
 				performMavenBuild(projectFolder);
 			}
