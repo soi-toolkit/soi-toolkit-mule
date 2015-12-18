@@ -10,15 +10,6 @@
 		</layout>
 	</appender>
 
-    <appender name="ROLLINGFILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="${dollarSymbol}{mule.home}/logs/mule-app-${artifactId}.log" />
-        <param name="MaxFileSize" value="1000KB" />
-        <param name="MaxBackupIndex" value="3" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d %-5p [%t] %-30c - %m%n" />
-        </layout> 
-    </appender>
-
 	<!--
 		Loglevels: {OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL} See:
 		http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/Level.html
@@ -85,9 +76,5 @@
 		<priority value="WARN" />
 
 		<appender-ref ref="CONSOLE" />
-		<!--
-		<appender-ref ref="ROLLINGFILE"/>
-		-->
-		
 	</root>
 </log4j:configuration>
