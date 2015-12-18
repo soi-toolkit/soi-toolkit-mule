@@ -154,11 +154,6 @@ public class OnewayServiceV2Generator implements Generator {
     		}
 		}
 		
-		{
-			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the JMS-transport\n";
-			comment += "Import the JMS-provider used in production here, embedded JMS providers used for integration tests are loaded by the *IntegratIonTest.java classes directly";
-    		updateCommonFileWithSpringImport(gu, comment, "soitoolkit-mule-jms-connector-activemq-external.xml", "default");
-		}
 		// Add file-connector
 		if (inboundTransport == FILE || outboundTransport == FILE) {
 			String comment = "Added " + new Date() + " since flow " + m.getService() + " uses the FILE-transport";
