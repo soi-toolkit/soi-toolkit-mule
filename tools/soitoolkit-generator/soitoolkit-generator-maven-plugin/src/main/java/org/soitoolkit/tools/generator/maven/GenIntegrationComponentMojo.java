@@ -63,7 +63,7 @@ public class GenIntegrationComponentMojo extends AbstractMojo {
 
 	/**
      * Mule version.
-     * @parameter expression="${muleVersion}" default-value="3.6.1"
+     * @parameter expression="${muleVersion}" default-value="3.7.0"
      * @required
      */
     private String muleVersion;
