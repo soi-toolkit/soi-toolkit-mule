@@ -33,7 +33,7 @@
   <groupId>org.soitoolkit.commons.poms</groupId>
   <artifactId>soitoolkit-default-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.0-M6-SNAPSHOT</version>
+  <version>2.0.0-M6</version>
   <name>soitoolkit-default-parent</name>
   <description>The default parent pom for components that use soi-toolkit, e.g. integration and schema components</description>
   <url>http://soi-toolkit.org</url>
@@ -390,4 +390,8 @@
       
     </plugins>
   </build>
+
+  <scm>
+    <tag>soitoolkit-2.0.0-M6</tag>
+  </scm>
 </project>
