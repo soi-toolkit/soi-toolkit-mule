@@ -869,7 +869,7 @@ public class DefaultEventLogger implements EventLogger, MuleContextAware {
 				} else {
 					content = (String) jaxbToXml.transform(jaxbObject, outputEncoding);
 				}
-			} catch (TransformerException e) {
+			} catch (TransformerException|RuntimeException e) {
 				e.printStackTrace();
 				content = "JAXB object marshalling failed: " + e.getMessage();
 			}
